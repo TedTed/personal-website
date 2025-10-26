@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>« So, how does your part-time PhD arrangement actually work? » - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="« So, how does your part-time PhD arrangement actually work? » - Ted is writing things" />
+  <meta property="twitter:title" content="« So, how does your part-time PhD arrangement actually work? » - Ted is writing things" />
+  <meta name="description" property="og:description" content="I got this question many times. So I thought I'd answer it, along with other frequent questions about this arrangement." />
+  <meta property="twitter:description" content="I got this question many times. So I thought I'd answer it, along with other frequent questions about this arrangement." />
+  <meta property="summary" content="I got this question many times. So I thought I'd answer it, along with other frequent questions about this arrangement." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/part-time-phd.html" />
+  <link rel="prev" href="differential-privacy-in-more-detail.html" />
+  <link rel="next" href="differential-privacy-in-practice.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="differential-privacy-in-more-detail.html">← previous</a>
+ —     <a href="differential-privacy-in-practice.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./part-time-phd.html">« So, how does your part-time PhD arrangement actually work? »</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2018-09-01T00:00:00+02:00">
+      2018-09-01
+    </time>
+    <small>&mdash; updated
+      <time datetime="2018-09-05T00:00:00+02:00">
+        2018-09-05
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><strong>Since</strong> December 2016, I work as an engineer for Google 50% of my time, and I
+do a PhD at the ETH in Zürich on the remaining 50%. Recently, some people have
+asked me a bunch of questions about this arrangement. So here's a blog post
+answering them, in no particular order. </p>
+<p>Note: everything in this post is only from my own experience, and represents in
+no way the opinion of my employers.</p>
+<h1 id="so-google-does-part-time-phds-hm">So Google does part-time PhDs, hm?</h1>
+<p>Not really.</p>
+<p>When I first thought about this project, I tried to look for Googlers who did
+this before me. I couldn't find anyone. Some folks studied (for Bachelor's,
+Master's degrees, etc.) while working at Google. Some got hired before
+completing their PhD, and finished it while working full-time or 80%. But I
+couldn't find anybody who did a PhD from start to finish while working there.</p>
+<p>So I sort of made up my own project. After a lot of work, I got it approved, and
+now I'm in the middle of it. I can't detail the approval process publicly, but
+this was definitely neither standard nor easy. One important takeaway: I
+couldn't have done this as a new hire. Being a productive, full-time engineer
+for a couple of years gave me the credibility I needed.</p>
+<p>In short: it is possible to negotiate a part-time PhD arrangement when you work
+at Google. But it depends on a lot of factors, many of which you have little to
+no influence over. You should not base your career plans on the assumption that
+you'll be able to do this at Google.</p>
+<h1 id="why-would-you-do-this">Why would you do this?</h1>
+<p>Because I was grumpy and unhappy with the other options :D</p>
+<p>Many academics are doing research that has no real-world impact. Some of them
+don't care, and that's fine. But even for the others, it's difficult to figure
+out what problems are worth looking at. When you start doing research, you don't
+know what's impactful and what's useless. So, you pick a novel and interesting
+topic, and you hope it'll end up being useful. Then, before your realize it, you
+get corrupted by the many things that are <a href="https://a3nm.net/work/research/wrong/">wrong with
+academia</a>. A few more years, and you
+completely forget that usefulness was ever a goal<sup id="fnref:0"><a class="footnote-ref" href="#fn:0">1</a></sup>.</p>
+<p>At the same time, I thought that the tech industry is in general not a great
+place to do research. Your job is to fix problems that your company has.
+Figuring out whether you're the first to solve them, generalizing the solution,
+publishing it for more people to use, educating yourself on vaguely related
+work… That's not really what they pay you for. If you're an experienced
+researcher working for a tech company, you might get this stuff done. You know
+the value of such work, and you're able to do it and sell it to higher-ups. When
+you don't know how to do research yet, it's not the same story.</p>
+<p>My solution was to do both things at once. First, use my industry job to figure
+out which problems are worth solving. Then, solve them thoroughly, not only in
+the context of one team inside one company. Also, share the results with the
+world. And let's be honest: in the process, I also hoped to become an expert in
+the field =) </p>
+<p>In short, I wanted to get all the good parts of a PhD, while avoiding the
+standard traps of academic research. I didn't want to stop having a constant
+stream of real-world problems to solve<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">2</a></sup>.</p>
+<p><small>plus, what could possibly go wrong, right</small></p>
+<h1 id="how-do-you-organize-your-time">How do you organize your time?</h1>
+<p>I usually work one week at Google, and the next week at the university.</p>
+<p>During the first few months, I was pretty strict with my schedule. It worked
+okay. Nowadays, I often have research meetings during my Google time, or
+vice-versa. It makes things easier for everyone, and doesn't hurt my
+productivity too much, especially for early or late meetings. In addition, I
+sometimes switch entire weeks, for example when I travel abroad to do Google
+work for several weeks in a row.</p>
+<h1 id="what-about-context-switching-costs">What about context switching costs?</h1>
+<p>They're not a huge problem for me. Context switches affect different people
+differently. Like most people, I can't get any serious work done in a half-hour
+break between two meetings. But it's not that painful for me to work on a
+different thing than the day/week before.</p>
+<p>In my humble opinion, the ability to work on several things in parallel is a
+core engineering skill. I suspect it's a crucial skill for many other jobs. You
+should aim to be good at it no matter what you do. Having two jobs makes it
+more obvious, but not fundamentally different.</p>
+<p>[To be clear: I'm encouraging you to try and get better at this if you can. But
+like any other skill, this is workable for some people and not so much for
+others. Neurodiverse folks might have a harder time. If you're in a position of
+leadership, build teams that accommodate specific needs.]</p>
+<h1 id="what-are-the-challenges">What are the challenges?</h1>
+<p>Some things don't get divided by two when you start working part-time.</p>
+<p>The obvious one is overhead. The number of Google emails didn't get halved when
+I started working half-time. Expense reports, performance reviews,
+administrative nonsense… Mandatory and pointless tasks cost you twice as much
+productivity.</p>
+<p>Second, anxiety and impostor syndrome. I was prone to these when I started
+working at Google, but I sort of learned to live with them over time. They came
+back full-force when I started my PhD, and not only because of the unique
+challenges of research work<sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>. I instinctively compared myself to peers a
+lot — I always did. But of course, working half-time, I couldn't get the same
+amount of work done, so I felt shitty about it.</p>
+<p>Finally, I got (at least) twice as many interesting work-related opportunities.
+And since I had a tendency to work too much and accept too many responsibilities
+and tasks… This definitely got worse.</p>
+<h1 id="how-do-you-deal-with-those">How do you deal with those?</h1>
+<p>For overhead, aggressive email filtering and management is part of the solution.
+I also learned to notice when my brain can't handle intellectual, creative, or
+stressful work anymore. When I catch myself procrastinating, I don't force
+myself to go back to the thing I was supposed to do. Instead, I do something
+that doesn't require as much brain, but is still productive. Answering emails,
+solving administrative stuff, writing blog posts… This way, I don't waste too
+much time, and the overhead doesn't cannibalize my real work too much.</p>
+<p>To avoid overworking, I have some practical rules. I don't work on evenings,
+weekends or vacation days. I use a different laptop for my Google work (where I
+get most interruptions). I lock myself out of my work email outside office
+hours. I force myself to do sports. Those "practical" tricks help. But of
+course, the psychological aspect is the difficult part…</p>
+<p>I try to remind myself that I'm not responsible for the stuff that I'm not in
+charge of. Most importantly, I started saying no to things. This is <strong>so
+difficult</strong> for me. It's not that my colleagues (or manager, advisor…) demand
+too much of me — they're awesome and respect boundaries. But there are always
+things to be done, ideas to research, stuff to try out, people to help and
+collaborate with. Be smarter than me: learn how to set limits for yourself, and
+say no to people, before starting a project like this.</p>
+<p>On anxiety &amp; impostor syndrome, here I some things I found helpful. </p>
+<ul>
+<li>Getting feedback from peers as often as possible. That helped me a lot. I tend
+  to have unrealistic expectations for myself. Having an external perspective
+  prevents me from getting stuck into weird self-critical loops.</li>
+<li>When considering my own recent work, I try to look back a couple of months
+  rather than a couple of days/weeks. Being unproductive for a few days feels
+  much worse when you're only doing this 50% of your time. Even though you know
+  it's normal and happens to everyone, <em>especially</em> in research! Averaging over
+  larger time periods always feels better.</li>
+<li>I started to talk to a mental health professional, and it was one of the best
+  decisions I took recently. I very much recommend doing so, if that's an option
+  for you. Even if you feel okay, it's never a bad idea to monitor how well your
+  brain is doing (and it's difficult to do on your own).</li>
+</ul>
+<p></p>
+
+<h1 id="that-sounds-bad-is-it-that-bad">That sounds bad. Is it that bad?</h1>
+<p>It's challenging, so I would not go around recommending random people do the
+same. But no, it's not that bad =) I definitely don't regret starting this. Here
+are some of my favorite things about this arrangement.</p>
+<ul>
+<li>I'm doing cool research that I know is impactful. When you're in academia, the
+  main indicator you have for that are publications and grants. My research ends
+  up changing policies and practices of a massive company. I'm improving the
+  level of data protection for billions of users! It definitely makes it easier
+  not to care too much about paper rejections ^^</li>
+<li>I'm working my way towards becoming an expert in my field. Don't get me wrong:
+  I'm definitely not there yet. But I'm learning every day. I'm getting a deep
+  knowledge of some things, and a reasonably solid overview of many other
+  things.</li>
+<li>I became the go-to person people in my Google team to answer research-related
+  questions. What's the state of the art for a given problem in my field, what
+  are known impossibility results, how to publish papers and engage with the
+  community… I can provide a unique perspective, which is rewarding and useful.</li>
+<li>In my research lab, I also sort of became the go-to person to answer
+  industry-related questions. I help colleagues understand the applicability of
+  their work, and I can suggest potentially impactful research directions.</li>
+<li>Talking about the same problems in both places leads to very different
+  discussions. I get ideas from Google, bounce them off university colleagues,
+  or vice-versa. The diversity of viewpoints I get this way is always fruitful
+  and fascinating. </li>
+</ul>
+<p>On a day-to-day basis, the main benefit is getting progress from both sides at
+once. When I use my research at Google, my productivity basically doubles. It's
+the same way when I can use my Google work to write papers or advance my
+research. And it happens quite often! More than often enough to compensate for
+the overhead problem I mentioned earlier.</p>
+<h1 id="whats-the-best-thing-about-the-arrangement">What's the best thing about the arrangement?</h1>
+<p>I was anticipating all the good bits described above. It was very nice to see
+that I wasn't too optimistic, but this wasn't a big surprise. Those were why I
+wanted to do a PhD in the first place =)</p>
+<p>What I didn't expect, though, was the <em>perspective</em> it gave me. Let me explain.
+The mindset in the tech industry is <strong>so</strong> different from academia. I know, it's
+obvious, but… this rift was much bigger than what I imagined. The two worlds
+have completely different values, social structures, incentives… And that
+translates to incredibly distinct cultures and practices.</p>
+<p>When you get into one of these worlds, you tend to adopt its implicit culture
+and assumptions. The assimilation is real, even if your team is diverse and
+inclusive. Want to get an intuitive idea of how strong this phenomenon is? Go
+talk to a people who worked at the same big tech company for a while, or to
+tenured professors.</p>
+<p>Being in two places at once forces you to question the assumptions and cultural
+baggage. I think it's pretty unique. I don't approach problems the same way as
+when I was working full-time (at Google, or in research internships). The way I
+judge my own work also changed a lot. I don't know how to describe it well, but
+I feel much more "free" as a result.</p>
+<h1 id="so-i-should-do-the-same-thing-you-did-right">So I should do the same thing you did, right?</h1>
+<p>Before I answer that question with an enthusiastic "Yes! :D", I want to mention
+a couple of more things. You should definitely be aware of them before making
+this kind of decision.</p>
+<h4 id="alternative-options">Alternative options</h4>
+<p>Why are you interested in doing a part-time PhD? Think long and hard about this
+question. In particular, consider all <em>other</em> options that achieve the same
+goal.</p>
+<p>Want to become an expert in a given field? There are plenty of ways of doing
+that. Read books or scientific papers<sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup>. Attend courses, in-person or online.
+Get a personal project to practice what you're learning. This will likely get
+you to the level you want to be, faster and with less headaches.</p>
+<p>Want the qualification because it's a shiny thing to put on your resume? In
+computer science? Honest career advice: don't bother. Three years working in the
+tech industry will look better on your resume. (And you'll also make more
+money.) Relevant experience with personal or open-source projects can also have
+a big impact.</p>
+<p>Want a career in academia? Or maybe you're not sure, and you want to it figure
+out? Doing a PhD full-time is the obvious option. You should also do that if you
+need a PhD to get to your career goals in your field. It's less risky than my
+part-time arrangement, and easier to organize<sup id="fnref:5"><a class="footnote-ref" href="#fn:5">5</a></sup>.</p>
+<p>Want to learn how to do research? If you're working in a big tech company, there
+might be more research-y teams to switch to. Maybe you can get mentorship from a
+colleague who used to work in academia? Or collaborate with an external
+professor on specific projects? If you're not sure that you want to spend a
+large part of your time doing research, but want to try it out, this can be a
+solid option.</p>
+<h4 id="public-awareness-message">Public awareness message</h4>
+<p>Finally, I want to insist on one last thing: my experience was very much
+influenced by a lot of luck, privilege, and other external factors. If you
+attempt the same thing, you might run into hurdles that I didn't have. To
+illustrate that point, I made a list of things that I feel lucky about.</p>
+<ul>
+<li>I'm a cis white dude, so when I was advocating for my weird new kind of PhD
+  arrangement, people took me seriously by default. Ha! Grave mistake.
+  Nonetheless and in all seriousness, I'm sure it helped me get what I wanted.</li>
+<li>I had a previous experience of research (via internships during my Master's
+  degree). Because of that, I already knew that I liked this type of work, which
+  made the project less risky. It also gave me credibility when I was trying to
+  find an advisor.</li>
+<li>I don't have kids, strong family obligations, or serious health issues. The
+  time management aspect of things would surely be much harder otherwise.</li>
+<li>At Google, my manager was awesome and supportive of my project from day one. I
+  couldn't have gone through the approval process without her. Many other
+  colleagues were also kind enough to spend time and resources to help me at the
+  time.</li>
+<li>My current Google manager and my PhD advisor both give me a ton of freedom. To
+  a large degree, I can choose what to work on, which allows me to make sure
+  both my two jobs stay aligned. I've met people who weren't so lucky, and who
+  had awful part-time PhD experiences as a result.</li>
+<li>Both of my jobs are a 15-minute bike ride away from where I live. Things would
+  be more difficult if I had a terrible commute.</li>
+</ul>
+<p>This list is most likely incomplete.</p>
+<h1 id="i-have-other-questions">I have other questions!</h1>
+<p>Fire away! Disclaimers: I can't answer much about Google processes if you're not
+working there. And I don't guarantee a quick response time. But don't hesitate
+to ask! My contact info is below =)</p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:0">
+<p>This does not accurately represent my current opinion of academia. At the
+  time though, it was a real fear of mine. Nowadays, I have a more moderate view
+  on the matter. Some academics manage to produce consistently impactful work.&#160;<a class="footnote-backref" href="#fnref:0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:1">
+<p>We have a <em>lot</em> of those at Google, and in particular in the privacy team. We're recruiting, by the way. Drop me a line if you're interested or would like more information =)&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>I might write about these later, when I have a bit more experience, and a
+  clearer picture of what they are exactly.&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:4">
+<p>Scientific papers are awfully opaque when you start reading them, but it
+  quickly gets much easier. You'd be surprised! Also, if you don't have access
+  to scientific papers because of paywalls, you should check out
+  <a href="https://en.wikipedia.org/wiki/Sci-Hub">Sci-Hub</a>.&#160;<a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:5">
+<p>Also, don't fall for the sunk cost fallacy if it turns out not to be your
+  thing. Quitting a PhD is okay. If you don't like it, go do things that make
+  you happy instead. You won't be the first nor the last, and the experience
+  will still be valuable.&#160;<a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20180901,
+  title = &#123;« So, how does your part-time PhD arrangement actually work? »},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/part-time-phd.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2018},
+  month = &#123;09}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="differential-privacy-in-more-detail.html">← previous</a>
+    </li>
+    <li>
+      <a href="differential-privacy-in-practice.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

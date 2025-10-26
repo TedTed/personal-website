@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Empirical privacy metrics: the bad, the ugly… and the good, maybe? - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Empirical privacy metrics: the bad, the ugly… and the good, maybe? - Ted is writing things" />
+  <meta property="twitter:title" content="Empirical privacy metrics: the bad, the ugly… and the good, maybe? - Ted is writing things" />
+  <meta name="description" property="og:description" content="This post contains the slides and transcript of a talk about empirical privacy metrics that I delivered at PEPR in June 2024." />
+  <meta property="twitter:description" content="This post contains the slides and transcript of a talk about empirical privacy metrics that I delivered at PEPR in June 2024." />
+  <meta property="summary" content="This post contains the slides and transcript of a talk about empirical privacy metrics that I delivered at PEPR in June 2024." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/bad-ugly-02.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/bad-ugly-02.png" />
+  <meta property="twitter:image:alt" content="A slide where the background is covered in screenshots from websites of commercial providers of synthetic data technology, with marketing singing the praises of synthetic data's privacy guarantees. Overlaid on it is a very large "thinking face" emoji." />
+  <link rel="canonical" href="https://desfontain.es/blog/bad-ugly-good-maybe.html" />
+  <link rel="prev" href="converters-differential-privacy.html" />
+  <link rel="next" href="large-epsilons.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="converters-differential-privacy.html">← previous</a>
+ —     <a href="large-epsilons.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./bad-ugly-good-maybe.html">Empirical privacy metrics: the bad, the ugly… and the good, maybe?</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2024-06-06T00:00:00+02:00">
+      2024-06-06
+    </time>
+    <small>&mdash; updated
+      <time datetime="2024-08-23T00:00:00+02:00">
+        2024-08-23
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p>This post is a transcript of an talk I presented at
+<a href="https://www.usenix.org/conference/pepr24">PEPR</a> in June 2024. The talk was
+recorded and <a href="https://www.youtube.com/watch?v=vyfYJPHPzdk">published online</a>.</p>
+<hr>
+<p>Hi everyone! I have great news!</p>
+<p>We just solved privacy!</p>
+<p><center>
+<img alt="A slide where the background covered is in screenshots from websites of
+commercial providers of synthetic data technology, with marketing singing the
+praises of synthetic data's privacy guarantees." src="https://desfontain.es/blog/images/bad-ugly-01.png">
+</center> </p>
+<p>In fact, I don’t know why we even need this conference anymore!</p>
+<p>All we need to do is take our data, put it through a synthetic data generator,
+and — tadaaa! We get something that we can use for all of these pesky data
+sharing or publication or retention use cases. You know, all the ones where the
+lawyer told us that we needed to anonymize our data, and we had no idea where to
+start.</p>
+<p>Anonymization is hard, but synthetic data is easy!</p>
+<p>…</p>
+<p>Now, if you’re like me, you don’t take claims like these at face value. </p>
+<p><center>
+<img alt="The same slide as before, with a very large thinking face emoji overlaid on
+top of it." src="https://desfontain.es/blog/images/bad-ugly-02.png">
+</center> </p>
+<p>And a natural question you might have is: why does this stuff actually preserve
+privacy? All these marketing claims… how are they justified?</p>
+<p>In some cases, the answer is… eh, you know. It’s synthetic. It’s not real data.
+That means it’s safe. Stop asking questions.</p>
+<p>Now, you’re all privacy pros, so I trust that if someone gives you that kind of
+hand-wavy non-answer, you would smell the bullshit from a distance.</p>
+<p>Sometimes, though, the answer seems to make a lot more sense.</p>
+<p><center>
+<img alt="A slide with a big title &quot;Empirical privacy metrics&quot;, with on sparkling emoji
+on each side" src="https://desfontain.es/blog/images/bad-ugly-03.png">
+</center> </p>
+<p>That answer is: we know it’s safe, because we can <em>measure</em> how safe it is.</p>
+<p>We can generate some data, do some calculations, and tell you whether this data
+is “too risky”, or whether you’re good to go.</p>
+<p>That sounds great!</p>
+<p><center>
+<img alt="The same slide as before, with the subtitle: &quot;The bad, the good…&quot; and in
+smaller font &quot;… and the good, maybe?&quot;. At the bottom is the speaker's name,
+Damien Desfontaines, and a Tumult Labs logo." src="https://desfontain.es/blog/images/bad-ugly-04.png">
+</center> </p>
+<p>Hi. I’m Damien, and today, I’m really excited to tell you all about empirical
+privacy metrics.</p>
+<p>The first question you probably have is: how do they work? What do they measure?</p>
+<p><center>
+<img alt="A slide with the title &quot;How do they work?&quot; with a magnifying glass emoji. A
+database icon labeled &quot;real data&quot; has two arrows going from it to two other
+database icons, labeled &quot;train data&quot; and &quot;test data&quot;. An arrow goes from &quot;train
+data&quot; to a fourth icon, with sparkles, labeled &quot;synthetic data&quot;. An additional,
+thicker, double arrow between train data and synthetic data is labelled
+&quot;D_train&quot;; a similar double arrow between test data is synthetic data is labeled
+&quot;D_test&quot;. A box on the bottom right reads &quot;D_train &lt; D_test
+?&quot;" src="https://desfontain.es/blog/images/bad-ugly-05.png">
+</center> </p>
+<p>In this talk, I’m going to focus on one kind of metric, which is both the most
+reasonable-sounding and the most widely used. They’re called <em>similarity-based
+metrics</em>. The idea is relatively simple.</p>
+<ul>
+<li>First, you take your data and you split it in two parts — the train data and
+  the test data, just like what you do in machine learning.</li>
+<li>Then, you use only the train data to generate your synthetic data.</li>
+<li>Then — and this is where it gets interesting — you compute the <em>distance</em>
+  between the synthetic data and the train data. There are many ways to compute
+  the distance between two distributions; you end up with different metrics
+  depending on the distance you choose. Here, we’ll ignore the details, and just
+  say it’s a measure of how similar the two are to each other.</li>
+<li>Then, you compute a second distance, this time between the synthetic data and
+  the test data.</li>
+</ul>
+<p>And once you’ve got two numbers, you’re doing the natural thing and compare them
+with each other. Is the distance to the train data smaller than the distance
+with the test data?</p>
+<p>If yes, that’s… is that bad or good?</p>
+<p><center>
+<img alt="The same slide as before, with two arrows going from the &quot;D_train &lt; D_test ?&quot;
+box. One arrow is labeled &quot;Yes&quot; and goes to &quot;Bad&quot;, with a red cross emoji. The
+other is labeled &quot;No&quot; is goes to &quot;Good…?&quot; with a thinking face
+emoji." src="https://desfontain.es/blog/images/bad-ugly-06.png">
+</center> </p>
+<p>Correct! That’s bad. That means we generated records that are close, not just to
+the real data, but to the specific points that we used for generation. We didn’t
+just end up matching the distribution well, we overfit to individual data
+points. That could be a sign that we leaked some private information. So, that’s
+bad.</p>
+<p>Conversely, if the two numbers are roughly the same, or even if the distance to
+the train data is larger, that means we’re fine. We didn’t leak any sensitive
+data.</p>
+<p>Right?</p>
+<p>… Right?</p>
+<p>I mean, that <em>does</em> sound reasonable. But I’ve said something about "bad and
+ugly" before, so you can probably see where this is going.</p>
+<p>So let’s get into it. Where’s the bad?</p>
+<p><center>
+<img alt="A slide with &quot;The bad&quot; as a title, with a frowning emoji. On the left side, a
+screenshot of a tweet is labeled &quot;Easy to cheat&quot;, the tweet is from &quot;xssfox
+parody account&quot; and reads &quot;can anyone spot the issue with this algo? red
+original data point, 400 &quot;anonymized&quot; data points calculated. The image
+accompanying the tweet shows a map with a red marker, then a wide empty circle
+around the red marker, then a bunch of blue markers around the circle, some
+further than others." src="https://desfontain.es/blog/images/bad-ugly-07.png">
+</center> </p>
+<p>First, <strong>it’s really easy to cheat at these metrics</strong>. All we need to do is to
+make sure that the synthetic data isn’t “too close” to the training data. Except
+if we do that of course, we <em>do</em> leak information — exactly what’s happening in
+this screenshot of some COVID 19 tracking app. Knowing where real data points
+are <em>not</em> gives us data about where they <em>actually are</em>.</p>
+<p>You could tell me — that’s not a real problem. We’re not making algorithms that
+do this sort of nonsense. We’re not cheating in real life.</p>
+<p>Except… you’re using machine learning algorithms!</p>
+<p>You’re giving your data to a neural network, you don’t really understand how it
+works, but you tell it: go optimize for these metrics. I want good utility and
+good privacy, and this is how both of these things are defined. Go achieve both
+objectives.</p>
+<p>Guess what? Neural networks are going to cheat! That’s what they do! They’re
+just not going to be as obvious about it!</p>
+<p><center>
+<img alt="The same slide as before, with an additional element on the right side: a
+label says &quot;Very brittle in practice&quot;, and the visual shows five lines: Trial 1
+has a green checkmark, Trial 2 has a red cross, Trial 3 has a green checkmark,
+Trial 4 has a thinking face, Trial 5 has a red
+cross." src="https://desfontain.es/blog/images/bad-ugly-08.png">
+</center> </p>
+<p>Second, the process I described earlier has some inherently random aspects to
+it. For example, which data are you using for training vs. for testing? Or
+what’s the random seed you used as part of your machine learning training?</p>
+<p>So what happens if you change those? Does your empirical privacy metric return
+the same result?</p>
+<p>Researchers <a href="https://arxiv.org/abs/2312.05114">tried that</a>, and found <strong>shocking
+levels of randomness</strong>. Sometimes the metric tells you everything looks good,
+and then you re-run the same algorithm on the same data and it tells you it’s
+very bad. So that doesn’t exactly inspire confidence.</p>
+<p><center>
+<img alt="A slide titled &quot;The worse&quot;, with an unhappy emoji. On the left side, a diagram
+is labeled &quot;Meaningless attacker model&quot;. It has three blue geometric shapes on
+the left, labeled &quot;Synthetic&quot;, three pink geometric shapes, labeled &quot;Real&quot;, and
+arrows linking the same shapes together." src="https://desfontain.es/blog/images/bad-ugly-09.png">
+</center> </p>
+<p>OK. There’s worse. I count at least two much more profound issues.</p>
+<p>One is that these similarity-based metrics assume an attacker who’s trying to do
+something really weird. They have synthetic data points, then they also have
+real data points somehow, and their goal is to link the two together. If they
+can accurately draw some of these lines, then they win.</p>
+<p>But that’s not what attackers do in real life! There can be leakage even if no
+such line exists! Attackers can do things like reconstruction attacks, exploit
+the details of your algorithm, use auxiliary information… Sometimes they can
+even influence your data!</p>
+<p>The distances we saw earlier — they don't model any of that. <strong>Their threat
+model is essentially meaningless.</strong></p>
+<p><center>
+<img alt="The same slide as before, with an additional element on the right. A diagram,
+labeled &quot;Risk measure ignores outliers&quot;, shows a bunch of pink dots representing
+data points. Most of them are grouped together, and labeled &quot;Well-protected&quot;.
+Two are a little more to the side, and are labeled &quot;Not at all
+protected&quot;." src="https://desfontain.es/blog/images/bad-ugly-10.png">
+</center> </p>
+<p>Finally, remember how we were computing the distance between two distributions
+earlier? This single number is an averaged metric across all data points. So at
+best, it tells us how well we protect the <em>average</em> person in the dataset.</p>
+<p>But — and I cannot stress this enough — <strong>everyone needs privacy guarantees</strong>!
+Including outliers! <em>Especially</em> outliers! If your approach works fine for most
+people, but leaks a ton of data for demographic minorities, that’s bad! I’d
+argue that it’s even worse than a system that leaks everyone’s information: at
+least you would notice and fix it!</p>
+<p>So these four problems I talked about are serious. Suppose we somehow fix all of
+those. Does that mean we’re good?</p>
+<p><center>
+<img alt="A slide titled &quot;The worst&quot;, with a very sad face emoji. An arrow labeled
+&quot;Risk&quot; is colored in a gradient from green to yellow to red. Differential points
+of the arrow are also labeled: &quot;yay&quot; with a happy emoji on the left/green, &quot;meh&quot;
+with a neutral emoji on the middle/yellow, &quot;ew&quot; with a grimacing emoji on the
+right/red." src="https://desfontain.es/blog/images/bad-ugly-11.png">
+</center> </p>
+<p>I don’t think so. The <em>design</em> of these empirical metrics is bad, but the way
+they’re <em>used</em> is much more problematic.</p>
+<p>Fundamentally, what are these metrics trying to do?</p>
+<p>They’re trying to quantify risk. They tell you: there’s some kind of risk scale.
+Some end of the scale is great, the other end is bad.</p>
+<p><center>
+<img alt="The same slide as before, with the &quot;Risk&quot; label of the arrow being now between
+quotation marks, and a smaller blue arrow points to the green/yellow section of
+the big arrow, and is labeled &quot;you are here&quot;." src="https://desfontain.es/blog/images/bad-ugly-12.png">
+</center> </p>
+<p>Well, we’ve seen that maybe we’re not exactly measuring risk, more like “risk”.</p>
+<p>But more importantly, people building and selling synthetic data are basically
+telling you: you can generate some data and measure <em>where you are</em> on the
+scale. Like, for example, there. You’re in the safe zone. You’re fine.</p>
+<p>But <strong>that’s not what empirical privacy metrics can <em>ever</em> tell you</strong>, even if
+you fix all the problems I talked about!</p>
+<p><center>
+<img alt="The same slide as before, but the blue arrow is now labeled &quot;The risk is at
+least this bad&quot;, and a big accolade goes from there all the way to the right of
+the risk scale, and is labeled &quot;so you're somewhere in here idk&quot; with a
+skeptical emoji." src="https://desfontain.es/blog/images/bad-ugly-13.png">
+</center> </p>
+<p>At <em>most</em>, they can tell you something like: you’re somewhere here.</p>
+<p>We know for sure that you’re not on the left of this. Maybe we ran an attack and
+found that this is the success rate of the attack. So it’s <em>at least</em> that bad.</p>
+<p><strong>But we don’t know how much worse this can get!</strong> Maybe a smarter attack would
+have a much better success rate! We have no way of knowing that!</p>
+<p>I want you all to keep this framing in mind when people are selling you privacy
+tech and presenting empirical metrics as the solution to your concerns. They
+will — I can guarantee it, I read all their marketing — present it as a thing
+that can allow you to <em>verify</em> that your data is safe.</p>
+<p>This is a lie, and the sad thing is — I don't even think that the people
+repeating it realize that this framing is dishonest. You got a number, you know?
+On a scale labeled "Risk"? You just really want to believe in it!</p>
+<p>OK. I promised you bad and ugly. I gave you bad, worse and worst. Where’s the
+ugly?</p>
+<p><center>
+<img alt="A slide titled &quot;The ugly&quot;, with a very scared emoji. On the top, text says
+&quot;Reasons for vendors to improve their metrics&quot;. An empty table has two columns:
+&quot;Reasons for change&quot; with a green checkmark, and &quot;Reasons against change&quot; with a
+red cross." src="https://desfontain.es/blog/images/bad-ugly-14.png">
+</center> </p>
+<p>Let me ask you a question.</p>
+<p>Why is the state of empirical privacy evaluation so bad? Why do people use such
+garbage metrics, and make such dishonest claims?</p>
+<p>I don’t believe in bad people. Whenever something’s broken, my first question is
+always: what are the incentives at play?</p>
+<p>Here, what are the reasons why synthetic data vendors would want to improve
+their metrics? What would structurally motivate them to do better?</p>
+<p>Let’s make a pros and cons list, starting with “why would they <em>not</em> do that”.</p>
+<p><center>
+<img alt="The same slide as before, but the &quot;Reasons against change&quot; column now has
+bullet points: &quot;More work&quot;, &quot;Might show more things are unsafe&quot;, &quot;More
+constraints on what we can ship&quot;, &quot;Harder to sell&quot;, and &quot;Nobody is asking for
+it&quot;." src="https://desfontain.es/blog/images/bad-ugly-15.png">
+</center> </p>
+<ul>
+<li>Obviously, this is more work. We have metrics today, if we need to change
+  them, that’s feature work that we could use to do something else instead. So
+  that’s hard.</li>
+<li>If we make metrics better, they might find more privacy issues. That’s not
+  great, because we sold a whole lot of that stuff as being safe.</li>
+<li>Also, making metrics stricter is going to make it harder to design synthetic
+  data generation tools going forward. That sounds inconvenient.</li>
+<li>This idea that you can generate data that’s privacy-safe, where you don’t have
+  to worry about compliance anymore… that’s a major selling point. If we start
+  poking holes in this story, our stuff will become harder to sell.</li>
+<li>Finally… by and at large, people don’t really understand this anonymization
+  thing. Synthetic data seems to make sense, and the idea of measuring privacy
+  definitely sounds reasonable.</li>
+</ul>
+<p>Here’s something I learned the hard way: when your anonymization technique leads
+to bad utility, people notice. They bang at your door. They say — this is crap.
+I can’t use this. But when your technique is unsafe, who’s going to notice?
+Nobody, before someone with bad intentions does.</p>
+<p>OK, so those are reasons why vendors would not spontaneously be incentivized to
+make things better. What are the pros, though? What are the reasons for change?</p>
+<p>No, seriously. I’m asking. What are those? Do you know?</p>
+<p><center>
+<img alt="The same slide as before, but the &quot;Reasons for change&quot; column has now a bunch
+of thinking face emojis, and at the bottom, a bullet point reads &quot;You are asking
+for it?&quot;" src="https://desfontain.es/blog/images/bad-ugly-16.png">
+</center> </p>
+<p>Because I don’t.</p>
+<p><strong>There just aren’t a lot of structural incentives pushing folks to do better.</strong>
+Adopting a truly adversarial mindset is hard. This stuff is complicated. The
+metrics seem to make sense. Why change any of it?</p>
+<p>One possible reason is because <em>you</em>, as buyers of this technology, as privacy
+professionals, as standard bodies and regulators even, are asking for it. My one
+call to action for you is: please start doing so! <strong>Please demand better answers
+from synthetic data vendors!</strong> The people in your data deserve it.</p>
+<p>Now, is there a path to redeem these empirical metrics? Can we ever get good
+answers to the questions we should ask to synthetic data vendors?</p>
+<p><center>
+<img alt="A slide titled &quot;and the good, maybe?&quot;, with a smiling-and-also-crying emoji.
+The slide contains the same green-to-yellow-to-red risk arrow as earlier, but is
+labeled &quot;Risk, but it makes sense this time&quot;." src="https://desfontain.es/blog/images/bad-ugly-17.png">
+</center> </p>
+<p>I think so!</p>
+<p>First: quantifying risk is a <em>great</em> idea. Having a goal with a number attached
+to it is a fantastic motivator. We can track progress. We can quantify
+trade-offs.</p>
+<p>Estimating <em>empirical</em> risk is also super valuable! We should absolutely run
+attacks on our privacy-critical systems and measure their success. I, for one,
+want to know where my system lands on this nice risk scale. So how can we do
+that in a better way?</p>
+<p>For starters, <strong>we need better metrics</strong>. We need to measure something
+meaningful. Otherwise, I refer you to Lea’s <a href="https://www.youtube.com/watch?v=Y231gZHJIfg">excellent talk from last
+year</a>: bad metrics lead to very bad
+decisions.</p>
+<p>The attacker model needs to make sense. It shouldn’t be too easy to cheat. It
+should capture the risk for the least protected people in the dataset. It
+shouldn’t be too random.</p>
+<p>There are some recent papers that propose new, better ideas on how to quantify
+privacy risk. We’re far from having a definitive answer there, there’s still a
+lot of work to do.</p>
+<p><center>
+<img alt="The same slide as earlier, with additional annotations. A blue arrow points to
+the green-yellow part of the risk scale and is labeled &quot;The risk is at least
+this much&quot;. A blue arrow points to the yellow-orange part of the scale and is
+labeled &quot;The risk is at most this much&quot;. An accolade between both is labeled &quot;so
+the risk is somewhere between&quot;. The &quot;the risk is at most this much&quot; label has an
+arrow pointed towards it, labeled &quot;Only way to fix broken
+incentives!&quot;" src="https://desfontain.es/blog/images/bad-ugly-18.png">
+</center> </p>
+<p>Second, <strong>we need to frame these metrics better</strong>. We need to accept that
+they’re only giving us part of the story.</p>
+<p>These metrics could be great at telling us “hey, there’s a problem there, we can
+show that the risk is high”. Like an alert, a warning sign. The absence of
+alerts doesn’t mean everything is fine, but warning signs are still super
+useful.</p>
+<p>Third, <strong>we need to use empirical privacy metrics in <em>conjunction</em> with other
+ways of quantifying risk, that give provable, worst-case guarantees</strong>.</p>
+<p>Of course, in a complete shock to everybody who knows me, I’m talking about
+<a href="friendly-intro-to-differential-privacy.html">differential privacy</a>. But I’m not saying that it’s the only answer!
+Sometimes — often, actually, especially with synthetic data — you need large
+privacy budgets to get good utility with differential privacy, so relying on the
+mathematical guarantee alone can feel a little iffy. Complementing that with
+empirical analyses makes a lot of sense, and can provide a much more complete
+picture of the risk.</p>
+<p>This last part is also important because it’s the only way I know of to align
+incentives a little better. Again, vendors have no incentive to improve metrics
+and being more honest in marketing. I hope you’ll call them out on it, that
+might change the balance a little bit, but still. By contrast, when you quantify
+worst-case risk, then incentives are much more aligned: doing more work leads
+<em>better</em> privacy-utility trade-offs. It structurally tends to keep you honest.
+You have to quantify everything. That’s another reason why we like differential
+privacy :-)</p>
+<p><center>
+<img alt="An outro slide with &quot;Thank you&quot; written in large font with a sparkling heart.
+There's a Tumult Labs logo, the name of the author (Damien Desfontaines), his
+email address, and three links to his social media and blog about differential
+privacy." src="https://desfontain.es/blog/images/bad-ugly-19.png">
+</center> </p>
+<p>If you want to hear more about this last thing, come talk to my colleagues and I
+at <a href="https://tmlt.io">Tumult Labs</a>! We help organizations safely share or publish
+data using differential privacy.</p>
+<p>On the right, you can find the links to my <a href="/linkedin">LinkedIn</a> and
+<a href="/mastodon">Mastodon</a> profiles, and to my <a href="friendly-intro-to-differential-privacy.html">blog post series about differential
+privacy</a>.</p>
+<p>Thanks for listening!</p>
+<hr>
+<p><small>
+I’m grateful to <a href="https://people.cs.umass.edu/~miklau/">Gerome Miklau</a>, <a href="https://users.cs.duke.edu/~ashwin/">Ashwin Machanavajjhala</a>, and
+<a href="https://www.linkedin.com/in/haristephenkumar/">Hari Kumar</a> for their excellent feedback on this presentation.
+</small></p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20240606,
+  title = &#123;Empirical privacy metrics: the bad, the ugly… and the good, maybe?},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/bad-ugly-good-maybe.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2024},
+  month = &#123;06}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="converters-differential-privacy.html">← previous</a>
+    </li>
+    <li>
+      <a href="large-epsilons.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

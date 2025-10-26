@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Why not differential privacy? - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Why not differential privacy? - Ted is writing things" />
+  <meta property="twitter:title" content="Why not differential privacy? - Ted is writing things" />
+  <meta name="description" property="og:description" content="What does it mean for an algorithm to not be differentially private?" />
+  <meta property="twitter:description" content="What does it mean for an algorithm to not be differentially private?" />
+  <meta property="summary" content="What does it mean for an algorithm to not be differentially private?" />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/why-not-differential-privacy.html" />
+  <link rel="prev" href="latex-to-html.html" />
+  <link rel="next" href="us-census-reconstruction-attack.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="latex-to-html.html">← previous</a>
+ —     <a href="us-census-reconstruction-attack.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./why-not-differential-privacy.html">Why not differential privacy?</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2021-03-30T00:00:00+02:00">
+      2021-03-30
+    </time>
+    <small>&mdash; updated
+      <time datetime="2021-09-27T00:00:00+02:00">
+        2021-09-27
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p></small></p>
+<hr>
+<p><span class='lettrine'>S</span><strong>ome</strong> algorithms are not differentially
+private, but still claim to perform anonymization. Such mechanisms are common,
+both in the academic literature and in industry. Explanations on why they still
+preserve some notion of privacy vary.</p>
+<ul>
+<li>They might include some ad hoc protections against entire classes of attacks.</li>
+<li>They might aggregate the data to a point where the statistics "obviously" seem
+  safe.</li>
+<li>They might use some other metric for data leakage, like entropy or mutual
+  information.</li>
+</ul>
+<p>How to get an idea of how robust these proposals are? In this post, I'll suggest
+a somewhat provocative approach: we'll try to analyze them <em>in the language of
+differential privacy</em>. We're going to ask the following question: <em>why</em> isn't
+a given mechanism differentially private?</p>
+<p>I'll need a straw man to get the discussion going. Meet Paille.</p>
+<p><center>
+<img alt="A drawing of a friendly straw man" src="https://desfontain.es/blog/images/paille.png">
+</center></p>
+<p>Paille (it's pronounced <span class="math">\(\pi\)</span>) has an algorithm <span class="math">\(A\)</span>. They believe that <span class="math">\(A\)</span>
+performs anonymization: it protects the data of individuals in its input. Their
+line of argument starts with: </p>
+<blockquote>
+<p>It's not differentially private, <em>but</em>… [insert long explanation here]</p>
+</blockquote>
+<p>Rather than focusing on the explanation itself, let's dig into <em>why</em> that
+algorithm is not DP. First, what does it mean for an algorithm to not be DP?
+Let's take <a href="differential-privacy-in-more-detail.html">the definition of differential privacy</a> and negate it. If
+<span class="math">\(A\)</span> isn't DP, then there are databases <span class="math">\(D_1\)</span> and <span class="math">\(D_2\)</span> differing in only one
+individual, such that the ratio:
+</p>
+<div class="math">$$\frac{\mathbb{P}\left[A(D_1)=O\right]}{\mathbb{P}\left[A(D_2)=O\right]}$$</div>
+<p>
+gets arbitrarily large for varying possible outputs <span class="math">\(O\)</span>. Remember: we called
+this ratio the <a href="privacy-loss-random-variable.html">privacy loss</a> before.</p>
+<p>Suppose that an attacker is hesitating between <span class="math">\(D_1\)</span> and <span class="math">\(D_2\)</span>: they know all
+the database, except the data of one single individual. Then it's possible that
+by looking at the output of <span class="math">\(A\)</span>, the attacker knows <em>for sure</em> what the data of
+this person is.</p>
+<p>That sounds… not great. In fact, that sounds exactly like what we were trying to
+avoid. Why is this OK? Oh, wait, I have an idea. What if this only happens <em>very
+rarely</em>?</p>
+<h1 id="averaging-the-privacy-loss-across-outputs">Averaging the privacy loss across outputs</h1>
+<p>Differential privacy is a <em>worst-case</em> property: it must hold for <em>every</em>
+possible output <span class="math">\(O\)</span>. So if there's the slightest chance that the ratio of
+probabilities is unbounded, we don't get DP. Yet, we might be able to say
+« unless we're extraordinarily unlucky, the DP property holds ». In fact, we've
+<a href="almost-differential-privacy.html">done this before</a>, when we introduced <span class="math">\((\varepsilon,\delta)\)</span>-DP. That
+could be good enough!</p>
+<p>We saw that <span class="math">\((\varepsilon,\delta)\)</span>-DP allows a small possibility of catastrophic
+failure: the privacy loss can sometimes be <em>infinite</em>. To avoid this, we can
+<em>average</em> the privacy loss across all possible outputs instead. Some variants of
+DP even let us choose what <em>kind</em> of averaging function we want to use<sup id="fnref:renyi"><a class="footnote-ref" href="#fn:renyi">1</a></sup>.</p>
+<p>So, Paille, is this what's happening here? Do we have differential privacy for
+almost all possible outputs? Or is the average privacy loss bounded by some
+reasonable value?</p>
+<blockquote>
+<p>Eh… not exactly. The privacy loss can be really large even if we average it
+across all possible outputs.</p>
+</blockquote>
+<p>Oh, OK. Well, let's see what else could happen. What if, instead of averaging
+the privacy loss across outputs, we average it across people?</p>
+<h1 id="averaging-the-privacy-loss-across-people">Averaging the privacy loss across people</h1>
+<p>Differential privacy gives the <em>same</em> protection to all individuals. The
+guarantees on the privacy loss apply to everyone. Is that always necessary? In
+some cases, it might be reasonable to say that some people need more privacy
+protection than others. For example, folks from at-risk populations might need a
+smaller <span class="math">\(\varepsilon\)</span> than majority groups.</p>
+<p>Another possible approach is to protect <em>almost all</em> individuals, without
+specifying <em>which ones</em>. To do so, we first need to model the population
+according to a probability distribution. Then, we say « with high probability,
+someone sampled from this distribution is protected ». Unlucky people might not
+get any protection, but these are hopefully very rare<sup id="fnref:random"><a class="footnote-ref" href="#fn:random">2</a></sup>.</p>
+<p>This is a bit like <span class="math">\((\varepsilon,\delta)\)</span>-DP: there is a small chance that
+things go wrong. We could, instead, average the privacy loss <em>across people</em>.
+Like before, it would avoid the possibility of infinite risk for some
+individuals. This is much less robust than the previous class of definitions,
+though. First, some people might <em>never</em> get good protection, if their data is
+unusual. Second, it requires us to model our population with a probability
+distribution. This is hard to do! And if our model is wrong, more folks might
+be at risk than we expected.</p>
+<p>Still, though, it's something. Paille, does your algorithm <span class="math">\(A\)</span> behave this way?</p>
+<blockquote>
+<p>Hmmm… no. It seems that the privacy loss is very large for more than a few
+individuals. So averaging it doesn't bring much.</p>
+</blockquote>
+<p>Arg. Well… If you're not protecting individuals, maybe you're protecting some
+other property?</p>
+<h1 id="changing-the-protected-property">Changing the protected property</h1>
+<p><a name="privacy-units"></a></p>
+<p>With DP, the attacker tries to distinguish between databases differing in <em>one
+person</em>. This means that we protect everything about any single individual.
+Sometimes, though, getting to this level of protection seems like an impossible
+task.</p>
+<p>For example, suppose the input database is growing over time: every day, we get
+new data from the users of an app. We want to publish an anonymized version of
+this daily data every day. Each daily release might be differentially private…
+But the total privacy loss of a given user over time is unbounded: the same
+person might use the app every day for a long time.</p>
+<p>This is better than nothing, though: we can still claim that we're protecting
+all contributions of each user in every single day. Capturing this idea is easy:
+we can redefine "neighboring datasets" to differ in the data of a single person
+in a single day.</p>
+<p>We can also extend this idea to other properties that we want to protect. Maybe
+finding out that someone is in our database might not be that sensitive. But
+finding out the value of a specific field might be problematic! In this case, we
+can adapt the definition of DP, and have the two databases differ only in this
+field for a single individual.</p>
+<p>Paille, can you capture the properties of your algorithm <span class="math">\(A\)</span> this way? If it's
+too hard to get formal privacy guarantees for individuals, can you do it for
+smaller "units of privacy"?</p>
+<blockquote>
+<p>Erm… it doesn't look like it. Even when the "unit of privacy" is smaller, the
+privacy loss is still too high to be meaningful.</p>
+</blockquote>
+<p>Well, this doesn't look great. But let's persevere and try one last thing.
+What if we assume the attacker is uncertain about the initial dataset?</p>
+<h1 id="assuming-a-weaker-attacker">Assuming a weaker attacker</h1>
+<p>When using DP, we compare the output of the algorithm on two databases that
+differ in a single user. Implicitly, we assume that the attacker knows the data
+of <em>everyone else</em> in the database. What if we relax this assumption?</p>
+<p>Doing this seems reasonable. After all, the only realistic way an attacker could
+know about everyone in a database is by having direct access to the database…
+And then there's not much left to protect. Some variants of DP attempt to
+formalize this idea. To do this, they capture the attacker's uncertainty using a
+<em>probability distribution</em>. The neighboring databases are no longer fixed:
+they're sampled from this distribution, conditioned on the data of a specific
+user.</p>
+<p>The variants of differential privacy obtained this way<sup id="fnref:noiseless"><a class="footnote-ref" href="#fn:noiseless">3</a></sup> have two
+major problems.</p>
+<ul>
+<li>First, they don't <a href="differential-privacy-awesomeness.html#composition">compose</a>. Say two algorithms are "private" if
+  an attacker has limited background knowledge. Each output, in isolation,
+  doesn't leak too much information. Both outputs <em>combined</em>, though, might not
+  be private at all, even under the same assumption.</li>
+<li>Second, these variants need us to model the database as a probability
+  distribution. This distribution is supposed to capture the attacker's
+  uncertainty… So you have to put yourself in the shoes of each possible
+  attacker and model their knowledge somehow. This is difficult and very
+  brittle: if you misjudge their knowledge even slightly, all privacy properties
+  might break down.</li>
+</ul>
+<p>Because of this<sup id="fnref:reasons"><a class="footnote-ref" href="#fn:reasons">4</a></sup>, assuming a weaker attacker can be kind of a dangerous
+road. Paille, does your algorithm <span class="math">\(A\)</span> satisfies one of these variants? It
+wouldn't be enough to fully convince me: I'd also need take a long look at the
+underlying assumptions, and at how you're using it in practice. Nonetheless,
+it'd be a start, and it'd be better than nothing, I guess.</p>
+<blockquote>
+<p>Well, let me check. Modeling the attacker's uncertainty is difficult, but…
+doing that doesn't give me convincing results either. I can make unrealistic
+assumptions on my data, and then it sort of works. But if I try to model the
+attacker in a more realistic way, I don't get great numbers at all.</p>
+</blockquote>
+<p>That's… unfortunate.</p>
+<h1 id="whats-left">What's left?</h1>
+<p>Let's recap what we know so far about Paille's algorithm <span class="math">\(A\)</span>. If we negate all the
+relaxations we've seen so far, what do we have left?</p>
+<p>An attacker who looks at the output of <span class="math">\(A\)</span>:</p>
+<ul>
+<li>can retrieve very <em>fine-grained</em> information</li>
+<li>about <em>many individuals</em></li>
+<li>even if the attacker is not particularly <em>lucky</em></li>
+<li>and only has <em>limited knowledge</em> about the data.</li>
+</ul>
+<p>This is <strong>not good</strong>! But this is the direct conclusion of the discussion so
+far. Paille's mechanism not being DP didn't seem so bad at first, after all, DP
+is quite a high bar. But if we can't say <em>anything</em> about <span class="math">\(A\)</span> in the language of
+DP, even if we relax the definition a lot, then this is pretty damning. No need
+to dive deep into the original rationale for why <span class="math">\(A\)</span> might be safe: we just
+showed it isn't.</p>
+<p>Or, rather, we are unable to show that it is. This will be the last resort of
+people defending their custom anonymization method: « I can't prove that it's
+safe, but I still argue that it is. Prove me wrong! Show me an attack that
+works. » Reversing the burden of proof this way is, of course, a red flag. If
+you're anonymizing my data, you should have to convince me that what you're
+doing is safe, not the other way around.</p>
+<p>Further, experience shows that if someone does find an attack, that won't be
+enough to end the debate. In practice, people slap a patch or two on their
+algorithm, and go right back to proclaiming its safety. The history of computer
+security is littered with such examples: people patch systems after an attack is
+discovered, but shortly after, a minor change to the attack proves successful.
+The early days of data privacy were no different. I hope that we learn from this
+past, and focus future efforts on stronger notions with provable guarantees!</p>
+<p>So, next time you encounter a non-DP algorithm… Why don't you insist that its
+authors explain to you <em>why</em> it isn't DP?</p>
+<h1 id="final-note">Final note</h1>
+<p>There are many more variants and extensions of DP beyond those mentioned in this
+post. In fact, a colleague and I wrote a whole <a href="https://arxiv.org/abs/1906.01337">survey paper</a> about it!
+In this paper, we classify all these variants, list their properties, and
+provide intuitions for each. For a short overview of this work, you can check
+out the <a href="https://www.youtube.com/watch?v=P2GyJYb9FOc">recording of the talk</a> I gave about it at <a href="https://petsymposium.org/">PETS</a> last
+summer.</p>
+<hr>
+<p>The next article in this branch is about the US Census Bureau's <a href="us-census-reconstruction-attack.html">reconstruction
+attack</a>. Or you can also go to the <a href="friendly-intro-to-differential-privacy.html">table of contents</a>
+of this blog post series to pick something else to read!</p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:renyi">
+<p>This is <a href="https://arxiv.org/abs/1702.07476">Rényi DP</a>, a definition
+  often used for machine learning applications. Its additional parameter
+  <span class="math">\(\alpha\)</span> determines which averaging function is used: <span class="math">\(\alpha=1\)</span> bounds the
+  <a href="https://en.wikipedia.org/wiki/Geometric_mean">geometric mean</a> of the ratio,
+  <span class="math">\(\alpha=2\)</span> bounds the <a href="https://en.wikipedia.org/wiki/Arithmetic_mean">arithmetic mean</a>,
+  <span class="math">\(\alpha=3\)</span> bounds the <a href="https://en.wikipedia.org/wiki/Root_mean_square">quadratic mean</a>,
+  etc.&#160;<a class="footnote-backref" href="#fnref:renyi" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:random">
+<p>This is <a href="https://arxiv.org/abs/1112.2680">random DP</a>, though a couple
+  of other variants do essentially the same thing.&#160;<a class="footnote-backref" href="#fnref:random" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:noiseless">
+<p>Like <a href="https://eprint.iacr.org/2011/487">noiseless privacy</a>, named
+  this way because even algorithms that don't add any noise to data can be
+  considered private under this variant.&#160;<a class="footnote-backref" href="#fnref:noiseless" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:reasons">
+<p>… and because of other complicated technical reasons I won't get
+  into here, though I co-authored 
+  <a href="https://arxiv.org/abs/1905.00650">an entire paper</a> about these problems.&#160;<a class="footnote-backref" href="#fnref:reasons" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20210330,
+  title = &#123;Why not differential privacy?},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/why-not-differential-privacy.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2021},
+  month = &#123;03}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="latex-to-html.html">← previous</a>
+    </li>
+    <li>
+      <a href="us-census-reconstruction-attack.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

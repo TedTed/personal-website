@@ -1,0 +1,286 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="ConclusionDefining.html" />
+  <link ref="next" href="DefinitionalIntricaciesOfPartialKnowledge.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="ConclusionDefining.html">← previous</a></li>
+        <li><a href="index.html#DifferentialPrivacyUnderPartialKnowledge.html">up</a></li>
+        <li><a href="DefinitionalIntricaciesOfPartialKnowledge.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="ConclusionDefining.html">LINKPREV</a><a href="index.html#DifferentialPrivacyUnderPartialKnowledge.html">LINKUP</a><a href="DefinitionalIntricaciesOfPartialKnowledge.html">LINKNEXT</a></p></div>
+  <h2 class="chapterHead" id="differential-privacy-under-partial-knowledge-u-ding-"><span class="titlemark">3</span>&nbsp;&nbsp;<a id="x27-920003"></a>Differential privacy under partial knowledge <span class="bbding-10x-x-109">✿</span></h2> <!-- l. 2 --><p class="noindent"><a id="partial"></a> </p>                                    <div class="flushright"> <!-- l. 4 --><p class="noindent"> </p> <!-- l. 8 --><p class="noindent">
+<span class="t1xss-x-x-95">However, just because
+something isn’t surprising
+doesn’t mean it’s easy to deal
+with.</span>
+
+         <span class="t1xsssl-x-x-95">(Nnedi Okorafor, </span><span class="t1xss-x-x-95">Binti</span><span class="t1xsssl-x-x-95">)</span>
+</p>
+</div>
+<!-- l. 11 --><p class="indent">  The success of differential privacy, and the many variants and extensions proposed since its
+introduction, suggests a solution to our initial problem. To pick a definition of privacy that makes sense
+in a certain context, we can start from differential privacy, and optionally modify it to better fit our use
+case.
+</p><!-- l. 16 --><p class="indent">  If we want to modify the protected characteristic, we can change the definition of neighborhood
+(Section&nbsp;<a href="NeighborhoodDefinitionN.html#neighborhood-definition-n-u-ding-">2.2.3<!-- tex4ht:ref: sec:n  --></a>). If is too expensive to consider the absolute worst-case output, we can relax this by
+averaging the privacy loss, or accepting a very small risk (Section&nbsp;<a href="QuantificationOfPrivacyLossQ.html#quantification-of-privacy-loss-q">2.2.2<!-- tex4ht:ref: sec:q  --></a>). If different people in our
+dataset have distinct privacy requirements, we can also model this in the definition (Section&nbsp;<a href="VariationOfPrivacyLossV.html#variation-of-privacy-loss-v">2.2.4<!-- tex4ht:ref: sec:v  --></a>).
+In all the aforementioned cases, we can pick a variant that satisfies useful properties like
+post-processing or composition, and still keep the strong formal guarantees that differential privacy
+offers.
+</p><!-- l. 25 --><p class="indent">  From a purely academic standpoint, it seems like this definitional problem is now solved.
+Unfortunately, this are a bit more complicated in practice. In real-world scenarios, people trying to
+advocate for formal privacy guarantees often encounter pushback. “Why is it necessary to opt for such a
+strong notion?”, a skeptic might say. “This data is heavily aggregated, surely the risk is low enough. It
+seems fine to me. Can you find a realistic way of attacking it? Maybe then I will be convinced that
+stronger guarantees are necessary.”
+</p><!-- l. 34 --><p class="indent">  To advocate for using differential privacy, we can try explaining what happens if
+the definition is <span class="t1xi-x-x-109">not </span>satisfied. DP states that changing the data of a single user cannot be
+detected by looking at the mechanism’s output. So by definition, a mechanism that
+is <span class="t1xi-x-x-109">not </span>differentially private allows the above situation to happen. There exist two datasets
+<!-- l. 38 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span> and
+<!-- l. 38 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>
+that differ in the data of a single user, such that the difference between
+<!-- l. 39 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.136em;">M</span></span></span></span><span class="mjx-mrow MJXc-space1"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span> and
+<!-- l. 40 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.136em;">M</span></span></span></span><span class="mjx-mrow MJXc-space1"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span> is
+arbitrarily large, at least for some outputs. This seems bad!
+</p><!-- l. 42 --><p class="indent">  However, the “attack” above is not convincing to laypeople: it feels too artificial.
+Surely, they say, a realistic attacker cannot craft an arbitrary pair of datasets
+                                                                                
+                                                                                
+<!-- l. 44 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span> and
+<!-- l. 44 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>
+and observe the results. They do not control the data, nor do they have perfect
+knowledge about it. If the data is heavily aggregated, for example using
+<!-- l. 46 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity with
+a reasonably large <!-- l. 46 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>,
+can an attacker really find out sensitive information about individuals?
+</p><!-- l. 49 --><p class="indent">  In practice, aggregated data is frequently being published without noise, under the assumption that
+this is safe enough. The most prominent example is probably <span class="t1xi-x-x-109">voting</span>: it would be unacceptable to add
+noise to the tally of a democratic election, yet nobody seems to worry that publishing the exact count
+might somehow constitute a privacy risk. The intuition behind this hinges on the implicit assumption
+that the secrecy of votes makes the result <span class="t1xi-x-x-109">uncertain</span>, from the point of view of any realistic
+attacker.
+</p><!-- l. 57 --><p class="indent">  Can this intuition be formalized? We saw in Section&nbsp;<a href="BackgroundKnowledgeB.html#background-knowledge-b">2.2.5<!-- tex4ht:ref: sec:b  --></a> that this idea is not new, and
+that multiple variants of differential privacy were introduced to capture an attacker with
+uncertainty over the input data. In this chapter, we focus on this specific setting. We show that
+modeling this scenario correctly is much more difficult than it initially appears, but that a careful
+analysis can formalize the above intuition, draw novel links between syntactic definitions like
+<!-- l. 63 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+and differential privacy, and be used to derive negative results on problems that are impossible to solve
+in a privacy-preserving way.
+</p><!-- l. 66 --><p class="indent">  On the theory front, we start by reviewing existing definitions formalizing the scenario
+where the attacker only has partial knowledge over the data. We point out fundamental flaws
+in existing notions in the case where there are correlations in the data, and introduce an
+additional criterion that is needed to fix these definitional problems. We then delineate two
+cases that behave differently in the presence of partial knowledge: whether the attacker can
+<span class="t1xi-x-x-109">influence </span>the input dataset, or whether they have a <span class="t1xi-x-x-109">passive </span>partial knowledge about the original
+data.
+</p><!-- l. 75 --><p class="indent">  We then use this novel theory to formalize positive results in our setting of interest.
+We show that aggregating the data of many users does provide privacy guarantees
+under the partial knowledge assumption, by drawing links between this setting and
+amplification by shuffling. We also show that <span class="t1xi-x-x-109">thresholding </span>is an effective privacy-preserving
+strategy against passive attackers, and use this insight to derive new links between
+<!-- l. 80 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+and differential privacy.
+</p><!-- l. 82 --><p class="indent">  Finally, we show that even under this assumption of partial knowledge, some use cases cannot be
+solved in a privacy-preserving way. In particular, we study <span class="t1xi-x-x-109">cardinality estimators</span>, data structures
+that can estimate the cardinality of large datasets, and that can be <span class="t1xi-x-x-109">merged </span>while removing
+duplicates: this class of algorithms cannot be made private, even under extremely weak
+assumptions.
+</p>
+
+
+
+                                                                                
+                                                                                
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="ConclusionDefining.html">LINKPREV</a><a href="index.html#DifferentialPrivacyUnderPartialKnowledge.html">LINKUP</a><a href="DefinitionalIntricaciesOfPartialKnowledge.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="ConclusionDefining.html">← previous</a></li>
+        <li><a href="index.html#DifferentialPrivacyUnderPartialKnowledge.html">up</a></li>
+        <li><a href="DefinitionalIntricaciesOfPartialKnowledge.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

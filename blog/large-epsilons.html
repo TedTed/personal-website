@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>What's up with all these large privacy budgets? - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="What's up with all these large privacy budgets? - Ted is writing things" />
+  <meta property="twitter:title" content="What's up with all these large privacy budgets? - Ted is writing things" />
+  <meta name="description" property="og:description" content="Many real-world DP deployments use privacy parameters that can seem unconvincing. Should we be worried?" />
+  <meta property="twitter:description" content="Many real-world DP deployments use privacy parameters that can seem unconvincing. Should we be worried?" />
+  <meta property="summary" content="Many real-world DP deployments use privacy parameters that can seem unconvincing. Should we be worried?" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/dp-with-large-epsilon-vs-ad-hoc.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/dp-with-large-epsilon-vs-ad-hoc.png" />
+  <meta property="twitter:image:alt" content="A comparison table between "Diffenrential privacy with a large ε" and "Some ad hoc anonymization technique". Under "allows us to conveniently ignore the fact that the privacy risk might be pretty high in some cases", DP has a red cross, ad hoc has a green checkmark. Under all the other criteria ("Actually provides some provable guarantees", "Will likely give us the best protection against practical attacks", "Clear path to mitigating possible future threats", and "Help us build a better privacy posture over time"), DP has a green checkmark and ad hoc anonymization has a red cross." />
+  <link rel="canonical" href="https://desfontain.es/blog/large-epsilons.html" />
+  <link rel="prev" href="bad-ugly-good-maybe.html" />
+  <link rel="next" href="geometric-tricks.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="bad-ugly-good-maybe.html">← previous</a>
+ —     <a href="geometric-tricks.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./large-epsilons.html">What's up with all these large privacy budgets?</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2024-09-22T00:00:00+02:00">
+      2024-09-22
+    </time>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p></small></p>
+<hr>
+<p><span class='lettrine'>W</span><strong>hat</strong> is a good value of <span class="math">\(\varepsilon\)</span> for
+differential privacy deployments? In a <a href="differential-privacy-in-more-detail.html">previous post</a>, I visualized the
+privacy impact of different choices using this graph.</p>
+<p><center>
+<img alt="Graph showing the bounds on the posterior as a function of the prior for many
+values of ε" src="https://desfontain.es/blog/images/dp-contour-graph.png">
+</center></p>
+<p>It quantifies the attacker's knowledge gain about an individual, depending on
+<span class="math">\(\varepsilon\)</span>. According to this visualization, <span class="math">\(\varepsilon\)</span> values above 5
+don't look great. Let's say we're using <span class="math">\(\varepsilon=7\)</span>. Suppose our attacker
+starts off with a small suspicion about their target (say, a prior of 10%).
+After seeing the output data, they get almost perfect certainty, with a
+posterior of more than 99%! Not a great privacy guarantee.</p>
+<p>Yet, in <a href="real-world-differential-privacy.html">real-world deployments</a>, large <span class="math">\(\varepsilon\)</span> values seem to be
+fairly common! This is pretty surprising. We use DP because it's supposed to
+give us a strong privacy guarantee. But this story seems to break down with such
+large parameters…</p>
+<p>So, why are practitioners choosing such large <span class="math">\(\varepsilon\)</span> values? Are these
+guarantees meaningless? How worried should we be? If you want to deploy
+differential privacy for a real-world use case, should you be willing to make
+the same choice?</p>
+<p>First, the bad news: right now, we simply don't have a simple, clear-cut answer
+to these questions. Ask 10 differential privacy experts, and you'll likely get
+10 different answers.</p>
+<p>What I'll do in this post is less ambitious: I'll try to shed light on possible
+ways to look at the problem, using a fictional use case. Then, I'll give you
+real-world examples of deployments who used some of these ideas. This won't
+settle the debate, but hopefully this can help you grapple with these questions.</p>
+<p>So. Suppose that we have a dataset about people's visits to different hospitals.
+We want to use it to train a machine learning model to predict the duration of
+future hospital stays. This model will be made public, so we want to use DP to
+protect the original data. But in the prototyping phase, we encounter a
+difficulty: we discover that we need a very large privacy budget — say,
+<span class="math">\(\varepsilon=42\)</span><sup id="fnref:params"><a class="footnote-ref" href="#fn:params">1</a></sup> — to get acceptable utility. We tried different ways
+of doing the training, and this is the best we can get.</p>
+<p>What should we do?</p>
+<h1 id="step-1-improve-the-privacy-accounting">Step 1: Improve the privacy accounting</h1>
+<p>A first question we should ask ourselves is: is this guarantee the best we can
+get for our algorithm?</p>
+<p>How did we train our model in a DP way? Most likely, we ran different DP
+building blocks to do complex operations on our data. Then, we used the
+<a href="differential-privacy-awesomeness.html#composition">composition</a> property to combine the budgets used at each step. This gave us
+our <span class="math">\(\varepsilon\)</span> above: the total privacy guarantee of our process.</p>
+<p>This process is called <em>privacy accounting</em>, and it can often be optimized. We
+could use <a href="renyi-dp-zero-concentrated-dp.html">DP variants</a> or other smart ways to quantify the
+<a href="privacy-loss-random-variable.html">privacy loss</a>. We might be able to take into account the structure of the
+data to make better use of <a href="https://arxiv.org/abs/2109.09078">parallel composition</a>. Or use
+<a href="https://arxiv.org/abs/2210.00597">amplification results</a>. Or even composition theorems that are
+<a href="https://arxiv.org/abs/1909.13830">specific to certain mechanisms</a>. All these tools might give us a
+better privacy guarantee for our program… without changing the program itself! </p>
+<p><center>
+<img alt="A diagram showing a polygon labeled &quot;Complex DP mechanism&quot; where two arrows
+start. One, labeled &quot;Simple math&quot; leads to a box labeled &quot;Privacy cost&quot;. The
+other one, labeled &quot;More complicated math&quot;, leads to a smaller box, labeled
+&quot;Smaller privacy cost&quot;." src="https://desfontain.es/blog/images/better-privacy-accounting.svg">
+</center></p>
+<p>Privacy accounting only ever gives us an <em>upper bound</em> on the actual privacy
+risk. We know for sure that risk is lower than this bound. But it might be
+possible to do the math in a different way and show something stronger. This
+won't help in very simple cases, for example if we're releasing a single
+histogram: there, we know the best possible way to measure the privacy loss, so
+the bound will be tight. But sometimes, we want to use much more complex
+algorithms, like ML training or synthetic data. For those, existing composition
+theorems might not be optimal. As a result, the advertised privacy guarantee is
+likely a pessimistic estimate. Maybe theorems and DP tooling will improve… and
+later, we'll realize that our guarantee was better than what we thought at
+first.</p>
+<p>In our example, maybe we can get from <span class="math">\(\varepsilon=42\)</span> to <span class="math">\(\varepsilon=21\)</span> by
+optimizing the privacy accounting. Still pretty large, but better than before.
+What should we do next?</p>
+<h1 id="step-2-analyze-the-privacy-guarantees-more-finely">Step 2: Analyze the privacy guarantees more finely</h1>
+<p>The value of <span class="math">\(\varepsilon\)</span> only tells a partial story about the privacy
+guarantee of a deployment. Another critical piece of information is the
+<a href="why-not-differential-privacy.html#privacy-units"><em>privacy unit</em></a>: what are we actually protecting? Our <span class="math">\(\varepsilon=21\)</span>
+guarantee from earlier applies to <em>individual people</em>. We'll protect someone's
+data even if they made many visits to different hospitals.</p>
+<p>Can we complement this guarantee, and quantify the privacy loss of smaller
+pieces of data? For example, does our process provide a better guarantee to
+individual hospital visits? What about the information about a single diagnosis
+that a patient received? Also, does the privacy guarantee apply to everyone
+uniformly? Or is the <span class="math">\(\varepsilon\)</span> upper bound only reached for a few outlier
+patients?</p>
+<p><center>
+<img alt="A diagram showing a box labeled ε, and an arrow points from this box to
+another box, split in 5 chunks, labeled ε1, ε2,
+etc." src="https://desfontain.es/blog/images/splitting-epsilon.svg">
+</center></p>
+<p>Let's try to answer these questions for our example. By doing some more
+analysis, we could discover the following additional guarantees.</p>
+<ul>
+<li>Each individual diagnosis is protected with <span class="math">\(\varepsilon=2\)</span>.</li>
+<li>Each individual hospital visit is protected with <span class="math">\(\varepsilon=7\)</span>.</li>
+<li>75% of the people in the dataset only have a single hospital visit (so
+  their <span class="math">\(\varepsilon\)</span> is 7) while 15% appear in two (so their <span class="math">\(\varepsilon\)</span> is
+  14).</li>
+</ul>
+<p>This does not change our overall worst-case bound. But it gives us a more
+complete understanding of the privacy behavior of our program. It might make us
+more comfortable about deploying it.</p>
+<p>Still, some of these numbers are pretty high. What now?</p>
+<h1 id="step-3-run-some-attacks">Step 3: Run some attacks</h1>
+<p>Privacy accounting gives us a guarantee against a <em>worst-case</em> attacker: someone
+perfect background knowledge and infinite computational power. And this attacker
+targets the most vulnerable data point in our dataset. So our high <span class="math">\(\varepsilon\)</span>
+might not always reflect a realistic attack scenario. It makes sense to wonder:
+what about more realistic attackers?</p>
+<p>To answer this question, we need to perform an empirical analysis of privacy
+risk: run an attack on our system in a realistic setting, and quantify the
+success of this attack. This isn't easy: a lot of evaluations are <a href="ml-privacy-evaluations.html">deeply
+flawed</a>, and automated metrics are often <a href="bad-ugly-good-maybe.html">meaningless</a>. We
+will likely need to get expert help to run the attack. But this can still be
+worth doing! Attacks will often reveal interesting findings about the algorithm
+or its implementation.</p>
+<p><center>
+<img alt="A diagram showing a big arrow labeled &quot;risk&quot;, going from green to yellow to
+red. A smaller arrow points to the right (red) part of this scale and is labeled
+&quot;Differential privacy tells us: we are at most here (and maybe more to the
+left)&quot;. Another arrow points to the left (green) part and is labeled &quot;An
+empirical attack can tell us: we are at least here in practice (and maybe more
+to the right)." src="https://desfontain.es/blog/images/risk-scale-dp-empirical-attack.svg">
+</center></p>
+<p>If we do our best to run attacks, and they don't seem to perform well… this can
+raise our confidence in the privacy behavior of our mechanism. This won't give
+us a robust, future-proof guarantee like DP: someone could come up with a better
+attack in the future. But this can still give us a more nuanced picture of the
+practical risk. And, again, make us a little more comfortable about our
+deployment.</p>
+<p>What if that still doesn't work? Manual, expert-run attacks can be too difficult
+or expensive to perform in practice. Or they might not give us enough reliable
+signal. What should we do then?</p>
+<h1 id="final-step-make-a-judgment-call">Final step: Make a judgment call</h1>
+<p>The next question we need to face is: what is the alternative? If we don't
+deploy our DP algorithm with a large privacy budget, what do we do instead?</p>
+<p>In practice, the answer is rarely "the data does not get published or shared".
+Rather, organizations fall back on ad hoc anonymization techniques, like
+<a href="k-anonymity.html"><span class="math">\(k\)</span>-anonymity</a>. And if such an alternative method provides acceptable
+levels of utility… they may decide that this is better than DP with a large
+budget that would reach a similar accuracy.</p>
+<p>But this is strictly worse! I'd rather have a large privacy budget than an
+infinite one! Having <em>some</em> provable guarantees is better than not estimating
+risk in a principled way!</p>
+<p>This is an opinionated philosophical stance. Even if we set it aside, though, DP
+is also a better option <em>in practice</em> for privacy protection. I see three main
+reasons why.</p>
+<ol>
+<li>Empirically, DP provides <a href="https://arxiv.org/abs/2402.09540">surprisingly good protections</a> against
+   practical attacks, even with large <span class="math">\(\varepsilon\)</span> values. This seems to be
+   true both for <a href="https://arxiv.org/abs/2404.17399">machine learning models</a> and for
+   <a href="https://arxiv.org/abs/2312.11283">statistical data products</a>. Researchers don't fully understand
+   why, but this what their (limited) data is telling them so far. By contrast,
+   ad hoc anonymization methods keep being <a href="trustworthy-anonymization.html">badly broken</a>.</li>
+<li>Say we deployed a DP mechanism with a large <span class="math">\(\varepsilon\)</span>, and we later
+   realize that it is vulnerable to a practical attack. How much do we need to
+   change our deployment to mitigate the risk? Barring major implementation
+   issues, adjusting the privacy parameters is likely to be enough: if we lower
+   the <span class="math">\(\varepsilon\)</span> enough, the formal guarantees will kick back. So we'll only
+   need to re-evaluate trade-offs, and change parameters. The same cannot be
+   said for ad hoc methods like <span class="math">\(k\)</span>-anonymity: a differencing attack that works
+   with <span class="math">\(k=20\)</span> won't be mitigated by setting <span class="math">\(k\)</span> to 30 instead. Fixing the flaw
+   would require a much deeper redesign of the privacy strategy.</li>
+<li>Deploying DP for a real-world use case often has additional, compound privacy
+   benefits. It builds trust in the technology within an organization. It
+   teaches people valuable skills: how to use these techniques, how to reason
+   about worst-case scenarios, how to think about cumulative risk. It encourages
+   the people using the data to learn how to reason about uncertainty. All of
+   this will make it easier to ship the next DP deployment… and maybe manage to
+   use stricter parameters next time!</li>
+</ol>
+<p><center>
+<img alt="A comparison table between &quot;Diffenrential privacy with a large ε&quot; and &quot;Some ad
+hoc anonymization technique&quot;. Under &quot;allows us to conveniently ignore the fact
+that the privacy risk might be pretty high in some cases&quot;, DP has a red cross,
+ad hoc has a green checkmark. Under all the other criteria (&quot;Actually provides
+some provable guarantees&quot;, &quot;Will likely give us the best protection against
+practical attacks&quot;, &quot;Clear path to mitigating possible future threats&quot;, and
+&quot;Help us build a better privacy posture over time&quot;), DP has a green checkmark
+and ad hoc anonymization has a red
+cross." src="https://desfontain.es/blog/images/dp-with-large-epsilon-vs-ad-hoc.svg">
+</center></p>
+<p>John Abowd, who served as Chief Scientist of the U.S. Census Bureau, summarizes
+this pragmatic perspective.</p>
+<blockquote>
+<p>Traditional disclosure limitation frameworks have an infinite privacy loss.
+The first step in modernizing them is to go from infinite to bounded privacy
+loss. Then, we can work on lowering it.</p>
+</blockquote>
+<p>Finally, we need to remember that privacy is only ever one part of the story.</p>
+<p>Organizations don't publish data because they want to protect it. They do it to
+fulfill their mission, to address a business problem, or to pursue some other
+goal. Privacy risk is always weighed against these other considerations.
+Differential privacy cannot tell you whether what you're doing is a good use of
+data. It only gives you a way to quantify and control the privacy cost that you
+incur in doing so. For compelling use cases, weaker privacy guarantees might be
+a perfectly acceptable cost.</p>
+<p>In the real world, privacy-utility trade-off decisions boil down to judgment
+calls. There's no avoiding it. The best we can do is to openly discuss the choices
+we make, so we can learn from each other. Over time, we'll have more tools,
+principles, and best practices, and will be empowered to make better decisions.</p>
+<p>So let's get to work!</p>
+<hr>
+<p>Speaking of getting to work, here are some examples of real-world deployments
+that illustrate the points in this post.</p>
+<ul>
+<li><strong>Improved privacy accounting.</strong> Many academic papers on privacy accounting
+  are directly motivated by practical deployments. Better theorems for
+  <a href="https://arxiv.org/abs/1909.13830">composing the exponential mechanism</a> lower the <span class="math">\(\varepsilon\)</span> for
+  LinkedIn's <a href="https://arxiv.org/abs/2002.05839">Audience Engagements API</a>. Google's guide to
+  <a href="https://arxiv.org/abs/2303.00654">integrating DP in machine learning</a> outlines which amplification
+  results to use depending on the algorithm (Table 3). A recent update to my
+  list of <a href="real-world-differential-privacy.html">real-world deployments</a> provides an even simpler example: I
+  started using a tighter conversion formula from <a href="renyi-dp-zero-concentrated-dp.html">zero-concentrated DP</a>
+  to <span class="math">\((\varepsilon,\delta)\)</span>-DP… and a bunch of reported <span class="math">\(\varepsilon\)</span> values got
+  smaller as a result!</li>
+<li><strong>Fine-grained privacy analysis.</strong> In Facebook's
+  <a href="https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/TDOAPG/DGSAMS&amp;version=6.2">Full URLs Data Set</a> (page 11), the authors analyze the privacy loss
+  in two steps. First, they quantify it for each kind of social network
+  interaction. Then, they translate it to a user-level guarantee, which depends
+  on how many interactions each user contributed. The U.S. Census Bureau also
+  used this approach in the 2020 Decennial Census: they quantified the privacy
+  loss per person, but also per demographic attribute (Section 8 of
+  <a href="https://arxiv.org/abs/2209.03310">this paper</a>).</li>
+<li><strong>Empirical attacks.</strong> The most prominent example is probably the one from the
+  <a href="us-census-reconstruction-attack.html">U.S. Census Bureau</a>. It informed not only the initial decision to use
+  differential privacy, but the privacy parameters used in production as well.
+  LinkedIn also reports using an empirical attack to set the privacy parameters
+  for their <a href="https://www.linkedin.com/blog/engineering/trust-and-safety/privacy-preserving-single-post-analytics">Single Post Analytics</a> deployment.</li>
+</ul>
+<p>If you know of another one, let me know!</p>
+<hr>
+<p><small>
+I am extremely grateful to Philip Leclerc and Ryan Rogers for their excellent
+feedback and suggestions on drafts of this post, and to John Abowd for providing
+me with the quote. Thanks as well to Antoine Amarilli, Callisto, and Marc
+Jeanmougin for their helpful comments.
+</small></p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:params">
+<p>In practice, we would almost certainly be dealing with a <span class="math">\(\delta\)</span>
+term as well, but I'm just using <span class="math">\(\varepsilon\)</span> in the fictional example for
+simplicity.&#160;<a class="footnote-backref" href="#fnref:params" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20240922,
+  title = &#123;What's up with all these large privacy budgets?},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/large-epsilons.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2024},
+  month = &#123;09}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="bad-ugly-good-maybe.html">← previous</a>
+    </li>
+    <li>
+      <a href="geometric-tricks.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

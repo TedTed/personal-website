@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>k-anonymity, the parent of all privacy definitions - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="k-anonymity, the parent of all privacy definitions - Ted is writing things" />
+  <meta property="twitter:title" content="k-anonymity, the parent of all privacy definitions - Ted is writing things" />
+  <meta name="description" property="og:description" content="How a privacy researcher proved a politician wrong, and how she created the first ever definition of anonymity in the process." />
+  <meta property="twitter:description" content="How a privacy researcher proved a politician wrong, and how she created the first ever definition of anonymity in the process." />
+  <meta property="summary" content="How a privacy researcher proved a politician wrong, and how she created the first ever definition of anonymity in the process." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/k-anonymity.html" />
+  <link rel="prev" href="beginnings.html" />
+  <link rel="next" href="authentication-vs-identification.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="beginnings.html">← previous</a>
+ —     <a href="authentication-vs-identification.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./k-anonymity.html">k-anonymity, the parent of all privacy definitions</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2017-08-14T00:00:00+02:00">
+      2017-08-14
+    </time>
+    <small>&mdash; updated
+      <time datetime="2017-10-01T00:00:00+02:00">
+        2017-10-01
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><strong>In 1997</strong>, a PhD student named <a href="https://en.wikipedia.org/wiki/Latanya_Sweeney">Latanya Sweeney</a> heard about an
+interesting data release. A <a href="http://www.mass.gov/anf/employee-insurance-and-retirement-benefits/oversight-agencies/gic/">health insurance organization</a> from
+Massachusetts had compiled a database of hospital visits by state employees, and
+had thought that giving it to researchers could encourage innovation and
+scientific discovery. Of course, there were privacy considerations: allowing
+researchers to look at other citizens health records seemed pretty creepy. So
+they decided to do the obvious thing, and remove all columns that indicated who
+a patient was: name, phone number, full address, social security number, etc.</p>
+<p>As you can probably guess, this didn't end so well. In this article, I'll
+describe and analyze Sweeney's successful reidentification attack, and I'll
+explain the privacy definition that Sweeney invented to prevent this type of
+attack in the future: <span class="math">\(k\)</span>-anonymity.</p>
+<div class="toc">
+<ul>
+<li><a href="#what-went-wrong">What went wrong?</a></li>
+<li><a href="#how-to-prevent-this-attack">How to prevent this attack?</a><ul>
+<li><a href="#definition-of-k-anonymity">Definition of \(k\)-anonymity</a><ul>
+<li><a href="#what-types-of-data-are-reidentifying">What types of data are reidentifying?</a></li>
+<li><a href="#how-to-choose-k">How to choose \(k\)?</a></li>
+</ul>
+</li>
+<li><a href="#how-to-make-a-dataset-k-anonymous">How to make a dataset \(k\)-anonymous?</a><ul>
+<li><a href="#building-block-1-generalization">Building block 1: generalization</a></li>
+<li><a href="#two-types-of-generalization">Two types of generalization</a></li>
+<li><a href="#building-block-2-suppression">Building block 2: suppression</a></li>
+<li><a href="#algorithms">Algorithms</a></li>
+<li><a href="#in-practice">In practice</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#how-convincing-really-is-k-anonymity">How convincing really is \(k\)-anonymity?</a></li>
+</ul>
+</div>
+<p></p>
+
+<h1 id="what-went-wrong">What went wrong?</h1>
+<p>Some demographic information was left in the database, so researchers could
+still compile useful stats: ZIP code, date of birth, and gender were all part
+of the data. Sweeney realized that the claims of the Massachusetts governor,
+who insisted that the privacy of state employees was respected (all identifiers
+were removed!), were perhaps a little bit over-optimistic. Since the governor
+himself was a state employee, Sweeney decided to do the obvious thing and
+reidentify which records of the "anonymized" database were the governor's.</p>
+<p>With just $20, Sweeney bought the public voter records from Massachusetts, which
+had both full identifiers (names, addresses) and demographic data (ZIP code and
+date of birth), and contained the governor's information. Guess how many records
+matched the governor's gender, ZIP code, and date of birth inside the hospital
+database? Only one, and thus, Sweeney was able to know which prescriptions and
+visits in the data were the governor's. She posted all of it to his office,
+showing theatrically that their anonymization process wasn't as solid as it
+should have been.</p>
+<p>Several factors made this attack possible. Some are obvious, but not all:</p>
+<ol>
+<li>
+<p>The hospital data contained demographic information that could be used to
+   distinguish between different records.</p>
+</li>
+<li>
+<p>A secondary database was available to figure out the demographic information
+   about the target.</p>
+</li>
+<li>
+<p>The target was in both datasets.</p>
+</li>
+<li>
+<p>And the demographic information of the target (ZIP code, date of birth, and
+   gender) was unique within both datasets: only one record had the demographic
+   values of the governor.</p>
+</li>
+</ol>
+<p>At first glance, these factors appear to be <em>necessary</em>: remove one of them and
+suddenly, the attack no longer works. (Try it! It's a good mental exercise.)</p>
+<h1 id="how-to-prevent-this-attack">How to prevent this attack?</h1>
+<p>As per our previous remark, removing one of the factors should be enough to
+prevent attacks like these. Which ones can we afford to remove, while making
+sure that the data can be used for data analysis tasks?</p>
+<ol>
+<li>
+<p>We could remove all demographic information from the data, or even all
+   information that might be linked to a person using auxiliary sources.
+   Unfortunately, this would also severely hinder the utility of the data:
+   correlations based on age, gender, and geographic info are very useful to
+   researchers!</p>
+</li>
+<li>
+<p>Society probably <em>should</em> do something about the existence of public (or
+   commercially available) data sources that can be used in reidentification
+   attacks. However, this is a complex political issue, so a little bit out of
+   scope for a data owner who wants to publish or share an anonymized version of
+   their data — in practice, there's pretty much nothing we can do about it.</p>
+</li>
+<li>
+<p>Again, there's not much we can do. We have no way to modify the secondary
+   (public) dataset. We could decrease the probability that a random target is
+   in our dataset by sub-sampling it, but all people in the sample would still
+   be at risk, so this is obviously not a satisfying solution.</p>
+</li>
+<li>
+<p>Now, this is the interesting point. Maybe suppressing all demographic values
+   would render the data useless, but there might be a middle ground to make
+   sure that the demographic values are no longer unique in the dataset.</p>
+</li>
+</ol>
+<p>This last suggestion is the basic idea of <span class="math">\(k\)</span>-anonymity. </p>
+<h2 id="definition-of-k-anonymity">Definition of <span class="math">\(k\)</span>-anonymity</h2>
+<p>A dataset is said to <em>be <span class="math">\(k\)</span>-anonymous</em> if every combination of values for
+demographic columns in the dataset appears at least for <em>k</em> different records.</p>
+<p>For example, this dataset is <span class="math">\(2\)</span>-anonymous:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">34</td>
+</tr>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">34</td>
+</tr>
+<tr>
+<td style="text-align: center;">1742</td>
+<td style="text-align: center;">77</td>
+</tr>
+<tr>
+<td style="text-align: center;">1742</td>
+<td style="text-align: center;">77</td>
+</tr>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">34</td>
+</tr>
+</tbody>
+</table>
+<p>This one isn't:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">34</td>
+</tr>
+<tr>
+<td style="text-align: center;">1742</td>
+<td style="text-align: center;">77</td>
+</tr>
+<tr>
+<td style="text-align: center;">1743</td>
+<td style="text-align: center;">77</td>
+</tr>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">34</td>
+</tr>
+</tbody>
+</table>
+<p>Notice that we need every <em>combination</em> of values to appear at least <span class="math">\(k\)</span> times.
+Thus, even if each individual value of each column appears <span class="math">\(2\)</span> times in the
+following dataset, it's not <span class="math">\(2\)</span>-anonymous:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">34</td>
+</tr>
+<tr>
+<td style="text-align: center;">1742</td>
+<td style="text-align: center;">34</td>
+</tr>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">77</td>
+</tr>
+<tr>
+<td style="text-align: center;">1742</td>
+<td style="text-align: center;">77</td>
+</tr>
+</tbody>
+</table>
+<p>The intuition is that when a dataset is <span class="math">\(k\)</span>-anonymous for a sufficiently large
+<span class="math">\(k\)</span>, the last requirement for a successful reidentification attack is broken. An
+attacker might find out the demographic information of their target using a
+secondary database, but then this demographic information will be linked to <span class="math">\(k\)</span>
+different individuals, so it will be impossible to know which one is their info.</p>
+<h4 id="what-types-of-data-are-reidentifying">What types of data are reidentifying?</h4>
+<p>Note that we've only talked about "demographic information", which is pretty
+vague. ZIP codes, age, gender are all good candidates for reidentification
+attacks, because they're public (or easily findable) information that is also
+often found in sensitive datasets (especially medical ones). In general, the
+data owner should consider which columns might be used by the attacker they're
+concerned about.</p>
+<p>These columns, not necessarily sensitive themselves but which might be used in a
+reidentification attack, are called <em>quasi-identifiers</em> (or <em>QIs</em>). There is no
+universal list of quasi-identifiers, it depends on the attack model. If some
+data types are almost always QIs (ZIP code, age, gender…), many more depend on
+the context (like timestamps, medical conditions, physical characteristics…).
+The question to ask is: would the person who's trying to attack our dataset have
+access to these values through public or commercially available data?</p>
+<p><small> I'll try to write more about attack modeling and data classification
+later. This is not as easily explainable as the various mathematical definitions
+of privacy: it has lots of human components and as such, is always a bit fuzzy.
+Which makes it even more interesting! :D But I digress. </small></p>
+<h4 id="how-to-choose-k">How to choose <span class="math">\(k\)</span>?</h4>
+<p>Short answer: ¯\_(ツ)_/¯</p>
+<p>Longer answer: nobody knows. In the healthcare world, when medical data is
+shared with a small number of people (typically for research purposes), <span class="math">\(k\)</span> is
+often chosen between <span class="math">\(5\)</span> and <span class="math">\(15\)</span>. This choice is very arbitrary and ad hoc. To
+the best of my knowledge, there is no official law or regulation which suggests
+a specific value. Some universities, companies or other organizations have
+official guidelines, but the vast majority don't.</p>
+<p>To pick a parameter for a privacy definition, one needs to understand what's the
+link between the parameter value, and the risk of a privacy incident happening.
+But this is difficult: if <span class="math">\(k\)</span>-anonymity is relatively easy to understand,
+estimating risk quantitatively is extremely tricky. <small> I'm also going to
+write a bit about this later on! </small></p>
+<ul>
+<li>Regulators don't want to include specific parameter values in laws or
+  guidelines, since there is no convincing argument to be made for a given
+  choice, and the level of risk depends on many more fuzzy parameters (how
+  valuable the data is, how bad would a privacy incident be, etc.).</li>
+<li>Data owners don't know how to choose the parameter either, so they usually buy
+  the services of a privacy consultant to do this choice (and take care of the
+  anonymization process). This consultant doesn't know either what's the "good"
+  choice, but they usually have more practical experience of what are common
+  values in the industry for similar levels of risk.</li>
+</ul>
+<p><small> This is my first "real" blog post, about the most basic anonymity
+definition there is, and I've already reached my second digression to say
+"notice how it's actually super fuzzy and thus, complicated to apply in
+practice?". Isn't privacy fun? :D </small></p>
+<h2 id="how-to-make-a-dataset-k-anonymous">How to make a dataset <span class="math">\(k\)</span>-anonymous?</h2>
+<p>So, suppose we picked our quasi-identifiers and <span class="math">\(k=2\)</span>. Even with such a low
+value for <span class="math">\(k\)</span>, our original dataset will likely not be <span class="math">\(k\)</span>-anonymous: there will
+be many records with unique combinations of quasi-identifier values.</p>
+<p>The two main building blocks used to transform a dataset into a <span class="math">\(k\)</span>-anonymous
+table are <em>generalization</em> and <em>suppression</em>.</p>
+<h4 id="building-block-1-generalization">Building block 1: generalization</h4>
+<p>Generalization is the process of making a quasi-identifier value less precise,
+so that records with different values are transformed (or <em>generalized</em>) into
+records that share the same values. Consider the records in this table:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">34</td>
+</tr>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">39</td>
+</tr>
+<tr>
+<td style="text-align: center;">1742</td>
+<td style="text-align: center;">75</td>
+</tr>
+<tr>
+<td style="text-align: center;">1691</td>
+<td style="text-align: center;">77</td>
+</tr>
+</tbody>
+</table>
+<p>The numerical values of these records can be transformed into <em>numerical
+ranges</em>, so that the resulting table verifies <span class="math">\(2\)</span>-anonymity:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">30-39</td>
+</tr>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">30-39</td>
+</tr>
+<tr>
+<td style="text-align: center;">1***</td>
+<td style="text-align: center;">75-79</td>
+</tr>
+<tr>
+<td style="text-align: center;">1***</td>
+<td style="text-align: center;">75-79</td>
+</tr>
+</tbody>
+</table>
+<p>The idea of generalization is to make demographic information more imprecise to
+satisfy our privacy requirements, but still allow useful data analysis to be
+done. In our example, changing precise ages into age ranges is probably enough
+to analyze whether a disease affects young or old people disproportionately.</p>
+<p>Transforming a numerical value into a range is one of the most typical ways of
+performing generalization. Other ways include removing a value entirely (e.g.
+transforming a gender value into "gender unknown"), or using a <em>generalization
+hierarchy</em> (e.g. transforming an <a href="https://en.wikipedia.org/wiki/ICD-10">ICD-10 diagnosis code</a> into a
+truncated code, or the corresponding <a href="https://en.wikipedia.org/wiki/ICD-10_Chapter_I:_Certain_infectious_and_parasitic_diseases">block</a>).</p>
+<h4 id="two-types-of-generalization">Two types of generalization</h4>
+<p>Generalization strategies can be classified into two categories: <em>global</em> and
+<em>local</em>. Consider the following table:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">34</td>
+</tr>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">34</td>
+</tr>
+<tr>
+<td style="text-align: center;">1742</td>
+<td style="text-align: center;">34</td>
+</tr>
+<tr>
+<td style="text-align: center;">1742</td>
+<td style="text-align: center;">31</td>
+</tr>
+</tbody>
+</table>
+<p>Global generalization means that a given value for a given column will <em>always</em>
+be generalized in the same way: if you decide to transform age 34 into age range
+30-34 for one record, all records that have ages between 30 and 34 will be
+transformed into this fixed range of 30-34. Using global generalization, the
+example could be transformed into:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">30-34</td>
+</tr>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">30-34</td>
+</tr>
+<tr>
+<td style="text-align: center;">1742</td>
+<td style="text-align: center;">30-34</td>
+</tr>
+<tr>
+<td style="text-align: center;">1742</td>
+<td style="text-align: center;">30-34</td>
+</tr>
+</tbody>
+</table>
+<p>Local generalization doesn't have that constraint: it allows you to pick a
+different generalization for each record. A value 34 in the age column might
+stay untouched for one record, and generalized for other: </p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">34</td>
+</tr>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">34</td>
+</tr>
+<tr>
+<td style="text-align: center;">1742</td>
+<td style="text-align: center;">30-34</td>
+</tr>
+<tr>
+<td style="text-align: center;">1742</td>
+<td style="text-align: center;">30-34</td>
+</tr>
+</tbody>
+</table>
+<p>Global generalization usually makes it easier to do data analysis on generalized
+data; while local generalization allows to keep more utility at the cost of a
+slightly more complex data representation.</p>
+<h4 id="building-block-2-suppression">Building block 2: suppression</h4>
+<p>In our previous example, our records had relatively "close" demographic values,
+which allowed generalization to keep reasonably accurate information while still
+ensuring <span class="math">\(2\)</span>-anonymity. What if the table is instead:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">34</td>
+</tr>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">39</td>
+</tr>
+<tr>
+<td style="text-align: center;">1742</td>
+<td style="text-align: center;">75</td>
+</tr>
+<tr>
+<td style="text-align: center;">1691</td>
+<td style="text-align: center;">77</td>
+</tr>
+<tr>
+<td style="text-align: center;">9755</td>
+<td style="text-align: center;">13</td>
+</tr>
+</tbody>
+</table>
+<p>The first four records can be grouped in two pairs as above, but the last record
+is an outlier. Grouping it with one of the pairs above would mean having very
+large ranges of values (age between 10 and 39, or ZIP code being completely
+removed), which would significantly reduce the utility of the resulting data. So
+a simple solution to deal with such outlier values is simply to remove them from
+the data. Using both generalization and suppression on this example could lead
+to the same <span class="math">\(2\)</span>-anonymous table as before:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">30-39</td>
+</tr>
+<tr>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">30-39</td>
+</tr>
+<tr>
+<td style="text-align: center;">1000-1999</td>
+<td style="text-align: center;">75-79</td>
+</tr>
+<tr>
+<td style="text-align: center;">1000-1999</td>
+<td style="text-align: center;">75-79</td>
+</tr>
+</tbody>
+</table>
+<p>Using this method, there are usually strictly less records in the transformed
+table than in the original. On large datasets, allowing a small percentage of
+suppressed records typically allows the result to be <span class="math">\(k\)</span>-anonymous without
+requiring too much generalization.</p>
+<h4 id="algorithms">Algorithms</h4>
+<p><span class="math">\(k\)</span>-anonymity is the oldest privacy definition, it's relatively simple to
+understand, so it has been quickly adopted by the healthcare community for their
+data anonymization needs. As a result, there has been a <em>lot</em> of research on how
+to transform a dataset into a <span class="math">\(k\)</span>-anonymous table.</p>
+<p>The problem of finding an <em>optimal</em> strategy for <span class="math">\(k\)</span>-anonymity is <a href="https://en.wikipedia.org/wiki/NP-hardness">NP-hard</a>, for
+basically any reasonable definition of optimality. <a href="https://desfontain.es/PDFs/PhD/OnTheComplexityOfOptimalKAnonymity.pdf">This paper<sup>
+(pdf)</sup></a> presents a few such results, if you're interested in this
+kind of thing ^^</p>
+<p>A list of approximation algorithms for the optimal <span class="math">\(k\)</span>-anonymization problem can
+be found in <a href="https://desfontain.es/PDFs/PhD/PublishingDataFromElectronicHealthRecordsWhilePreservingPrivacyASurveyOfAlgorithms.pdf">this paper<sup> (pdf)</sup></a> (Table 4, page 11). 18
+different algorithms are listed, and I don't even think the list is exhaustive!
+The paper contains many links to the original papers, and to some comparisons
+between methods. Sadly, there is no unified benchmark to know how all these
+algorithms perform on various data analysis tasks.</p>
+<h4 id="in-practice">In practice</h4>
+<p>Unless you're a PhD student working on your literature review, you're probably
+not looking for a bunch of links to research papers about complicated
+<span class="math">\(k\)</span>-anonymization algorithms. If you're a data owner trying to transform a
+dataset to get a <span class="math">\(k\)</span>-anonymous table, you may be looking for software instead.</p>
+<p>As of 2017, the main open-source tool for data anonymization is <a href="http://arx.deidentifier.org/">ARX</a>. Its
+interface is a bit difficult to understand at first, but it works fairly well on
+small to moderately large datasets, and implements a lot more than just
+<span class="math">\(k\)</span>-anonymity algorithms. It used to feature only global generalization
+techniques<sup id="fnref:edit"><a class="footnote-ref" href="#fn:edit">1</a></sup>, but this apparently <a href="http://arx.deidentifier.org/anonymization-tool/analysis/#a50">changed recently</a>.</p>
+<p>There are other tools available online, but none of them is anywhere as usable
+as ARX. Many of them are listed in the <a href="http://arx.deidentifier.org/overview/related-software/">Related software</a> page of ARX's
+website. I've tried most of them, only to get convinced that none of them really
+reached the point of being a usable product. <a href="http://cs.utdallas.edu/dspl/cgi-bin/toolbox/index.php">UTD Anonymization Toolbox</a> is
+probably the only one worth a look: it requires to use the command-line and
+impractical configuration files to work, but it implements a local
+generalization algorithm (the first of its kind, named <a href="https://desfontain.es/PDFs/PhD/MondrianMultidimensionalKANonymity.pdf">Mondrian<sup>
+(pdf)</sup></a>, a very cool technique with better utility preservation
+than global generalization algorithms).</p>
+<p>On the commercial side, I've only heard of a toolkit developed by the consulting
+company <a href="https://privacy-analytics.com/">Privacy Analytics</a>. The intended audience seems to be people who know
+little about privacy: it looks very shiny, but I didn't manage to understand
+which anonymity property or algorithms they were using ^^ You can get a free
+trial by filling up a form on their website, but I can only assume the real
+version is very expensive, since there is no mention of price anywhere.</p>
+<h1 id="how-convincing-really-is-k-anonymity">How convincing really is <span class="math">\(k\)</span>-anonymity?</h1>
+<p><span class="math">\(k\)</span>-anonymity is simple to understand, and it seems intuitively obvious that
+reidentification attacks are well mitigated when a dataset is transformed to
+become <span class="math">\(k\)</span>-anonymous. However, it only mitigates this particular kind of attack.
+We assumed that all that the attacker wanted was to select a target, point at a
+record, and say "this record corresponds to my target" with a high certainty.
+This matches Sweeney's original attack, but how realistic is this?</p>
+<p>When an attacker successfully reidentifies someone in a dataset, it's not
+necessarily a privacy issue. Consider the voter files from earlier. By law, this
+data is public, and contains full names. It's very easy for an attacker to
+point at a random record and shouting "hey, I reidentified this person!": the
+identification is <em>right there</em> in the dataset. This "attack" <em>always succeeds</em>,
+but it's not really interesting, nor particularly creepy… Why is that?</p>
+<p>In Sweeney's example, the creepy thing isn't just finding the data subject
+associated with a given record. The <em>sensitive</em> information linked with the
+record (in our leading example, diagnostics and drug prescriptions) is where the
+creepiness comes from! The leak of <em>sensitive</em> information associated to one
+given individual is the problem, not the reidentification itself.</p>
+<p><span class="math">\(k\)</span>-anonymity doesn't really capture this idea. The definition just prevents you
+from knowing the real identity of an anonymized record. But maybe there are
+other attacks that allow you to find out sensitive information about someone,
+without finding with absolute certainty which record is theirs?</p>
+<p>As I'll explain in future articles, other types of attacks do exist, and many
+other definitions have been proposed in order to mitigate them too. Nonetheless,
+<span class="math">\(k\)</span>-anonymity is still used in the healthcare world, in large part because of
+its simplicity and utility preservation compared to other definitions.</p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:edit">
+<p>A previous version of this post claimed that only global generalization
+  was available in ARX. Sorry for the factual mistake! I should have read the
+  docs more closely =)&#160;<a class="footnote-backref" href="#fnref:edit" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20170814,
+  title = &#123;k-anonymity, the parent of all privacy definitions},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/k-anonymity.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2017},
+  month = &#123;08}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="beginnings.html">← previous</a>
+    </li>
+    <li>
+      <a href="authentication-vs-identification.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

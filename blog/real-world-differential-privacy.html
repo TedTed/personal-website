@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>A list of real-world uses of differential privacy - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="A list of real-world uses of differential privacy - Ted is writing things" />
+  <meta property="twitter:title" content="A list of real-world uses of differential privacy - Ted is writing things" />
+  <meta name="description" property="og:description" content="A list of practical deployments of differential privacy, along with their privacy parameters." />
+  <meta property="twitter:description" content="A list of practical deployments of differential privacy, along with their privacy parameters." />
+  <meta property="summary" content="A list of practical deployments of differential privacy, along with their privacy parameters." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/google-sst-map.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/google-sst-map.png" />
+  <meta property="twitter:image:alt" content="An animated visualization of searches for Fever in the US through 2020, using Google's Search Trends Symptoms Dataset" />
+  <link rel="canonical" href="https://desfontain.es/blog/real-world-differential-privacy.html" />
+  <link rel="prev" href="friendly-intro-to-differential-privacy.html" />
+  <link rel="next" href="renyi-dp-zero-concentrated-dp.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="friendly-intro-to-differential-privacy.html">← previous</a>
+ —     <a href="renyi-dp-zero-concentrated-dp.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./real-world-differential-privacy.html">A list of real-world uses of differential privacy</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2021-10-01T00:00:00+02:00">
+      2021-10-01
+    </time>
+    <small>&mdash; updated
+      <time datetime="2025-08-18T00:00:00+02:00">
+        2025-08-18
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p></small></p>
+<hr>
+<p><span class='lettrine'>T</span><strong>his</strong> article is a list of real-world
+deployments of differential privacy, along with their privacy parameters. One
+day, we might have a proper <a href="https://journalprivacyconfidentiality.org/index.php/jpc/article/view/689">Epsilon Registry</a>, but in the meantime…</p>
+<p>First, some notes.</p>
+<ul>
+<li>The main list only includes projects with a publicly documented value of the
+  privacy parameters, including about what the <a href="why-not-differential-privacy.html#privacy-units">privacy unit</a> is. Projects
+  that don't publish this information, but mention using DP, are listed at the
+  end.</li>
+<li>All use cases use <a href="local-global-differential-privacy.html#central">central DP</a> unless specified otherwise.</li>
+<li>The list is sorted by alphabetical order of the organization publishing the
+  data.</li>
+<li>When a project uses open-source differential privacy tooling, I added a link
+  to it.</li>
+<li>I also added some caveats and general comments at the end of this post.</li>
+</ul>
+<p><strong>If you'd like to add or correct something, please let me know!</strong> My contact
+info is at the bottom of this page.</p>
+<div class="toc">
+<ul>
+<li><a href="#apple">Apple</a></li>
+<li><a href="#facebook">Facebook</a><ul>
+<li><a href="#full-urls-data-set">Full URLs Data Set</a></li>
+<li><a href="#movement-range-maps">Movement Range Maps</a></li>
+</ul>
+</li>
+<li><a href="#google">Google</a><ul>
+<li><a href="#community-mobility-reports">Community Mobility Reports</a></li>
+<li><a href="#environmental-insights-explorer">Environmental Insights Explorer</a></li>
+<li><a href="#gboard-next-word-prediction-models">Gboard next-word prediction models</a></li>
+<li><a href="#gboard-out-of-vocabulary-word-discovery">Gboard out-of-vocabulary word discovery</a></li>
+<li><a href="#search-trends-symptoms-dataset">Search Trends Symptoms Dataset</a></li>
+<li><a href="#shopping">Shopping</a></li>
+<li><a href="#trends">Trends</a></li>
+<li><a href="#urban-mobility-data">Urban mobility data</a></li>
+<li><a href="#vaccination-search-insights">Vaccination Search Insights</a></li>
+</ul>
+</li>
+<li><a href="#israels-ministry-of-health">Israel's Ministry of Health</a></li>
+<li><a href="#linkedin">LinkedIn</a><ul>
+<li><a href="#audience-engagements-api">Audience Engagements API</a></li>
+<li><a href="#labor-market-insights">Labor Market Insights</a></li>
+<li><a href="#raceethnicity-estimation">Race/ethnicity estimation</a></li>
+</ul>
+</li>
+<li><a href="#microsoft">Microsoft</a><ul>
+<li><a href="#global-victim-perpetrator-synthetic-dataset">Global victim-perpetrator synthetic dataset</a></li>
+<li><a href="#telemetry-collection-in-windows">Telemetry collection in Windows</a></li>
+<li><a href="#us-broadband-coverage-dataset">U.S. Broadband Coverage Dataset</a></li>
+</ul>
+</li>
+<li><a href="#ohmconnect">OhmConnect</a></li>
+<li><a href="#united-states-census-bureau">United States Census Bureau</a><ul>
+<li><a href="#county-business-patterns">County Business Patterns</a></li>
+<li><a href="#2020-decennial-census">2020 Decennial Census</a></li>
+<li><a href="#onthemap">OnTheMap</a></li>
+<li><a href="#post-secondary-employment-outcomes">Post-Secondary Employment Outcomes</a></li>
+</ul>
+</li>
+<li><a href="#wikimedia-foundation">Wikimedia Foundation</a><ul>
+<li><a href="#page-view-statistics">Page view statistics</a></li>
+<li><a href="#editor-statistics">Editor statistics</a></li>
+</ul>
+</li>
+<li><a href="#other-deployments">Other deployments</a></li>
+<li><a href="#caveats-comments">Caveats &amp; comments</a><ul>
+<li><a href="#comparing-projects">Comparing projects</a></li>
+<li><a href="#whats-a-user">What's a user?</a></li>
+<li><a href="#replacement-vs-additionremoval">Replacement vs. addition/removal</a></li>
+<li><a href="#zero-concentrated-differential-privacy">Zero-concentrated differential privacy</a></li>
+<li><a href="#number-precision">Number precision</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h1 id="apple">Apple <a name="apple"></a></h1>
+<p><center>
+<img alt="An architecture diagram taken from Apple's differential privacy paper" src="https://desfontain.es/blog/images/apple-dp-diagram.png">
+</center></p>
+<p>Apple uses <a href="local-global-differential-privacy.html#local">local DP</a> to collect some data from end-user devices running
+iOS or macOS. The process is documented in a <a href="https://www.apple.com/privacy/docs/Differential_Privacy_Overview.pdf">high-level overview
+document</a> and a <a href="https://docs-assets.developer.apple.com/ml-research/papers/learning-with-privacy-at-scale.pdf">detailed paper</a>. All use
+<span class="math">\(\varepsilon\)</span>-DP, the values of the privacy parameter are described below, with
+a privacy unit of user-day.</p>
+<ul>
+<li><em>QuickType suggestions</em> learns previously-unknown words typed by sufficiently
+  many users, using <span class="math">\(\varepsilon=16\)</span>.</li>
+<li><em>Emoji suggestions</em> calculates which emojis are most popular among users,
+  using <span class="math">\(\varepsilon=4\)</span>.</li>
+<li><em>Lookup hints</em> collects data on actions taken from iOS <a href="https://support.apple.com/guide/iphone/search-with-iphone-iph3c511548/ios">Search
+  suggestions</a>. (I think. It's not very explicit.) It uses
+  <span class="math">\(\varepsilon=8\)</span>.</li>
+<li><em>Health Type Usage</em> estimates which health types are most used in the
+  HealthKit app, using <span class="math">\(\varepsilon=2\)</span>.</li>
+<li><em>Safari Energy Draining Domains</em> and <em>Safari Crashing Domains</em> collect data on
+  web domains: which domains are most likely to cause high energy consumption or
+  crashes, respectively. Both features use a common budget of <span class="math">\(\varepsilon=8\)</span>.</li>
+<li><em>Safari Autoplay Intent Detection</em> collects data about websites that auto-play
+  videos with sound: in which of these domains are users most likely to mute vs.
+  keep playing the video? It uses <span class="math">\(\varepsilon=16\)</span>.</li>
+</ul>
+<p><button class="toggleDetails"></button></p>
+<div style="display: none; border-left: double; padding-left: 10px">
+<p>The documented privacy unit is each data collection event. The devices send a
+limited number of such events per day: I translated all guarantees to use a
+privacy unit of user-day. Apple also does some de-identification and
+<a href="local-global-differential-privacy.html#distributed">shuffling</a> (see in Section 3.2.2 of <a href="https://docs-assets.developer.apple.com/ml-research/papers/learning-with-privacy-at-scale.pdf">the paper</a>).
+Taking this into account would presumably lead to tighter central DP
+guarantees.</p>
+</div>
+<h1 id="facebook">Facebook <a name="facebook"></a></h1>
+<h4 id="full-urls-data-set">Full URLs Data Set</h4>
+<p>The <a href="https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/TDOAPG/DGSAMS&amp;version=6.2"><em>Full URLs Data Set</em></a> provides data on user interactions with web
+pages shared on Facebok. The privacy unit is each individual action: this can be
+e.g. "Alice shared URL foo.com", or "Bob viewed a post containing URL bar.org".
+For each type of action, the privacy parameter is chosen to protect 99% of users
+with <span class="math">\((\varepsilon,\delta)\)</span>-DP, for <span class="math">\(\varepsilon=0.41\)</span> and <span class="math">\(\delta=10^{-5}\)</span>.
+Across all metrics, 96.6% of users are protected with <span class="math">\((\varepsilon,\delta)\)</span>-DP
+with <span class="math">\(\varepsilon=1.69\)</span> and <span class="math">\(\delta=10^{-5}\)</span>.
+<button class="toggleDetails"></button></p>
+<div style="display: none; border-left: double; padding-left: 10px">
+<p>Behind the scenes, this uses <span class="math">\(\rho\)</span>-<a href="renyi-dp-zero-concentrated-dp.html">zero-concentrated DP</a>, with
+<span class="math">\(\rho=0.0052\)</span> for 99% users for each action type, and an overall <span class="math">\(\rho=0.0728\)</span>
+for 96.6% of users. Note that the conversion to <span class="math">\((\varepsilon,\delta)\)</span>-DP for
+the first <span class="math">\(\rho\)</span> uses the converter from <a href="converters-differential-privacy.html">this page</a>, but the second
+<span class="math">\(\varepsilon\)</span> is obtained directly from the mechanism, and is thus smaller than
+if we used a conversion formula.</p>
+<p>The paper refers to two additional DP operations:</p>
+<ul>
+<li>URLs that have not been shared by enough users (according to a DP count) are
+  discarded;</li>
+<li>the algorithm also calculates the 99% percentile of each action in a DP way.</li>
+</ul>
+<p>It does not quantify the privacy budget used for these two operations.</p>
+</div>
+<h4 id="movement-range-maps">Movement Range Maps</h4>
+<p><center>
+<img alt="An animated map of the &quot;Stay Put&quot; metric in Facebook's Movement Range Maps" src="https://desfontain.es/blog/images/stay-put-map-fb.gif">
+</center></p>
+<p>The <a href="https://research.fb.com/blog/2020/06/protecting-privacy-in-facebook-mobility-data-during-the-covid-19-response/"><em>Movement Range Maps</em></a> quantify the changes in mobility of
+Facebook users during the COVID-19 pandemic. There are two metrics: how much
+their users move during each day, and how many people are generally staying at
+home. Each metric uses a daily value <span class="math">\(\varepsilon=1\)</span>, so the overall privacy
+budget is <span class="math">\(\varepsilon=2\)</span> with user-day as a privacy unit.
+<button class="toggleDetails"></button></p>
+<div style="display: none; border-left: double; padding-left: 10px">
+<p>The <a href="https://research.fb.com/blog/2020/06/protecting-privacy-in-facebook-mobility-data-during-the-covid-19-response/">blog post</a> also mentions that regions with fewer than 300 users
+are omitted. This process doesn't appear to be done in a DP way.</p>
+</div>
+<h1 id="google">Google <a name="google"></a></h1>
+<h4 id="community-mobility-reports">Community Mobility Reports</h4>
+<p><center>
+<img alt="Two graphs comparing time spent in residential vs. workspace places compared to a baseline" src="https://desfontain.es/blog/images/community-mobility-reports.png">
+</center></p>
+<p>The <a href="https://arxiv.org/abs/2004.04145"><em>Community Mobility Reports</em></a> quantify changes in mobility patterns
+during the COVID-19 pandemic: how many people went to their workplace or to
+specific kinds of public places, and how long people spent at home. Each metric
+uses <span class="math">\(\varepsilon=0.44\)</span> per day, and each user contributes to at most six
+metrics per day. Thus, the total privacy budget is <span class="math">\(\varepsilon=2.64\)</span>, with
+user-day as a privacy unit. The data was made differentially private using
+<a href="https://github.com/google/differential-privacy">GoogleDP</a><sup id="fnref:googledp"><a class="footnote-ref" href="#fn:googledp">1</a></sup>.
+<button class="toggleDetails"></button></p>
+<div style="display: none; border-left: double; padding-left: 10px">
+<p>The <a href="https://arxiv.org/abs/2004.04145">paper</a> also mentions using more privacy budget used to update the way
+the metrics are computed. This additional budget isn't quantified exactly.</p>
+</div>
+<h4 id="environmental-insights-explorer">Environmental Insights Explorer</h4>
+<p><center>
+<img alt="A screenshot of Environmental Insights Explorer." src="https://desfontain.es/blog/images/environmental-insights-explorer.png">
+</center></p>
+<p><a href="https://insights.sustainability.google/"><em>Environmental Insights Explorer</em></a> reports aggregate statistics about
+human mobility, sliced by mode of transportation. It <a href="https://arxiv.org/abs/2407.03496">uses</a>
+<span class="math">\(\varepsilon\)</span>-DP with <span class="math">\(\varepsilon=2\)</span>, with a privacy unit of user-week.</p>
+<h4 id="gboard-next-word-prediction-models">Gboard next-word prediction models</h4>
+<p><center>
+<img alt="A diagram showing the epsilon budget for delta of 10 to the power of -10, depending on the language." src="https://desfontain.es/blog/images/gboard-guarantees.png">
+</center></p>
+<p>Google uses <a href="https://en.wikipedia.org/wiki/Federated_learning">federated learning</a> along with DP to build <a href="https://research.google/blog/advances-in-private-training-for-production-on-device-language-models/">next-word
+prediction models</a> for Gboard, a virtual keyboard application for
+Android. Each model uses <span class="math">\((\varepsilon,\delta)\)</span>-DP with <span class="math">\(\delta=10^{-5}\)</span> and
+<span class="math">\(\varepsilon\)</span> varying between <span class="math">\(0.69\)</span> and <span class="math">\(10.61\)</span> depending on language. They
+were trained using <a href="https://www.tensorflow.org/federated">TensorFlow Federated</a> and <a href="https://www.tensorflow.org/responsible_ai/privacy/guide">TensorFlow Privacy</a>.
+<button class="toggleDetails"></button></p>
+<div style="display: none; border-left: double; padding-left: 10px">
+<p>The privacy guarantees are reported using <span class="math">\(\rho\)</span>-<a href="renyi-dp-zero-concentrated-dp.html">zero-concentrated DP</a>,
+with <span class="math">\(\rho\)</span> varying between <span class="math">\(0.25\)</span> and <span class="math">\(1.86\)</span> for <a href="https://arxiv.org/abs/2305.18465">some
+models</a>, and between <span class="math">\(0.014\)</span> and <span class="math">\(0.15\)</span> for <a href="https://colab.research.google.com/github/google-research/federated/blob/master/mf_dpftrl_matrices/privacy_accounting.ipynb">more recent
+models</a>. A <a href="https://ai.googleblog.com/2022/02/federated-learning-with-formal.html">past model</a> specifically for Spanish
+used <span class="math">\(\rho=0.81\)</span>.</p>
+</div>
+<h4 id="gboard-out-of-vocabulary-word-discovery">Gboard out-of-vocabulary word discovery</h4>
+<p>Google uses distributed DP to <a href="https://research.google/blog/improving-gboard-language-models-via-private-federated-analytics/">discover new words</a> to add to vocabulary
+lists on Gboard, a virtual keyboard application for Android. They collect data
+using <span class="math">\(\varepsilon\)</span>-DP with <span class="math">\(\varepsilon=10\)</span> in the <a href="local-global-differential-privacy.html#local">local model</a>, which
+<a href="https://arxiv.org/abs/2404.11607">corresponds</a> to a central <span class="math">\((\varepsilon,\delta)\)</span>-DP guarantee of
+<span class="math">\(\varepsilon=0.32\)</span> and <span class="math">\(\delta=10^{-10}\)</span>. The privacy unit is a single word;
+each user contributes at most 60 words in 60 days.</p>
+<h4 id="search-trends-symptoms-dataset">Search Trends Symptoms Dataset</h4>
+<p><center>
+<img alt="An animated visualization of searches for Fever in the US through 2020, using Google's Search Trends Symptoms Dataset" src="https://desfontain.es/blog/images/google-sst-map.gif">
+</center></p>
+<p>The <a href="https://arxiv.org/abs/2009.01265"><em>Search Trends Symptoms Dataset</em></a> measures the volume of Google
+searches related to a variety of symptoms. It uses <span class="math">\(\varepsilon=1.68\)</span>, with a
+user-day privacy unit; the release was generated using <a href="https://github.com/google/differential-privacy">GoogleDP</a>.</p>
+<h4 id="shopping">Shopping</h4>
+<p>Google Shopping uses a differentially private count of product page views as a
+signal to priorize the crawling of pages. It uses <span class="math">\((\varepsilon,\delta)\)</span>-DP with
+<span class="math">\(\varepsilon=1\)</span> and <span class="math">\(\delta=10^{-9}\)</span>, with user-day as a privacy unit. The data
+is generated in a <a href="https://arxiv.org/abs/2303.18086">streaming fashion</a> by a proprietary engine called
+DP-SQLP.</p>
+<h4 id="trends">Trends</h4>
+<p>Google Trends uses differential privacy to select which gueries to proactively
+show on the website, e.g. as trending or related queries. It uses
+<span class="math">\((\varepsilon,\delta)\)</span>-DP with <span class="math">\(\varepsilon=2\)</span> and <span class="math">\(\delta=10^{-10}\)</span>, with
+user-query as a privacy unit. The data is generated in a <a href="https://arxiv.org/abs/2303.18086">streaming
+fashion</a> using DP-SQLP.</p>
+<h4 id="urban-mobility-data">Urban mobility data</h4>
+<p><center>
+<img alt="Figure 1 from the paper linked below, showing visualizations of mobility and location hotspots in 7 large cities" src="https://desfontain.es/blog/images/urban-mobility-data.webp">
+</center></p>
+<p>Google <a href="https://ai.googleblog.com/2019/11/new-insights-into-human-mobility-with.html">shared mobility data</a> with researchers, using DP to
+anonymize it. The resulting <a href="https://www.nature.com/articles/s41467-019-12809-y">paper</a> says that this data sharing
+scheme used <span class="math">\((\varepsilon,\delta)\)</span>-DP with <span class="math">\(\varepsilon=0.66\)</span> and
+<span class="math">\(\delta=2.1\cdot10^{-29}\)</span>. The privacy unit is whether a given user made a trip
+from one location to another location during one week; both locations being
+fixed areas of size <span class="math">\(\approx1.3\)</span>km².
+<button class="toggleDetails"></button></p>
+<div style="display: none; border-left: double; padding-left: 10px">
+<p>The privacy unit was not explicitly given in the original paper, which could
+have given the impression that the data release used a user-level privacy unit.
+Other researchers <a href="https://www.nature.com/articles/s41467-021-27566-0">pointed this out</a>, after which the original
+authors published a <a href="https://www.nature.com/articles/s41467-021-27567-z">clarification</a> making the privacy
+guarantees more explicit.</p>
+</div>
+<h4 id="vaccination-search-insights">Vaccination Search Insights</h4>
+<p>The <a href="https://arxiv.org/abs/2107.01179"><em>Vaccination Search Insights</em></a> quantify trends in Google searches
+related to COVID-19 vaccination. It uses <span class="math">\((\varepsilon,\delta)\)</span>-DP with
+<span class="math">\(\varepsilon=2.19\)</span> and <span class="math">\(\delta=10^{-5}\)</span>, with user-day as a privacy unit; the
+data was generated using <a href="https://github.com/google/differential-privacy">GoogleDP</a>.
+<button class="toggleDetails"></button></p>
+<div style="display: none; border-left: double; padding-left: 10px">
+<p>A later <a href="https://blog.research.google/2023/05/differentially-private-clustering-for.html">blog post</a> suggests that the query classification mentioned as
+pre-processing in the <a href="https://arxiv.org/abs/2107.01179">technical paper</a> is also done in a DP way. The
+privacy budget involved in this step is not public, and is not counted towards
+the reported guarantees. The code for this step is also part of
+<a href="https://github.com/google/differential-privacy">GoogleDP</a>.</p>
+</div>
+<h1 id="israels-ministry-of-health">Israel's Ministry of Health <a name="israel-moh"></a></h1>
+<p>Israel's <a href="https://www.gov.il/en/departments/ministry_of_health/govil-landing-page">Ministry of Health</a> published a synthetic dataset of <a href="https://data.gov.il/dataset/birth-data">live births
+in 2014 in Israel</a> (there is also an unofficial <a href="https://birth.dataset.pub/">English
+version</a>), using <span class="math">\(\varepsilon\)</span>-DP with <span class="math">\(\varepsilon=9.98\)</span>, with
+singleton births (with a single baby) as the privacy unit. It used <a href="https://github.com/shlomihod/synthflow">custom
+code</a> which reused parts of <a href="https://smartnoise.org/">OpenDP SmartNoise</a> and
+<a href="https://github.com/IBM/differential-privacy-library">Diffprivlib</a>, patching some vulnerabilities along the way. The data
+release is documented in a thorough <a href="https://arxiv.org/abs/2405.00267">technical paper</a>.</p>
+<h1 id="linkedin">LinkedIn <a name="linkedin"></a></h1>
+<h4 id="audience-engagements-api">Audience Engagements API</h4>
+<p><center>
+<img alt="An architecture diagram from LinkedIn's Audience Engagements API paper" src="https://desfontain.es/blog/images/linkedin-dp-api-diagram.png">
+</center></p>
+<p>The <a href="https://arxiv.org/abs/2002.05839"><em>Audience Engagements API</em></a> is the only interactive query system in
+this list. It allows marketers to get information about LinkedIn users engaging
+with their content. Each query returns <span class="math">\((\varepsilon,\delta)\)</span>-DP with
+<span class="math">\(\varepsilon=0.15\)</span> and <span class="math">\(\delta=10^{-10}\)</span>, with a user as a privacy unit. Each
+analyst can send multiple queries, but a monthly cap limits how many: the total
+<span class="math">\((\varepsilon,\delta)\)</span> budget is <span class="math">\(\varepsilon=34.9\)</span> and <span class="math">\(\delta=7\cdot10^{-9}\)</span>,
+with a privacy unit of user-month-analyst.
+<button class="toggleDetails"></button></p>
+<div style="display: none; border-left: double; padding-left: 10px">
+<p>The system also implements additional measures to prevent averaging attacks: new
+data is loaded daily, and seeded noise is used so the same query on the same day
+will always return the same answer.</p>
+</div>
+<h4 id="labor-market-insights">Labor Market Insights</h4>
+<p>The <a href="https://arxiv.org/abs/2010.13981"><em>Labor Market Insights</em></a> measure trends in people changing their
+occupation on LinkedIn. There are three types of reports.</p>
+<ul>
+<li><em>Who is hiring?</em> lists the companies who are hiring most. It uses
+  <span class="math">\((\varepsilon,\delta)\)</span>-DP to protect each hiring event (a LinkedIn user
+  changing their occupation), with <span class="math">\(\varepsilon=14.4\)</span> and
+  <span class="math">\(\delta=1.2\cdot10^{-9}\)</span>.</li>
+<li><em>What jobs are available?</em> enumerates the job titles that most people are
+  being hired for. It also uses <span class="math">\((\varepsilon,\delta)\)</span>-DP to protect each hiring
+  event, with <span class="math">\(\varepsilon=14.4\)</span> and <span class="math">\(\delta=1.2\cdot10^{-9}\)</span>.</li>
+<li><em>What skills are needed?</em> lists the most popular skills for the jobs above. It
+  protects each LinkedIn user's skills information during a single month with
+  <span class="math">\(\varepsilon=0.3\)</span> and <span class="math">\(\delta=3\cdot10^{-10}\)</span>.</li>
+</ul>
+<p>This suggests a total <span class="math">\(\varepsilon=28.8\)</span> and <span class="math">\(\delta=2.4\cdot10^{-9}\)</span>-DP for
+hiring events, and <span class="math">\(\varepsilon=0.3\)</span> and <span class="math">\(\delta=3\cdot10^{-10}\)</span> for skill
+information during a single month. However, there are many subtleties involved
+in the above analysis. It's very possible to interpret the paper differently.
+<button class="toggleDetails"></button></p>
+<div style="display: none; border-left: double; padding-left: 10px">
+<ol>
+<li>The privacy parameters listed in the <a href="https://arxiv.org/abs/2010.13981">paper</a> are three times smaller.
+   However, each report covers 3 months of data, and reports are published
+   monthly: a single hiring event will appear in three distinct reports.</li>
+<li>For <em>What skills are needed?</em>, each monthly report looks back at 5 years of
+   data. So if skill data for a user doesn't change during a 5-year period, the
+   total budget eventually reaches <span class="math">\(\varepsilon=6\)</span> and <span class="math">\(\delta=6\cdot10^{-9}\)</span>.</li>
+<li>Adding the <span class="math">\(\varepsilon\)</span> and <span class="math">\(\delta\)</span> values together, like I did, is simple,
+   but only give loose bounds on the overall privacy budget. We can probably
+   find tighter bounds using advanced composition theorems or other methods for
+   privacy accounting.</li>
+<li>The paper also indicates that 95% of people in the dataset have at most one
+   hiring event in a 3-month period.</li>
+<li>The <em>What skills are needed?</em> report also uses a non-DP pre-processing step.
+   This makes it technically impossible to provide an exact DP guarantee.</li>
+</ol>
+</div>
+<h4 id="raceethnicity-estimation">Race/ethnicity estimation</h4>
+<p>LinkedIn uses differential privacy as part of a system that estimates the race
+and ethnicity of users and help <a href="https://www.linkedin.com/blog/engineering/responsible-ai/responsible-ai-update-testing-how-we-measure-bias-in-the-us">measure algorithmic bias</a> of
+various AI features. It <a href="https://arxiv.org/abs/2409.04652">uses</a> <span class="math">\(\varepsilon\)</span>-DP with
+<span class="math">\(\varepsilon=4.5\)</span>, with a user as a privacy unit.</p>
+<h1 id="microsoft">Microsoft <a name="microsoft"></a></h1>
+<h4 id="global-victim-perpetrator-synthetic-dataset">Global victim-perpetrator synthetic dataset</h4>
+<p>Microsoft collaborated with the <a href="https://www.iom.int/">International Organization for Migration</a>
+to publish the <a href="https://www.ctdatacollaborative.org/global-victim-perpetrator-synthetic-dataset"><em>Global Victim-Perpetrator Synthetic Dataset</em></a>, which
+provides information about victims and perpetrators of trafficking. The release
+uses <span class="math">\((\varepsilon,\delta)\)</span>-DP with <span class="math">\(\varepsilon=12\)</span> and
+<span class="math">\(\delta=5.8\cdot10^{-6}\)</span>; the privacy unit is a victim in the original dataset.
+It uses <a href="https://github.com/microsoft/synthetic-data-showcase">custom code</a> to generate the data.</p>
+<h4 id="telemetry-collection-in-windows">Telemetry collection in Windows</h4>
+<p>Microsoft collects <a href="https://www.microsoft.com/en-us/research/publication/collecting-telemetry-data-privately/">telemetry data in Windows</a>. The process used to
+get information about how much time users spend using particular apps uses
+<a href="local-global-differential-privacy.html#local">local DP</a>, with <span class="math">\(\varepsilon=1.672\)</span>, and a privacy unit of user-6-hours.</p>
+<h4 id="us-broadband-coverage-dataset">U.S. Broadband Coverage Dataset</h4>
+<p><center>
+<img alt="A map of the US where each postal code is colored according to the fraction of devices using broadband" src="https://desfontain.es/blog/images/broadband-coverage.png">
+</center></p>
+<p>The <a href="https://arxiv.org/abs/2103.14035"><em>U.S. Broadband Coverage Dataset</em></a> quantifies the percentage of users
+having access to high-speed Internet across the US. It uses <span class="math">\(\varepsilon\)</span>-DP
+with <span class="math">\(\varepsilon=0.2\)</span>, the privacy unit is a user. The data was privatized
+using <a href="https://smartnoise.org/">OpenDP SmartNoise</a>.</p>
+<h1 id="ohmconnect">OhmConnect <a name="ohmconnect"></a></h1>
+<p><center>
+<img alt="A screenshot of a UI visualizing the impact of DP on queries returning average possible energy savings among a group" src="https://desfontain.es/blog/images/energy-dp.png">
+</center></p>
+<p>The <a href="https://edp.recurve.com/"><em>Energy Differential Privacy</em></a> project enables sharing of smart meter
+data. In one <a href="https://assets.website-files.com/5cb0a177570549b5f11b9550/5ffddb83b5ea5d67f5c43661_Quantifying%20The%20OhmConnect%20Virtual%20Power%20Plant%20During%20the%20California%20Blackouts.pdf">project</a>, <a href="https://www.recurve.com/">Recurve</a> helped <a href="https://www.ohmconnect.com">OhmConnect</a> share data from
+their virtual power plant. This project uses <span class="math">\((\varepsilon,\delta)\)</span>-DP with
+<span class="math">\(\varepsilon=4.72\)</span> and <span class="math">\(\delta=5.06\cdot10^{-9}\)</span>, with user as a privacy unit.
+The project uses both <a href="https://github.com/recurve-inc/eeprivacy">custom open-source code</a> and Google's
+<a href="https://github.com/google/differential-privacy">open-source DP libraries</a>. <button class="toggleDetails"></button></p>
+<div style="display: none; border-left: double; padding-left: 10px">
+<p>The privacy parameters appearing in the <a href="https://assets.website-files.com/5cb0a177570549b5f11b9550/5ffddb83b5ea5d67f5c43661_Quantifying%20The%20OhmConnect%20Virtual%20Power%20Plant%20During%20the%20California%20Blackouts.pdf">technical paper</a> are
+different. The accounting uses amplification by sampling, with a sampling factor
+of <span class="math">\(\eta=0.124\)</span>. However, the paper converts a pre-amplification
+<span class="math">\(\varepsilon_{orig}=6.8\)</span> into <span class="math">\(\varepsilon=\eta\cdot\varepsilon_{orig}=0.843\)</span>.
+The correct formula is
+<span class="math">\(\varepsilon=\log\left(1+\mu\left(e^{\varepsilon_{orig}}-1\right)\right)\)</span> (see
+Theorem 9 in <a href="https://arxiv.org/abs/1807.01647">summary of results</a>), which gives <span class="math">\(\varepsilon=4.72\)</span>.
+The <span class="math">\(\delta\)</span> listed above is also amplified (with <span class="math">\(\delta=\mu\delta_{orig}\)</span>),
+the one reported in the paper is not.</p>
+<p>Note that the amplification result assumes uniformly random sampling with
+replacement. But the paper also mentions a stratified sampling methodology,
+which is slightly different: it's unclear whether the amplification result still
+applies. If not, then the privacy parameters are <span class="math">\(\varepsilon=6.8\)</span> and
+<span class="math">\(\delta=4.08\cdot10^{-8}\)</span>.</p>
+</div>
+<h1 id="united-states-census-bureau">United States Census Bureau <a name="uscb"></a></h1>
+<h4 id="county-business-patterns">County Business Patterns</h4>
+<p>The U.S. Census Bureau published <a href="https://www.census.gov/topics/business-economy/disclosure/data/tables/cbp-privacy-demonstration-tables.html">demonstration tables</a> for their
+County Business Patterns data product, providing information about business
+establishments in the US. It uses a variant of differential privacy that
+provides different guarantees to businesses depending on their size. For
+example, a business whose annual payroll is &#36;100,000, whose first quarter
+payroll is &#36;25,000, and who has 4 employees would be protected with
+<span class="math">\((\varepsilon,\delta)\)</span>-DP with <span class="math">\(\varepsilon=34.92\)</span> and <span class="math">\(\delta=10^{-5}\)</span>. The
+project was deployed in partnership with <a href="https://tmlt.io">Tumult Labs</a>, using <a href="https://tmlt.dev">Tumult
+Analytics</a>.
+<button class="toggleDetails"></button></p>
+<div style="display: none; border-left: double; padding-left: 10px">
+<p>The <a href="https://www.census.gov/topics/business-economy/disclosure/about.html">about page</a> mentions the use of
+<span class="math">\(\rho\)</span>-<a href="renyi-dp-zero-concentrated-dp.html">zero-concentrated DP</a> with <span class="math">\(\rho=12.058\)</span>, which gives the
+<span class="math">\(\varepsilon\)</span> and <span class="math">\(\delta\)</span> above. A <a href="https://www2.census.gov/about/training-workshops/2023/2023-04-20-differential-privacy-presentation.pdf#page=51">presentation</a> provides more
+context on the privacy unit. The details of the underlying privacy variant,
+per-record zero-concentrated differential privacy, can be found in
+<a href="https://arxiv.org/abs/2310.12827">this paper</a></p>
+</div>
+<h4 id="2020-decennial-census">2020 Decennial Census</h4>
+<p><center>
+<img alt="A screenshot from the 2020 Census Demographic Data Map Viewer" src="https://desfontain.es/blog/images/census-map-viewer.png">
+</center></p>
+<p>The <a href="https://www.census.gov/programs-surveys/decennial-census/decade/2020/2020-census-main.html">2020 Census</a> is a series of data releases containing demographic
+information about the U.S. population. Each of them is protected with
+<span class="math">\((\varepsilon,\delta)\)</span>-DP with <span class="math">\(\delta=10^{-5}\)</span>, and the privacy unit is a
+person in the dataset.</p>
+<ul>
+<li>The <a href="https://www.census.gov/programs-surveys/decennial-census/about/rdo/summary-files.html">Redistricting Data</a> is used as part of the legislative
+  process. It uses <span class="math">\(\varepsilon=13.64\)</span>, and is implemented using
+  <a href="https://github.com/uscensusbureau/DAS_2020_Redistricting_Production_Code">custom code</a>.</li>
+<li>The <a href="https://www.census.gov/data/tables/2023/dec/2020-census-dhc.html">Demographic Housing and Characteristics File</a> (DHC) provides
+  demographic information tabulated by geography. It is split in two parts:
+  "Person tables" (DHCP, counting people) use <span class="math">\(\varepsilon=19.46\)</span>, and "Unit
+  tables" (DHCH, counting households) use <span class="math">\(\varepsilon=25.87\)</span>. Both use
+  <a href="https://github.com/uscensusbureau/DAS_2020_DHC_Production_Code">custom code</a>.</li>
+<li>The <a href="https://www.census.gov/data/tables/2023/dec/2020-census-detailed-dhc-a.html">Detailed DHC-A</a> provides tabulations of people along more
+  fine-grained racial and ethnic groups. It uses <span class="math">\(\varepsilon=49.21\)</span>, and is
+  <a href="https://github.com/uscensusbureau/DAS_2020_DDHCA_Production_Code">implemented</a> with <a href="https://tmlt.dev">Tumult Analytics</a>.</li>
+<li>The <a href="https://www.census.gov/data/tables/2024/dec/2020-census-detailed-dhc-b.html">Detailed DHC-B</a> provides household tabulations along fine-grained
+  racial and ethnic groups. It uses <span class="math">\(\varepsilon=45.68\)</span>, and is
+  <a href="https://github.com/uscensusbureau/DAS_2020_DDHCB_Production_Code">implemented</a> with <a href="https://tmlt.dev">Tumult Analytics</a>.</li>
+<li>The <a href="https://www.census.gov/data/tables/2024/dec/2020-census-s-dhc.html">Supplemental DHC</a> combines characteristics of households and the people
+  living in them. It uses <span class="math">\(\varepsilon=12.74\)</span>, and is <a href="https://github.com/uscensusbureau/DAS_2020_SDHC_Production_Code">implemented</a>
+  with <a href="https://tmlt.dev">Tumult Analytics</a>.</li>
+</ul>
+<p>These data releases are generated in two steps: first, the algorithm computes DP
+statistics by adding noise to aggregations, then it performs complex
+post-processing steps to improve the utility of the data. The U.S. Census Bureau
+also publishes <em>noisy measurement files</em> for the
+<a href="https://www2.census.gov/programs-surveys/decennial/2020/data/01-Redistricting_File--PL_94-171/00-2020-Redistricting-Noisy-Measurement-File/2020%20Redistricting%20NMF%202023-06-15%20README.html">Redistricting Data</a> and the
+<a href="https://www2.census.gov/programs-surveys/decennial/2020/data/demographic-and-housing-characteristics-file/00-2020-DHC-Noisy-Measurement-File/2020_DHC_NMF_README.html">Demographic Housing and Characteristics File</a>: this is the DP output of
+the first stage, without any post-processing. Since this is from the same run as
+the data releases above, the privacy budget is not affected by these additional
+publications.</p>
+<p><button class="toggleDetails"></button></p>
+<div style="display: none; border-left: double; padding-left: 10px">
+<p>The privacy accounting is done with <span class="math">\(\rho\)</span>-<a href="renyi-dp-zero-concentrated-dp.html">zero-concentrated DP</a>. The
+privacy budgets used are
+<span class="math">\(\rho=2.63\)</span> for the <a href="https://www2.census.gov/programs-surveys/decennial/2020/program-management/data-product-planning/2010-demonstration-data-products/01-Redistricting_File--PL_94-171/2021-06-08_ppmf_Production_Settings/2021-06-08-privacy-loss_budgetallocation.pdf">redistricting data</a>,
+<span class="math">\(\rho=4.96\)</span> for the <a href="https://www2.census.gov/programs-surveys/decennial/2020/program-management/data-product-planning/2010-demonstration-data-products/04-Demonstration_Data_Products_Suite/2023-04-03/2023-04-03_Privacy-Loss_Budget_Allocations.pdf">DHCP</a>,
+<span class="math">\(\rho=7.7\)</span> for the <a href="https://www2.census.gov/programs-surveys/decennial/2020/program-management/data-product-planning/2010-demonstration-data-products/04-Demonstration_Data_Products_Suite/2023-04-03/2023-04-03_Privacy-Loss_Budget_Allocations.pdf#page=2">DHCH</a>,
+<span class="math">\(\rho=19.776\)</span> for the <a href="https://www2.census.gov/programs-surveys/decennial/2020/technical-documentation/complete-tech-docs/detailed-demographic-and-housing-characteristics-file-a/2020census-detailed-dhc-a-techdoc.pdf#page=59">Detailed DHC-A</a>,
+<span class="math">\(\rho=17.79\)</span> for the <a href="https://www2.census.gov/programs-surveys/decennial/2020/technical-documentation/complete-tech-docs/detailed-demographic-and-housing-characteristics-file-b/2020census-detailed-dhc-b-techdoc.pdf#page=26">Detailed DHC-B</a>,
+and <span class="math">\(\rho=2.515\)</span> for the <a href="https://www2.census.gov/programs-surveys/decennial/2020/technical-documentation/complete-tech-docs/supplemental-demographic-and-housing-characteristics-file/2020census-supplemental-dhc-techdoc.pdf#page=50">Supplemental DHC</a>. Note that these all use
+the <a href="https://desfontain.es/blog/differential-privacy-glossary.html#replace">replace-one</a> neighboring relation, which inflates the privacy
+budget compared to the releases using <a href="https://desfontain.es/blog/differential-privacy-glossary.html#add">add-or-remove one record</a> as a
+neighboring relation.</p>
+</div>
+<h4 id="onthemap">OnTheMap</h4>
+<p><center>
+<img alt="A screenshot from OnTheMap" src="https://desfontain.es/blog/images/onthemap.png">
+</center></p>
+<p><a href="https://lehd.ces.census.gov/applications/help/onthemap.html#!what_is_onthemap">OnTheMap</a> was the first-ever real-world deployment of DP. It provides
+statistics on where US workers are employed and where they live. This data
+release uses <span class="math">\((\varepsilon,\delta)\)</span>-DP with <span class="math">\(\varepsilon=8.6\)</span> and
+<span class="math">\(\delta=10^{-5}\)</span>, the privacy unit is a person in the dataset, and the methods
+are described in details in <a href="https://lehd.ces.census.gov/doc/help/ICDE08_conference_0768.pdf">this paper</a><sup id="fnref:john"><a class="footnote-ref" href="#fn:john">2</a></sup>.</p>
+<h4 id="post-secondary-employment-outcomes">Post-Secondary Employment Outcomes</h4>
+<p>The <a href="https://lehd.ces.census.gov/data/pseo_experimental.html"><em>Post-Secondary Employment Outcomes</em></a> provide data about the earning
+and employment of college graduates. The <a href="https://lehd.ces.census.gov/doc/PSEOTechnicalDocumentation.pdf">technical documentation</a>
+mentions two statistics using <span class="math">\(\varepsilon\)</span>-DP with <span class="math">\(\varepsilon=1.5\)</span>, for a
+total privacy budget of <span class="math">\(\varepsilon=3\)</span>. The privacy unit is a person in the
+dataset, and the methods are described in detail in <a href="https://journalprivacyconfidentiality.org/index.php/jpc/article/view/722">this paper</a>.</p>
+<h1 id="wikimedia-foundation">Wikimedia Foundation <a name="wmf"></a></h1>
+<h4 id="page-view-statistics">Page view statistics</h4>
+<p>The <a href="https://wikimediafoundation.org/">Wikimedia Foundation</a>, helped by <a href="https://tmlt.io">Tumult Labs</a>, published
+statistics about how many distinct users visited each Wikipedia page on each
+day, from each country. The <a href="https://diff.wikimedia.org/2023/06/21/new-dataset-uncovers-wikipedia-browsing-habits-while-protecting-users/">data publication</a> also covers other
+<a href="https://meta.wikimedia.org/wiki/Our_projects">Wikimedia projects</a>, and is split in three parts.</p>
+<ul>
+<li>Data from July 1st, 2015 to February 8th, 2017 is protected with
+  <span class="math">\(\varepsilon\)</span>-DP with <span class="math">\(\varepsilon=1\)</span>, the privacy unit being 300 page views
+  per day.</li>
+<li>Data from February 9th, 2017 to February 5th, 2023 is protected with
+  <span class="math">\(\varepsilon\)</span>-DP with <span class="math">\(\varepsilon=1\)</span>, the privacy unit being 30 page views
+  per day.</li>
+<li>Data from February 6th, 2023 onwards is protected with
+  <span class="math">\((\varepsilon,\delta)\)</span>-DP with <span class="math">\(\varepsilon=0.72\)</span> and <span class="math">\(\delta=10^{-5}\)</span>, with a
+  user-day privacy unit.</li>
+</ul>
+<p>The data publication uses <a href="https://tmlt.dev">Tumult Analytics</a>. A <a href="https://arxiv.org/abs/2308.16298">technical
+paper</a> explains the why different privacy units and privacy budgets
+are used for different periods. <button class="toggleDetails"></button></p>
+<div style="display: none; border-left: double; padding-left: 10px">
+<p>For the most recent data, the privacy accounting is done with
+<span class="math">\(\rho\)</span>-<a href="renyi-dp-zero-concentrated-dp.html">zero-concentrated DP</a> with a budget of <span class="math">\(\rho=0.015\)</span>. </p>
+</div>
+<h4 id="editor-statistics">Editor statistics</h4>
+<p>The <a href="https://wikimediafoundation.org/">Wikimedia Foundation</a>, helped by <a href="https://tmlt.io">Tumult Labs</a>, publishes
+statistics about editor activity by project and country, on Wikipedia and other
+<a href="https://meta.wikimedia.org/wiki/Our_projects">Wikimedia projects</a>. The data publication happens at two separate time
+intervals.</p>
+<ul>
+<li>Some data is published <a href="https://analytics.wikimedia.org/published/datasets/geoeditors_monthly/00_README.html">monthly</a>, and uses <span class="math">\(\varepsilon\)</span>-DP
+  with <span class="math">\(\varepsilon=2\)</span> and a privacy unit of editor-project-country-month.</li>
+<li>Some data is published <a href="https://analytics.wikimedia.org/published/datasets/geoeditors_weekly/00_README.html">weekly</a>, and also uses <span class="math">\(\varepsilon\)</span>-DP
+  with <span class="math">\(\varepsilon=2\)</span> and a privacy unit of editor-project-country-week.</li>
+<li>A <a href="https://wikitech.wikimedia.org/wiki/Russian_editor_information_(2022-23)">one-off release</a> for Russian editors used <span class="math">\(\varepsilon\)</span>-DP
+  with <span class="math">\(\varepsilon=0.1\)</span> and a privacy unit of editor-project-country-month.</li>
+</ul>
+<p>These datasets are generated using <a href="https://tmlt.dev">Tumult Analytics</a>.</p>
+<h1 id="other-deployments">Other deployments</h1>
+<p>This list is almost certainly incomplete. Again, don't hesitate to reach out if
+you'd like me to add or correct something!</p>
+<ul>
+<li>Apple uses differential privacy to learn <a href="https://machinelearning.apple.com/research/scenes-differential-privacy">iconic scenes</a> scenes and
+  improve key photo selection for the Memories and Places iOS apps. The blog
+  post mentions using <span class="math">\((\varepsilon,\delta)\)</span>-DP with <span class="math">\(\varepsilon=1\)</span> and
+  <span class="math">\(\delta=1.5\cdot10^{-7}\)</span>, but the privacy unit is not specified.</li>
+<li>Apple and Google's <a href="https://covid19.apple.com/contacttracing">Exposure Notification framework</a> has an
+  <a href="https://covid19-static.cdn-apple.com/applications/covid19/current/static/contact-tracing/pdf/ENPA_White_Paper.pdf">analytics</a> component that uses <a href="local-global-differential-privacy.html#distributed">distributed DP</a>.
+  The paper mentions a local <span class="math">\(\varepsilon=8\)</span> and corresponding central values of
+  <span class="math">\(\varepsilon\)</span> depending on how many users participate and on the central
+  <span class="math">\(\delta\)</span> chosen. However, it does not specify the privacy unit, the number of
+  aggregations, nor the minimal number of participating users.</li>
+<li><a href="https://brave.com/">Brave</a> uses differential privacy to collect <a href="https://brave.com/blog/nebula/">usage analytics</a> using
+  <a href="local-global-differential-privacy.html#distributed">distributed DP</a>. The <a href="https://github.com/brave/brave-browser/wiki/P3A">implementation</a> is public so
+  the privacy parameters could in principle be figured out, but there are not
+  summarized anywhere, and are likely evolving over time.</li>
+<li>Google mentions using DP in two <a href="https://developers.googleblog.com/2019/09/enabling-developers-and-organizations.html">Google Maps features</a>: the first
+  quantifies how busy public places are during the day, the second which
+  restaurant's dishes are most popular. It does not specify the privacy
+  parameters used nor the exact method used to generate the data.</li>
+<li>Google's <a href="https://security.googleblog.com/2014/10/learning-statistics-with-privacy-aided.html">RAPPOR</a> used to collect browsing information in Google Chrome with
+  <a href="local-global-differential-privacy.html#local">local DP</a>. It is now <a href="https://github.com/chromium/chromium/blob/72ceeed2ebcd505b8d8205ed7354e862b871995e/chrome/browser/prefs/browser_prefs.cc#L509">deprecated</a>.</li>
+<li>Google mentions using DP and federated learning to train models to improve
+  <a href="https://ai.googleblog.com/2023/03/distributed-differential-privacy-for.html">text selection and copying</a> on Android. The deployment uses
+  distributed DP, which provides similar guarantees to <a href="local-global-differential-privacy.html#local">local DP</a>, with
+  additional assumptions about the adversary (which must be honest-but-curious).
+  The value of <span class="math">\(\varepsilon\)</span> is reported to be "in the hundreds", but not
+  precisely specified; the privacy unit is also not reported.</li>
+<li>Google mentions training a safety classifier using 
+  <a href="https://research.google/blog/protecting-users-with-differentially-private-synthetic-training-data/">DP synthetic data</a>; the classifier is then used on mobile
+  devices to control the output of a large language model. Privacy parameters
+  are not reported.</li>
+<li>LinkedIn mentions using DP for <a href="https://www.linkedin.com/blog/engineering/trust-and-safety/privacy-preserving-single-post-analytics">post analytics</a>. The value of
+  <span class="math">\(\varepsilon\)</span> is reported to be "in the hundreds", but not precisely
+  specified; the privacy unit is also not reported.</li>
+<li>The <a href="https://www.irs.gov/">Internal Revenue Service</a> and the
+  <a href="https://www.ed.gov/">U.S. Department of Education</a>, helped by <a href="https://tmlt.io">Tumult Labs</a>, used DP to
+  publish college graduate income summaries. The data was generated using
+  <a href="https://tmlt.dev">Tumult Analytics</a> and published on the
+  <a href="https://collegescorecard.ed.gov/">College Scorecard</a> website. The project is outlined in
+  <a href="https://www.tmlt.io/casestudy/illuminating-college-outcomes-while-protecting-privacy">this post</a>, but no specific privacy parameters are given.</li>
+<li>Microsoft's <a href="https://www.microsoft.com/en-us/research/group/msai/articles/assistive-ai-makes-replying-easier-2/">Assistive AI</a> automatically suggests replies to messages in
+  Office tools. It provides <span class="math">\((\varepsilon,\delta)\)</span>-DP with <span class="math">\(\varepsilon=4\)</span> and
+  <span class="math">\(\delta&lt;10^{-7}\)</span>, but does not specify what the privacy unit is.<ul>
+<li>A separate <a href="https://www.microsoft.com/en-us/research/blog/privacy-preserving-machine-learning-maintaining-confidentiality-and-preserving-trust/">blog post</a> by Microsoft suggests that this choice of
+  <span class="math">\(\varepsilon=4\)</span> is a policy standard across use cases for differentially
+  private machine learning, and applies to the data of each user over a
+  period of 6 months.</li>
+</ul>
+</li>
+<li>Microsoft also mentions using DP in <a href="https://download.microsoft.com/download/D/1/F/D1F0DFF5-8BA9-4BDF-8924-7816932F6825/Differential_Privacy_for_Everyone.pdf">Workplace Analytics</a>: this allows
+  managers to see data about their team's interactions with workplace tools. No
+  specific information about privacy parameters is given.</li>
+<li><a href="https://spectus.ai/">Spectus</a> published a <a href="https://spectus.ai/social-impact/evacuation-dashboard/">dashboard</a> containing DP metrics about
+  mobility trends during Hurricane <a href="https://en.wikipedia.org/wiki/Hurricane_Irma">Irma</a>, and the page suggests that they
+  generated similar datasets for other natural disasters. The
+  <a href="https://spectus.ai/wp-content/uploads/2022/10/Spectus_DPWhitepaper_v01b.pdf">whitepaper</a> mentions that <a href="https://smartnoise.org/">OpenDP SmartNoise</a> was
+  used to generate four <span class="math">\(\varepsilon\)</span>-DP metrics for a total <span class="math">\(\varepsilon=10\)</span>;
+  the privacy unit is not specified.</li>
+<li>The U.S. Census Bureau publishes the
+  <a href="https://www.census.gov/data/experimental-data-products/gridded-eif.html">Gridded Environmental Impact Frame</a>, a dataset combining demographic
+  data and exposure data for environmental hazards. It is protected with a
+  <a href="https://www2.census.gov/library/working-papers/2024/adrm/ces/CES-WP-24-74.pdf">noise infusion process</a> heavily inspired by differential privacy,
+  but some design choices mean that the release does not have formal privacy
+  guarantees.</li>
+<li>The U.S. Census Bureau publishes the <a href="https://www.opportunityatlas.org/">Opportunity Atlas</a>, a dataset about
+  economic mobility. The <a href="https://www.census.gov/content/dam/Census/programs-surveys/center-for-economic-studies/opportunity_atlas_paper.pdf">technical description</a> mentions that the
+  dataset is protected with <span class="math">\(\varepsilon\)</span>-DP with <span class="math">\(\varepsilon=8\)</span>, but also
+  mentions adding normally distributed noise to statistics; this suggests a
+  non-zero <span class="math">\(\delta\)</span> value, but no such value is reported.</li>
+<li>The U.S. Census Bureau publishes the <a href="https://lehd.ces.census.gov/data/veo_experimental.html#protection-system">Veteran Employment Outcomes</a>, a
+  dataset about labor market outcomes for discharged veterans. The
+  <a href="https://lehd.ces.census.gov/doc/VEO_Tech_Doc_v2.pdf">technical description</a> has details about the mechanisms used and
+  suggests that the privacy unit is an individual in the data, but the numeric
+  privacy parameters are not reported.</li>
+</ul>
+<p>There are (many) other examples of companies and organizations saying they use
+DP. I only added them here if they point to a specific project or feature.</p>
+<p>Finally, many scientific papers report experimental results on real datasets.
+Most don't mention whether the system was deployed. I did not attempt to list
+those.</p>
+<h1 id="caveats-comments">Caveats &amp; comments</h1>
+<h4 id="comparing-projects">Comparing projects</h4>
+<p>You should not use this list to make broad statements or comparisons about the
+privacy posture of different organizations. Differential privacy parameters are
+a very small part of the story, even for these specific projects. How was the
+data collected? How long is it kept? How sensitive is it? Who has access to the
+input and output data? Answering these questions is crucial to put each DP
+deployment and its parameters in context. </p>
+<p>In addition, different privacy units also make simple comparisons fairly
+meaningless. Even across time periods, the semantics are subtle. As an example,
+consider two DP processes.</p>
+<ul>
+<li>Process <span class="math">\(A\)</span> uses a privacy unit of user-day with <span class="math">\(\varepsilon_A=0.2\)</span>.</li>
+<li>Process <span class="math">\(B\)</span> uses a privacy unit of user-month with <span class="math">\(\varepsilon_B=3\)</span>.</li>
+</ul>
+<p>Can we simply multiply <span class="math">\(\varepsilon_A\)</span> by <span class="math">\(30\)</span> to compare it to <span class="math">\(\varepsilon_B\)</span>?
+Well, not really. The data of a user <em>during a single day</em> is protected by
+Process <span class="math">\(A\)</span> with <span class="math">\(\varepsilon_A\)</span>, which is better than what Process <span class="math">\(B\)</span> can
+guarantee (at most <span class="math">\(\varepsilon_B\)</span>). But with process <span class="math">\(A\)</span>, the data <em>of an
+entire month</em> is only protected with <span class="math">\(30\varepsilon_A=6\)</span> with Process <span class="math">\(A\)</span>, so
+Process <span class="math">\(B\)</span> has better guarantees. And this is without the possibility of using
+better privacy accounting methods, to get tighter parameters for the monthly
+guarantees of Process <span class="math">\(A\)</span>.</p>
+<h4 id="whats-a-user">What's a user?</h4>
+<p>Many of these projects have <em>user</em> as part of their privacy unit. This can mean
+slightly different things depending on the project: a device (for telemetry
+collection), an account (for online services), a household (for smart meter
+data), and so on. This means that an individual who uses multiple devices or
+accounts on the same online service might get weaker privacy guarantees. This
+subtlety is not always made explicit.</p>
+<h4 id="replacement-vs-additionremoval">Replacement vs. addition/removal</h4>
+<p>In differential privacy, the definition of the two neighboring datasets can be
+of two types. Do you <em>change</em> the data of one person? Or do you <em>add</em> or
+<em>remove</em> a user? This subtlety is also not always explicit, and I've ignored it
+in the list above.</p>
+<h4 id="zero-concentrated-differential-privacy">Zero-concentrated differential privacy</h4>
+<p>Multiple data releases use <a href="renyi-dp-zero-concentrated-dp.html">zero-concentrated DP</a> to do the privacy budget
+accounting. Some report guarantees using this definition, others convert the
+guarantees to <span class="math">\((\varepsilon, \delta)\)</span>-DP in communication materials. To make the
+comparison easier, I converted all these guarantees to <span class="math">\((\varepsilon,\delta)\)</span>-DP
+with <span class="math">\(\delta=10^{-5}\)</span>; even when the reported <span class="math">\(\delta\)</span> is different.
+<button class="toggleDetails"></button></p>
+<div style="display: none; border-left: double; padding-left: 10px">
+<p>The conversion was done using the converter on <a href="converters-differential-privacy.html">this page</a>, which
+gives a tighter bound than the frequently-used formula of Proposition 1.3 in
+<a href="https://arxiv.org/abs/1605.02065">this paper</a>. However, this converter is not tight, and better
+<span class="math">\((\varepsilon,\delta)\)</span>-DP guarantees can sometimes be obtained directly from the
+details of the mechanism, so the actual <span class="math">\(\varepsilon\)</span> values can be slightly
+smaller than the ones reported here.</p>
+</div>
+<h4 id="number-precision">Number precision</h4>
+<p>I rounded all the numbers to the second decimal point. Most of the equal signs
+should be understood to be <span class="math">\(\approx\)</span> signs instead.</p>
+<hr>
+<p><small></p>
+<p>Thanks to Anthony Caruso, Ashwin Machanavajjhala, Erik Taubenek, Hal Triedman,
+John Abowd, Kai Yao, Lars Vilhuber, Lorraine Wong, Marc Paré, Osonde Ope Osoba,
+Peter Kairouz, Philip Leclerc, Rodrigo Racanicci, Sergey Yekhanin, Tancrède
+Lepoint, and Ziteng Sun for their helpful comments and suggestions.</p>
+<p></small></p>
+<script type="text/javascript">
+var defaultButton = 'More details';
+var buttons = document.getElementsByClassName('toggleDetails');
+for (var i = 0; i < buttons.length; i++) {
+  buttons[i].innerHTML = defaultButton;
+  buttons[i].addEventListener('click', function (event) {
+      this.innerHTML = this.innerHTML == defaultButton ? 'Fewer details' : defaultButton;
+      details = this.parentElement.nextElementSibling;
+      details.style.display = details.style.display == 'none' ? 'block' : 'none';
+  });
+}
+</script>
+
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:googledp">
+<p>The project name in the GitHub repository is "Google's differential
+  privacy libraries"; most of the academic literature uses "GoogleDP" to refer
+  to it, so I reuse the abbreviation here.&#160;<a class="footnote-backref" href="#fnref:googledp" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:john">
+<p>John Abowd confirmed in personal correspondence that the parameters
+mentioned in the paper are the ones used for the actual deployment.&#160;<a class="footnote-backref" href="#fnref:john" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20211001,
+  title = &#123;A list of real-world uses of differential privacy},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/real-world-differential-privacy.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2021},
+  month = &#123;10}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="friendly-intro-to-differential-privacy.html">← previous</a>
+    </li>
+    <li>
+      <a href="renyi-dp-zero-concentrated-dp.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

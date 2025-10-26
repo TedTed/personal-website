@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="deltapresence.html" />
+  <link ref="next" href="DifferentialPrivacy.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="deltapresence.html">← previous</a></li>
+        <li><a href="FromSyntacticToSemanticPrivacy.html#FlawsOfSyntacticPrivacyDefinitions.html">up</a></li>
+        <li><a href="DifferentialPrivacy.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="deltapresence.html">LINKPREV</a><a href="FromSyntacticToSemanticPrivacy.html#FlawsOfSyntacticPrivacyDefinitions.html">LINKUP</a><a href="DifferentialPrivacy.html">LINKNEXT</a></p></div>
+  <h4 class="subsectionHead" id="flaws-of-syntactic-privacy-definitions-u-ding-"><span class="titlemark">2.1.5</span>&nbsp;&nbsp;<a id="x13-300002.1.5"></a>Flaws of syntactic privacy definitions <span class="bbding-10x-x-109">✿</span></h4> <!-- l. 3 --><p class="noindent">
+The four definitions mentioned in the previous section all seem to have serious limitations. Many of
+these attempts at defining anonymization feel like “patches” applied to prior notions to fix the most
+obvious flaws. However, it looks like any of these patches only creates more difficult questions, and
+does not suppress privacy issues entirely. Choosing when to apply each definition is also difficult:
+the definitions protect different aspects, so one has to think about what kind of attacker
+might want to attack the data before choosing the relevant definition. This choice itself
+is a difficult policy decision, and choosing the wrong attack model can have devastating
+consequences.
+</p><!-- l. 13 --><p class="indent">  Perhaps more importantly, these definitions all share some fundamental issues. First, they all break
+down if the attacker has unexpected background knowledge. If the choice of quasi-identifier columns
+is wrong, and the attacker knows some auxiliary information that we did not expect, and
+all guarantees are lost. This background knowledge issue can also happen if the attacker
+has some information about the original database that we did not expect. For example, in
+<!-- l. 19 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">l</span></span></span></span></span></span>-diversity, if the
+attacker knows the information some other users in the dataset, they might reduce the number of possible options
+for the sensitive value. This problem is especially worrying if the attacker can potentially <span class="t1xi-x-x-109">influence </span>the data:
+<!-- l. 22 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity,
+for example, is pointless if the attacker can simply add arbitrarily many elements to the dataset to have
+a specific quasi-identifier combination pass the threshold. This last attack vector might not be a major
+concern for medical data, but is realistic for e.g.&nbsp;online services, where a single individual could easily
+create fake accounts.
+</p><!-- l. 28 --><p class="indent">  Second, they implicitly assume that the data release happens in isolation: the original data will not be
+published in any other way, nor will related data from different datasets. Controlling that a specific
+dataset is only released once might be feasible in theory. However, it is near-impossible to predict what
+might happen in the future, and invalidate a risk assessment made at a certain point in time, by some
+third-party. For example, consider two hospitals who independently release medical information using
+<!-- l. 34 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">l</span></span></span></span></span></span>-diversity,
+exemplified in Table&nbsp;<a href="#-two-ldiverse-datasets">2.17<!-- tex4ht:ref: tab:2-diverse-combination  --></a>. An attacker knowing that their target (with ZIP code 4217 and age 32)
+visited <span class="t1xi-x-x-109">both </span>hospitals can compare both releases, look at which diagnostic is the same in both, and
+deduce that their target has HIV.
+                                                                                
+                                                                                
+</p><!-- l. 40 --><p class="indent">  </p><figure class="float" id="-two-ldiverse-datasets">
+                                                                                
+                                                                                
+<div class="tabular">
+ <table class="tabular" id="TBL-22"><colgroup id="TBL-22-1g"><col id="TBL-22-1"><col id="TBL-22-2"><col id="TBL-22-3"></colgroup><tbody><tr id="TBL-22-1-" style="vertical-align:baseline;"><td class="td11" id="TBL-22-1-1" style="text-align:center; white-space:nowrap;">  ZIP code   </td><td class="td11" id="TBL-22-1-2" style="text-align:center; white-space:nowrap;">  age    </td><td class="td11" id="TBL-22-1-3" style="text-align:center; white-space:nowrap;">   diagnostic     </td>
+</tr><tr id="TBL-22-2-" style="vertical-align:baseline;"><td class="td11" id="TBL-22-2-1" style="text-align:center; white-space:nowrap;"> 4000–4999  </td><td class="td11" id="TBL-22-2-2" style="text-align:center; white-space:nowrap;"> 20–34  </td><td class="td11" id="TBL-22-2-3" style="text-align:center; white-space:nowrap;"> Common cold  </td>
+</tr><tr id="TBL-22-3-" style="vertical-align:baseline;"><td class="td11" id="TBL-22-3-1" style="text-align:center; white-space:nowrap;"> 4000–4999  </td><td class="td11" id="TBL-22-3-2" style="text-align:center; white-space:nowrap;"> 35–39  </td><td class="td11" id="TBL-22-3-3" style="text-align:center; white-space:nowrap;">    Otitis         </td>
+</tr><tr id="TBL-22-4-" style="vertical-align:baseline;"><td class="td11" id="TBL-22-4-1" style="text-align:center; white-space:nowrap;"> 4000–4999  </td><td class="td11" id="TBL-22-4-2" style="text-align:center; white-space:nowrap;"> 35–39  </td><td class="td11" id="TBL-22-4-3" style="text-align:center; white-space:nowrap;">     HIV          </td>
+</tr><tr id="TBL-22-5-" style="vertical-align:baseline;"><td class="td11" id="TBL-22-5-1" style="text-align:center; white-space:nowrap;"> 4000–4999  </td><td class="td11" id="TBL-22-5-2" style="text-align:center; white-space:nowrap;"> 20–34  </td><td class="td11" id="TBL-22-5-3" style="text-align:center; white-space:nowrap;">     HIV          </td>
+</tr></tbody></table>                                                                  </div>
+<!-- tex4ht:inline --><div class="tabular">
+ <table class="tabular" id="TBL-23"><colgroup id="TBL-23-1g"><col id="TBL-23-1"><col id="TBL-23-2"><col id="TBL-23-3"></colgroup><tbody><tr id="TBL-23-1-" style="vertical-align:baseline;"><td class="td11" id="TBL-23-1-1" style="text-align:center; white-space:nowrap;">  ZIP code   </td><td class="td11" id="TBL-23-1-2" style="text-align:center; white-space:nowrap;">  age    </td><td class="td11" id="TBL-23-1-3" style="text-align:center; white-space:nowrap;"> diagnostic   </td>
+</tr><tr id="TBL-23-2-" style="vertical-align:baseline;"><td class="td11" id="TBL-23-2-1" style="text-align:center; white-space:nowrap;"> 4000–4999  </td><td class="td11" id="TBL-23-2-2" style="text-align:center; white-space:nowrap;"> 35–39  </td><td class="td11" id="TBL-23-2-3" style="text-align:center; white-space:nowrap;">    HIV       </td></tr><tr id="TBL-23-3-" style="vertical-align:baseline;"><td class="td11" id="TBL-23-3-1" style="text-align:center; white-space:nowrap;"> 4000–4999 </td><td class="td11" id="TBL-23-3-2" style="text-align:center; white-space:nowrap;"> 35–39 </td><td class="td11" id="TBL-23-3-3" style="text-align:center; white-space:nowrap;"> Broken leg</td>
+</tr><tr id="TBL-23-4-" style="vertical-align:baseline;"><td class="td11" id="TBL-23-4-1" style="text-align:center; white-space:nowrap;"> 4000–4999  </td><td class="td11" id="TBL-23-4-2" style="text-align:center; white-space:nowrap;"> 20–34  </td><td class="td11" id="TBL-23-4-3" style="text-align:center; white-space:nowrap;">    n/a         </td>
+</tr><tr id="TBL-23-5-" style="vertical-align:baseline;"><td class="td11" id="TBL-23-5-1" style="text-align:center; white-space:nowrap;"> 4000–4999  </td><td class="td11" id="TBL-23-5-2" style="text-align:center; white-space:nowrap;"> 20–34  </td><td class="td11" id="TBL-23-5-3" style="text-align:center; white-space:nowrap;">    Flu        </td>
+</tr></tbody></table>                                                                  </div>
+<a id="x13-30001r17"></a>
+<figcaption class="caption"><span class="id"> <span class="t1xsc-">T<span class="small-caps">able</span></span><span class="t1xsc-">&nbsp;2.17:&nbsp;</span></span><span class="content"><span class="t1xr-">Two </span><!-- l. 62 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">l</span></span></span></span></span></span><span class="t1xr-">-diverse
+           datasets.</span>                                                              </span></figcaption><!-- tex4ht:label?: x13-30001r17  -->
+                                                                                
+                                                                                
+  </figure>
+<!-- l. 65 --><p class="indent">  Such attacks are not theoretical: in&nbsp;[<a id="x13-30002"></a><a href="bibliography.html#cite.0@ganta2008composition">158</a>], the authors experimentally show
+that this scenario can plausibly lead to such disclosures. Two distinct organizations
+publishing related data is not the only scenario in which this problem can arise: multiple
+<!-- l. 68 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymous views of the same
+data can also lead to <!-- l. 69 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+violations&nbsp;[<a id="x13-30003"></a><a href="bibliography.html#cite.0@yao2005checking">400</a>], and the same problem can arise for multiple publications of the same dynamic dataset
+over time&nbsp;[<a id="x13-30004"></a><a href="bibliography.html#cite.0@xiao2007m">395</a>].
+</p><!-- l. 73 --><p class="indent">  Third, the fact that a dataset satisfies a given privacy definition does not guarantee that the data release
+did not leak information that we were trying to protect. Indeed, consider an “arbitrary privacy definition”
+<!-- l. 75 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.372em;">Def</span></span></span></span></span></span></span></span>, and pick three
+arbitrary datasets <!-- l. 76 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span>,
+<!-- l. 76 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span> and
+<!-- l. 76 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">3</span></span></span></span></span></span></span></span></span>, that all
+satisfy this privacy definition. Consider the following algorithm, built by an attacker who wants to find
+out private information about their target Camille.
+</p>
+     <ul class="itemize1">
+     <li class="itemize">If Camille is in the dataset and has HIV, output <!-- l. 81 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span>.
+     </li>
+     <li class="itemize">Else, if Camille is in the dataset, output <!-- l. 82 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>.
+     </li>
+     <li class="itemize">Else, output <!-- l. 83 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">3</span></span></span></span></span></span></span></span></span>.</li></ul>
+<!-- l. 86 --><p class="indent">  This algorithm <span class="t1xi-x-x-109">always </span>produces an output that satisfies the required privacy definition. It is possible to
+instantiate <!-- l. 87 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.372em;">Def</span></span></span></span></span></span></span></span> as
+<!-- l. 87 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity,
+<!-- l. 88 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">l</span></span></span></span></span></span>-diversity,
+<!-- l. 88 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span></span></span></span></span>-presence,
+or any other definition applying to datasets that we could think of. But of course, the algorithm also
+reveals private information that all definitions we previously listed tried to protect!
+</p><!-- l. 92 --><p class="indent">  This example is, of course, not realistic: nobody would actually use an algorithm like this to
+anonymize their data. However, it demonstrates a deep issue with this class of definitions: knowing that
+an algorithm always outputs a dataset that satisfies a given definition is not enough to trust this
+algorithm not to inadvertently leak data. This is not only a theoretical concern, either: <span class="t1xi-x-x-109">minimality
+attacks </span>use characteristics of anonymization algorithms that adapt their strategy to optimize the
+utility of the output data&nbsp;[<a id="x13-30005"></a><a href="bibliography.html#cite.0@lefevre2005incognito">246</a><a id="x13-30006"></a><a id="x13-30007"></a>, <a href="bibliography.html#cite.0@lefevre2006mondrian">247</a>, <a href="bibliography.html#cite.0@zhang2007information">406</a>] to reverse-engineer the original contents of the
+database&nbsp;[<a id="x13-30008"></a><a href="bibliography.html#cite.0@wong2009anonymization">389</a>].
+                                                                                
+                                                                                
+</p><!-- l. 103 --><p class="indent">  For all definition seen so far, it is possible to check simply by looking at the output of an
+algorithm, whether this output satisfies the definition. Anonymity is seen as a <span class="t1xi-x-x-109">syntactic </span>property,
+which is why we call these definitions <span class="t1xi-x-x-109">syntactic privacy definitions</span>. How to overcome the
+fundamental issues of this approach? We need to change the perspective. Instead of considering
+anonymization as a property of the output dataset, we need to consider it as a property of
+the <span class="t1xi-x-x-109">process</span>, and come up with <span class="t1xi-x-x-109">semantic </span>formalizations of anonymity, that describe what
+information this process can potentially leak. This is one of the core insights behind differential
+privacy.
+                                                                                
+                                                                                
+</p>
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="deltapresence.html">LINKPREV</a><a href="FromSyntacticToSemanticPrivacy.html#FlawsOfSyntacticPrivacyDefinitions.html">LINKUP</a><a href="DifferentialPrivacy.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="deltapresence.html">← previous</a></li>
+        <li><a href="FromSyntacticToSemanticPrivacy.html#FlawsOfSyntacticPrivacyDefinitions.html">up</a></li>
+        <li><a href="DifferentialPrivacy.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

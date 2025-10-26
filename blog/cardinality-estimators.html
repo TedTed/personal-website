@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Research post: Cardinality Estimators do not Preserve Privacy - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Research post: Cardinality Estimators do not Preserve Privacy - Ted is writing things" />
+  <meta property="twitter:title" content="Research post: Cardinality Estimators do not Preserve Privacy - Ted is writing things" />
+  <meta name="description" property="og:description" content="You can't both remember unique individuals and not remember them. Shocking, right? :D" />
+  <meta property="twitter:description" content="You can't both remember unique individuals and not remember them. Shocking, right? :D" />
+  <meta property="summary" content="You can't both remember unique individuals and not remember them. Shocking, right? :D" />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/cardinality-estimators.html" />
+  <link rel="prev" href="almost-differential-privacy.html" />
+  <link rel="next" href="local-global-differential-privacy.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="almost-differential-privacy.html">← previous</a>
+ —     <a href="local-global-differential-privacy.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./cardinality-estimators.html">Research post: Cardinality Estimators do not Preserve Privacy</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2019-03-09T00:00:00+01:00">
+      2019-03-09
+    </time>
+    <small>&mdash; updated
+      <time datetime="2019-08-24T00:00:00+02:00">
+        2019-08-24
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><strong>Next</strong> summer at <a href="https://petsymposium.org/index.php">PETS</a> 2019, I'll present a <a href="https://arxiv.org/abs/1808.05879">paper</a> I wrote with <a href="http://www.andreas-lochbihler.de/">Andreas
+Lochbihler</a> and my PhD advisor <a href="https://www.inf.ethz.ch/personal/basin/">David Basin</a>. This post will
+attempt to explain what the paper is about, and what its results mean in
+practice.</p>
+<h1 id="tldr">tl;dr</h1>
+<p>You can't both remember unique individuals and not remember them. </p>
+<p>It's not incredibly surprising, but still cool to have a formal negative result
+about it :D</p>
+<h1 id="cardinality-estimators">Cardinality estimators</h1>
+<p>The title of the paper is <em>Cardinality Estimators do not Preserve Privacy</em>.
+First, what's a cardinality estimator? It's an algorithm, and an associated data
+structure called a <em>sketch</em>. It does two things:</p>
+<ul>
+<li>it can <em>count unique items</em> in a list (without duplicates);</li>
+<li>and you can <em>merge</em> several of them to count unique items in multiple lists.</li>
+</ul>
+<p>Suppose you have two huge log files, each containing one billion unique
+identifiers. How many unique identifiers are present in the union of both files?
+If you only have counts, there's no way to tell. Both files might have the same
+identifiers, so the total count is one billion. Or maybe they only contain
+different identifiers, so the total count is two billion. Or it could be
+in-between these two extreme options.</p>
+<p>A cardinality estimator can answer that question. You can apply it to each log
+and get two sketches. Each can estimate the number of unique items in its input
+log. Further, you can merge the two sketches to get a new sketch… And the
+estimated count of this new sketch is the <em>deduplicated</em> version of the two
+counts.</p>
+<p>The simplest example is a <a href="https://en.wikipedia.org/wiki/Set_(abstract_data_type)">set</a> that remembers all the items it saw. It will
+return an exact count, and merging two sketches is straightforward.
+Unfortunately, it doesn't scale very well: you need a lot of memory to remember
+every single element, and lots of time to merge large sketches. Instead, we
+often trade precision for performance, and use <em>approximate</em> algorithms. They
+don't return an exact answer, but are much faster and memory-efficient.</p>
+<p>The first cardinality estimator I encountered is <em>HyperLogLog</em>. It's a very
+popular choice: very efficient, and precise enough for most use cases. The idea
+behind it is quite smart: if you want to learn about it, I recommend this <a href="https://research.neustar.biz/2012/10/25/sketch-of-the-day-hyperloglog-cornerstone-of-a-big-data-infrastructure/">blog
+post</a> and this <a href="https://ai.google/research/pubs/pub40671">research paper</a>.</p>
+<p>As part of my privacy reviewer role at Google, a team approached me with a
+question. They were storing HyperLogLog sketches, and asked me: "are those
+sketches as sensitive as the original data?".</p>
+<h1 id="privacy-modeling">Privacy modeling</h1>
+<p>To answer that question, one first has to define what we mean by sensitive. We
+used the idea behind differential privacy, the attacker's <a href="differential-privacy-in-more-detail.html">information
+gain</a>. Intuitively, if an attacker has some suspicion that a user was
+added to a sketch, and then looks at the sketch… How much can their suspicion
+increase, or decrease?</p>
+<p>However, we added two twists to this idea.</p>
+<ul>
+<li>First, we only care if the level of suspicion <em>increases</em>, not if it
+  decreases. If the attacker learns that their target is in a given sketch, it's
+  a problem. If they learn that their target is <em>not</em> in a given sketch, then we
+  don't consider it that big of a deal.</li>
+<li>Second, we don't assume that the attacker knows all users except their target.
+  Instead, we assume that the attacker knows <em>nothing</em> about the sketch. From
+  their perspective, the data is 100% random.</li>
+</ul>
+<p>These choices only made sense for the original use case (the Google privacy
+review). For the sketches I was considering, learning that somebody was <em>not</em> in
+a sketch wouldn't have been very problematic. There was also no reason to assume
+the attacker would have any background knowledge. These assumptions are much
+weaker than in most data privacy papers and use cases.</p>
+<p>If this research had led to a positive result, it wouldn't have been very
+convincing. "Here is a cardinality estimator that satisfies this super weak
+notion of privacy!" People would have pushed back, saying that the assumptions
+were too weak.</p>
+<p>Luckily (for me), the result was otherwise. First, I found that HyperLogLog was
+not private according to this definition. That was the easy part, and it led to
+a natural follow-up question: can we make it private? Or more generally, can we
+build a private cardinality estimator? We want it to have the same nice
+properties as HyperLogLog, but a better privacy. </p>
+<h1 id="main-result">Main result</h1>
+<p>It turns out that the answer is negative. Even with our weak privacy notion, the
+problem is <em>unsolvable</em>. No cardinality estimator can be both private and
+accurate. A private cardinality estimator has its accuracy gets exponentially
+worse with its size.</p>
+<p>Since the result is negative, the privacy definition's weakness makes our result
+<em>stronger</em>. Accuracy is incompatible with a weak notion of privacy… So it's also
+incompatible with stronger notions. We also considered even weaker variants,
+e.g. allowing for a small <a href="almost-differential-privacy.html">probability of error</a>. It didn't change the
+negative result. There seems to be a fundamental incompatibility between privacy
+and accuracy.</p>
+<p>There is one caveat: this is only true if you want to be able to merge an
+arbitrary number of sketches. If the accuracy can get worse as you merge
+sketches, the result does not hold. In such a context, privacy-preserving
+schemes might exist. So, if your use case only requires you to merge a bounded
+number of sketches, you might have options. But if you want analysts to be able
+to do arbitrary aggregations of sketches and still get reasonably good results…
+then privacy is an impossible goal.</p>
+<p>With this added caveat, our result becomes more intuitive. To merge two sketches
+that count unique users, you have to deduplicate users… So you have to keep the
+information about which users are in the sketch. As with HyperLogLog, this
+information doesn't have to be exact. But the more you remember, the more an
+attacker can use it to break the privacy property. HyperLogLog remembers some
+users more than others, and that's what allows it to stay accurate. If you can't
+remember any user well, then your cardinality estimator gets very inaccurate.</p>
+<p>So there are two contributions: a theoretical one and a practical one. </p>
+<p>The theoretical part is a confirmation and formalization of an expected
+phenomenon. It's still interesting, because it's quite rare. There aren't many
+negative results in the world of differential privacy. A typical privacy paper
+takes a problem and solves it in a differentially private way. Here, we're
+presenting a problem for which this is impossible. This leads to an open
+question, which we ask at the end of the paper: what's a minimal set of
+constraints that make differential privacy impossible?</p>
+<p>There is also one practical consequence: cardinality estimators in use today are
+not private. Their sketches should be considered roughly as sensitive as raw
+data. We proved it manually for HyperLogLog… But our result is generic, so it
+holds for all cardinality estimators.</p>
+<h1 id="behind-the-scenes">Behind the scenes</h1>
+<p>The story we tell in the paper isn't exactly the path we actually followed to
+get our results. For example, the attacker's lack of background knowledge came
+from a practical constraint. In the original problem, cardinality estimators
+were built using large-scale tools like <a href="https://en.wikipedia.org/wiki/MapReduce">MapReduce</a>. Such tools assume that the
+aggregation primitives are <em>deterministic</em>: for example, MapReduce double-checks
+the computation results for fault tolerance. HyperLogLog is deterministic: a
+sketch formed with a given input is always the same. All other cardinality
+estimators we found were also deterministic. So at first, we required that any
+solution to our question should also be deterministic.</p>
+<p>But it's impossible to get differential privacy without adding noise to the
+data. We assumed that the attacker lacked knowledge about the data to get around
+this problem. If the data itself is random, it can play the same role as noise
+from the attacker's perspective.</p>
+<p>The first negative result we got had the assumption that cardinality estimators
+were deterministic. I was unhappy about it, and wanted the paper to have a more
+generic result. For a good chunk of 2017, I tried to extend the result to
+arbitrary cardinality estimators. We gave up and tried to submit the paper in
+autumn, but got rejected for exactly this reason. This gave me a motivation
+boost: reviewers, too, thought this was important. The next submission had the
+generalized result. A good example of the peer review process working well! ^^</p>
+<p><em>August 2019 edit: this paper and the presentation I gave to PETS won a
+<a href="https://petsymposium.org/student-paper-award.php">Best Student Paper award</a>!
+After two rejections from other conferences, and the fact that it only got
+accepted to PETS thanks to a
+<a href="https://petsymposium.org/experiment.php">consistency experiment</a> (one group of
+reviewers accepted it, not the other), it was unexpected and nice. My talk was
+recorded, you can watch it <a href="https://youtu.be/wjlAbh0qQQQ?t=54">here</a>.</em></p>
+<p>Also, the "a-ha!" moment to get the generic result didn't happen when I
+expected. It didn't click when I was spending hours working on it in the lab.
+Instead, it struck in the shower, after spending a week of vacation without an
+Internet connection. I strongly suspect this isn't a coincidence… Logging off
+must have helped my brain be more relaxed and creative or something.</p>
+<h1 id="what-comes-next">What comes next</h1>
+<p>I'll try to write a similar blog post for each research paper I publish<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. If
+you're a researcher, I'd encourage you to do the same. The time it takes to
+publish a write-up like this is negligible compared to doing the research and
+writing the paper… And many more people will be able to read it!</p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:1">
+<p>Emphasis on "try". When the paper is purely the result of research done at
+  Google, like <a href="https://ai.google/research/pubs/pub47664">this one</a>, there might
+  be complications.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20190309,
+  title = &#123;Research post: Cardinality Estimators do not Preserve Privacy},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/cardinality-estimators.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2019},
+  month = &#123;03}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="almost-differential-privacy.html">← previous</a>
+    </li>
+    <li>
+      <a href="local-global-differential-privacy.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

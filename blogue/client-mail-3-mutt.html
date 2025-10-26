@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Gérer ses mails en local : étape 3, rendre le tout utilisable avec mutt ! - Ted écrit des trucs</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="archives.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blogue/" type="application/rss+xml" rel="alternate" title="Ted écrit des trucs - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Gérer ses mails en local : étape 3, rendre le tout utilisable avec mutt ! - Ted écrit des trucs" />
+  <meta property="twitter:title" content="Gérer ses mails en local : étape 3, rendre le tout utilisable avec mutt ! - Ted écrit des trucs" />
+  <meta name="description" property="og:description" content="On trie, lit, et rédige des mails en local avec mutt." />
+  <meta property="twitter:description" content="On trie, lit, et rédige des mails en local avec mutt." />
+  <meta property="summary" content="On trie, lit, et rédige des mails en local avec mutt." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blogue/client-mail-3-mutt.html" />
+  <link rel="prev" href="ip-over-dns.html" />
+  <link rel="next" href="client-mail-3bis-mutt.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Aller vers le contenu" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+              ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+              <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious-fr.html"> Présentation <img src="../flag-france.gif" alt=""/></a>
+          <a href="../serious.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-france.gif" alt=""/>
+          <a href="../blog/index.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recettes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="feed.xml">rss</a> —
+            <a href="archives.html">archives</a>
+          </span>
+          <span class="droite">
+            <a href="offlineimap-mbsync.html"
+                 title="Passer d'OfflineIMAP à isync/mbsync">← précédent</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted écrit des trucs</span>
+      </a></h1>
+      Sur des sujets en lien avec la vie privée, ou parfois pas.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./client-mail-3-mutt.html">Gérer ses mails en local : étape 3, rendre le tout utilisable avec mutt !</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2014-04-08T00:00:00+02:00">
+      2014-04-08
+    </time>
+    <small>&mdash; modifié le
+      <time datetime="2014-05-27T00:00:00+02:00">
+        2014-05-27
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><span class='notlettrine'>C</span>e billet fait partie d'une série d'articles
+présentant la façon dont je gère mes mails en local. Si vous êtes arrivés là
+sans lire l'introduction, c'est probablement une bonne idée de commencer par le
+début.</p>
+<ul>
+<li>Étape 0 : <a href="client-mail-0-introduction.html">Introduction</a></li>
+<li>Étape 1 : <a href="client-mail-1-offlineimap.html">Synchronisation IMAP avec
+  OfflineIMAP</a></li>
+<li>Étape 2 : <a href="client-mail-2-msmtp.html">Envoi d'e-mails avec msmtp et msmtpq</a></li>
+<li>Étape 3 : Configuration de mutt ← vous êtes ici !</li>
+<li>Étape 3 bis : <a href="client-mail-3bis-mutt.html">Dose supplémentaire de mutt</a></li>
+<li>Étape 4 : <a href="client-mail-4-gpg.html">Chiffrement et signature avec PGP</a></li>
+</ul>
+<hr>
+<p><span class='lettrine'>O</span><strong>n</strong> commence enfin à en avoir fini avec la
+configuration « sous le capot », et on va enfin pouvoir voir directement les
+conséquences de nos bidouillages. Je vous présente donc Mutt, le client mail
+moins pourri que les autres. </p>
+<p><sub>C'est même, à traduction approximative près, leur <a href="http://www.mutt.org/">slogan
+officiel</a>.</sub></p>
+<p>Mutt est un client mail en mode console qui, conformément à la philosophie Unix,
+a été conçu pour être <em>uniquement</em> un client mail, c'est à dire qui lit un
+dossier de types Maildir, et qui permet de gérer son contenu efficacement. Il
+est très rapide, efficace, clair, et surtout, configurable à l'infini.</p>
+<h1 id="installation-et-premiers-pas">Installation et premiers pas</h1>
+<p>Pour l'installer, sans surprise, <code>aptitude install mutt</code> en root fera l'affaire.
+Pour le lancer, il suffit de lui préciser le dossier que l'on veut qu'il lise.
+Par exemple :</p>
+<div class="highlight"><pre><span></span><code>mutt -f ~/Mail/ikura_damien
+</code></pre></div>
+
+<p>vu que dans mon <code>.offlineimaprc</code>, j'avais indiqué ce dossier comme destination
+d'une de mes boîtes mail.</p>
+<p>Je laisse faire au lecteur ses premiers pas dans mutt. Globalement, c'est plutôt
+intuitif - <code>j</code>/<code>k</code> ou les flèches directionnelles pour se déplacer, <code>Entrée</code>
+pour ouvrir un mail, <code>q</code> pour revenir au menu précédent… Dès qu'on cherche à
+faire une action, il suffit de taper <code>?</code> au clavier pour obtenir la liste des
+commandes disponibles avec une description courte. On s'y fait assez vite, il
+n'y a pas besoin d'un tutoriel détaillé comme pour vim, par exemple. Par contre,
+par défaut, la configuration n'est pas très utilisable. Modifions donc le
+fichier de config', <code>~/.muttrc</code>, pour en faire un mutt aux petits oignons qui
+fait exactement ce qu'on veut.</p>
+<p>Évidemment, en pratique, devoir taper quelque chose d'aussi comme <code>mutt -f
+~/Mail/ikura_damien</code> quand on veut ouvrir sa boîte mail, c'est affreusement
+long, donc j'ai un alias dans mon <code>~/.bash_aliases</code> :</p>
+<div class="highlight"><pre><span></span><code>alias dam=&quot;mutt -f ~/Mail/dam&quot;
+</code></pre></div>
+
+<p>où <code>dam</code> est un lien symbolique vers <code>~/Mail/ikura_damien</code> (ce qui permet de
+changer de dossier <em>dans mutt</em> en cliquant <code>c</code>, et en entrant <code>=dam</code>, au lieu de
+<code>=ikura_damien</code>).</p>
+<h1 id="reglages-internes">Réglages internes</h1>
+<h2 id="alias">Alias</h2>
+<p>Mutt a un système d'alias minimaliste que je trouve pratique. L'idée est de
+taper « maman » dans le champ « To: » d'un mail qu'on veut envoyer, au lieu de
+adressedemamaman@gmail.com. Pour ajouter un alias, appuyer sur <code>a</code> alors qu'un
+mail de la personne en question est sélectionné.</p>
+<div class="highlight"><pre><span></span><code>set alias_file=~/.muttalias
+source ~/.muttalias
+set reverse_alias
+</code></pre></div>
+
+<p>Je sais que d'autres utilisent des logiciels de carnet d'adresses plus complexes
+(abook, ou des systèmes basés sur ldbd) mais en ce qui me concerne, ça me
+suffit.</p>
+<h2 id="cache">Cache</h2>
+<p>Mutt a une fonction, désactivée par défaut, pour mettre certaines données (des
+en-têtes ou même le contenu de messages) en cache quelque part. Ça permet,
+notamment, de charger beaucoup plus rapidement le contenu de boîtes de réception
+récemment ouvertes. Pour activer cette fonction, on peut par exemple créer un
+dossier <code>cache</code> dans le <code>~/.mutt</code> et ajouter :</p>
+<div class="highlight"><pre><span></span><code>set header_cache = ~/.mutt/cache/headers
+set message_cachedir = ~/.mutt/cache/bodies
+</code></pre></div>
+
+<p>dans le <code>~/.muttrc</code>.</p>
+<h2 id="identites-alternatives">Identités alternatives</h2>
+<p>Le comportement de mutt dépend parfois de la condition « est-ce que le message
+courant est un message <em>reçu</em>, ou un message <em>envoyé</em> » (par exemple, si on
+essaie de « répondre » à un message qu'on a envoyé, on a pas envie de se
+répondre à soi-même…). Et comme tout ce qu'il sait faire, c'est lire le contenu
+de dossiers, il n'a pas de méthode infaillible pour ça. Il faut donc l'aider
+avec un morceau de configuration dans lequel on lui dit quelles adresses e-mail
+sont les notres.</p>
+<div class="highlight"><pre><span></span><code><span class="n">alternates</span><span class="w"> </span><span class="ss">&quot;.*@desfontain.es|ddfontaines@gmail.com&quot;</span>
+</code></pre></div>
+
+<h1 id="configuration-specifique-au-dossier-dans-lequel-on-se-trouve">Configuration spécifique au dossier dans lequel on se trouve</h1>
+<p>C'est bien beau, tout ça, mais on aimerait bien que mutt interagisse avec le
+reste du système. Par exemple, qu'il sache quelle commande exécuter lorsqu'on
+lui dit d'envoyer un mail. Le paramètre pour ça s'appelle <code>sendmail</code>. Assez
+logiquement, si on veut utiliser msmtpq, il faudrait entrer :</p>
+<div class="highlight"><pre><span></span><code>set sendmail = &quot;/usr/local/bin/msmtpq&quot;
+</code></pre></div>
+
+<p>sauf que c'est plus compliqué que ça : on veut utiliser le contenu du <code>.msmtprc</code>
+pour envoyer les e-mails de plusieurs façons différentes, suivant si on est dans
+une boîte ou dans une autre.</p>
+<p>On peut faire ça dans mutt, en utilisant des <em>hooks</em>. Dans le <code>.muttrc</code>, on met
+quelque chose de ce type :</p>
+<div class="highlight"><pre><span></span><code>folder-hook +dam &quot;source ~/.mutt/damien&quot;
+folder-hook +ikura_damien/.* &quot;source ~/.mutt/damien&quot;
+</code></pre></div>
+
+<p>pour chaque dossier en local. Le fichier indiqué, ici <code>~/.mutt/damien</code>, contient
+des morceaux de configuration qui ne seront pris en compte que si le dossier
+courant est <code>~/Mail/ikura_damien</code> ou <code>~/Mail/dam</code>. Dans le morceau de
+configuration en question, on met donc plein de choses.</p>
+<p>On précise à msmtp la section de sa configuration à utiliser quand on veut
+envoyer un mail : </p>
+<div class="highlight"><pre><span></span><code>set sendmail = &quot;/usr/local/bin/msmtpq -a damien&quot;
+</code></pre></div>
+
+<p>on envoie les mails en mettant le bon champ « From: » :</p>
+<div class="highlight"><pre><span></span><code><span class="k">set</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;damien@desfontai.nes&quot;</span>
+</code></pre></div>
+
+<p>on se met en copie de chaque mail envoyé (pas mal de gens avec qui j'ai discuté
+trouvent ça bizarre, moi j'aime bien voir sur une même page les mails que
+j'envoie et ceux que je reçois) :</p>
+<div class="highlight"><pre><span></span><code><span class="n">my_hdr</span><span class="w"> </span><span class="nl">bcc</span><span class="p">:</span><span class="w"> </span><span class="n">damien</span><span class="nv">@desfontai</span><span class="p">.</span><span class="n">nes</span>
+</code></pre></div>
+
+<p>du coup, ça ne sert à rien de garder une copie des mails envoyés dans un autre
+dossier :</p>
+<div class="highlight"><pre><span></span><code>unset record
+</code></pre></div>
+
+<p>et enfin, on indique l'endroit où on veut stocker les brouillons :</p>
+<div class="highlight"><pre><span></span><code>set postponed=+&quot;ikura_damien/drafts&quot;
+</code></pre></div>
+
+<h1 id="affichage-et-interface">Affichage et interface</h1>
+<h2 id="moins-de-questions-plus-defficacite">Moins de questions, plus d'efficacité</h2>
+<p>Pas besoin de demander confirmation avant de sauver un message dans un dossier
+ou lorsqu'un message est déplacé par un script :</p>
+<div class="highlight"><pre><span></span><code>set noconfirmappend
+set move = no
+</code></pre></div>
+
+<p>pas non plus besoin de poser cinquante mille questions sur les headers lorsqu'on
+répond à un mail :</p>
+<div class="highlight"><pre><span></span><code>set fast_reply
+</code></pre></div>
+
+<p>pour envoyer un mail, appuyer sur « Entrée » après avoir fermé l'éditeur, ça
+paraît naturel :</p>
+<div class="highlight"><pre><span></span><code><span class="nv">bind</span><span class="w"> </span><span class="nv">compose</span><span class="w"> </span><span class="o">&lt;</span><span class="k">Return</span><span class="o">&gt;</span><span class="w"> </span><span class="k">send</span><span class="o">-</span><span class="nv">message</span>
+</code></pre></div>
+
+<p>par ailleurs, ouvrir les boîtes mails compressées naturellement, ça permet de
+gagner du temps le jour où on en a l'utilité :</p>
+<div class="highlight"><pre><span></span><code>open-hook \\.gz$ &quot;gzip -cd %f &gt; %t&quot;
+close-hook \\.gz$ &quot;gzip -c %t &gt; %f&quot;
+append-hook \\.gz$ &quot;gzip -c %t &gt;&gt; %f&quot;
+</code></pre></div>
+
+<p>et d'un coup, ça va déjà plus vite :-)</p>
+<h2 id="utiliser-lediteur-de-son-choix">Utiliser l'éditeur de son choix</h2>
+<p>Évidemment, une grande partie du temps qu'on passe sur un client mail consiste à
+envoyer des mails, donc le choix (et la bonne configuration) de l'éditeur de
+texte utilisé est aussi important que celui du client mail lui-même.</p>
+<div class="highlight"><pre><span></span><code>set editor=&quot;vim -c &#39;set tw=70 et&#39;&quot;
+</code></pre></div>
+
+<p>J'utilise vim, avec ma configuration habituelle (que je détaillerai dans un
+prochain billet, peut-être, un jour), en lui indiquant en plus d'utiliser des
+lignes de 70 caractères, pour être non seulement en règle vis-à-vis de la <a href="https://tools.ietf.org/html/rfc2822#section-2.1.1">RFC
+sur le sujet</a> mais pour avoir
+un peu de marge (et que les réponses, qui vont décaler chaque ligne de deux
+caractères en rajoutant les <code>&gt;</code>, respectent toujours la RFC).</p>
+<p>En passant, on en profite pour afficher les en-têtes du mail dans l'éditeur
+lui-même, ce qui permet de rajouter des destinataires ou de changer le sujet
+plus facilement qu'en faisant ça à l'intérieur de mutt.</p>
+<div class="highlight"><pre><span></span><code>set edit_headers = yes
+</code></pre></div>
+
+<p>Ah, et les signatures automatiques, je trouve ça horripilant, donc évitons.</p>
+<div class="highlight"><pre><span></span><code>unset signature
+</code></pre></div>
+
+<h2 id="avoir-un-joli-affichage-cest-important">Avoir un joli affichage, c'est important</h2>
+<p>Par défaut, mutt manque sacrément de couleurs, et n'a pas vraiment une
+utilisation optimale de l'écran par défaut. Bien entendu, ses possibilités
+infinies de configuration permettent facilement non seulement de combler les
+lacunes de l'affichage par défaut, mais aussi d'obtenir une interface qui
+convient exactement aux besoins de chaque utilisateur.</p>
+<h3 id="le-pager-et-le-comportement-des-menus">Le pager, et le comportement des menus</h3>
+<p>Déjà, on utilise le <em>pager</em> de mutt parce que généralement, on a de la place sur
+l'écran : quand on consulte un message, on a une partie de l'écran qui permet de
+voir quels sont les quelques mails précédents et suivants, comme un petit menu.
+C'est très pratique.</p>
+<div class="highlight"><pre><span></span><code>set pager_context=5
+set pager_index_lines=6
+</code></pre></div>
+
+<p>Ensuite, j'ai horreur de l'affichage de la liste de mails « par pages », où
+lorsqu'on descend plus bas que ce qui est déjà affiché, on se retrouve tout en
+haut de la page suivante. C'est beaucoup moins fluide qu'avec le bout de config'
+qui supprime ce phénomène.</p>
+<div class="highlight"><pre><span></span><code>set menu_scroll
+set menu_context=6
+</code></pre></div>
+
+<p>Quand quelqu'un répond à un mail, on a envie de pouvoir accéder au mail original
+rapidement, et c'est particulièrement vrai lors de grosses discussions avec
+plein de ramifications. On va donc dire à mutt de trier les messages par fil de
+discussion, et il va même nous afficher les discussions compliquées sous la
+forme d'un joli arbre dans la liste.</p>
+<div class="highlight"><pre><span></span><code>set sort=threads
+set sort_aux=&quot;last-date-received&quot;
+set strict_threads
+</code></pre></div>
+
+<h3 id="des-couleurs-vite">Des couleurs, vite !</h3>
+<p>Bon, ça va déjà mieux, mais ça manque d'un truc important : la couleur. Avec les
+<em>hooks</em> de mutt, on peut profiter de la puissance des expressions régulières
+pour colorer n'importe quoi de n'importe quelle couleur. Ce morceau de config'
+prend vite de la place, donc on peut le mettre dans un fichier à part, que l'on
+appelle de la façon suivante :</p>
+<div class="highlight"><pre><span></span><code>source ~/.mutt/colors
+</code></pre></div>
+
+<p>j'ai mis mon <code>~/.mutt/colors</code> personnel <a href="colors">en ligne</a>. Je ne pourrais pas
+me passer de la fonction qui colore les mails adressés <em>à moi personnellement</em>
+différemment (de façon beaucoup plus visible) que les mails reçus parce que je
+suis sur une liste de diffusion : en général, ceux de la première catégorie sont
+beaucoup plus importants.</p>
+<h3 id="pour-une-interface-vraiment-aux-petits-oignons">Pour une interface vraiment aux petits oignons</h3>
+<p>Continuons avec quelques trucs moins importants, qui sont plus du confort
+qu'autre chose. La genre de barre bleue en haut ne sert franchement à rien donc
+enlevons-la :</p>
+<div class="highlight"><pre><span></span><code>set help = no
+</code></pre></div>
+
+<p>j'aime bien marquer visuellement la fin des e-mails par des tildes :</p>
+<div class="highlight"><pre><span></span><code>set tilde
+</code></pre></div>
+
+<p>je n'ai pas envie de « voir » quand une ligne a été coupée en deux, c'est
+moche :</p>
+<div class="highlight"><pre><span></span><code>set nomarkers
+</code></pre></div>
+
+<p>je n'ai pas envie de voir toutes les en-têtes d'un mail, mais seulement celles
+susceptibles de m'intéresser :</p>
+<div class="highlight"><pre><span></span><code>ignore *
+unignore From: Subject To Cc Date Reply Organization Newsgroup
+</code></pre></div>
+
+<p>j'ai envie que les lignes soient coupées intelligemment, entre les mots,
+lorsqu'elles ne tiennent pas sur l'écran :</p>
+<div class="highlight"><pre><span></span><code>set smart_wrap
+</code></pre></div>
+
+<p>je suis content que les entrées du menu « alias » soient triés en fonction de
+l'alias et non pas du nom ou de l'adresse réelle de la personne :</p>
+<div class="highlight"><pre><span></span><code>set sort_alias = alias
+</code></pre></div>
+
+<p>et pour finir, afficher la version de mutt au démarrage, ça ne coûte rien et
+c'est joli :</p>
+<div class="highlight"><pre><span></span><code><span class="nv">push</span><span class="w"> </span><span class="o">&lt;</span><span class="k">show</span><span class="o">-</span><span class="nv">version</span><span class="o">&gt;</span>
+</code></pre></div>
+
+<p>joie, bonheur, allégresse, mon client mail ressemble exactement à ce dont je
+rêvais quand j'étais petit.</p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Citez cet article!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>L'entrée BibTeX a été copiée dans votre presse-papiers.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblogue20140408,
+  title = &#123;Gérer ses mails en local : étape 3, rendre le tout utilisable avec mutt !},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blogue/client-mail-3-mutt.html}},
+  note = &#123;Ted écrit des trucs (blog personnel)},
+  year = &#123;2014},
+  month = &#123;04}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="ip-over-dns.html">← précédent</a>
+    </li>
+    <li>
+      <a href="client-mail-3bis-mutt.html">suivant →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">haut de page</a></li>
+    <li><a href="index.html">accueil</a></li>
+    <li><a href="archives.html">archives</a></li>
+  </ul>
+</nav>
+
+      <div class="feedback">
+        Tout ce que je raconte ici sont mes opinions personnelles, pas celles de
+        mon employeur.
+        <br>
+        Je suis toujours ravi de recevoir des réactions, critiques, questions,
+        ou autres commentaires sur ce que j'écris. Envoyez-moi ce qui vous
+        chante à <span class="baddirection">se.niatnofsed@neimad</span>.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          par 
+          <a rel="dct:publisher" href="http://desfontain.es/serious-fr.html">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="Je pense que le concept de propriété intellectuelle n'a aucun sens. Le contenu de ce blog est dans le domaine public."/>
+          </a>
+          &mdash;
+          mis en orbite par <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

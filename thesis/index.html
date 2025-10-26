@@ -1,0 +1,324 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  
+  <link ref="next" href="tldr.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        
+        
+        <li><a href="tldr.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+<!-- l. 17 --><p class="noindent">This is the HTML version of my PhD thesis, titled <span class="t1xi-x-x-109">Lowering the cost of anonymization</span>. I defended it in
+December 2020, and it was accepted by my jury, composed of: </p>
+     <ul class="itemize1">
+     <li class="itemize">Prof.&nbsp;David Basin, examiner and supervisor,
+     </li>
+     <li class="itemize">Prof.&nbsp;Dennis Hofheinz, co-examiner,
+     </li>
+     <li class="itemize">Prof.&nbsp;Carmela Troncoso, co-examiner,
+     </li>
+     <li class="itemize">and Prof.&nbsp;Ashwin Machanavajjhala, co-examiner.</li></ul>
+<!-- l. 27 --><p class="indent">  There are minor differences with the official  <a href="/thesis.pdf">PDF version</a>: some text and formatting was changed
+while compiling the original <span class="obeylines-h"><code class="verb">.tex</code></span> files to HTML, and some errors were fixed after being detected by
+careful readers. The PDF version is still the canonical one, however.
+</p><!-- l. 32 --><p class="indent">  If you would like to cite this thesis, you can use the following BibTeX entry. </p><!-- l. 33 -->
+  <pre class="lstlisting" id="listing-1"><span class="label"><a id="x1-2r1"></a></span><span style="color:#000000"><span class="t1xtt-x-x-109">@phdthesis</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">{</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">desfontaines2020lowering</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">,</span></span> 
+<span class="label"><a id="x1-3r2"></a></span><span class="t1xtt-x-x-109">&nbsp;&nbsp;</span><span style="color:#000000"><span class="t1xtt-x-x-109">title</span></span><span style="color:#000000"> </span><span class="t1xtt-x-x-109">&nbsp;</span><span style="color:#000000"><span class="t1xtt-x-x-109">=</span></span><span style="color:#000000"> <span class="t1xtt-x-x-109">{Lowering the cost of anonymization},</span> 
+</span><span class="label"><a id="x1-4r3"></a></span><span class="t1xtt-x-x-109">&nbsp;&nbsp;</span><span style="color:#000000"><span class="t1xtt-x-x-109">author</span></span><span style="color:#000000"> <span class="t1xtt-x-x-109">= {Desfontaines, Damien},</span> 
+</span><span class="label"><a id="x1-5r4"></a></span><span class="t1xtt-x-x-109">&nbsp;&nbsp;</span><span style="color:#000000"><span class="t1xtt-x-x-109">year</span></span><span style="color:#000000"> </span><span class="t1xtt-x-x-109">&nbsp;&nbsp;</span><span style="color:#000000"><span class="t1xtt-x-x-109">=</span></span><span style="color:#000000"> <span class="t1xtt-x-x-109">{2020},</span> 
+</span><span class="label"><a id="x1-6r5"></a></span><span class="t1xtt-x-x-109">&nbsp;&nbsp;</span><span style="color:#000000"><span class="t1xtt-x-x-109">school</span></span><span style="color:#000000"> <span class="t1xtt-x-x-109">= {ETH Zurich}</span> 
+</span><span class="label"><a id="x1-7r6"></a></span><span style="color:#000000"><span class="t1xtt-x-x-109">}</span></span></pre>
+  
+<!-- l. 41 --><p class="indent">  Note, however, that the vast majority of this dissertation has also been published as scientific papers
+and co-authored with other people; please refer to the  <a href="Personalcontributions.html">personal contributions section</a> for more details,
+and cite accordingly. You can also reuse and/or reshare this work, it is licensed under the  <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC
+4.0 license</a>.
+</p><!-- l. 48 --><p class="indent">  Finally, please note that <span class="t1xb-x-x-109">all opinions expressed in this dissertation are mine, and do not represent
+the views of my current or past employers</span>.
+</p><!-- l. 51 --><p class="indent">  Now that disclaimers are out of the way, feel free to start with the  <a href="tldr.html">abstract</a> (in three languages), or
+with the  <a href="Introduction.html">introduction</a>, or jump directly to any section using the table of contents below.
+Some of the sections are marked with a little flower <span class="bbding-10x-x-109">✿</span>: those are the parts where there’s no
+or very little math, so you can also choose to only read them if you prefer keeping things
+high-level.
+                                                                                
+                                                                                
+</p>
+  <div class="tableofcontents">
+  <span class="likesubsectionToc"><a href="tldr.html#tldr-u-ding-" id="QQ2-2-1">tl;dr <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="likesubsectionToc"><a href="Acknowledgements.html#acknowledgements-u-ding-" id="QQ2-3-5">
+Acknowledgements <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="likesubsectionToc"><a href="PersonalContributions.html#personal-contributions-u-ding-" id="QQ2-4-8">
+Personal contributions <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="likesubsectionToc"><a href="Notations.html#notations" id="QQ2-5-9">
+Notations</a></span>
+<br>  <span class="chapterToc">1&nbsp;<a href="Introduction.html#introduction-u-ding-" id="QQ2-6-15">Introduction <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="chapterToc">
+2&nbsp;<a href="DefiningAnonymization.html#defining-anonymization-u-ding-" id="QQ2-7-16">Defining anonymization <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="sectionToc">
+2.1&nbsp;&nbsp;<a href="FromSyntacticToSemanticPrivacy.html#from-syntactic-to-semantic-privacy-u-ding-" id="QQ2-8-17">From syntactic to semantic privacy <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+2.1.1&nbsp;&nbsp;<a href="kanonymity.html#kanonymity-u-ding-" id="QQ2-9-18"><!-- l. 19 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity&nbsp;<span class="bbding-10x-x-109">✿</span></a></span> <br> <span class="subsectionToc">
+2.1.2&nbsp;&nbsp;<a href="kmap.html#kmap-u-ding-" id="QQ2-10-27"><!-- l. 28 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-map&nbsp;<span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+2.1.3&nbsp;&nbsp;<a href="ldiversity.html#ldiversity-u-ding-" id="QQ2-11-32"><!-- l. 33 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">l</span></span></span></span></span></span>-diversity&nbsp;<span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+2.1.4&nbsp;&nbsp;<a href="deltapresence.html#-presence-u-ding-" id="QQ2-12-40"><!-- l. 41 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span></span></span></span></span>-presence&nbsp;<span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+2.1.5&nbsp;&nbsp;<a href="FlawsOfSyntacticPrivacyDefinitions.html#flaws-of-syntactic-privacy-definitions-u-ding-" id="QQ2-13-46">Flaws of syntactic privacy definitions <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+2.1.6&nbsp;&nbsp;<a href="DifferentialPrivacy.html#differential-privacy-u-ding-" id="QQ2-14-48">Differential privacy <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="sectionToc">
+2.2&nbsp;&nbsp;<a href="SystematizingVariantsExtensionsOfDifferentialPrivacy.html#systematizing-variants-extensions-of-differential-privacy-u-ding-" id="QQ2-15-59">Systematizing variants &amp; extensions of differential privacy <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+2.2.1&nbsp;&nbsp;<a href="PreliminariesDefining.html#preliminaries-u-ding-" id="QQ2-16-61">Preliminaries <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+2.2.2&nbsp;&nbsp;<a href="QuantificationOfPrivacyLossQ.html#quantification-of-privacy-loss-q" id="QQ2-17-68">Quantification of privacy loss (Q)</a></span>
+<br>  <span class="subsectionToc">2.2.3&nbsp;&nbsp;<a href="NeighborhoodDefinitionN.html#neighborhood-definition-n-u-ding-" id="QQ2-18-74">Neighborhood definition (N) <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+2.2.4&nbsp;&nbsp;<a href="VariationOfPrivacyLossV.html#variation-of-privacy-loss-v" id="QQ2-19-82">Variation of privacy loss (V)</a></span>
+<br>  <span class="subsectionToc">2.2.5&nbsp;&nbsp;<a href="BackgroundKnowledgeB.html#background-knowledge-b" id="QQ2-20-88">Background knowledge (B)</a></span>
+<br>  <span class="subsectionToc">2.2.6&nbsp;&nbsp;<a href="ChangeInFormalismF.html#change-in-formalism-f" id="QQ2-21-94">Change in formalism (F)</a></span>
+<br>  <span class="subsectionToc">2.2.7&nbsp;&nbsp;<a href="RelativizationOfTheKnowledgeGainR.html#relativization-of-the-knowledge-gain-r" id="QQ2-22-100">Relativization of the knowledge gain (R)</a></span>
+<br>  <span class="subsectionToc">2.2.8&nbsp;&nbsp;<a href="ComputationalPowerC.html#computational-power-c" id="QQ2-23-104">Computational power (C)</a></span>
+<br>  <span class="subsectionToc">2.2.9&nbsp;&nbsp;<a href="SummarizingTable.html#summarizing-table" id="QQ2-24-108">Summarizing table</a></span>
+<br>  <span class="subsectionToc">2.2.10&nbsp;&nbsp;<a href="RelatedWorkDefining.html#related-work-u-ding-" id="QQ2-25-113">Related work <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="sectionToc">
+2.3&nbsp;&nbsp;<a href="ConclusionDefining.html#conclusion-u-ding-" id="QQ2-26-119">Conclusion  <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="chapterToc">
+3&nbsp;<a href="DifferentialPrivacyUnderPartialKnowledge.html#differential-privacy-under-partial-knowledge-u-ding-" id="QQ2-27-120">Differential privacy under partial knowledge <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="sectionToc">
+3.1&nbsp;&nbsp;<a href="DefinitionalIntricaciesOfPartialKnowledge.html#definitional-intricacies-of-partial-knowledge-u-ding-" id="QQ2-28-121">Definitional intricacies of partial knowledge <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+3.1.1&nbsp;&nbsp;<a href="RelatedWorkPartial.html#related-work-" id="QQ2-29-122">Related work </a></span>
+<br>  <span class="subsectionToc">3.1.2&nbsp;&nbsp;<a href="CorrelatedData.html#correlated-data" id="QQ2-30-123">Correlated data</a></span>
+<br>  <span class="subsectionToc">3.1.3&nbsp;&nbsp;<a href="PassiveVsActiveAttackers.html#passive-vs-active-attackers" id="QQ2-31-128">Passive vs. active attackers</a></span>
+<br>  <span class="sectionToc">3.2&nbsp;&nbsp;<a href="OpportunitiesAggregationsThresholding.html#opportunities-aggregations-thresholding-u-ding-" id="QQ2-32-134">Opportunities: aggregations &amp; thresholding <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+3.2.1&nbsp;&nbsp;<a href="CountingQueries.html#counting-queries" id="QQ2-33-135">Counting queries</a></span>
+<br>  <span class="subsectionToc">3.2.2&nbsp;&nbsp;<a href="Thresholding.html#thresholding" id="QQ2-34-138">Thresholding</a></span>
+<br>  <span class="subsectionToc">3.2.3&nbsp;&nbsp;<a href="ApplicationTokanonymity.html#application-to-kanonymity" id="QQ2-35-140">Application                                                                                 to
+<!-- l. 141 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity</a></span>
+<br>  <span class="subsectionToc">3.2.4&nbsp;&nbsp;<a href="Composition.html#composition1" id="QQ2-36-141">Composition</a></span>
+<br>  <span class="sectionToc">3.3&nbsp;&nbsp;<a href="LimitsCardinalityEstimation.html#limits-cardinality-estimation-u-ding-" id="QQ2-37-146">Limits: cardinality estimation <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+3.3.1&nbsp;&nbsp;<a href="PreliminariesPartial.html#preliminaries-u-ding-1" id="QQ2-38-147">Preliminaries <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+3.3.2&nbsp;&nbsp;<a href="PrivateCardinalityEstimatorsAreImprecise.html#private-cardinality-estimators-are-imprecise" id="QQ2-39-153">Private cardinality estimators are imprecise</a></span>
+<br>  <span class="subsectionToc">3.3.3&nbsp;&nbsp;<a href="WeakeningThePrivacyDefinition.html#weakening-the-privacy-definition" id="QQ2-40-157">Weakening the privacy definition</a></span>
+                                                                                
+                                                                                
+<br>  <span class="subsectionToc">3.3.4&nbsp;&nbsp;<a href="MitigationStrategies.html#mitigation-strategies-u-ding-" id="QQ2-41-164">Mitigation strategies <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="sectionToc">
+3.4&nbsp;&nbsp;<a href="ConclusionPartial.html#conclusion-u-ding-1" id="QQ2-42-167">Conclusion <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="chapterToc">
+4&nbsp;<a href="FromTheoryToPractice.html#from-theory-to-practice-u-ding-" id="QQ2-43-168">From theory to practice <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="sectionToc">
+4.1&nbsp;&nbsp;<a href="AnalyzingPrivacyRisksAtScale.html#analyzing-privacy-risks-at-scale-u-ding-" id="QQ2-44-169">Analyzing privacy risks at scale <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+4.1.1&nbsp;&nbsp;<a href="IntroductionRiskAnalysis.html#introduction-u-ding-1" id="QQ2-45-170">Introduction <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+4.1.2&nbsp;&nbsp;<a href="DefinitionsAndSystemDesign.html#definitions-and-system-design" id="QQ2-46-179">Definitions and system design</a></span>
+<br>  <span class="subsectionToc">4.1.3&nbsp;&nbsp;<a href="EstimatingReidentifiabilityAndJoinabilityUsingKHLL.html#estimating-reidentifiability-and-joinability-using-khll-u-ding-" id="QQ2-47-191">Estimating reidentifiability and joinability using KHLL <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+4.1.4&nbsp;&nbsp;<a href="ExperimentalValidation.html#experimental-validation-u-ding-" id="QQ2-48-200">Experimental validation <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+4.1.5&nbsp;&nbsp;<a href="SummaryAndPerspectives.html#summary-and-perspectives-u-ding-" id="QQ2-49-208">Summary and perspectives <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="sectionToc">
+4.2&nbsp;&nbsp;<a href="BuildingAUsableDifferentiallyPrivateQueryEngine.html#building-a-usable-differentially-private-query-engine-u-ding-" id="QQ2-50-211">Building a usable differentially private query engine <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+4.2.1&nbsp;&nbsp;<a href="IntroductionDPSQL.html#introduction-u-ding-2" id="QQ2-51-212">Introduction <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+4.2.2&nbsp;&nbsp;<a href="ASimpleExampleHistograms.html#a-simple-example-histograms-u-ding-" id="QQ2-52-216">A simple example: histograms <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+4.2.3&nbsp;&nbsp;<a href="SystemModelAndDesign.html#system-model-and-design" id="QQ2-53-224">System model and design</a></span>
+<br>  <span class="subsectionToc">4.2.4&nbsp;&nbsp;<a href="Accuracy.html#accuracy-u-ding-" id="QQ2-54-240">Accuracy <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+4.2.5&nbsp;&nbsp;<a href="Usability.html#usability-u-ding-" id="QQ2-55-252">Usability <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+4.2.6&nbsp;&nbsp;<a href="RobustnessAndTesting.html#robustness-and-testing-u-ding-" id="QQ2-56-256">Robustness and testing <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="sectionToc">
+4.3&nbsp;&nbsp;<a href="FurtherImprovementsAndOpenQuestions.html#further-improvements-and-open-questions-u-ding-" id="QQ2-57-268">Further improvements and open questions <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+4.3.1&nbsp;&nbsp;<a href="BeyondCountsAndSums.html#beyond-counts-and-sums-u-ding-" id="QQ2-58-269">Beyond counts and sums <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+4.3.2&nbsp;&nbsp;<a href="PartitionSelection.html#partition-selection" id="QQ2-59-275">Partition selection</a></span>
+<br>  <span class="subsectionToc">4.3.3&nbsp;&nbsp;<a href="ImprovingCoverageAndUtility.html#improving-coverage-and-utility" id="QQ2-60-288">Improving coverage and utility</a></span>
+<br>  <span class="subsectionToc">4.3.4&nbsp;&nbsp;<a href="OperationalAspectsOfAnonymization.html#operational-aspects-of-anonymization-u-ding-" id="QQ2-61-298">Operational aspects of anonymization <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="subsectionToc">
+4.3.5&nbsp;&nbsp;<a href="OtherPossibleResearchDirections.html#other-possible-research-directions-u-ding-" id="QQ2-62-301">Other possible research directions <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="chapterToc">
+5&nbsp;<a href="Conclusion.html#conclusion-u-ding-2" id="QQ2-63-302">Conclusion <span class="bbding-10x-x-109">✿</span></a></span> <br><span class="likechapterToc"><a href="bibliography.html#bibliography" id="QQ2-64-303">
+Bibliography</a></span>
+  </div>
+
+
+
+                                                                                
+                                                                                
+
+                                                                                
+                                                                                
+
+                                                                                
+                                                                                
+
+                                                                                
+                                                                                
+
+                                                                                
+                                                                                
+
+                                                                                
+                                                                                
+  <p><a id="chapter*.121"></a>
+</p><!-- l. 88 --><p class="noindent">
+</p>
+<!-- l. 90 --><p class="noindent"><span class="next">[<a href="tldr.html" id="tailindex">LINKNEXT</a>]</span></p> 
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        
+        
+        <li><a href="tldr.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Beginnings - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Beginnings - Ted is writing things" />
+  <meta property="twitter:title" content="Beginnings - Ted is writing things" />
+  <meta name="description" property="og:description" content="Blog intro. What's going to be there?" />
+  <meta property="twitter:description" content="Blog intro. What's going to be there?" />
+  <meta property="summary" content="Blog intro. What's going to be there?" />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/beginnings.html" />
+  <link rel="next" href="k-anonymity.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="k-anonymity.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./beginnings.html">Beginnings</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2017-07-17T00:00:00+02:00">
+      2017-07-17
+    </time>
+  </footer>
+  <div>
+    <p><strong>Hi there!</strong> I'm <a href="../serious.html">Damien</a>. I have no idea how people usually
+start blogs, so bear with me while I figure this out.</p>
+<p>I see this place as a way to publish things that are too long for Twitter, too
+opinionated for Wikipedia, and not pretentious enough for Medium. I'm going to
+try and keep it to three themes: <em>privacy</em>, <em>research</em>, and <em>privacy research</em>.
+I'm not (yet) a specialist in any of these. Hopefully, thanks for my jobs and
+personal interest in those topics, I can add something valuable to what's
+written online about them.</p>
+<p>The following is the vision I have of these three themes. This should give an
+idea of what I intend to talk about in this blog =)</p>
+<h2 id="privacy">Privacy</h2>
+<p>It's difficult to define what privacy encompasses. It's easier to realize when
+you don't have enough privacy — through bad surprises, uneasy feelings of
+creepiness, or real risks to your safety.</p>
+<p>When a parent or a partner installs stealthy software on your phone to spy on
+your texts and calls, that's an invasion of your privacy. When a company sells
+your name, address and purchase history to some sketchy third-party that sends
+you targeted ads, the uneasy feeling you get comes from a lack of privacy.
+Full-body scanners in certain airports are an attack to one's bodily privacy.
+Data leaks are a risk to users' privacy.</p>
+<p>Privacy issues usually come from a lack of <em>transparency</em>, of <em>control</em>, or
+both. In an ideal world, everybody would know exactly who has access to which
+data about them and why. Personal data collection would not happen without
+informed consent, and people would have a right to access, modify and delete
+data that other people or organizations hold about them.</p>
+<p>The fuzziness, and the complexity of the issues in this space, are part of what
+I find interesting about them. I have done many privacy reviews for Google
+products, and there is always something interesting and new with each of them.
+Would users expect this behavior? Is this deletion action clear enough? Could
+someone re-identify this aggregated data?</p>
+<p>Like security, privacy is of particular importance for marginalized communities.
+Having your phone number leaked online is much more problematic if you're a
+high-profile political activist, or a closeted LGBTQ+ blogger. Harassment of
+folks that belong to minorities is a major problem, and badly-designed sharing
+interfaces or insufficient anti-abuse tools can lead to dramatic consequences.
+Designing tools that deal with potentially sensitive data, and failing to
+consider these specific risks, is highly irresponsible. And you can easily guess
+what I think of compliance-based privacy programs…</p>
+<p>I also try to avoid absolutist viewpoints. They are hardly ever constructive,
+and they are often dangerous. I know people who refuse to use Signal because
+it's not available without Google Play Services, while continuing to communicate
+via cleartext SMS messages. For most practical problems, there is no perfect
+solution. Focusing on defending against a hypothetical all-powerful targeted
+attacker is usually pointless. Instead, I try to focus on realistic threat
+models, usable tools, and risk mitigation.</p>
+<h2 id="research">Research</h2>
+<p>I started a part-time PhD after two years of software engineering at Google.</p>
+<p>To solve an engineering problem, the path is quite straightforward. Grasp the
+scope of the problem, design a solution, validate the design with coworkers and
+stakeholders, write code, verify that the solution is "good enough", then
+productionize it. Once the problem disappeared, there's no time to think about
+it more: there are other problems to solve, other fires to put out.</p>
+<p>The whole process is fun and rewarding, but I'm frustrated by the ending. What
+if we could design a simpler or more efficient solution? Prove that it works in
+a wider range of situations? Share the idea behind it with more people, and see
+whether they get inspired and solve other problems? Doing all of this is not
+immediately rewarding, but I think it can have a deeper, and longer-lasting
+impact, than core engineering work.</p>
+<p>I optimistically think that academia is the place to do that. Compare the
+solution to what's out there already, make more experiments, write proofs,
+figure out what additional impact it could have. Share the results with as many
+people as possible. It might not be worth the time, but I think it's worthwhile
+to give it a try. There are certainly interesting things to learn along the way.</p>
+<p>The one thing that I'm afraid of is spending time solving the wrong problems.
+Finding a "good problem" is not easy: a good problem must be difficult enough to
+not have been already solved, but simple enough to have a chance at tackling it.
+Identifying practical problems and their precise constraints is also hard, when
+the main source of inspiration is other academics' work.</p>
+<p>I'm frustrated about the lack of incentives to do research work as a software
+engineer, but the incentives of academia are even more broken. Publication
+metrics are a bad way to estimate one's impact, especially in the short term.
+The peer review process is terribly implemented in practice. The whole system
+makes it painfully slow to gather feedback, and the little feedback you get is
+imprecise. The idea of having my work praised only to realize much later that it
+didn't make a difference in practice… It's even scarier to me than the idea of
+not finding joy and impact in my research, and deciding to quit.</p>
+<p>But I'm not exactly pessimistic :D I feel lucky and enthusiastic about this
+part-time project. Continuing to do engineering work for Google gives me an
+endless input of complicated real-world problems to tackle, many of which seem
+to be good candidates for research projects. I am surrounded by impressively
+smart and passionate coworkers on both sides, whose feedback is invaluable. And
+I don't feel extremely attached to the idea of having an academic career or even
+getting the title at the end of my PhD, so I don't really feel the pressure to
+publish everything and anything just to increment some counters.</p>
+<p>All in all, this sounds like a fun and challenging adventure. I'm excited to see
+what I'll learn along the way!</p>
+<h2 id="privacy-research">Privacy research</h2>
+<p>My research, like my engineering job at Google, will focus on privacy. This is a
+field whose boundaries are not very well-defined, and that has very distinct
+sub-fields. Some researchers focus on user research to understand the
+perceptions of real people with regard to their personal data (there are a bunch
+of them at Google). Very little math is involved. Some are designing algorithms
+that have provable privacy-related properties, like private set intersection or
+differentially private surveys. Lots of math there! ^^ Some study the problem of
+<em>anonymizing</em> (or <em>de-identifying</em>) a dataset, so it can be used by more people
+or shared with third parties. Some focus on onion routing, on online tracking,
+on cryptocurrency, on privacy policies, on genetic privacy, on social networks,
+and the list is far from exhaustive. So… what am I doing exactly?</p>
+<p>My PhD project is about <em>making it easier for data owners to understand and
+protect the personal information contained in their databases</em>. I see this goal
+as having two main subcomponents.</p>
+<ol>
+<li>
+<p><em>Risk analysis</em>. There are lots of organizations, companies or governments
+    which sit on large databases with personal information, and it's difficult
+    for them to realize how sensitive it is. Leaking your users' country of
+    origin is intuitively less of a problem than leaking their e-mail addresses,
+    which in turn is not as big a deal as leaking their credit card information.
+    Sadly, doing this type of inventory and risk analysis is currently pretty
+    difficult: it requires time, investment, and specific expertise. It
+    shouldn't have to be this way, so I'm working towards building tools that
+    make this easier.</p>
+</li>
+<li>
+<p><em>Anonymization</em>. Once you realized how sensitive your data is, you hopefully
+    will want to take steps to protect it. There are many ways to lower the risk
+    of bad people having access to your database: encryption, access controls,
+    or many other security techniques. Another option is to modify the database,
+    in a way that makes sure that somebody with access to it can't deduce creepy
+    things about the individuals whose data is in the database. I'm working
+    towards making this process easier and more understandable for data owners.</p>
+</li>
+</ol>
+<p>I could (and hopefully, I will!) talk at length about these two things. They
+have already been studied by many people over the past ~15 years (especially
+anonymization), but I think that there is a lot of room for more vulgarization
+on the topic, and significant improvements to do on the research side. On the
+anonymization topic in particular, I feel like it is urgent to work towards
+bridging the gap between research advances and concrete use cases. </p>
+<p>Maybe I'll realize along the way that I'm looking at the wrong problems, or that
+it proves more difficult than I thought to improve the state of the art. But as
+I've been told, that's part of what makes it challenging and fun ^^</p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20170717,
+  title = &#123;Beginnings},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/beginnings.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2017},
+  month = &#123;07}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="k-anonymity.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

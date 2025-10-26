@@ -1,0 +1,223 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="DefinitionalIntricaciesOfPartialKnowledge.html" />
+  <link ref="next" href="CorrelatedData.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="DefinitionalIntricaciesOfPartialKnowledge.html">← previous</a></li>
+        <li><a href="DefinitionalIntricaciesOfPartialKnowledge.html#RelatedWorkPartial.html">up</a></li>
+        <li><a href="CorrelatedData.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 51 --><div class="crosslinks"><p class="noindent"><a href="DefinitionalIntricaciesOfPartialKnowledge.html">LINKPREV</a><a href="DefinitionalIntricaciesOfPartialKnowledge.html#RelatedWorkPartial.html">LINKUP</a><a href="CorrelatedData.html">LINKNEXT</a></p></div>
+  <h4 class="subsectionHead" id="related-work-"><span class="titlemark">3.1.1</span>&nbsp;&nbsp;<a id="x29-940003.1.1"></a>Related work </h4>
+                                                                                
+                                                                                
+<!-- l. 53 --><p class="noindent">Among the numerous variants of differential privacy listed in Chapter&nbsp;<a href="DefiningAnonymization.html#defining-anonymization-u-ding-">2<!-- tex4ht:ref: ch:defining  --></a>, two main variants model
+adversaries with partial background knowledge, using indistinguishability: <span class="t1xi-x-x-109">noiseless privacy</span>&nbsp;[<a href="bibliography.html#cite.0@bhaskar2011noiseless">46</a>, <a href="bibliography.html#cite.0@duan2009privacy">116</a>],
+and <span class="t1xi-x-x-109">distributional DP</span>&nbsp;[<a href="bibliography.html#cite.0@bassily2013coupled">36</a>]. This work discusses the shortcomings of distributional DP in
+Section&nbsp;<a href="CorrelatedData.html#correlated-data">3.1.2<!-- tex4ht:ref: sec:correlated  --></a>, and Section&nbsp;<a href="PassiveVsActiveAttackers.html#passive-vs-active-attackers">3.1.3<!-- tex4ht:ref: sec:passiveactive  --></a> uses the formalism of noiseless privacy to define active and passive
+partial knowledge DP.
+</p><!-- l. 62 --><p class="indent">  Other variants, which also model adversaries with partial background knowledge, are not based
+on indistinguishability, but directly constrain the posterior knowledge of an attacker as a
+function of their prior knowledge. Among those are <span class="t1xi-x-x-109">adversarial privacy</span>&nbsp;[<a id="x29-94001"></a><a href="bibliography.html#cite.0@rastogi2009relationship">326</a>], <span class="t1xi-x-x-109">membership
+privacy</span>&nbsp;[<a id="x29-94002"></a><a href="bibliography.html#cite.0@li2013membership">254</a>], and <span class="t1xi-x-x-109">aposteriori noiseless privacy</span>&nbsp;[<a id="x29-94003"></a><a href="bibliography.html#cite.0@bhaskar2011noiseless">46</a>]. It is straightforwards to adapt the examples
+given in this chapter to show that these definitions suffer from the same flaws as noiseless
+privacy when data has correlations. Because of space constraints, we do not study them in
+detail.
+</p><!-- l. 72 --><p class="indent">  Several other definitions have been proposed. <span class="t1xi-x-x-109">Pufferfish privacy</span>&nbsp;[<a id="x29-94004"></a><a href="bibliography.html#cite.0@kifer2012rigorous">228</a>] can be seen as a
+generalization of noiseless privacy, and similarly, <span class="t1xi-x-x-109">coupled-worlds privacy</span>&nbsp;[<a id="x29-94005"></a><a href="bibliography.html#cite.0@bassily2013coupled">36</a>] (and its <span class="t1xi-x-x-109">inference-based</span>
+variant) generalizes distributional differential privacy: instead of protecting individual tuples, they
+protect arbitrary sensitive properties of the data. It is straightforward to generalize our results to the
+more generic frameworks.
+                                                                                
+                                                                                
+</p>
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="DefinitionalIntricaciesOfPartialKnowledge.html">LINKPREV</a><a href="DefinitionalIntricaciesOfPartialKnowledge.html#RelatedWorkPartial.html">LINKUP</a><a href="CorrelatedData.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="DefinitionalIntricaciesOfPartialKnowledge.html">← previous</a></li>
+        <li><a href="DefinitionalIntricaciesOfPartialKnowledge.html#RelatedWorkPartial.html">up</a></li>
+        <li><a href="CorrelatedData.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Joining Tumult Labs - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Joining Tumult Labs - Ted is writing things" />
+  <meta property="twitter:title" content="Joining Tumult Labs - Ted is writing things" />
+  <meta name="description" property="og:description" content="I'm joining Tumult Labs, a startup focused on differential privacy. Here's why I'm excited about it!" />
+  <meta property="twitter:description" content="I'm joining Tumult Labs, a startup focused on differential privacy. Here's why I'm excited about it!" />
+  <meta property="summary" content="I'm joining Tumult Labs, a startup focused on differential privacy. Here's why I'm excited about it!" />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/joining-tumult-labs.html" />
+  <link rel="prev" href="noisy-data.html" />
+  <link rel="next" href="friendly-intro-to-differential-privacy.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="noisy-data.html">← previous</a>
+ —     <a href="friendly-intro-to-differential-privacy.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./joining-tumult-labs.html">Joining Tumult Labs</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2021-08-05T00:00:00+02:00">
+      2021-08-05
+    </time>
+  </footer>
+  <div>
+    <p><strong>I'm</strong> joining <a href="https://www.tmlt.io">Tumult Labs</a>, a startup focused on making
+<a href="differential-privacy-awesomeness.html">differential privacy</a> ubiquitous. I'm incredibly excited about taking DP to
+the next stage, and I think Tumult Labs is a fantastic place to do that. Let me
+tell you why!</p>
+<h1 id="why-differential-privacy">Why differential privacy?</h1>
+<p><a href="differential-privacy-awesomeness.html">Differential privacy</a> (DP) makes it possible to safely publish statistics
+about sensitive data. Today, using DP in practice isn't very easy, but potential
+applications are everywhere. I'm hopeful that by making this tech more usable
+and more useful, we can make progress on three fronts.</p>
+<h4 id="making-existing-practices-safer">Making existing practices safer</h4>
+<p>Today, many organizations compute statistics about people, and share it with
+third parties. Government agencies publish information about their citizens.
+Online platforms give content creators data about their audience. Hospitals
+share patient data with researchers. And of course, a myriad of commercial
+applications exist too.</p>
+<p>All this data is often more revealing than people expect: anonymization is
+difficult to get right, and easy to get wrong. Problems happen <a href="https://www.smh.com.au/technology/australians-health-records-unwittingly-exposed-20171218-p4yxt2.html">all</a>
+<a href="https://www.wired.com/2007/12/why-anonymous-data-sometimes-isnt/">the</a> <a href="https://www.canberratimes.com.au/story/6330850/vic-transport-data-not-anonymous-enough/">time</a>. Worse, these problems are especially harmful to
+folks in <a href="https://www.vox.com/recode/22587248/grindr-app-location-data-outed-priest-jeffrey-burrill-pillar-data-harvesting">marginalized populations</a>. Only releasing aggregate data,
+or using clever-looking mitigations, isn't enough. The US Census <a href="us-census-reconstruction-attack.html">reconstruction
+attack</a> made that very clear.</p>
+<p>Worse, these are only the problems we hear about. Many organizations generate
+and archive statistical data, without ever sharing it with outsiders. What if
+they misclassify this data as "anonymized", even though reidentification is
+possible? This can have painful compliance implications, even though it might
+not make headlines.</p>
+<p>Differential privacy is the only tool we know that prevents these problems. The
+math works: DP provides <em>provable</em> guarantees. The main obstacle to adoption is
+usability. So let's work on that, and make all these practices much safer!</p>
+<h4 id="enabling-new-use-cases">Enabling new use cases</h4>
+<p>These existing practices are only the tip of the iceberg. How many applications
+never see the light of day, for privacy and compliance reasons? Governments want
+to do more <a href="https://en.wikipedia.org/wiki/Open_data">open data</a>, but don't want to breach their constituents'
+privacy. Organizations want to share data with researchers, without risking
+privacy incidents. Valuable data gets deleted, even though it could have been
+useful to share it with others, or archive some of it.</p>
+<p>Robust and accessible anonymization tooling will enable many such use cases. It
+will lower the cost of both compliance and respectful privacy practices. Today,
+DP is still a shiny new concept that requires considerable investment to use:
+only large organizations can afford it. In a few years, we can turn DP into a
+standard industry best practice, like encryption at rest or audit trails. I
+can't wait for us to get there!</p>
+<h4 id="improving-incentive-structures">Improving incentive structures</h4>
+<p>What happens once it gets dead simple to use provable anonymization techniques?
+Enabling the use cases I mentioned before is one thing. But there might also be
+rippling beneficial effects, much more impactful in the long run.</p>
+<p>Here's an example. Today, large companies can see value in sharing data with
+researchers. But the choice is theirs. What if they don't see the point? Or
+worse, what if they're afraid of what the research might uncover? Nothing stops
+them from keeping the data secret. Pushing these companies to be more
+transparent about their impact is difficult: privacy can be a convenient excuse
+to keep damaging information secret.</p>
+<p>Once differential privacy is the new standard, and using it is easy, this excuse
+goes away. It will be easier to demand openness from companies holding massive
+amounts of data. This could happen, for example, through legislation. Today,
+regulators who want to mandate such transparency face a difficult task: how to
+do so without creating requirements that conflict with data protection
+regulations? Differential privacy could change the equation.</p>
+<p>And legislation isn't the only path: changing <em>cultural norms</em> can have a
+massive impact as well. The easier it is to share data, the more organizations
+will. Over time, the perception of what is and isn't legitimate to keep secret
+will shift. And such a global shift towards openness can create a lot of
+pressure!</p>
+<p>So that's why I'm excited about differential privacy. Now, why do I think
+Tumult Labs is a great place for making it successful?</p>
+<h1 id="why-tumult-labs">Why Tumult Labs?</h1>
+<p>Tumult Labs was founded by three professors, who have been working on DP for
+more than a decade. They worked on <a href="https://scholar.google.com/scholar?as_q=&amp;as_epq=%22differential+privacy%22&amp;as_oq=%22ashin+machanavajjhala%22+%22michael+hay%22+%22gerome+miklau%22">foundational theory</a> <em>and</em> on DP's
+<a href="http://www.cse.psu.edu/~duk17/papers/PrivacyOnTheMap.pdf">first-ever real-world deployment</a>. Now, they're advising the US
+Census Bureau on some of their <a href="https://arxiv.org/pdf/2107.10659.pdf">most complex challenges</a>.</p>
+<p>Their work on real-world deployments led them to a realization I'm quite
+familiar with: if we want to reach wide adoption of DP, we have to invest in
+building excellent tooling. So they've been assembling a <a href="https://www.tmlt.io/company">talented
+team</a> to do exactly that: build what their clients
+need into a single general-purpose platform. And I was very impressed by what
+they <a href="https://users.cs.duke.edu/~ashwin/pubs/Ektelo-SIGMOD2018.pdf">published</a> about this work! It shows both deep technical insight,
+and a focus on building things in a modular and reusable way. I can't wait to
+dig into this tech some more, and learn from the folks behind it.</p>
+<p>Finally, I'm also eager to tackle the personal challenges that await. Being a
+part of a small startup should be a much-needed change of pace. Helping external
+clients will be new and pretty exciting. I'll also be Tumult's first employee in
+Europe, but not the last: I'm thrilled about the idea of growing the team there.
+Speaking of which, if the mission resonates with you, check out our <a href="https://www.tmlt.io/careers">careers</a>
+page, or drop me a line directly!</p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20210805,
+  title = &#123;Joining Tumult Labs},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/joining-tumult-labs.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2021},
+  month = &#123;08}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="noisy-data.html">← previous</a>
+    </li>
+    <li>
+      <a href="friendly-intro-to-differential-privacy.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

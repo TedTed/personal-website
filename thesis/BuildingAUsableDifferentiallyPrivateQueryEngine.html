@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="SummaryAndPerspectives.html" />
+  <link ref="next" href="IntroductionDPSQL.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="SummaryAndPerspectives.html">← previous</a></li>
+        <li><a href="FromTheoryToPractice.html#BuildingAUsableDifferentiallyPrivateQueryEngine.html">up</a></li>
+        <li><a href="IntroductionDPSQL.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="SummaryAndPerspectives.html">LINKPREV</a><a href="FromTheoryToPractice.html#BuildingAUsableDifferentiallyPrivateQueryEngine.html">LINKUP</a><a href="IntroductionDPSQL.html">LINKNEXT</a></p></div>
+  <h3 class="sectionHead" id="building-a-usable-differentially-private-query-engine-u-ding-"><span class="titlemark">4.2</span>&nbsp;&nbsp;<a id="x50-1640004.2"></a>Building a usable differentially private query engine <span class="bbding-10x-x-109">✿</span></h3> <!-- l. 2 --><p class="noindent"><a id="dpgsql"></a> </p> <!-- l. 4 --><p class="indent">
+In the previous section, we saw that risk analysis use cases, where datasets are generated via an
+unknown process and we are trying to quantify their risk, cannot be easily tackled with
+mechanism-centric definitions like differential privacy. This is only a partial answer to the
+original question of this chapter: for all cases where we <span class="t1xi-x-x-109">can </span>control the data generation
+process, why is differential privacy not more widely used? Since its introduction, differentially
+private variants have been proposed for most common data analysis tasks: from simple
+aggregations, like counts&nbsp;[<a id="x50-164001"></a><a href="bibliography.html#cite.0@dwork2006calibrating">128</a>], sums, or medians&nbsp;[<a id="x50-164002"></a><a href="bibliography.html#cite.0@dwork2009robust">127</a><a id="x50-164003"></a>, <a href="bibliography.html#cite.0@nissim2007smooth">303</a>], to more complex analyses, like
+<!-- l. 13 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-means
+clustering[<a href="bibliography.html#cite.0@nissim2007smooth">303</a>] or empirical risk minimization&nbsp;[<a id="x50-164004"></a><a href="bibliography.html#cite.0@chaudhuri2011differentially">71</a>]. Yet, real-world deployments of such algorithms
+seem to be few and far between.
+</p><!-- l. 17 --><p class="indent">  In this section, we argue that one of the main reasons for this state of affairs is <span class="t1xi-x-x-109">usability</span>. On paper,
+differential privacy is relatively simple, but in practice, few implementations are readily available, and
+few people will go through the trouble of implementing an algorithm from a scientific paper by
+themselves. The lack of existing implementations is partially explained by a misalignment of
+incentives: academics get more recognition and career progress out of scientific papers than
+usable open-source software. But this is only a partial explanation: it is also surprisingly
+difficult to convert algorithms from the scientific literature into a usable, scalable, and solid
+implementation.
+</p><!-- l. 28 --><p class="indent">  The potential issues are numerous. Basic primitives such as noise addition are often modeled using
+continuous numbers with infinite precision; and translating them naively to finite computers using
+floating-point numbers can lead to significant vulnerabilities. Many scientific papers make assumptions
+that are unrealistic in many practical use cases, like the implicit premise that each user contributes a
+single data point to the input dataset, that the aggregations happen along partitions that are known in
+advance, or that the input dataset can fit entirely in memory. Production applications also require a
+high degree of trust in the implementation, and it is non-trivial to adapt software reliability
+techniques like unit testing to randomized algorithms. Further, a tool for differential privacy
+must be usable by non-experts, and this requires to put significant thought into interface
+design.
+</p><!-- l. 41 --><p class="indent">  In this section, we propose a generic and scalable framework to perform differentially private
+aggregations on databases, and use it as an example to introduce possible approaches to tackle
+the problems listed above. This framework, which we express as an operator in relational
+algebra, provides differential privacy even when each individual can each be associated with
+arbitrarily many records. To validate this system, we test the utility of typical queries on
+industry benchmarks, and verify its correctness with a stochastic testing framework. We
+highlight the benefits provided by such a query engine and the pitfalls encountered in the
+                                                                                
+                                                                                
+course of its deployment. Finally, we publish one of its implementations as open-source
+software.
+</p><!-- l. 1 --><p class="noindent">
+</p>
+
+
+
+
+
+                                                                                
+                                                                                
+  <div class="footnotes"></div> <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="SummaryAndPerspectives.html">LINKPREV</a><a href="FromTheoryToPractice.html#BuildingAUsableDifferentiallyPrivateQueryEngine.html">LINKUP</a><a href="IntroductionDPSQL.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="SummaryAndPerspectives.html">← previous</a></li>
+        <li><a href="FromTheoryToPractice.html#BuildingAUsableDifferentiallyPrivateQueryEngine.html">up</a></li>
+        <li><a href="IntroductionDPSQL.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

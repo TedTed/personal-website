@@ -1,0 +1,279 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="index.html" />
+  <link ref="next" href="Acknowledgements.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="index.html">← previous</a></li>
+        <li><a href="index.html#tldr.html">up</a></li>
+        <li><a href="Acknowledgements.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 5 --><div class="crosslinks"><p class="noindent"><a href="index.html">LINKPREV</a><a href="index.html#tldr.html">LINKUP</a><a href="Acknowledgements.html">LINKNEXT</a></p></div>
+  <h4 class="likesubsectionHead" id="tldr-u-ding-"><a id="x2-1000"></a>tl;dr <span class="bbding-10x-x-109">✿</span></h4> <!-- l. 8 --><p class="noindent"> </p> <h5 class="likesubsubsectionHead" id="abstract"><a id="x2-2000"></a>
+Abstract</h5>
+<!-- l. 10 --><p class="noindent">The objective of this thesis is to make it easier to understand, use, and deploy strong anonymization
+practices. We make progress towards this goal in three ways.
+</p><!-- l. 14 --><p class="indent">  First, we make it easier to understand what anonymization means, and lower the cost of entry for
+new practitioners. After a historical tour of a number of possible definitions, we introduce
+<span class="t1xi-x-x-109">differential privacy</span>, a central concept studied throughout this thesis. We then systematize
+and organize the existing literature on variants and extensions of differential privacy: we
+categorize them in seven dimensions, compare them with each other, and list some of their main
+properties.
+                                                                                
+                                                                                
+</p><!-- l. 22 --><p class="indent">  Second, we consider a natural class of weaker variants of differential privacy: definitions that assume
+that the attacker only has <span class="t1xi-x-x-109">partial knowledge </span>over the original data. We raise some fundamental issues
+with existing definitions, and we establish strong theoretical foundations to solve these
+issues and clearly delineate between distinct attack models. We use these foundations to
+improve existing results on the privacy of common aggregations and draw links between our
+notions and older syntactic definitions of privacy. Then, we provide strong negative results for
+<span class="t1xi-x-x-109">cardinality estimators</span>, a class of algorithms that cannot be made private even under very weak
+assumptions.
+</p><!-- l. 32 --><p class="indent">  Third, we focus on practical applications. We present novel algorithms to detect reidentifiability and
+joinability risks of large datasets, and we describe the design of a differentially private query engine
+designed to be usable to non-experts. We propose multiple possible improvements to this query engine,
+and discuss a number of trade-offs between privacy, utility, usability, and extensibility; we then discuss
+operational challenges arising when rolling out anonymization at scale, from choosing parameters
+to providing appropriate education and guidance to engineers working on anonymization
+pipelines.
+</p><!-- l. 42 --><p class="noindent">
+</p>
+  <h5 class="likesubsubsectionHead" id="resume"><a id="x2-3000"></a>Résumé</h5>
+<!-- l. 44 --><p class="noindent">Le but de cette thèse est de simplifier <br class="newline">L’art d’empêcher que l’on puisse identifier <br class="newline">Un seul individu dans un jeu de données <br class="newline">Même si l’on se sert de voies insoupçonnées. <br class="newline">
+</p><!-- l. 49 --><p class="noindent">Définir ce problème est loin d’être évident&nbsp;: <br class="newline">Bon nombre d’érudits s’y sont cassé la dent. <br class="newline">D’abord, on retranscrit le parcours historique <br class="newline">Ayant déterminé la notion unique <br class="newline">Utilisée ici pour définition <br class="newline">Grâce à ses attributs et son intuition. <br class="newline">Nous classons et trions toutes ses variantes <br class="newline">En sept dimensions dociles et brillantes. <br class="newline">
+</p><!-- l. 59 --><p class="noindent">On s’attarde plus tard sur un point compliqué&nbsp;: <br class="newline">Comment modéliser l’attaquant étriqué <br class="newline">Ayant a priori bien trop d’incertitude <br class="newline">Pour accomplir son rôle avec exactitude. <br class="newline">Grâce à des fondements que l’on rend adéquats <br class="newline">Nous améliorons d’anciens résultats. <br class="newline">Certains sont positifs&nbsp;: on peut enfin comprendre <br class="newline">Comment voter pour l’une et pour autant prétendre <br class="newline">Avoir voté pour l’autre, en restant clandestins. <br class="newline">Certains sont négatifs&nbsp;: en comptant les distincts <br class="newline">Alors on doit choisir&nbsp;; soit on passe à l’échelle, <br class="newline">Soit on protège bien chaque info personnelle. <br class="newline">
+</p><!-- l. 73 --><p class="noindent">Les principes, c’est bien, les actions, c’est mieux. <br class="newline">C’est pourquoi l’on poursuit un but audacieux&nbsp;: <br class="newline">Rendre l’anonymat accessible en pratique. <br class="newline">Un accord adéquat de sens mathématique <br class="newline">Et d’innovation technique est précieux <br class="newline">Pour accomplir un jour ce rêve ambitieux. <br class="newline">Et l’outil n’est pas tout&nbsp;: c’est aussi nécessaire <br class="newline">D’aider tout un chacun pour être l’émissaire <br class="newline">Du maintien et respect de principes moraux. <br class="newline">Chaque choix peut changer un quidam en héros.
+</p><!-- l. 87 --><p class="noindent">
+</p>
+  <h5 class="likesubsubsectionHead" id="zusammenfassung"><a id="x2-4000"></a>Zusammenfassung</h5>
+<!-- l. 89 --><p class="noindent">Das Ziel dieser Doktorarbeit liegt in der Erleichterung des Verständnisses und der Verwendung von
+starken Anonymisierungstechniken, sowie der Bereitstellung von Prozeduren zur Anonymisierung.
+Hierbei erzielen wir auf drei verschiedene Arten Fortschritte.
+</p><!-- l. 94 --><p class="indent">  Zuerst beleuchten wir die Grundlagen von Anonymisierung, um Neulingen einen einfacheren
+Zugang zum Fachgebiet zu ermöglichen. Nach einem geschichtlichen Überblick über
+ausgewählte andere Datenschutzdefinitionen wird <span class="t1xi-x-x-109">Differential Privacy </span>eingeführt, ein zentrales
+Konzept dieser Doktorarbeit. Der anschließende Schwerpunkt liegt auf der Systematisierung
+und Organisierung der wissenschaftlichen Literatur zu Varianten und Erweiterungen von
+Differential Privacy. Wir kategorisieren die vorhandenen Definitionsvarianten in sieben
+Dimensionen, vergleichen sie miteinander und führen einige ihrer Haupteigenschaften
+auf.
+</p><!-- l. 104 --><p class="indent">  Als Zweites überprüfen wir natürliche Verallgemeinerungen der Differential Privacy:
+Definitionen, die einen Angreifer mit nur <span class="t1xi-x-x-109">teilweiser Kenntnis </span>der Originaldaten annehmen. Wir zeigen
+grundsätzliche Probleme bei diesen Definitionen auf und etablieren starke theoretische Grundlagen
+zur Lösung diese Schwierigkeiten. Hierbei ist unsere deutliche Abgrenzung zwischen zwei
+unterschiedlichen Angreifermodellen hervorzuheben. Wir nutzen diese Grundlagen, um bestehende
+Ergebnisse über verbreiteter Aggregationen zu verbessern, und um Verbindungen zwischen unseren
+Anonymisierungsegriffen und älteren syntaktischen Definitionen zu ziehen. Darauf aufbauend
+legen wir starke negative Ergebnisse für <span class="t1xi-x-x-109">Kardinalitätsschätzer </span>vor: Diese Klasse von
+Algorithmen wird selbst unter schwächsten Annahmen nicht dem Privatsphärenschutz
+gerecht.
+</p><!-- l. 116 --><p class="indent">  Als Drittes betrachten wir praktische Anwendungen. Wir präsentieren neuartige Algorithmen zur
+                                                                                
+                                                                                
+Ermittlung von Informationszusammenführungs- und Identifizierungsrisiken in großen Datenmengen.
+Außerdem beschreiben wir den Entwurf eines Systems, welches Laien erlaubt, statistische Abfragen
+unter Wahrung der Differential Privacy auszuführen. Wir schlagen mehrere mögliche Verbesserungen
+für dieses System vor und besprechen eine Reihe von Kompromissen zwischen Datenschutz,
+Genauigkeit, Benutzerfreundlichkeit und Erweiterbarkeit; wir betrachten auch die Herausforderungen
+bei anonymisierten Datenveröffentlichungen von der Auswahl adäquater Datenschutzparameter bis
+zur angemessenen Schulung und Anleitung von EntwicklerInnen, die an Anonymisierungspipelines
+arbeiten.
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+</p><!-- l. 5 --><p class="indent">  <a id="acknowledgements"></a>
+                                                                                
+                                                                                
+</p>
+  <!-- l. 6 --><div class="crosslinks"><p class="noindent"><a href="index.html">LINKPREV</a><a href="index.html#tldr.html">LINKUP</a><a href="Acknowledgements.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="index.html">← previous</a></li>
+        <li><a href="index.html#tldr.html">up</a></li>
+        <li><a href="Acknowledgements.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

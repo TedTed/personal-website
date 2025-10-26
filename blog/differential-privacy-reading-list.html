@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>A reading list on differential privacy - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="A reading list on differential privacy - Ted is writing things" />
+  <meta property="twitter:title" content="A reading list on differential privacy - Ted is writing things" />
+  <meta name="description" property="og:description" content="A list of papers to check out to learn more about differential privacy." />
+  <meta property="twitter:description" content="A list of papers to check out to learn more about differential privacy." />
+  <meta property="summary" content="A list of papers to check out to learn more about differential privacy." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/differential-privacy-reading-list.html" />
+  <link rel="prev" href="privacy-engineer.html" />
+  <link rel="next" href="privacy-loss-random-variable.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="privacy-engineer.html">← previous</a>
+ —     <a href="privacy-loss-random-variable.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./differential-privacy-reading-list.html">A reading list on differential privacy</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2019-09-20T00:00:00+02:00">
+      2019-09-20
+    </time>
+    <small>&mdash; updated
+      <time datetime="2019-09-25T00:00:00+02:00">
+        2019-09-25
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p></small></p>
+<hr>
+<p><span class='lettrine'>S</span><strong>omeone</strong> recently asked me for reading
+suggestions to learn more about differential privacy (DP). I thought that the
+answer was worth posting somewhere. So, here it is: a list of material that I
+often recommend to people who want to dive into the field.</p>
+<p>Before I start, two remarks. First, most of these are going to be research
+papers. There's a lack of accessible material on differential privacy. I hope it
+gets better over time; I'll keep this list updated as I discover more good
+stuff. Second, this list is going to be <em>very</em> subjective. I'm more interested
+in some problems than others. I like beautiful theory and very practical
+applications. I'm less enthusiastic about the research in-between. This list
+might not be the right one for you. If you're a student starting a research
+project, ask your advisor what you should read! They'll be a better source of
+reading material than a random guy on the Internet.</p>
+<h1 id="introductory-and-reference-material">Introductory and reference material</h1>
+<p>There are less links that I'd like in the category « suitable for a
+non-technical audience ». That's exactly why I'm writing these blog posts…
+Still, some people have created great material.</p>
+<p>I recently stumbled upon a fantastic 12-minute video called <a href="https://www.youtube.com/watch?v=pT19VwBAqKA">Protecting Privacy
+with MATH</a>. It's done by <a href="https://en.wikipedia.org/wiki/MinutePhysics">MinutePhysics</a>, and it's friendly,
+understandable, yet very accurate. I love that it explains the basics of
+reconstruction attacks! It provides a great motivation for differential privacy.</p>
+<p>For more in-depth material, I recommend the <a href="https://scholarship.law.vanderbilt.edu/jetlaw/vol21/iss1/4/">Primer for a Non-Technical
+Audience</a>. It's written by folks at the Harvard <a href="https://privacytools.seas.harvard.edu/">Privacy Tools
+Project</a>, and is perfect if you don't want heavy math. I prefer it to
+the typical recommendation for a reference book on DP, surnamed the « Privacy
+Book ». Its real name is <a href="https://www.cis.upenn.edu/~aaroth/privacybook.html">The Algorithmic Foundations of Differential
+Privacy</a>. One of the authors is Cynthia Dwork, one of the creators
+of DP, so it's a good way of discovering the original motivations… But I would
+mostly recommend Sections 1 to 3, not the whole thing.</p>
+<p>Ah, on the topic of things written by the creators of DP! <a href="https://github.com/frankmcsherry/blog">Frank McSherry's
+blog</a> makes for a fun read (look for the articles tagged « Privacy »).</p>
+<h1 id="local-and-shuffled-model">Local and shuffled model</h1>
+<p>Excited by my [blog post][local] about the different models of DP? When it comes
+to the privacy model, the <a href="https://arxiv.org/abs/1407.6981">RAPPOR</a> paper is a classic. It explains how Google
+Chrome collected useful statistics without learning information about
+individuals. The follow-up paper, <a href="https://arxiv.org/abs/1710.00901">Prochlo</a>, introduced the shuffled model in a
+very practical context. To understand its theoretical guarantees, I recommend
+the later <a href="https://arxiv.org/abs/1903.02837">Privacy Blanket</a> paper, it provides a very nice explanation
+of the intuition behind it<sup id="fnref:shuffling"><a class="footnote-ref" href="#fn:shuffling">1</a></sup>.</p>
+<h1 id="rolling-out-differential-privacy">Rolling out differential privacy</h1>
+<p>Moving on to applied views of central DP for statistics. Google colleagues and I
+recently published recently a paper about a <a href="https://arxiv.org/abs/1909.01917">differentially private SQL
+engine</a>. This isn't the first work in that direction<sup id="fnref:sql"><a class="footnote-ref" href="#fn:sql">2</a></sup>, but I'm still
+pretty proud of it: we worked hard to make it easy to understand and mostly
+self-contained! You can see an updated version in Section 4.2 of my <a href="https://desfontain.es/thesis/">PhD
+thesis</a>. Further in the thesis, you can also find a discussion of
+<a href="https://desfontain.es/thesis/OperationalAspectsOfAnonymization.html">operational aspects of DP</a>, a topic that doesn't get as much
+attention as it probably should.</p>
+<p>Want more about rolling out DP in practice? The <a href="https://arxiv.org/abs/1809.02201">Issues Encountered Deploying
+Differential Privacy</a> paper, by the US Census Bureau, is a must-read. I
+strongly relate to the problems it raises. For even more fun and absurd
+implementation things, go read about the <a href="https://www.microsoft.com/en-us/research/publication/on-significance-of-the-least-significant-bits-for-differential-privacy/">floating-point attack</a> on
+the Laplace mechanism, it's a classic. </p>
+<h1 id="theory-of-differential-privacy">Theory of differential privacy</h1>
+<p>There are natural theory questions raised by DP. For example « how many queries
+can we answer privately and accurately on the same database? » <a href="https://salil.seas.harvard.edu/publications/complexity-differential-privacy">The Complexity
+of Differential Privacy</a> is a survey of fundamental results on
+accuracy/privacy trade-offs. This being theory, almost everything in there is
+asymptotic, of course.</p>
+<p>The theory around the <em>privacy loss distribution</em> is beautiful. It gives a
+global view of the privacy leakage of a mechanism. It's less simple, but it
+makes much more sense than only considering a pair of (ε,δ) parameters. To learn
+about it, I recommend the <a href="https://eprint.iacr.org/2018/820">Privacy Loss Classes</a> paper. It has practical
+consequences, too, on estimating privacy budgets over many compositions. It
+enables neat ways of estimating the evolution of a privacy budget over many
+compositions. This is explored in the <a href="https://eprint.iacr.org/2017/1034">Privacy Buckets</a> paper, which is
+also worth a read.</p>
+<p>Speaking of interesting reformulations of DP, the hypothesis testing formulation
+is also super cool. The <a href="https://arxiv.org/abs/1905.02383">Gaussian Differential Privacy</a> paper does a
+great job at explaining it. It also gives you nice results on <em>amplification by
+sampling</em>, a shiny and useful tool in practice<sup id="fnref:sampling"><a class="footnote-ref" href="#fn:sampling">3</a></sup>.</p>
+<p>Finally, there are interesting debates around how to interpret the guarantee
+provided by DP. Everyone understands the math, but how do we translate it in
+practice? There's a long-standing debate about data correlations and adversary
+strength. On that topic, the <a href="https://arxiv.org/abs/1710.05899">Differential Privacy as a Causal Property</a>
+paper is fantastic. It clarifies this debate, links to all relevant references,
+and proposes a neat way to solve this issue conceptually.</p>
+<h1 id="differentially-private-machine-learning">Differentially private machine learning</h1>
+<p>I don't know much about machine learning, but it felt weird to not mention it at
+all in an article like this. So I asked my colleague <a href="https://ai.google/research/people/PeterKairouz">Peter Kairouz</a> to
+suggest some material! The following suggestions are from him. I was glad to see
+that there aren't only scientific papers in there!</p>
+<p>First, start with this pretty great 2-hour <a href="https://www.ece.rutgers.edu/~asarwate/nips2017/">video tutorial</a> (with
+available slides and historical references). If you then want to actually test
+this in practice, try out <a href="https://github.com/tensorflow/privacy">TensorFlow Privacy</a>! For a nice introduction to
+it, check out this <a href="http://www.cleverhans.io/privacy/2019/03/26/machine-learning-with-differential-privacy-in-tensorflow.html">blog post</a>, by one of the TensorFlow Privacy
+authors. It explains how to run DP-SGD with it, step by step and with a lot of
+additional references.</p>
+<p>The paper that introduced DP-SGD is a classic: <a href="https://arxiv.org/abs/1607.00133">Deep Learning with Differential
+Privacy</a>. Another method for the same problem, DSSGD, appeared earlier in
+<a href="https://www.comp.nus.edu.sg/~reza/files/Shokri-CCS2015.pdf">Privacy-Preserving Deep Learning</a><sup>(PDF)</sup>. Yet another
+alternative approach, more generic and surprisingly understandable, is called
+PATE. It's described in a <a href="http://www.cleverhans.io/privacy/2018/04/29/privacy-and-machine-learning.html">blog post</a>, which comes with references to the
+original papers.</p>
+<p>Most of these methods rely on tight accounting on the privacy budget. A common
+tool for that is <a href="https://arxiv.org/abs/1702.07476">Rényi Differential Privacy</a>, a DP variant that
+considers the <em>averaged</em> privacy loss. Another is <a href="https://arxiv.org/abs/1808.06651">Amplification by
+Iteration</a>, which studies mechanisms that iterate over the data
+multiple times, without releasing intermediary results. Both techniques enable
+better composition results.</p>
+<p>Deep learning isn't the only interesting ML application of differential privacy.
+Methods also exist for <a href="https://arxiv.org/abs/1507.02482">Ordinary Least Squares</a>, or for <a href="https://arxiv.org/abs/0912.0071">Empirical Risk
+Minimization</a>. This last method admits <a href="https://arxiv.org/abs/1405.7085">Efficient Algorithms and Tight
+Error Bounds</a>. In general, <a href="https://arxiv.org/abs/1908.09970">Convex Optimization</a> problems are a nice
+fit for DP methods.</p>
+<h1 id="something-missing">Something missing?</h1>
+<p>If you feel this reading list is missing something, please let me know! I'd like
+this post to be a living resource. So I'm enthusiastic about adding new
+material, especially if they're more approchable than scientific papers. My
+contact info is in the footer of this page.</p>
+<hr>
+<p><small>Thanks to Antoine Amarilli, Bayard Carlson, Úlfar Erlingsson, Peter
+Kairouz, and Rob Yoder for their helpful comments and suggestions.</small></p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:shuffling">
+<p>Amplification by shuffling was initially formalized in the <a href="https://arxiv.org/abs/1811.12469">eponymous
+  paper</a>.&#160;<a class="footnote-backref" href="#fnref:shuffling" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:sql">
+<p>The first system to do generic differentially private computations was
+  <a href="https://www.microsoft.com/en-us/research/project/privacy-integrated-queries-pinq/">PINQ</a>, and a major follow-up was <a href="https://arxiv.org/abs/1706.09479">Flex</a>. Both papers are worth a read too!&#160;<a class="footnote-backref" href="#fnref:sql" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:sampling">
+<p>For a slightly more exhaustive and historical view of results in
+  that area, Section 4 of the <a href="https://arxiv.org/abs/1807.01647">Amplification by Subsampling</a> paper
+  (and the corresponding references) is a solid resource.&#160;<a class="footnote-backref" href="#fnref:sampling" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20190920,
+  title = &#123;A reading list on differential privacy},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/differential-privacy-reading-list.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2019},
+  month = &#123;09}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="privacy-engineer.html">← previous</a>
+    </li>
+    <li>
+      <a href="privacy-loss-random-variable.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

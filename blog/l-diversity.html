@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>l-diversity, because reidentification doesn't tell the whole story - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="l-diversity, because reidentification doesn't tell the whole story - Ted is writing things" />
+  <meta property="twitter:title" content="l-diversity, because reidentification doesn't tell the whole story - Ted is writing things" />
+  <meta name="description" property="og:description" content="l-diversity is the first famous attempt at considering stronger attack models than simply reidentification attacks. Let's see how it works, and which flaws of k-anonmyity it fixes!" />
+  <meta property="twitter:description" content="l-diversity is the first famous attempt at considering stronger attack models than simply reidentification attacks. Let's see how it works, and which flaws of k-anonmyity it fixes!" />
+  <meta property="summary" content="l-diversity is the first famous attempt at considering stronger attack models than simply reidentification attacks. Let's see how it works, and which flaws of k-anonmyity it fixes!" />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/l-diversity.html" />
+  <link rel="prev" href="crash-override.html" />
+  <link rel="next" href="delta-presence.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="crash-override.html">← previous</a>
+ —     <a href="delta-presence.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./l-diversity.html">l-diversity, because reidentification doesn't tell the whole story</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2018-02-19T00:00:00+01:00">
+      2018-02-19
+    </time>
+  </footer>
+  <div>
+    <p><strong>Where</strong> does privacy risk come from, when releasing anonymized data? What
+exactly can go wrong? Sweeney provided the first obvious answer: privacy risk
+appears when you can <em>reidentify</em> a record. That makes sense, and led to the
+definition of <a href="k-anonymity.html"><span class="math">\(k\)</span>-anonymity</a>. If you think your data is
+anonymous, but somebody pinpoints a record and figures out who it is, clearly,
+there's a problem.</p>
+<p>But as researchers discovered shortly after, it's sometimes not enough. An
+attacker might figure out private information about someone, <em>without
+reidentifying their record</em>. Even if the dataset is <span class="math">\(k\)</span>-anonymous. How does this
+magic work? First, we'll show how it works with an example, then we'll describe
+the natural solution: <span class="math">\(l\)</span>-diversity.</p>
+<div class="toc">
+<ul>
+<li><a href="#an-example">An example</a></li>
+<li><a href="#l-diversity-the-obvious-fix">\(l\)-diversity: the obvious fix</a></li>
+<li><a href="#wait-that-seems-too-easy">Wait, that seems too easy</a><ul>
+<li><a href="#uncertain-information-can-still-be-sensitive">Uncertain information can still be sensitive</a></li>
+<li><a href="#probabilistic-information-gain">Probabilistic information gain</a></li>
+</ul>
+</li>
+<li><a href="#l-diversity-in-practice">\(l\)-diversity in practice</a><ul>
+<li><a href="#the-good-news-implementation">The good news: implementation</a></li>
+<li><a href="#the-bad-news-policy">The bad news: policy</a></li>
+<li><a href="#the-other-bad-news-utility-loss">The other bad news: utility loss</a></li>
+</ul>
+</li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+</div>
+<p></p>
+
+<h1 id="an-example">An example</h1>
+<p>Suppose you have the following database, which contains everyone in the country.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">name</th>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+<th style="text-align: center;">diagnostic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Alice</td>
+<td style="text-align: center;">4217</td>
+<td style="text-align: center;">34</td>
+<td style="text-align: center;">Common flu</td>
+</tr>
+<tr>
+<td style="text-align: center;">Bob</td>
+<td style="text-align: center;">4212</td>
+<td style="text-align: center;">39</td>
+<td style="text-align: center;">Healthy</td>
+</tr>
+<tr>
+<td style="text-align: center;">Camille</td>
+<td style="text-align: center;">4732</td>
+<td style="text-align: center;">39</td>
+<td style="text-align: center;">Otitis</td>
+</tr>
+<tr>
+<td style="text-align: center;">Dan</td>
+<td style="text-align: center;">4743</td>
+<td style="text-align: center;">23</td>
+<td style="text-align: center;">Otitis</td>
+</tr>
+</tbody>
+</table>
+<p>(It's a rather small country.)</p>
+<p>Now, you want to release an anonymized version of this database, for research
+purposes. Following the <a href="k-anonymity.html"><span class="math">\(k\)</span>-anonymity</a> method, you start
+by wondering which columns are identifying. Let's see.</p>
+<ul>
+<li><strong>name</strong> is obviously identifying: we have to remove it completely.</li>
+<li><strong>ZIP code</strong> and <strong>age</strong> are <em>quasi-identifiers</em>. They can help you identify
+  someone, but reducing their precision might prevent this.</li>
+<li><strong>diagnostic</strong> is <em>sensitive</em>, but since it's typically secret, we can
+  consider it non-identifying<sup id="fnref:identifying"><a class="footnote-ref" href="#fn:identifying">1</a></sup>.</li>
+</ul>
+<p>So, let's make this data <span class="math">\(k\)</span>-anonymous. Here, <span class="math">\(k=2\)</span>, because it's a small country.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+<th style="text-align: center;">diagnostic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">421*</td>
+<td style="text-align: center;">30-39</td>
+<td style="text-align: center;">Common flu</td>
+</tr>
+<tr>
+<td style="text-align: center;">421*</td>
+<td style="text-align: center;">30-39</td>
+<td style="text-align: center;">Healthy</td>
+</tr>
+<tr>
+<td style="text-align: center;">47**</td>
+<td style="text-align: center;">20-39</td>
+<td style="text-align: center;">Otitis</td>
+</tr>
+<tr>
+<td style="text-align: center;">47**</td>
+<td style="text-align: center;">20-39</td>
+<td style="text-align: center;">Otitis</td>
+</tr>
+</tbody>
+</table>
+<p>Since all combinations of ZIP code &amp; age appear twice, this data is
+<span class="math">\(2\)</span>-anonymous. But now, suppose an attacker wants to find Camille's diagnostic.
+The attacker knows that Camille has ZIP code 4732 and age 23. They can easily
+figure out that Camille's record is the third or fourth one, but cannot know
+which.</p>
+<p>And there's the obvious problem: <em>both records have the same diagnostic</em>. So the
+attacker can deduce that Camille's diagnostic is "Otitis". Even without knowing
+which record is Camille's! <span class="math">\(k\)</span>-anonymity wasn't enough to protect Camille's
+private information.</p>
+<h1 id="l-diversity-the-obvious-fix"><span class="math">\(l\)</span>-diversity: the obvious fix</h1>
+<p>So. Let's say that all users with the same quasi-identifier tuple are in the
+same <em>bucket</em>. If all sensitive values are the same within a bucket, we might
+leak private information. The obvious solution? Imposing some <em>diversity</em> in the
+sensitive values associated to the same (generalized) tuple. </p>
+<p>This is <span class="math">\(l\)</span>-diversity, as <a href="https://desfontain.es/PDFs/PhD/LDiversityPrivacyBeyondKAnonymity.pdf">introduced<sup> (pdf)</sup></a> in 2006 by
+Machanavajjhala et al. It builds on the definition of <span class="math">\(k\)</span>-anonymity.
+<span class="math">\(l\)</span>-diversity states that each bucket must have at least <span class="math">\(l\)</span> <em>distinct</em>
+sensitive values. Of course, each bucket should contain at least <span class="math">\(l\)</span> users:
+<span class="math">\(l\)</span>-diversity implies <span class="math">\(l\)</span>-anonymity.</p>
+<p>Let's try to make the data above <span class="math">\(2\)</span>-diverse.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+<th style="text-align: center;">diagnostic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">4***</td>
+<td style="text-align: center;">20-39</td>
+<td style="text-align: center;">Common flu</td>
+</tr>
+<tr>
+<td style="text-align: center;">4***</td>
+<td style="text-align: center;">39</td>
+<td style="text-align: center;">Healthy</td>
+</tr>
+<tr>
+<td style="text-align: center;">4***</td>
+<td style="text-align: center;">39</td>
+<td style="text-align: center;">Otitis</td>
+</tr>
+<tr>
+<td style="text-align: center;">4***</td>
+<td style="text-align: center;">20-39</td>
+<td style="text-align: center;">Otitis</td>
+</tr>
+</tbody>
+</table>
+<p>Now, consider our attacker from earlier, targeting Camille (third row). Like
+before, the attacker is unable to know which records corresponds to Camille. But
+besides, they also can't know whether Camille was healthy, or suffered from
+otitis. The sensitive value stays private.</p>
+<h1 id="wait-that-seems-too-easy">Wait, that seems too easy</h1>
+<p>You might have noticed it immediately: the definition of <span class="math">\(l\)</span>-diversity has some
+flaws. Let's list two of them.</p>
+<h4 id="uncertain-information-can-still-be-sensitive">Uncertain information can still be sensitive</h4>
+<p>What's the key idea behind <span class="math">\(l\)</span>-diversity? If the attacker has uncertainty over
+the sensitive value, then we avoid leaking private info. But consider the
+following database, which satisfies <span class="math">\(2\)</span>-diversity:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+<th style="text-align: center;">diagnostic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">42**</td>
+<td style="text-align: center;">20-29</td>
+<td style="text-align: center;">AIDS</td>
+</tr>
+<tr>
+<td style="text-align: center;">42**</td>
+<td style="text-align: center;">20-29</td>
+<td style="text-align: center;">Hepatitis B</td>
+</tr>
+<tr>
+<td style="text-align: center;">17**</td>
+<td style="text-align: center;">30-39</td>
+<td style="text-align: center;">Otitis</td>
+</tr>
+<tr>
+<td style="text-align: center;">17**</td>
+<td style="text-align: center;">30-39</td>
+<td style="text-align: center;">Healthy</td>
+</tr>
+</tbody>
+</table>
+<p>Suppose the attacker knows that their target has ZIP code 4235 and age 25. The
+target's record is one of the first two rows. The attacker can learn that their
+target either has AIDS, or hepatitis B. They can't be sure <em>which one</em> is the
+correct one… But they can infer that their target has a sexually transmitted
+infection. This information, of course, might be embarrassing for the target!</p>
+<p>How to fix this? One solution could be to group diagnostics into <em>categories</em>,
+like <a href="https://www.findacode.com/code-set.php?set=ICD10CM">diagnostic code families</a>. Then, we can require that each bucket has
+<span class="math">\(l\)</span> different categories of diagnostics. This way, the attacker can't
+distinguish between STDs, external injuries, respiratory problems, etc.</p>
+<p>Unfortunately, choosing these categories is a complicated policy question. There
+are many possible combinations of sensitive values. Making sure that none of
+them is sensitive sounds like a laborious task…</p>
+<h4 id="probabilistic-information-gain">Probabilistic information gain</h4>
+<p>Consider the following database, again satisfying <span class="math">\(2\)</span>-diversity:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+<th style="text-align: center;">diagnostic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">42**</td>
+<td style="text-align: center;">20-29</td>
+<td style="text-align: center;">Lupus</td>
+</tr>
+<tr>
+<td style="text-align: center;">42**</td>
+<td style="text-align: center;">20-29</td>
+<td style="text-align: center;">Lupus</td>
+</tr>
+<tr>
+<td style="text-align: center;">42**</td>
+<td style="text-align: center;">20-29</td>
+<td style="text-align: center;">Lupus</td>
+</tr>
+<tr>
+<td style="text-align: center;">42**</td>
+<td style="text-align: center;">20-29</td>
+<td style="text-align: center;">Lupus</td>
+</tr>
+<tr>
+<td style="text-align: center;">42**</td>
+<td style="text-align: center;">20-29</td>
+<td style="text-align: center;">Lupus</td>
+</tr>
+<tr>
+<td style="text-align: center;">42**</td>
+<td style="text-align: center;">20-29</td>
+<td style="text-align: center;">Lupus</td>
+</tr>
+<tr>
+<td style="text-align: center;">42**</td>
+<td style="text-align: center;">20-29</td>
+<td style="text-align: center;">Healthy</td>
+</tr>
+<tr>
+<td style="text-align: center;">42**</td>
+<td style="text-align: center;">20-29</td>
+<td style="text-align: center;">Lupus</td>
+</tr>
+<tr>
+<td style="text-align: center;">42**</td>
+<td style="text-align: center;">20-29</td>
+<td style="text-align: center;">Lupus</td>
+</tr>
+<tr>
+<td style="text-align: center;">42**</td>
+<td style="text-align: center;">20-29</td>
+<td style="text-align: center;">Lupus</td>
+</tr>
+</tbody>
+</table>
+<p>Consider the same attacker as before: targeting someone with ZIP code 4235 and
+age 25. They can't know their target's diagnostic for <em>certain</em>. But they can
+get a strong <em>suspicion</em> that the target has lupus: 9 out of 10 records share
+this diagnostic! An insurance company might increase someone's premium because
+of a suspected pre-existing condition. Isn't that also a privacy issue?</p>
+<p>How do we protect against this type of probabilistic information gain? Requiring
+that sensitive attributes are <em>diverse</em> is not enough. We need to also require
+that their <em>distribution</em> is roughly the same that the rest of the data. If 40%
+of the records are "healthy" in the overall data, then each bucket must also
+have roughly 40% of "healthy" records. This way, the attacker's knowledge can't
+change <em>too much</em> from the baseline. This is the core idea behind another
+definition named <span class="math">\(t\)</span>-closeness. I won't go into details here, but you can read
+about it on <a href="https://en.wikipedia.org/wiki/T-closeness">Wikipedia</a> or in the <a href="http://desfontain.es/PDFs/PhD/TClosenessPrivacyBeyondKAnonymityAndLDiversity.pdf">original paper<sup>
+(pdf)</sup></a> who introduced this idea.</p>
+<p><small>Note: this idea is also relevant if the sensitive attribute is numeric,
+like salary values. A yearly salary of €20,000 is very similar to €20,100:
+applying <span class="math">\(l\)</span>-diversity doesn't make sense. By contrast, <span class="math">\(t\)</span>-closeness can
+compare distributions in a more meaningful way.</small></p>
+<h1 id="l-diversity-in-practice"><span class="math">\(l\)</span>-diversity in practice</h1>
+<p>OK, so even with these flaws, how easy is it to use <span class="math">\(l\)</span>-diversity in practice?</p>
+<h4 id="the-good-news-implementation">The good news: implementation</h4>
+<p>From an algorithmic perspective, <span class="math">\(l\)</span>-diversity is very similar to <span class="math">\(k\)</span>-anonymity.
+The basic blocks are the same: <a href="k-anonymity.html#building-block-1-generalization">generalization</a> and <a href="k-anonymity.html#building-block-2-suppression">suppression</a>. Finding the
+best strategy is also done using trial-and-error heuristics. The approach used
+for <span class="math">\(k\)</span>-anonymity is straightforward to adapt to <span class="math">\(l\)</span>-diversity.</p>
+<p>Unsurprisingly, some software is available to implement it in practice. I won't
+list them all here, but most <a href="k-anonymity.html#in-practice">options</a> introduced in my article about
+<span class="math">\(k\)</span>-anonymity can also be used for <span class="math">\(l\)</span>-diversity.</p>
+<h4 id="the-bad-news-policy">The bad news: policy</h4>
+<p>Choosing the right value of <span class="math">\(k\)</span> for <span class="math">\(k\)</span>-anonymity is <a href="k-anonymity.html#how-to-choose-k">difficult</a>, but
+<span class="math">\(l\)</span>-diversity is certainly not better. No official guideline or regulation will
+help you choose the value of <span class="math">\(l\)</span>. And it's at least as hard to quantify the
+"amount of privacy" obtained with a given choice of parameter.</p>
+<p>Worse, the flaws described before mean that the question is even subtler than
+that. Should we classify the sensitive values into categories? Impose that
+sensitive values don't appear too often? If so, there are even more parameters
+that one has to choose, and no good way to choose them.</p>
+<h4 id="the-other-bad-news-utility-loss">The other bad news: utility loss</h4>
+<p><span class="math">\(l\)</span>-diversity, despite its flaws, is strictly stronger than <span class="math">\(k\)</span>-anonymity. And
+it should be relatively easy to use in practice, once we've chosen a policy…
+Despite this, it is hardly ever used. A health data de-identification specialist
+once told me that they only saw it in the wild a handful of times. By contrast,
+using <span class="math">\(k\)</span>-anonymity is very common.</p>
+<p>Why is that? I see two possible reasons.</p>
+<p>First, the utility loss of <span class="math">\(l\)</span>-diversity is too significant compared to
+<span class="math">\(k\)</span>-anonymity. A <a href="http://desfontain.es/PDFs/PhD/TheCostOfPrivacyDestructionOfDataMiningUtilityInAnonymizedDataPublishing.pdf">study<sup> (pdf)</sup></a> compared the utility loss of
+different anonymization strategies. It found that applying <span class="math">\(3\)</span>-diversity dataset
+was worse than using <span class="math">\(100\)</span>-anonymity! This particular result was for a
+classification accuracy task, but you get the idea<sup id="fnref:examples"><a class="footnote-ref" href="#fn:examples">2</a></sup>.</p>
+<p>Second, the privacy gains are not clear. Especially considering the flaws we
+described above… And fixing those flaws hurts utility even more. With
+<span class="math">\(t\)</span>-closeness, we hinder the ability to link demographic features with
+diagnostics. But this type of analysis is exactly what healthcare researchers
+want to do! If the privacy definition goes completely against this idea, it
+won't get much love.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p><span class="math">\(l\)</span>-diversity isn't a definition that definitely addresses a particular threat
+model. Rather, it's a "fix" for one of <span class="math">\(k\)</span>-anonymity's most obvious flaws. But
+in security, simply patching bugs one after the other isn't a great defense
+mechanism... For privacy definitions too, fixing only one attack doesn't get you
+very far.</p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:identifying">
+<p>Which might be over-optimistic: some people make their health
+  issues public on social media, or the press can find out and publicize the
+  medical history of personalities. If you're actually doing this to anonymize a
+  real dataset, you should be more careful when classifying your columns. Here,
+  we're going with a simple assumption for the sake of simplicity.&#160;<a class="footnote-backref" href="#fnref:identifying" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:examples">
+<p>It's hard to find many examples: negative results hardly ever get published…&#160;<a class="footnote-backref" href="#fnref:examples" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20180219,
+  title = &#123;l-diversity, because reidentification doesn't tell the whole story},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/l-diversity.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2018},
+  month = &#123;02}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="crash-override.html">← previous</a>
+    </li>
+    <li>
+      <a href="delta-presence.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

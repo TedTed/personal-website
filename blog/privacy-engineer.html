@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>« What does a privacy engineer do, anyway? » - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="« What does a privacy engineer do, anyway? » - Ted is writing things" />
+  <meta property="twitter:title" content="« What does a privacy engineer do, anyway? » - Ted is writing things" />
+  <meta name="description" property="og:description" content="Besides having a super cool job title, what is it like being a privacy engineer?" />
+  <meta property="twitter:description" content="Besides having a super cool job title, what is it like being a privacy engineer?" />
+  <meta property="summary" content="Besides having a super cool job title, what is it like being a privacy engineer?" />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/privacy-engineer.html" />
+  <link rel="prev" href="local-global-differential-privacy.html" />
+  <link rel="next" href="differential-privacy-reading-list.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="local-global-differential-privacy.html">← previous</a>
+ —     <a href="differential-privacy-reading-list.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./privacy-engineer.html">« What does a privacy engineer do, anyway? »</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2019-08-13T00:00:00+02:00">
+      2019-08-13
+    </time>
+    <small>&mdash; updated
+      <time datetime="2018-08-24T00:00:00+02:00">
+        2018-08-24
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><strong>This</strong> is another one of <a href="part-time-phd.html">those posts</a> where I answer a
+question I get regularly. What is it like being a privacy engineer? Besides a
+cool job title, what does the job actually entail?</p>
+<p>Before I even start, I need to point out a few major caveats of this post.</p>
+<ul>
+<li>My experience is not representative of privacy engineering as a whole. I'm
+  sure it's different across companies, and even across people within the same
+  company.</li>
+<li>I have a particularly narrow view. I work on a sub-field of privacy
+  (anonymization), and I've never led a team or hired privacy engineers.</li>
+<li>"Privacy engineer" is not even my official job title. I still have my initial
+  job title at Google: software engineer (<a href="part-time-phd.html">part-time</a>).
+  Privacy engineering is definitely the job I do, though — they don't care
+  much about job titles. I might switch at some point.</li>
+<li>Like in all other entries from this blog, all opinions are mine and mine only.
+  I'm only talking about my own experiences and feelings, and this post isn't
+  vetted by my employers.</li>
+</ul>
+<p>So, what do I do, on a daily basis, while working as a privacy engineer? I would
+split the job responsibilities in three broad categories.</p>
+<h2 id="consulting-with-teams">Consulting with teams</h2>
+<p>A large part of my time is spent helping product teams get privacy right.</p>
+<p>Back when I did generic privacy reviews, I checked future product launches for a
+wide variety of things. Will users understand what happens with the data they
+share? Is the data appropriately protected in transit and on-rest? Can the
+product be misused and allow bad people to do evil<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>? Is the system collecting
+only what is required for the product's functionality? Will it have a harmful
+behavior in specific cases, or will it protect at-risk users properly<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>? Are
+deletions handled correctly? </p>
+<p>Some of this is compliance: making sure that the product aligns with existing
+policies and regulations is important. This often isn't the focus point, though.
+Everything that can be ticked off a checklist is usually pretty straightforward.
+What's most complex and interesting is to identify what can go wrong in specific
+scenarios.</p>
+<p>How do I do this in practice? I read through design docs, slide decks and
+sometimes code or demos to understand the product. I ask for additional
+documentation when it's lacking. And poke at the system to see where it could
+fail in unexpected and problematic ways. Then, I'll communicate the findings to
+the team, and help them correct possible issues.</p>
+<p>Nowadays, I'm in a group focused on anonymization, so I have a narrower focus.
+Product teams come to us when they need to anonymize data, and we help them get
+it right. We make sure they understand what they need to do and how to do it.
+Then, we give them the green light when we end up on a solution we're
+comfortable with.</p>
+<p>This process is much easier when teams consult with privacy folks as soon as
+possible. I love to be involved in early design discussions! It's in everyone's
+interest. It avoids making choices that we'll regret later, which can save a lot
+of engineering time. And if the team does the right thing in the first place,
+that makes my job much easier at review time!</p>
+<p>This part of the job requires lots of empathy. It's necessary to relate with
+users, and understand what will create issues. It's also crucial to build
+productive and respectful relationships with product teams. Luckily for me, it's
+something that can be learned and improved over time. I wasn't very good at it
+at first!</p>
+<h2 id="building-things">Building things</h2>
+<p>This is why the job title has « engineer » in it!</p>
+<p>Finding issues in products is only the first step. Can we automate some of these
+investigation methods? Make sure certain classes of problems don't happen in the
+future? Detect failures early to prevent them from causing harm? These follow-up
+questions can lead to impactful engineering projects.</p>
+<ul>
+<li><em>Technical improvements to processes</em>: this is not a phenomenon limited to
+  privacy. When engineers run processes, they'll detect inefficiencies, and
+  identify automation opportunities. Building tooling to assist with
+  checklist-type things is often a good idea. Time is better spent focusing on
+  the complex and unique aspects of consultations!</li>
+<li><em>Improving infrastructure</em>: baking privacy into your tech stack is an
+  excellent investment. Suppose that some vetted storage system takes care of
+  encryption and deletion correctly. You no longer need to worry about these
+  aspects in a product that uses this system. That's a great way to save time
+  and avoid problems! Privacy engineers are uniquely positioned to notice when
+  this is worth doing.</li>
+<li><em>Monitoring</em>: how do you check that products continue to behave as expected
+  over time? Some problems might arise after the privacy review. Bugs happen.
+  Code evolves over time. Changes might appear harmless, but have unintended
+  consequences. Catching potential failures with automated monitoring before
+  they harm anyone is very rewarding. And again, to know what to look for and
+  how to detect privacy issues, you need domain experts.</li>
+</ul>
+<p>Sometimes, it makes sense for a privacy engineer to take on such projects on
+their own. This is especially true when there is a lot of specific expertise
+involved, which is the case for my group: a large chunk of our work is about
+building tools to make anonymization easier and safer. Sometimes, building a new
+thing yourself is not the optimal move. It might make more sense to collaborate
+with existing teams, or influence their roadmap.</p>
+<p>This part of the job is like a classic software engineering job: writing design
+docs, getting resources, writing and reviewing code, improving documentation,
+writing tests… In my experience, though, there's often more communication
+involved than on a typical project. The problems tackled are often very
+horizontal: pain points shared across an entire organization, a new rule that
+applies across the board… In these cases, maintaining technical alignment
+between related efforts is crucial. Privacy engineers are in the perfect central
+position to help with this aspect.</p>
+<h2 id="setting-policy">Setting policy</h2>
+<p>Privacy engineers try to make their organization do the right thing. But
+who decides what the « right thing » is in the first place?</p>
+<p>Turns out, it's also part of the job. Privacy engineers take high-level goals or
+regulations and translate them into concrete, actionable requirements. Typical
+privacy principles are broad and vague in nature, and have many interpretations.
+This isn't great: people will have some <em>creative</em> ideas about how to put them
+in application.</p>
+<p>Being at the interface between non-technical stakeholders and engineers is
+tricky, but necessary: if nobody does this job, it's not going to end well. And
+it goes both ways! Helping policy makers understand what makes sense from a
+technical perspective is crucial. Otherwise, you end up with inapplicable rules,
+or counter-productive efforts.</p>
+<p>In addition to that, policies don't all come from top-down regulations or
+principles. It's frequent to stumble upon questions for which there is no
+existing guidance. You often have to make judgment calls, and when you do, it's
+important to document these decisions: this is the only way to keep them
+consistent across products and over time. And doing that is, in effect, setting
+an unofficial policy. Depending on how generalizable it is, it might be worth
+turning it into official guidance.</p>
+<p>I find policy work <em>way</em> more complex than consulting or engineering work. It
+involves long discussions with a wide variety of people: lawyers, executives,
+engineers, product managers… And it's critical to get right. Spending the time
+to write great guidance is an investment that pays back many times over. And
+inconsistent or inapplicable policies can have a huge damaging impact<sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>. So
+it's sometimes frustrating, but also very challenging and rewarding.</p>
+<p>In practice, what does policy work look like? Many meetings, long discussions on
+docs, unending email threads. Yum!</p>
+<h2 id="all-the-other-stuff">All the other stuff</h2>
+<p>I lied! There's a fourth category. It's a catch-all, for all the extra
+responsibilities besides the core ones.</p>
+<ul>
+<li><em>Education</em>: you can't make every person in your organization a privacy
+  expert, but it doesn't hurt to try! Giving talks and doing outreach is useful
+  for many reasons. It helps orient people in the right general direction when
+  designing new products.  It increases their awareness of potential issues, and
+  makes them more likely to consult with experts early. It's also a great way to
+  recruit! People you reach this way might later join your team, or become local
+  privacy experts in their own team.</li>
+<li><em>Proactive investigations</em>: poking at existing products outside of structured
+  consultations can be worthwhile. Especially if nobody has looked at them in a
+  while…</li>
+<li><em>User advocacy</em>: privacy engineers try to make sure products aren't harmful to
+  marginalized communities. As such, they have a duty to speak up when that's
+  the case, even if it's not technically about privacy<sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup>.</li>
+<li><em>Incident response</em>: bad stuff happens, and you need to have a process to make
+  sure some people are ready to put out fires! Privacy engineers can be in such
+  incident response roles. I never had such a role, though, so I don't know what
+  it's like.</li>
+<li><em>External outreach</em>: few privacy engineers do external outreach, even though
+  they're in a unique position to do so. We could do better in that area, and
+  collaborate more with academia and civil society. Luckily, most excellent
+  folks are actively <a href="https://www.usenix.org/conference/pepr19">improving</a> the
+  situation on that front!</li>
+<li><em>And a bunch of other engineering-related things</em>. You sometimes need to
+  analyze data to quantify and prioritize issues. You want to keep educating
+  yourself on new developments in the privacy space. You also need to pay
+  attention to public discourse; it's crucial to better understand users, and
+  anticipate new regulations. You sometimes want to run user studies to align
+  your UIs with user expectations.</li>
+</ul>
+<p>I'm sure that I'm forgetting some aspects. You might be a privacy engineer and
+this list might not feel very familiar. If that's the case, drop me a line! I'd
+love to understand other perspectives on that topic. I hope you agree with me on
+one thing, though: being a privacy engineer is challenging, fun and rewarding!</p>
+<p>Now, there's a related question I also get sometimes: « being a privacy engineer
+sounds awesome, how can I become one ? ». Unfortunately, I don't have a great
+answer to that one. For me, it was pretty random. I joined Google as a software
+engineer, switched to the privacy team because it sounded fun, and learned
+everything I know there. I've heard good things about a <a href="http://privacy.cs.cmu.edu/">Master's degree at
+CMU</a>… But apart from that, I don't know a lot of
+educational opportunities. I'm not sure how to hunt for privacy engineering
+jobs, either. I hope someone else writes a good answer to that question! Because
+we definitely need more privacy engineers in industry.</p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:1">
+<p>There are lots of sub-questions here! Can a domestic abuser use the
+  product to spy on their spouse? Can criminals take advantage of it to run
+  online scams? Can political actors use it to spread disinformation?&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Will your system deadname trans people, or unmask political activists? Are
+  privacy-critical surfaces accessible and understandable to people with
+  disabilities? Can the product amplify hurtful or triggering content? Needless
+  to say, this is why you need your privacy engineering team to be diverse.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>Dealing with 
+  <a href="https://en.wikipedia.org/wiki/Technical_debt">technical debt</a> in software
+  engineering is no easy feat… But "policy debt" is many times worse and more
+  difficult to pay back. Significantly changing existing policies is <em>hard</em>.&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:4">
+<p>Things like ethics or ML fairness deserve specific processes and technical
+  expertise. They're like security and privacy, complex and crucial to get
+  right. But when these processes don't exist, they fall by default under the
+  privacy umbrella. So existing practitioners have a duty to keep an eye on this
+  sort of thing in the meantime.&#160;<a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20190813,
+  title = &#123;« What does a privacy engineer do, anyway? »},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/privacy-engineer.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2019},
+  month = &#123;08}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="local-global-differential-privacy.html">← previous</a>
+    </li>
+    <li>
+      <a href="differential-privacy-reading-list.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

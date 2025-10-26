@@ -1,0 +1,250 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="Composition.html" />
+  <link ref="next" href="PreliminariesPartial.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="Composition.html">← previous</a></li>
+        <li><a href="DifferentialPrivacyUnderPartialKnowledge.html#LimitsCardinalityEstimation.html">up</a></li>
+        <li><a href="PreliminariesPartial.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="Composition.html">LINKPREV</a><a href="DifferentialPrivacyUnderPartialKnowledge.html#LimitsCardinalityEstimation.html">LINKUP</a><a href="PreliminariesPartial.html">LINKNEXT</a></p></div>
+  <h3 class="sectionHead" id="limits-cardinality-estimation-u-ding-"><span class="titlemark">3.3</span>&nbsp;&nbsp;<a id="x37-1120003.3"></a>Limits: cardinality estimation <span class="bbding-10x-x-109">✿</span></h3> <!-- l. 2 --><p class="noindent"><a id="cardinality"></a> </p> <!-- l. 4 --><p class="indent">
+So far, we showed that considering an uncertain attacker could lead to <span class="t1xi-x-x-109">positive </span>results about the
+privacy of noiseless aggregations. In this section, we show that this setting can also be used to
+derive <span class="t1xi-x-x-109">negative </span>results: some problems simply cannot be solved in a privacy-preserving
+way, even under the assumption that the attacker has complete uncertainty over the original
+data.
+</p><!-- l. 11 --><p class="indent">  The problem we now focus on is <span class="t1xi-x-x-109">cardinality estimation</span>. Cardinality estimators, like HyperLogLog,
+are algorithms that produce a type of output named <span class="t1xi-x-x-109">sketches</span>. Sketches can estimate the number of
+distinct records in a large multiset, and can also be <span class="t1xi-x-x-109">merged</span>, ignoring duplicates across sketches. Their
+widespread use in privacy-sensitive contexts leads to a natural question: can they be made anonymous
+according to some reasonable privacy notion?
+</p><!-- l. 19 --><p class="indent">  In this section, we show that the answer to this question is negative. We formulate an abstract
+notion of cardinality estimators, that captures their aggregation requirement: one can merge
+sketches without losing precision. We show that for all cardinality estimators that satisfy our
+aggregation requirement, sketches are almost as sensitive as raw data. Indeed, even in a setting
+where the attacker is assumed to have <span class="t1xi-x-x-109">zero </span>background knowledge about the input data,
+they can still gain significant knowledge about their target by looking at the output of the
+algorithm.
+</p><!-- l. 28 --><p class="indent">  Our results are a natural consequence of the aggregation properties: to aggregate sketches
+without counting the same user twice, they must contain information about which users
+were previously added. The attacker can use this information, even if they do not know
+any other users in the sketch. Furthermore, adding noise either violates the aggregation
+property, or has no influence on the success of the attack. Thus, it is pointless to try and design
+privacy-preserving cardinality estimators: privacy and accurate aggregation are fundamentally
+incompatible.
+</p><!-- l. 37 --><p class="indent">  This section is organized as follows.
+     </p><dl class="enumerate-enumitem"><dt class="enumerate-enumitem">
+   1. </dt><dd class="enumerate-enumitem">In Section&nbsp;3.3.1, we motivate our work with an example of how cardinality estimators
+     can be used in practice. We formally define an abstract notion of cardinality estimators,
+     and give a weak definition of privacy that is well-suited to how they are used in practice.
+     </dd><dt class="enumerate-enumitem">
+   2. </dt><dd class="enumerate-enumitem">In Section&nbsp;3.3.2, we prove that cardinality estimators cannot satisfy this privacy property
+     while maintaining good accuracy asymptotically.
+     </dd><dt class="enumerate-enumitem">
+                                                                                
+                                                                                
+   3. </dt><dd class="enumerate-enumitem">In Section&nbsp;3.3.3, we consider even weaker versions of our initial definition. We show that
+     our results still hold for some variants, while others notions are compatible with accurate
+     cardinality  estimation.  We  then  highlight  the  consequences  of  our  results  on  practical
+     applications.
+     </dd><dt class="enumerate-enumitem">
+   4. </dt><dd class="enumerate-enumitem">In  Section&nbsp;3.3.4,  we  propose  and  discuss  various  risk  mitigation  techniques  to  use
+     cardinality estimators in practice.</dd></dl>
+<!-- l. 1 --><p class="noindent">
+</p>
+
+
+
+                                                                                
+                                                                                
+  <div class="footnotes"></div> <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="Composition.html">LINKPREV</a><a href="DifferentialPrivacyUnderPartialKnowledge.html#LimitsCardinalityEstimation.html">LINKUP</a><a href="PreliminariesPartial.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="Composition.html">← previous</a></li>
+        <li><a href="DifferentialPrivacyUnderPartialKnowledge.html#LimitsCardinalityEstimation.html">up</a></li>
+        <li><a href="PreliminariesPartial.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

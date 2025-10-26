@@ -1,0 +1,389 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="SummarizingTable.html" />
+  <link ref="next" href="ConclusionDefining.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="SummarizingTable.html">← previous</a></li>
+        <li><a href="SystematizingVariantsExtensionsOfDifferentialPrivacy.html#RelatedWorkDefining.html">up</a></li>
+        <li><a href="ConclusionDefining.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="SummarizingTable.html">LINKPREV</a><a href="SystematizingVariantsExtensionsOfDifferentialPrivacy.html#RelatedWorkDefining.html">LINKUP</a><a href="ConclusionDefining.html">LINKNEXT</a></p></div>
+  <h4 class="subsectionHead" id="related-work-u-ding-"><span class="titlemark">2.2.10</span>&nbsp;&nbsp;<a id="x25-850002.2.10"></a>Related work <span class="bbding-10x-x-109">✿</span></h4> <!-- l. 3 --><p class="noindent">
+In this section, we detail our criteria for excluding particular data privacy definitions from our work, we
+list some relevant definitions that were excluded by the criteria presented in Section&nbsp;<a href="#x16-410002.2.1.0">2.2.1.0<!-- tex4ht:ref: sec:scope  --></a>, and we list
+related works and existing surveys in the field of data privacy.
+</p><!-- l. 9 --><p class="indent">
+<a id="subsubsection*.44"></a>
+</p>
+  <h5 class="subsubsectionHead" id="out-of-scope-definitions"><a id="x25-86000"></a>Out of scope definitions</h5>
+<!-- l. 11 --><p class="noindent">As detailed in Section&nbsp;<a href="#x16-410002.2.1.0">2.2.1.0<!-- tex4ht:ref: sec:scope  --></a>, we considered certain data privacy definitions to be out of scope for our
+work, even when they seem to be related to differential privacy. This section elaborates on such
+definitions.
+</p>
+<!-- l. 15 --><p class="noindent"><span class="likeparagraphHead" id="lack-of-semantic-guarantees"><a id="x25-87000"></a>Lack of semantic guarantees</span>
+</p><!-- l. 17 --><p class="indent">  Some definitions do not provide clear semantic privacy guarantees, or are only used as a tool in
+order to prove links between existing definitions. As such, we did not include them in our
+survey.
+</p>
+     <ul class="itemize1">
+     <li class="itemize"><!-- l. 22 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span><span class="t1xi-x-x-109">-privacy</span>,
+     introduced in&nbsp;[<a id="x25-87001"></a><a href="bibliography.html#cite.0@machanavajjhala2009data">264</a>], was a first attempt at formalizing an adversary with restricted background
+     knowledge. Its formulation does not provide a semantic guarantee, and it was superseded
+     by noiseless privacy&nbsp;[<a id="x25-87002"></a><a href="bibliography.html#cite.0@bhaskar2011noiseless">46</a><a id="x25-87003"></a>, <a href="bibliography.html#cite.0@duan2009privacy">116</a>] (introduced in Section&nbsp;<a href="BackgroundKnowledgeB.html#background-knowledge-b">2.2.5<!-- tex4ht:ref: sec:b  --></a>).
+     </li>
+     <li class="itemize"><span class="t1xi-x-x-109">Relaxed indistinguishability</span>, introduced in&nbsp;[<a id="x25-87004"></a><a href="bibliography.html#cite.0@rastogi2009relationship">326</a>] is a relaxation of adversarial privacy that
+     provides a plausible deniability by requiring for each tuple, that at least <!-- l. 30 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">l</span></span></span></span></span></span>
+     tuples must exist with <!-- l. 30 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span>-indistinguishability.
+     It does not provide any guarantee against Bayesian adversaries.
+     </li>
+     <li class="itemize"><span class="t1xi-x-x-109">Differential identifiability</span>, introduced in&nbsp;[<a id="x25-87005"></a><a href="bibliography.html#cite.0@lee2012differential">244</a>], bounds the probability that a given individual’s
+     information is included in the input datasets but does not measure the <span class="t1xi-x-x-109">change </span>in probabilities
+     between the two alternatives. As such, it does not provide any guarantee against Bayesian
+     adversaries<span class="footnote-mark"><a href="#fn24x2" id="fn24x2-bk"><sup class="textsuperscript">24</sup></a></span><a id="x25-87006f24"></a>.
+     </li>
+     <li class="itemize"><span class="t1xi-x-x-109">Crowd-blending privacy</span>, introduced in&nbsp;[<a id="x25-87009"></a><a href="bibliography.html#cite.0@gehrke2012crowd">160</a>], combines differential privacy with <!-- l. 40 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity.
+     As it is strictly weaker than any mechanism which always returns a <!-- l. 41 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymous
+     dataset, the guarantees it provides against a Bayesian adversary are unclear. It is mainly
+     used to show that combining crowd-blending privacy with pre-sampling implies zero-knowledge
+     privacy&nbsp;[<a href="bibliography.html#cite.0@gehrke2012crowd">160</a><a id="x25-87010"></a>, <a href="bibliography.html#cite.0@lui2015outlier">263</a>].
+     </li>
+     <li class="itemize"><span class="t1xi-x-x-109">Membership privacy</span><span class="footnote-mark"><a href="#fn25x2" id="fn25x2-bk"><sup class="textsuperscript">25</sup></a></span><a id="x25-87011f25"></a>,
+     introduced  in&nbsp;[<a id="x25-87013"></a><a href="bibliography.html#cite.0@sablayrolles2019white">336</a>],  is  tailored  to  membership  inference  attacks  on  machine  learning
+     models; the guarantees it provides are not clear.
+     </li>
+     <li class="itemize"><!-- l. 50 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo MathClass-open"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span><span class="mjx-mo MathClass-close"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span><span class="t1xi-x-x-109">-anonymity</span>,
+     introduced in&nbsp;[<a id="x25-87014"></a><a href="bibliography.html#cite.0@holohan2017k">197</a>], first performs <!-- l. 51 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span><span class="t1xi-x-x-109">-anonymisation</span>
+     on a subset of the quasi identifiers and then <!-- l. 52 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span>-DP
+     on the remaining quasi-identifiers with different settings for each equivalence class of the
+     <!-- l. 53 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span><span class="t1xi-x-x-109">-anonymous</span>
+     dataset. The semantic guarantees of this definition are not made explicit.
+     </li>
+     <li class="itemize"><span class="t1xi-x-x-109">Posteriori DP</span>, introduced in&nbsp;[<a id="x25-87015"></a><a href="bibliography.html#cite.0@wang2014tradeoff">378</a>], compares two posteriors in a way similar to inferential
+     privacy, but does not make the prior (and thus, the attacker model) explicit.
+     </li>
+     <li class="itemize"><span class="t1xi-x-x-109">Noiseless privacy</span><span class="footnote-mark"><a href="#fn26x2" id="fn26x2-bk"><sup class="textsuperscript">26</sup></a></span><a id="x25-87016f26"></a>,
+     introduced in&nbsp;[<a id="x25-87020"></a><a href="bibliography.html#cite.0@farokhi2019noiseless">147</a>], limits the change in the number of possible outputs when one record
+                                                                                
+                                                                                
+     in the dataset changes. As it does not bound the change in <span class="t1xi-x-x-109">probabilities </span>of the mechanism,
+     it does not seem to offer clear guarantees against a Bayesian adversary.
+     </li>
+     <li class="itemize"><span class="t1xi-x-x-109">Weak DP</span>, introduced in&nbsp;[<a id="x25-87021"></a><a href="bibliography.html#cite.0@wang2020differential">382</a>], adapts DP for streams, but it only provides a DP guarantee
+     for the <span class="t1xi-x-x-109">average </span>of all possible mechanism outputs<span class="footnote-mark"><a href="#fn27x2" id="fn27x2-bk"><sup class="textsuperscript">27</sup></a></span><a id="x25-87022f27"></a>,
+     rather than for the mechanism itself. Thus, its semantics guarantees are also unclear.
+     </li>
+     <li class="itemize"><span class="t1xi-x-x-109">Error Preserving Privacy</span>, introduced in&nbsp;[<a id="x25-87024"></a><a href="bibliography.html#cite.0@dai2018privacy">90</a>], states that the <span class="t1xi-x-x-109">variance </span>of the adversary’s
+     error  when  trying  to  guess  a  given  user’s  record  does  not  change  significantly  after
+     accessing the output of the mechanism. The exact adversary model is not specified.</li></ul>
+<!-- l. 77 --><p class="noindent"><span class="likeparagraphHead" id="variants-of-sensitivity"><a id="x25-88000"></a>Variants of sensitivity</span>
+</p><!-- l. 79 --><p class="indent">  A important technical tool used when designing differentially private mechanisms
+is the <span class="t1xi-x-x-109">sensitivity </span>of the function that we try to compute. There are many variants to
+the initial concept of global sensitivity&nbsp;[<a id="x25-88001"></a><a href="bibliography.html#cite.0@dwork2006calibrating">128</a>], including local sensitivity&nbsp;[<a id="x25-88002"></a><a href="bibliography.html#cite.0@nissim2007smooth">303</a>], smooth
+sensitivity&nbsp;[<a href="bibliography.html#cite.0@nissim2007smooth">303</a>], restricted sensitivity&nbsp;[<a id="x25-88003"></a><a href="bibliography.html#cite.0@blocki2013differentially">52</a>], empirical sensitivity&nbsp;[<a id="x25-88004"></a><a href="bibliography.html#cite.0@chen2013recursive">74</a>], empirical differential
+privacy<span class="footnote-mark"><a href="#fn28x2" id="fn28x2-bk"><sup class="textsuperscript">28</sup></a></span><a id="x25-88005f28"></a>
+<span class="footnote-mark"><a href="#fn29x2" id="fn29x2-bk"><sup class="textsuperscript">29</sup></a></span><a id="x25-88008f29"></a>&nbsp;[<a id="x25-88011"></a><a href="bibliography.html#cite.0@abowd2013differential">5</a>],
+recommendation-aware sensitivity&nbsp;[<a id="x25-88012"></a><a href="bibliography.html#cite.0@zhu2013differential">410</a>], record and correlated sensitivity&nbsp;[<a id="x25-88013"></a><a href="bibliography.html#cite.0@zhu2015correlated">411</a>], dependence
+sensitivity&nbsp;[<a id="x25-88014"></a><a href="bibliography.html#cite.0@liu2016dependence">258</a>], per-instance sensitivity&nbsp;[<a id="x25-88015"></a><a href="bibliography.html#cite.0@wang2017per">379</a>], individual sensitivity&nbsp;[<a id="x25-88016"></a><a href="bibliography.html#cite.0@cummings2018individual">89</a>], elastic sensitivity&nbsp;[<a id="x25-88017"></a><a href="bibliography.html#cite.0@johnson2018towards">209</a>]
+and derivative sensitivity&nbsp;[<a id="x25-88018"></a><a href="bibliography.html#cite.0@laud2018achieving">238</a>]. These notions only change <span class="t1xi-x-x-109">how </span>to achieve a given privacy definition
+(typically DP), and are not relevant to the definition itself, so we did not consider these notions in our
+work.
+</p><!-- l. 105 --><p class="indent">
+<a id="subsubsection*.45"></a>
+</p>
+  <h5 class="subsubsectionHead" id="local-model-and-other-contexts"><a id="x25-89000"></a>Local model and other contexts</h5>
+<!-- l. 107 --><p class="noindent">In this work we focused on DP variants/extensions typically used in the <span class="t1xi-x-x-109">global model</span>, in which a
+central entity has access to the whole dataset. It is also possible to use DP in other contexts, without
+formally changing the definition. The main alternative is the <span class="t1xi-x-x-109">local model</span>, where each individual
+randomizes their own data before sending it to an aggregator. This model, formally introduced
+in&nbsp;[<a id="x25-89001"></a><a href="bibliography.html#cite.0@duchi2013local">117</a>], is used e.g., by Google&nbsp;[<a id="x25-89002"></a><a href="bibliography.html#cite.0@erlingsson2014rappor">141</a>], Apple&nbsp;[<a id="x25-89003"></a><a href="bibliography.html#cite.0@apple2017dp">360</a>], or Microsoft&nbsp;[<a id="x25-89004"></a><a href="bibliography.html#cite.0@ding2017collecting">107</a>]. These models can be
+thought of as different ways of deploying a given privacy definition, rather than distinct
+definitions.
+                                                                                
+                                                                                
+</p><!-- l. 117 --><p class="indent">  Many definitions we listed were initially presented in the local model, such as
+<!-- l. 118 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.003em;"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em; padding-right: 0.003em;">d</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.233em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mstyle" style="font-size: 113.1%;"><span class="mjx-mrow" style="font-size: 88.4%;"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.081em;">D</span></span></span></span></span></span></span></span></span></span></span>-privacy&nbsp;[<a id="x25-89005"></a><a href="bibliography.html#cite.0@chatzikokolakis2013broadening">67</a>],
+geo-indistinguishability&nbsp;[<a id="x25-89006"></a><a href="bibliography.html#cite.0@andres2013geo">15</a>], earth mover’s Pr&nbsp;[<a id="x25-89007"></a><a href="bibliography.html#cite.0@fernandes2018generalized">151</a>], location Pr&nbsp;[<a id="x25-89008"></a><a href="bibliography.html#cite.0@elsalamouny2016differential">138</a>], profile-based DP&nbsp;[<a id="x25-89009"></a><a href="bibliography.html#cite.0@geumlek2019profile">162</a>],
+divergence DP and smooth DP from&nbsp;[<a id="x25-89010"></a><a href="bibliography.html#cite.0@barber2014privacy">31</a>], and extended DP, distribution Pr, and extended distribution
+Pr from&nbsp;[<a id="x25-89011"></a><a href="bibliography.html#cite.0@kawamoto2019esorics">219</a>].
+</p><!-- l. 127 --><p class="indent">  Below, we list the definitions that are the same as previously listed definitions, but used in a different
+attacker setting; the list also includes alternatives to the local and global models.
+</p>
+     <ul class="itemize1">
+     <li class="itemize">In&nbsp;[<a id="x25-89012"></a><a href="bibliography.html#cite.0@shi2011privacy">344</a>], the authors introduce <span class="t1xi-x-x-109">distributed DP</span>, which corresponds to local DP, with the
+     additional assumption that only a portion of participants are honest.
+     </li>
+     <li class="itemize">In&nbsp;[<a id="x25-89013"></a><a href="bibliography.html#cite.0@kearns2014mechanism">220</a>], the authors define <span class="t1xi-x-x-109">joint DP</span>, to model a game in which each player cannot learn
+     the data from any other player, but are still allowed to observe the influence of their data
+     on the mechanism output. In&nbsp;[<a id="x25-89014"></a><a href="bibliography.html#cite.0@wu2016inherit">390</a>], authors define a slightly different version of this idea,
+     <span class="t1xi-x-x-109">multiparty DP</span>, in which the view of each <span class="t1xi-x-x-109">subgroup </span>of players is differentially private in
+     respect to other players inputs.
+     </li>
+     <li class="itemize">In&nbsp;[<a id="x25-89015"></a><a href="bibliography.html#cite.0@bittau2017prochlo">50</a>], the authors define <span class="t1xi-x-x-109">DP in the shuffled model</span>, which falls in-between the global and
+     the local model: the local model is augmented by an anonymous channel that randomly
+     permutes a set of user-supplied messages, and differential privacy is only required of the
+     output of the shuffler.
+     </li>
+     <li class="itemize">In&nbsp;[<a id="x25-89016"></a><a href="bibliography.html#cite.0@jiang2018context">207</a>], the authors define <span class="t1xi-x-x-109">localized information privacy</span>, a local version of information
+     privacy (mentioned in Section&nbsp;<a href="ChangeInFormalismF.html#change-in-formalism-f">2.2.6<!-- tex4ht:ref: sec:f  --></a>).
+     </li>
+     <li class="itemize">In&nbsp;[<a id="x25-89017"></a><a href="bibliography.html#cite.0@murakami2018restricted">289</a>],  the  authors  define  <span class="t1xi-x-x-109">utility-optimized  local  DP</span>,  a  local  version  of  one-sided
+     differential privacy (mentioned in Section&nbsp;<a href="NeighborhoodDefinitionN.html#neighborhood-definition-n-u-ding-">2.2.3<!-- tex4ht:ref: sec:n  --></a>) which additionally guarantees that if the
+     data is considered sensitive, then a certain set of outputs is forbidden.
+     </li>
+     <li class="itemize">In&nbsp;[<a id="x25-89018"></a><a href="bibliography.html#cite.0@acharya2019contex">6</a><a id="x25-89019"></a>, <a href="bibliography.html#cite.0@dobbe2018customized">112</a><a id="x25-89020"></a>, <a href="bibliography.html#cite.0@nie2018utility">301</a>], the authors define <span class="t1xi-x-x-109">personalized local DP</span>, a local version of personalized
+     DP (mentioned in Section&nbsp;<a href="VariationOfPrivacyLossV.html#variation-of-privacy-loss-v">2.2.4<!-- tex4ht:ref: sec:v  --></a>).
+                                                                                
+                                                                                
+     </li>
+     <li class="itemize">In&nbsp;[<a id="x25-89021"></a><a href="bibliography.html#cite.0@alvim2018local">12</a>], the authors define <!-- l. 159 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.003em;"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em; padding-right: 0.003em;">d</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.233em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mstyle" style="font-size: 113.1%;"><span class="mjx-mrow" style="font-size: 88.4%;"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.081em;">D</span></span></span></span></span></span></span></span></span></span></span><span class="t1xi-x-x-109">-local
+     DP</span>, a local version of <!-- l. 159 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.003em;"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em; padding-right: 0.003em;">d</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.233em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mstyle" style="font-size: 113.1%;"><span class="mjx-mrow" style="font-size: 88.4%;"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.081em;">D</span></span></span></span></span></span></span></span></span></span></span>-DP
+     (mentioned in Section&nbsp;<a href="VariationOfPrivacyLossV.html#variation-of-privacy-loss-v">2.2.4<!-- tex4ht:ref: sec:v  --></a>); this was redefined as <span class="t1xi-x-x-109">condensed local DP </span>in&nbsp;[<a id="x25-89022"></a><a href="bibliography.html#cite.0@gursoy2019secure">180</a>].
+     </li>
+     <li class="itemize">In&nbsp;[<a id="x25-89023"></a><a href="bibliography.html#cite.0@li2019differentially">250</a>], the authors define <span class="t1xi-x-x-109">task-global DP </span>and <span class="t1xi-x-x-109">task-local DP</span>, which are equivalents of
+     element-level DP (mentioned in Section&nbsp;<a href="NeighborhoodDefinitionN.html#neighborhood-definition-n-u-ding-">2.2.3<!-- tex4ht:ref: sec:n  --></a>) in a meta-learning context.</li></ul>
+<!-- l. 167 --><p class="indent">
+<a id="subsubsection*.46"></a>
+</p>
+  <h5 class="subsubsectionHead" id="other-related-work"><a id="x25-90000"></a>Other related work</h5>
+<!-- l. 169 --><p class="noindent">The relation between the main syntactic models of anonymity and DP was studied in&nbsp;[<a id="x25-90001"></a><a href="bibliography.html#cite.0@clifton2013syntactic">78</a>], in which the
+authors claim that the former is designed for privacy-preserving data publishing (PPDP), while DP is
+more suitable for privacy preserving data mining (PPDM). We disagree with this assessment, and
+discuss differentially private data publishing at length in Chapter&nbsp;<a href="FromTheoryToPractice.html#from-theory-to-practice-u-ding-">4<!-- tex4ht:ref: ch:practice  --></a>.
+</p><!-- l. 176 --><p class="indent">  In&nbsp;[<a id="x25-90002"></a><a href="bibliography.html#cite.0@heurix2015taxonomy">196</a>], the authors classify different privacy enhancing technologies (PETs) into 7 complementary
+dimensions. Indistinguishability falls into the <span class="t1xi-x-x-109">Aim </span>dimension, but within this category, only
+<!-- l. 178 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+and oblivious transfer are considered; differential privacy is not mentioned. In&nbsp;[<a id="x25-90003"></a><a href="bibliography.html#cite.0@aghasian2018user">7</a>], the authors survey privacy
+concerns, measurements and privacy-preserving techniques used in online social networks and recommender
+systems. They classify privacy into 5 categories; DP falls into <span class="t1xi-x-x-109">Privacy-preserving models </span>along with e.g.,
+<!-- l. 183 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity.
+In&nbsp;[<a id="x25-90004"></a><a href="bibliography.html#cite.0@wagner2018technical">376</a>] the authors classified 80+ privacy metrics into 8 categories based on the output of the privacy
+mechanism. One of their classes is <span class="t1xi-x-x-109">Indistinguishability</span>, which contains DP as well as several variants.
+Some variants are classified into other categories; for example Rényi DP is classified into <span class="t1xi-x-x-109">Uncertainty</span>
+and mutual-information DP into <span class="t1xi-x-x-109">Information gain/loss</span>. The authors list 8 differential privacy variants;
+our taxonomy can be seen as an extension of the contents of their work (and in particular of the
+<span class="t1xi-x-x-109">Indistinguishability </span>category).
+</p><!-- l. 193 --><p class="indent">  In&nbsp;[<a id="x25-90005"></a><a href="bibliography.html#cite.0@wang2014tradeoff">378</a>], authors establish connections between differential privacy (seen as the additional disclosure
+of an individual’s information due to the release of the data), <span class="t1xi-x-x-109">identifiability </span>(seen as the posteriors of
+recovering the original data from the released data), and <span class="t1xi-x-x-109">mutual-information privacy </span>(which
+measures the average amount of information about the original dataset contained in the released
+data).
+</p><!-- l. 200 --><p class="indent">  The appropriate selection of the privacy parameters for DP was also exhaustively studied. This
+problem in not trivial, and many factors can be considered: in&nbsp;[<a id="x25-90006"></a><a href="bibliography.html#cite.0@hsu2014differential">200</a>], the authors used economic
+incentives, in&nbsp;[<a id="x25-90007"></a><a href="bibliography.html#cite.0@krehbiel2019choosing">234</a><a id="x25-90008"></a>, <a href="bibliography.html#cite.0@lee2011much">243</a><a id="x25-90009"></a>, <a href="bibliography.html#cite.0@pejo2019together">312</a>], the authors looked at individual preferences, and in&nbsp;[<a id="x25-90010"></a><a href="bibliography.html#cite.0@laud2019interpreting">237</a><a id="x25-90011"></a>, <a href="bibliography.html#cite.0@liu2019investigating">259</a>], the
+authors took into account an adversary’s capability in terms of hypothesis testing and guessing
+                                                                                
+                                                                                
+advantage respectively.
+</p><!-- l. 209 --><p class="indent">  Earliest surveys focusing on DP summarize algorithms achieving DP and applications&nbsp;[<a id="x25-90012"></a><a href="bibliography.html#cite.0@dwork2008differential">123</a><a id="x25-90013"></a>, <a href="bibliography.html#cite.0@dwork2009differential">124</a>].
+The more detailed “privacy book”&nbsp;[<a id="x25-90014"></a><a href="bibliography.html#cite.0@dwork2014algorithmic">131</a>] presents an in-depth discussion about the fundamentals of DP,
+techniques for achieving it, and applications to query-release mechanisms, distributed computations or
+data streams. Other textbooks have focused on empirical performance of various algorithms&nbsp;[<a id="x25-90015"></a><a href="bibliography.html#cite.0@li2016differential">252</a>],
+asymptotic upper and lower bounds for various tasks&nbsp;[<a id="x25-90016"></a><a href="bibliography.html#cite.0@vadhan2017complexity">372</a>], or have tried to make differential privacy
+more approachable to non-experts&nbsp;[<a id="x25-90017"></a><a href="bibliography.html#cite.0@nissim2017differential">304</a>]. Other surveys focus on the release of histograms and
+synthetic data with DP&nbsp;[<a id="x25-90018"></a><a href="bibliography.html#cite.0@hay2016principled">189</a><a id="x25-90019"></a>, <a href="bibliography.html#cite.0@nelson2019chasing">296</a>].
+</p><!-- l. 221 --><p class="indent">  Finally, some surveys focus on location privacy. In&nbsp;[<a id="x25-90020"></a><a href="bibliography.html#cite.0@machanavajjhala2018analyzing">266</a>], the authors highlight privacy concerns in
+this context and list mechanisms with formal provable privacy guarantees; they describe several variants
+of differential privacy for streaming (e.g., pan-privacy) and location data (e.g., geo-indistinguishability)
+along with extensions such as pufferfish and blowfish privacy. In&nbsp;[<a id="x25-90021"></a><a href="bibliography.html#cite.0@chatzikokolakis2017methods">68</a>], the authors analyze different
+kinds of privacy breaches and compare metrics that have been proposed to protect location
+data.
+                                                                                
+                                                                                
+</p>
+  <div class="footnotes"><a id="x25-87007x24"></a>
+     <!-- l. 38 --><p class="noindent"><span class="footnote-mark"><a href="#fn24x2-bk" id="fn24x2"><sup class="textsuperscript">24</sup></a></span><span class="t1xi-x-x-90">Differential identifiability </span><span class="t1xr-x-x-90">was reformulated in&nbsp;[</span><a id="x25-87008"></a><a href="bibliography.html#cite.0@li2013membership"><span class="t1xr-x-x-90">254</span></a><span class="t1xr-x-x-90">] as an instance of membership privacy.</span></p><a id="x25-87012x25"></a>
+      <!-- l. 47 --><p class="noindent"><span class="footnote-mark"><a href="#fn25x2-bk" id="fn25x2"><sup class="textsuperscript">25</sup></a></span><span class="t1xr-x-x-90">Another definition with the same name is introduced in&nbsp;[</span><a href="bibliography.html#cite.0@li2013membership"><span class="t1xr-x-x-90">254</span></a><span class="t1xr-x-x-90">], we mention it in Section&nbsp;</span><a href="ChangeInFormalismF.html#change-in-formalism-f"><span class="t1xr-x-x-90">2.2.6</span><!-- tex4ht:ref: sec:f  --></a><span class="t1xr-x-x-90">.</span></p><a id="x25-87017x26"></a>
+      <!-- l. 60 --><p class="noindent"><span class="footnote-mark"><a href="#fn26x2-bk" id="fn26x2"><sup class="textsuperscript">26</sup></a></span><span class="t1xr-x-x-90">Another definition with the same name is introduced in&nbsp;[</span><a id="x25-87018"></a><a href="bibliography.html#cite.0@bhaskar2011noiseless"><span class="t1xr-x-x-90">46</span></a><a id="x25-87019"></a><span class="t1xr-x-x-90">, </span><a href="bibliography.html#cite.0@duan2009privacy"><span class="t1xr-x-x-90">116</span></a><span class="t1xr-x-x-90">], we mention it in Section&nbsp;</span><a href="BackgroundKnowledgeB.html#background-knowledge-b"><span class="t1xr-x-x-90">2.2.5</span><!-- tex4ht:ref: sec:b  --></a><span class="t1xr-x-x-90">.</span></p><a id="x25-87023x27"></a>
+      <!-- l. 69 --><p class="noindent"><span class="footnote-mark"><a href="#fn27x2-bk" id="fn27x2"><sup class="textsuperscript">27</sup></a></span><span class="t1xr-x-x-90">It also assumes that some uncertainty comes from the data itself, similarly to definitions in Section&nbsp;</span><a href="BackgroundKnowledgeB.html#background-knowledge-b"><span class="t1xr-x-x-90">2.2.5</span><!-- tex4ht:ref: sec:b  --></a><span class="t1xr-x-x-90">.</span></p><a id="x25-88006x28"></a>
+      <!-- l. 89 --><p class="indent">     <span class="footnote-mark"><a href="#fn28x2-bk" id="fn28x2"><sup class="textsuperscript">28</sup></a></span><span class="t1xr-x-x-90">Even though it is introduced as a variant of DP, it was later shown to be a measure of sensitivity&nbsp;[</span><a id="x25-88007"></a><a href="bibliography.html#cite.0@charest2016meaning"><span class="t1xr-x-x-90">64</span></a><span class="t1xr-x-x-90">].</span></p><a id="x25-88009x29"></a>
+      <!-- l. 92 --><p class="indent">     <span class="footnote-mark"><a href="#fn29x2-bk" id="fn29x2"><sup class="textsuperscript">29</sup></a></span><span class="t1xr-x-x-90">Another definition with the same name is introduced in&nbsp;[</span><a id="x25-88010"></a><a href="bibliography.html#cite.0@burchard2019empirical"><span class="t1xr-x-x-90">58</span></a><span class="t1xr-x-x-90">], we mention it in Section&nbsp;</span><a href="BackgroundKnowledgeB.html#background-knowledge-b"><span class="t1xr-x-x-90">2.2.5</span><!-- tex4ht:ref: sec:b  --></a><span class="t1xr-x-x-90">.</span></p>                            </div>
+<!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="SummarizingTable.html">LINKPREV</a><a href="SystematizingVariantsExtensionsOfDifferentialPrivacy.html#RelatedWorkDefining.html">LINKUP</a><a href="ConclusionDefining.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="SummarizingTable.html">← previous</a></li>
+        <li><a href="SystematizingVariantsExtensionsOfDifferentialPrivacy.html#RelatedWorkDefining.html">up</a></li>
+        <li><a href="ConclusionDefining.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

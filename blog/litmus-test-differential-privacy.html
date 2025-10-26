@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Is differential privacy the right fit for your problem? - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Is differential privacy the right fit for your problem? - Ted is writing things" />
+  <meta property="twitter:title" content="Is differential privacy the right fit for your problem? - Ted is writing things" />
+  <meta name="description" property="og:description" content="Some data publication or sharing use cases are well-suited to the use of differential privacy, while some aren’t. In this blog post, we give a litmus test allowing you to quickly distinguish between the two." />
+  <meta property="twitter:description" content="Some data publication or sharing use cases are well-suited to the use of differential privacy, while some aren’t. In this blog post, we give a litmus test allowing you to quickly distinguish between the two." />
+  <meta property="summary" content="Some data publication or sharing use cases are well-suited to the use of differential privacy, while some aren’t. In this blog post, we give a litmus test allowing you to quickly distinguish between the two." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/litmus-test-differential-privacy-cropped.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/litmus-test-differential-privacy-cropped.png" />
+  <meta property="twitter:image:alt" content="A simple diagram representing the intuition behind differential privacy." />
+  <link rel="canonical" href="https://www.tmlt.io/resources/is-differential-privacy-the-right-fit-for-your-problem" />
+  <link rel="prev" href="partial-knowledge.html" />
+  <link rel="next" href="trustworthy-anonymization.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="partial-knowledge.html">← previous</a>
+ —     <a href="trustworthy-anonymization.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./litmus-test-differential-privacy.html">Is differential privacy the right fit for your problem?</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2022-07-18T00:00:00+02:00">
+      2022-07-18
+    </time>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p>&nbsp;This article was first published on the <a href="https://www.tmlt.io/research/is-differential-privacy-the-right-fit-for-your-problem">Tumult Labs blog</a>; its
+copyright is owned by Tumult Labs.</p>
+<p></small></p>
+<hr>
+<p><span class='lettrine'>S</span>ay you have some sensitive data, like a batch of
+financial information about first-time home buyers applying for mortgages in
+Chicago. You would like to publish this data, or share it with third parties,
+for example to facilitate economic research. This financial data has sensitive
+information about individuals, so you need to make sure that you’re not
+revealing personal data.</p>
+<p>So far, this seems like a perfect use case for <a href="friendly-intro-to-differential-privacy.html">differential privacy</a>
+(DP): publishing trends without revealing information about individuals is
+exactly what it was designed for. You know that DP will successfully protect
+this individual data – its guarantees apply regardless of the data distribution.
+But you might still be wondering: will I succeed in publishing useful data? Will
+it be accurate enough for the people who will use it?</p>
+<p>In this blog post, I’ll help you get an initial idea of whether differential
+privacy can work for you, using a simple litmus test. Spoiler alert: the process
+looks like this.</p>
+<p><center>
+<img alt="A flowchart representing the litmus test described in the article. It starts
+with a question: &quot;How will the data be used?&quot;. There are three options.
+&quot;I don't know, it's hard to say&quot; leads to &quot;It's complicated. Let's learn more
+about the use case first!&quot;. &quot;For robust analyses that don't depend too much on
+individual data points&quot; leads to &quot;Differential privacy will probably work for
+you!&quot;. And &quot;For analyses that are very sensitive to tiny differences in the
+input data&quot; leads to a second question: &quot;Can you make these analyses more
+robust?&quot;. If &quot;Yes&quot;, then this goes to the same &quot;DP will probably work&quot; box as
+earlier. If &quot;Not really&quot;, this leads to &quot;Differential privacy will likely not be
+a good fit&quot;." src="https://desfontain.es/blog/images/litmus-test-differential-privacy.png">
+</center></p>
+<h1 id="a-simple-litmus-test">A simple litmus test</h1>
+<p>Consider the decisions people will make based on the published data, and ask
+yourself the following question.</p>
+<p><center><strong>Can small changes in the original data lead to completely different
+decision outcomes?</strong></center></p>
+<p>Take the financial data scenario involving first-time home buyer data. Suppose
+that a single home-buyer's info was removed from the dataset – would that change
+the analysis you are doing on the data? If the analysis is about median value of
+mortgages in Chicago overall, probably not. But if the analysis is about the
+maximum value of mortgages in just one ZIP code, then removing that maximum
+value might change the result by quite a lot!</p>
+<p>There are three possible answers to this question.</p>
+<ul>
+<li>The results of the analysis <strong>do not depend too much on small changes in the
+  data</strong>. In this case, we say that the data analysis is <strong>robust</strong>, and
+  <strong>differential privacy will likely work for you</strong>.</li>
+<li>The analysis might be <strong>very sensitive to small changes</strong>. In this case, it’s
+  worth asking: can we make the analysis more robust? If not, then
+  <strong>differential privacy is likely not a good fit</strong>.</li>
+<li>Finally, it might not be clear what the data will be used for, and whether
+  these analyses will be robust. Then, we need to answer this question first,
+  and learn more about the use case.</li>
+</ul>
+<p>Let’s look more closely at these three options.</p>
+<h1 id="robust-analyses-well-suited-to-differential-privacy">Robust analyses: well-suited to differential privacy</h1>
+<p><em>Robust</em> analyses are those that do not depend too much on individual changes in
+the data. Many common data analyses are robust; in particular, almost all
+applications that aim at capturing trends fall in that category. For example, if
+you are…</p>
+<ul>
+<li>… estimating large population sizes (&gt; 100)</li>
+<li>… understanding correlations between features in a large dataset</li>
+<li>… producing usage metrics for a service with many users</li>
+<li>… computing statistics over large groups</li>
+</ul>
+<p>… then the result of these analyses won’t be impacted by very small changes in
+the data.</p>
+<p><strong>In that case, differential privacy will likely work for you</strong>. Robust analyses
+are a particularly good fit for DP techniques: you will likely be able to
+generate high-quality data with strong privacy protections. The decisions made
+using the DP data will closely resemble those that would have been made on the
+true data.</p>
+<p>This makes sense: DP is all about adding small amounts of jitter to computations
+to hide the data of single individuals. But DP doesn’t need a lot of jitter: the
+perturbation’s magnitude is similar to the impact of a single person. If a
+single person is unlikely to change the result of future data analyses…
+differential privacy probably won’t change it too much, either.</p>
+<p>Note that this litmus test tells you about feasibility. It doesn’t always mean
+that deploying DP will be very easy. Some use cases, like machine learning, or
+situations where you want to release a lot of statistics, can be tricky. In any
+case, my colleagues &amp; I at <a href="https://tmlt.io">Tumult Labs</a> can help! Don’t
+hesitate to <a href="https://tmlt.io/connect">reach out</a>.</p>
+<h1 id="analyses-that-are-sensitive-to-small-changes-in-the-data">Analyses that are sensitive to small changes in the data</h1>
+<p>Some analyses are very sensitive to the data of single individuals: a change in
+a single person’s data can change the outcome drastically! This typically
+happens in three cases.</p>
+<h4 id="small-populations">Small populations</h4>
+<p>Suppose that you are trying to publish the average mortgage value for a specific
+ZIP code, there are only a few first-time home buyers – say, fewer than 10. In
+this case, an individual change might have a large impact on the average!</p>
+<p>In situations such as this one, individual changes can have a large impact on
+the decisions made with the data. In this case, the noise added by differential
+privacy is also likely to change the result of the analysis. This will often be
+unacceptable: DP will not be a good fit.</p>
+<h4 id="finding-outlier-individuals">Finding outlier individuals</h4>
+<p>Suppose that you are trying to find which people had mortgages that were
+significantly above the average in their area. In applications like this one,
+the goal is to detect outlier behavior. This is at odds with the fundamental
+goal of differential privacy: hiding information about all individuals,
+including outliers! In this kind of scenario, another approach might be
+needed.</p>
+<h4 id="preserving-linkability">Preserving linkability</h4>
+<p>Suppose that you want to enable other people to run analyses joining your data
+with their own data, at the level of each individual. In that case, you need a
+one-to-one relationship between people in the original data and in the output
+data. This is also at odds with differential privacy: you cannot hide
+who is present in the sensitive dataset and also preserve linkability. Small
+changes in the data will be clearly visible, since one user will or will not be
+part of the output.</p>
+<h4 id="making-the-analysis-more-robust">Making the analysis more robust</h4>
+<p>When the analysis is sensitive to small changes in the data, it is worth asking:
+could we change that? Can we reformulate the problem in a more robust way? Doing
+so can often be doubly beneficial, and lead to privacy <em>and</em> utility
+improvements.</p>
+<p>Say that the published data will be used to determine the impact of age on the
+rejection rate for mortgages. A first approach would be to release rejection
+rates, grouped by age. But some values of age are rarer than others: we might
+have many data points where the age is 40, but only a handful where the age is
+20.</p>
+<p>For these outlier values, small changes in the data might lead to large changes.
+But we are not interested in specific age values, only about the global
+relationship between age and rejection rate. Thus, we could change our strategy
+to publish data for age ranges, so each statistic comes from more data, and is
+more robust to small changes. This would make the released data more
+trustworthy, and the publication process more amenable to differential privacy.</p>
+<p>For use cases that appear to require linkability, ask yourself the question: can
+we perform the join between datasets before computing the statistics of
+interest? If so, then using differential privacy might be an option.</p>
+<h1 id="what-if-i-dont-know-how-the-data-will-be-used">What if I don’t know how the data will be used?</h1>
+<p>Sometimes, the question from our litmus test might be difficult to answer: what
+decisions will be made based on the published data? You might know that other
+people want access to this data, but not know exactly what they will want to do
+with it.</p>
+<p>The right thing to do, then, is to try and understand more about their use case.
+The more you know what they want to do, the easier it will be to design a
+solution that works for them. This is both to answer our question about
+feasibility, and to help craft the requirements for a possible DP-based
+solution. The more you understand the requirements of your stakeholders, the
+happier you and they will be with the released data.</p>
+<hr>
+<p><small></p>
+<p>Thanks to Ashwin Machanavajjhala, Gerome Miklau, and Nicole Le for helpful
+feedback on this post.</p>
+<p></small></p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20220718,
+  title = &#123;Is differential privacy the right fit for your problem?},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/litmus-test-differential-privacy.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2022},
+  month = &#123;07}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="partial-knowledge.html">← previous</a>
+    </li>
+    <li>
+      <a href="trustworthy-anonymization.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="Notations.html" />
+  <link ref="next" href="DefiningAnonymization.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="Notations.html">← previous</a></li>
+        <li><a href="index.html#Introduction.html">up</a></li>
+        <li><a href="DefiningAnonymization.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="Notations.html">LINKPREV</a><a href="index.html#Introduction.html">LINKUP</a><a href="DefiningAnonymization.html">LINKNEXT</a></p></div>
+  <h2 class="chapterHead" id="introduction-u-ding-"><span class="titlemark">1</span>&nbsp;&nbsp;<a id="x6-150001"></a>Introduction <span class="bbding-10x-x-109">✿</span></h2> <!-- l. 2 --><p class="noindent"><a id="introduction"></a> </p>                                                               <div class="flushright"> <!-- l. 4 --><p class="noindent"> </p> <!-- l. 8 --><p class="noindent">
+<span class="t1xss-x-x-95">After all, a person is herself, and
+others. Relationships chisel the
+final shape of one’s being. I am
+me, and you.</span><br>
+
+<span class="t1xsssl-x-x-95">(N.K.&nbsp;Jemisin, </span><span class="t1xss-x-x-95">The Fifth Season</span><span class="t1xsssl-x-x-95">)</span>
+</p>
+</div>
+<!-- l. 11 --><p class="indent">  Alice sends an email to her friends and family to organize her birthday party. Bob explains his
+symptoms to his doctor, who takes notes on her computer. Camille requests directions to a restaurant on
+their favorite navigation app. Dede puts on a fitness tracker and goes out for a run around the
+neighborhood. Ember goes for a hike, and takes a few pictures of the view from up the
+hill.
+</p><!-- l. 17 --><p class="indent">  All these activities will generate a trail of data. Nowadays, few are the endeavors that do not leave a
+digital trace on a person’s devices, or on some remote server farm. This historically new phenomenon
+appeared and drastically expanded over the last few decades. Before that, only a few large industries
+and governments were automating computing and data processing. What brought about this extensive
+change? Improvements in hardware? A few core innovations, like the World Wide Web? Market
+forces?
+</p><!-- l. 25 --><p class="indent">  Rather than looking for causes, one could look for <span class="t1xi-x-x-109">incentives</span>. Who benefits most from the collection,
+processing, and sharing of this data? Technology companies like to argue that their customers—or
+<span class="t1xi-x-x-109">users</span>—are the primary beneficiaries of their services. At first glance, the argument appears reasonable:
+many Internet services are free, and people use them because they find some value in them. Organizing
+one’s pictures, looking up information for a school assignment, staying in touch with loved ones,
+watching TV shows at any time, are all examples of benefits that people get by sharing their personal
+data with online services. Even people who are otherwise reluctant to technological change can usually
+find parts of their lives to be made easier or more convenient thanks to technological innovations of the
+21st century.
+</p><!-- l. 37 --><p class="indent">  Of course, despite what their founders like to pretend, tech companies are not providing
+these services out of the goodness of their heart. Even if they did, building, running, and
+maintaining large-scale online services is expensive. So what are tech companies getting out of the
+exchange? How do they transform all the data they collect into profit? And how fair is that
+exchange?
+</p><!-- l. 43 --><p class="indent">  One of the common mechanisms to extract profit out of personal data is personalized advertising.
+The massive scale and complexity of the online advertising industry is difficult to grasp, but the basic
+principle of personalized ads is relatively simple. Consider a fitness tracking app, in which users record
+                                                                                
+                                                                                
+their performance when sports training. A sportswear company launching a new line of triathlon clothes
+might pay the app provider to advertise their product to users who recently recorded their performance
+in running, cycling and swimming.
+</p><!-- l. 52 --><p class="indent">  In this example, an individual user might find the exchange reasonable and fair. They get the benefit
+of using the app for free, at the “cost” of seeing ads that are relevant to their interests. The app company
+earns money for each <span class="t1xi-x-x-109">impression</span>—when an ad is shown to users—and <span class="t1xi-x-x-109">conversion</span>—when a user clicks
+on an ad and ends up buying the product. The company revenue scales roughly linearly
+with the number of users: twice as many users translate to twice as many impressions and
+conversions.
+</p><!-- l. 60 --><p class="indent">  This individual view, however, is very narrow: it only considers each piece of personal data in
+isolation. It neglects a crucial aspect: individual data has additional value in large quantities, as large
+datasets are more than the sum of their parts. An app developer might collect data to measure what
+features of their app are most popular among its users. Ad tech companies can run experiments and
+measure which kind of ads are most likely to lead to profitable conversions. Aggregate data can also be
+used to do market research, enabling marketers to discover consumer trends early and act on them
+before their competitors.
+</p><!-- l. 70 --><p class="indent">  Such analyses are only possible if data from sufficiently many people are included in the dataset: the
+value of a dataset increases more than linearly with its size. This creates feedback loops, especially with
+the recent advances in machine learning. The more training data companies have, the better their
+machine learning models perform, and the more useful their products become, which encourages more
+people to use them, which in turn increases their data and revenue. In parallel, as their user base grows,
+their advertising business becomes more efficient and profitable, giving a further advantage to large,
+established tech companies.
+</p><!-- l. 80 --><p class="indent">  Seen under this lens, this phenomenon seems hardly fair. Why do individuals only get the benefits
+from the processing of their individual data, while large companies profit from the added, “compound”
+benefits of large datasets? Public relations departments of tech companies typically have two answers to
+this objection.
+</p><!-- l. 86 --><p class="indent">  First, they point out that data collection can help improve the product itself, which benefits users.
+Examples abound. A search engine can get better over time, as its algorithm gets updated to improve
+accuracy or user satisfaction metrics. Data collection from the users of a navigation app enables
+more accurate traffic predictions, which in turns enables faster and smarter routing. A music
+app can aggregate the data it collects to improve its recommendation algorithm, which can
+help users discover their next favorite artist. To summarize the argument: sometimes, the
+incentives of tech companies and of their users are aligned, in which case large-scale data
+collection and processing can have an overall positive impact. Notice that this does not
+answer the <span class="t1xi-x-x-109">fairness </span>objection. If a company uses my data for five distinct purposes, and I only
+benefit from one of them, it is better than nothing, but the exchange still does not seem very
+fair.
+</p><!-- l. 100 --><p class="indent">  This leads to the tech industry’s second answer to this objection: the development of initiatives
+focusing on using data “for good”. For instance, giving external researchers access to data for
+scientific research, forecasting the spread of diseases, developing early warning systems for
+natural disasters, etc. The idea behind these projects is to “give back” to the community:
+using the compound benefits of aggregated data for a cause that serves everyone. The scale
+of these efforts, however, is relatively small compared to other areas of business for tech
+                                                                                
+                                                                                
+companies.
+</p><!-- l. 109 --><p class="indent">  For some efforts—especially when they require building entire systems from scratch, like early
+warning systems for earthquakes—this is not surprising. The incentives of a capitalist system do not
+exactly encourage companies to spend more time on doing social good than on pursuing their core
+business, or other profitable endeavors.
+</p><!-- l. 115 --><p class="indent">  Some other efforts, though, seem to require little effort, and can potentially lead to significant
+positive outcomes for society and for the company’s public image. One major example is sharing data
+with external researchers. At first glance, it seems like this practice benefits all the actors involved.
+Academics get access to valuable data to study, allowing them to publish papers in prestigious
+venues and boost their careers. Society benefits from scientific progress brought about by this
+work. And the company can reap public image benefits for free: all the hard analysis work,
+requiring valuable time and expertise, is outsourced to researchers. Even better, the process
+improves relations with prominent academics, who are useful allies—<span class="t1xi-x-x-109">key opinion formers</span>, in
+public relations jargon—to have when trying to influence regulators or polish one’s media
+coverage.
+</p><!-- l. 128 --><p class="indent">  So why is this kind of partnerships not more common? The main reason is <span class="t1xi-x-x-109">risk</span>. Sharing data
+externally, even under non-disclosure agreements and with some security measures in place, increases
+the chances that it will be leaked to other third-parties, or used for unplanned ill-intentioned purposes.
+The best example of this phenomenon might be the Cambridge Analytica scandal. Aleksandr Kogan,
+who developed a Facebook app that collected the data of millions of users, was a Cambridge researcher
+and a Facebook consultant. The collected data was then used to target ads to individual voters and
+influence elections.
+</p><!-- l. 138 --><p class="indent">  Concerns about privacy risks are therefore an understandable reason, as well as a convenient excuse,
+for companies to avoid sharing data externally. One of the ways to solve this problem, and re-align
+incentives, is <span class="t1xi-x-x-109">anonymization</span>. Anonymizing personal data means altering it to minimize or eliminate
+some of the privacy risks it carries. Of course, anonymization alone is pointless: redacting a dataset
+entirely is a very easy and effective way to remove all the risk associated with it, but it would also
+destroy its value completely. The core challenge of anonymization is thus to preserve some useful
+properties of data, while still limiting risk. In the example above, where a company wants to share data
+with researchers, the goal is to retain the statistical properties of the data that enable rigorous scientific
+analysis.
+</p><!-- l. 150 --><p class="indent">  This is the fundamental challenge that this thesis focuses on. How to anonymize a dataset in a way
+that provides strong privacy guarantees, while still preserving its usefulness? The problems that this
+work investigates all derive from this core question. Which concepts and techniques already exist in the
+scientific literature? What are their limitations and the main obstacles to their adoption? And how can
+we best address them?
+</p><!-- l. 157 --><p class="indent">  Today, anonymization is largely seen as something extremely complicated to achieve. People might
+have heard of the numerous anonymization failures of the past 21st century, and concluded that it is
+simply impossible to correctly anonymize data. Others might have heard of more recent, stronger
+definitions of anonymity like differential privacy—a core concept examined and used throughout this
+thesis—but dismiss it as purely theoretic, and too difficult to be used in practice. The goal of this
+work is to dispel these misconceptions, and make it easier and cheaper to safely anonymize
+data.
+</p><!-- l. 166 --><p class="indent">  We start this ambitious goal in Chapter&nbsp;<a href="DefiningAnonymization.html#defining-anonymization-u-ding-">2<!-- tex4ht:ref: ch:defining  --></a>, by trying to determine what it means for data to be
+                                                                                
+                                                                                
+sufficiently anonymized. This is not a simple endeavor, as more than 200 variants and extensions of
+differential privacy have been introduced in the last decade. We systematize and categorize these
+notions, to provide a unified and simplified view of this field (Section&nbsp;<a href="SystematizingVariantsExtensionsOfDifferentialPrivacy.html#systematizing-variants-extensions-of-differential-privacy-u-ding-">2.2<!-- tex4ht:ref: sec:survey  --></a>). Then, in Chapter&nbsp;<a href="DifferentialPrivacyUnderPartialKnowledge.html#differential-privacy-under-partial-knowledge-u-ding-">3<!-- tex4ht:ref: ch:partial  --></a>, we
+focus on one family of such variants: definitions that, in contrast to the original formulation of
+differential privacy, assume that the attacker only has partial knowledge about the input dataset. We
+identify and solve definitional problems in existing variants (Section&nbsp;<a href="DefinitionalIntricaciesOfPartialKnowledge.html#definitional-intricacies-of-partial-knowledge-u-ding-">3.1<!-- tex4ht:ref: sec:subtleties  --></a>), we present new and
+improved results on the privacy of common mechanisms (Section&nbsp;<a href="OpportunitiesAggregationsThresholding.html#opportunities-aggregations-thresholding-u-ding-">3.2<!-- tex4ht:ref: sec:aggregations  --></a>), and we prove impossibility
+results for the important problem of cardinality estimation (Section&nbsp;<a href="LimitsCardinalityEstimation.html#limits-cardinality-estimation-u-ding-">3.3<!-- tex4ht:ref: sec:cardinality  --></a>). Finally, in Chapter&nbsp;<a href="FromTheoryToPractice.html#from-theory-to-practice-u-ding-">4<!-- tex4ht:ref: ch:practice  --></a>, we look
+at the main obstacles to the widespread use of anonymization techniques for practical problems. We
+propose scalable sketching algorithms for estimating reidentifiability and joinability risk
+(Section&nbsp;<a href="AnalyzingPrivacyRisksAtScale.html#analyzing-privacy-risks-at-scale-u-ding-">4.1<!-- tex4ht:ref: sec:risk  --></a>), as well as a framework to implement differential privacy as part of a query engine
+(Section&nbsp;<a href="BuildingAUsableDifferentiallyPrivateQueryEngine.html#building-a-usable-differentially-private-query-engine-u-ding-">4.2<!-- tex4ht:ref: sec:building  --></a>). We then propose a number of possible improvements to such a system, and discuss
+some operational challenges raised by the use of differential privacy in practical scenarios
+(Section&nbsp;<a href="FurtherImprovementsAndOpenQuestions.html#further-improvements-and-open-questions-u-ding-">4.3<!-- tex4ht:ref: sec:further  --></a>).
+                                                                                
+                                                                                
+</p>
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="Notations.html">LINKPREV</a><a href="index.html#Introduction.html">LINKUP</a><a href="DefiningAnonymization.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="Notations.html">← previous</a></li>
+        <li><a href="index.html#Introduction.html">up</a></li>
+        <li><a href="DefiningAnonymization.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

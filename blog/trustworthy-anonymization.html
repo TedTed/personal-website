@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>What anonymization techniques can you trust? - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="What anonymization techniques can you trust? - Ted is writing things" />
+  <meta property="twitter:title" content="What anonymization techniques can you trust? - Ted is writing things" />
+  <meta name="description" property="og:description" content="An overview of legacy techniques used to anonymize data, how they fail, and what we can learn from these failures." />
+  <meta property="twitter:description" content="An overview of legacy techniques used to anonymize data, how they fail, and what we can learn from these failures." />
+  <meta property="summary" content="An overview of legacy techniques used to anonymize data, how they fail, and what we can learn from these failures." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/aggregating-data.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/aggregating-data.png" />
+  <meta property="twitter:image:alt" content="A simple diagram representing data aggregation." />
+  <link rel="canonical" href="https://www.tmlt.io/resources/what-anonymization-techniques-can-you-trust" />
+  <link rel="prev" href="litmus-test-differential-privacy.html" />
+  <link rel="next" href="privacy-enhancing-technologies.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="litmus-test-differential-privacy.html">← previous</a>
+ —     <a href="privacy-enhancing-technologies.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./trustworthy-anonymization.html">What anonymization techniques can you trust?</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2023-03-10T00:00:00+01:00">
+      2023-03-10
+    </time>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p>&nbsp;This article was first published on the <a href="https://www.tmlt.io/resources/what-anonymization-techniques-can-you-trust">Tumult Labs blog</a>; its
+copyright is owned by Tumult Labs.</p>
+<p></small></p>
+<hr>
+<p>Let's say that we have some sensitive data, for example about people visiting a
+hospital. We would like to share it with a partner in an anonymous way: the goal
+is to make sure that the released data does not reveal anything about any one
+individual. What techniques are available for this use case?</p>
+<h1 id="randomize-identifiers">Randomize identifiers</h1>
+<p>Obviously, if we leave names, or public user identifiers in our data (like
+people's telephone numbers or email addresses), then that's not going to be
+anonymous. So here is a first idea: let's hide this information! By replacing
+e.g. names with random numbers, identities are no longer obvious. This is called
+<em>pseudonymization</em> (or sometimes <em>tokenization</em>): identifiers are replaced with
+<em>pseudonyms</em> (or <em>tokens</em>). These pseudonyms are consistent: the same original
+identity is always replaced by the same pseudonym.</p>
+<p><center>
+<img alt="A diagram showing the process of randomizing identifiers. A table has headers
+Name, Date of birth, ZIP code, Visit date, and Visit reason; a single row has
+values Taylor Lewis, 1987, 14217, 2022-03-30, and Flu. An arrow goes from this
+table to another table with the same columns headers and values, except the Name
+column has been replaced with Pseudonym, and the pseudonym value is a string of
+numbers." src="https://desfontain.es/blog/images/randomizing-identifiers.png">
+</center></p>
+<p>Unfortunately, "no longer obvious" is <em>very</em> different from "impossible to
+figure out". Randomizing identifiers often fails to protect the privacy of the
+people in the data. This can be because this randomization process itself is
+insecure. A good example is the New York taxi database data. The randomization
+process was done in a naive way… and this allowed researchers to
+<a href="https://www.theguardian.com/technology/2014/jun/27/new-york-taxi-details-anonymised-data-researchers-warn">reverse-engineer license plates</a> from pseudonyms.</p>
+<p>But there is a more fundamental reason why such schemes are unsafe: it's
+impossible to know for sure what can be used to re-identify someone. Direct
+identifiers are not the only thing that can be used to find out someone's
+identity. A famous example is the release of AOL search queries. AOL data
+scientists randomized all the identifiers. But the data itself was problematic:
+what you search for reveals a lot about you! <a href="https://www.nytimes.com/2006/08/09/technology/09aol.html">It only took a few days for
+journalists to reidentify people</a>, using only their search queries.</p>
+<p>Even worse, otherwise-innocuous data can become identifying when combined with
+additional information. The Netflix Prize dataset provides a striking example of
+this fact. Netflix published pseudonymized data containing only movie ratings.
+These do not seem identifying… and yet, researchers could <a href="https://www.wired.com/2007/12/why-anonymous-data-sometimes-isnt/">combine them with
+public reviews</a> and recover users' identities. </p>
+<h1 id="remove-identifiers-altogether">Remove identifiers altogether</h1>
+<p>If pseudonymization doesn't work, what about <em>de-identification</em>? Instead of
+replacing direct identifiers with random numbers, we could redact them
+altogether. This technique, sometimes called <em>masking</em>, is very common.</p>
+<p><center>
+<img alt="The same diagram as previously, except the Name column is also present in the
+second table, but the value for this column has been replaced by
+&quot;(REDACTED)&quot;." src="https://desfontain.es/blog/images/removing-identifiers.png">
+</center> ￼</p>
+<p>Unfortunately, masking provides little extra protection. The previous problem
+still applies: how can we know what information to redact and what to keep? Time
+and time again, data owners underestimate the reidentifiability of their data.</p>
+<p>The Massachusetts state government gave us a first example of this phenomenon.
+In the 1990s, they released medical data about hospital visits, with names
+redacted. But this patient data contained key demographic information: ZIP
+codes, dates of birth, and sex. And these are enough to identify a large
+fraction of the population! <a href="https://arstechnica.com/tech-policy/2009/09/your-secrets-live-online-in-databases-of-ruin/">Including the then-governor of
+Massachusetts…</a> More than a little embarrassing. With more
+demographic attributes, reidentification risk skyrockets to up to
+<a href="https://techcrunch.com/2019/07/24/researchers-spotlight-the-lie-of-anonymous-data/">99.98%</a>.</p>
+<blockquote>
+<p>"Isn't this sort of obvious?" – <a href="https://www.wired.com/2007/12/why-anonymous-data-sometimes-isnt/">Wired, 2007</a></p>
+</blockquote>
+<p>A lot of data turns out to be identifying, besides demographic information.
+<a href="https://archive.nytimes.com/bits.blogs.nytimes.com/2015/01/29/with-a-few-bits-of-data-researchers-identify-anonymous-people/">Credit card metadata</a>, <a href="http://edition.cnn.com/2013/03/26/tech/mobile/mobile-gps-privacy-study/">location information</a>, or <a href="https://www.sciencenews.org/article/ai-identify-anonymous-data-phone-neural-network">social
+interactions</a> can be just as revealing. The problem is profound: there
+is no way to know what a malicious person might use to reidentify records in our
+data. The only safe choice is to redact all the data, which is not very useful.</p>
+<h1 id="apply-rule-based-techniques">Apply rule-based techniques</h1>
+<p>Since simpler techniques fail, we could try more complicated heuristics. Many of
+them appear in the literature, and are still in use today:</p>
+<ul>
+<li>adding some random perturbation to individual values;</li>
+<li>making some attributes less granular;</li>
+<li>suppressing records with rare values;</li>
+<li>and a myriad of others.</li>
+</ul>
+<p>These techniques might seem less naive, but they still don't provide a robust
+guarantee.</p>
+<p><center> <img alt="The same diagram as previously, except that in addition to redacting
+the Name column, the Date of birth column has been replaced with 1987-04-17 (a
+slightly different date than the original one), and the ZIP code column has been
+replaced with 14***." src="https://desfontain.es/blog/images/rule-based-techniques.png">
+</center> ￼
+￼
+The most striking example is probably the release of <a href="https://www.zdnet.com/article/re-identification-possible-with-australian-de-identified-medicare-and-pbs-open-data/">Medicare records in
+Australia</a>. To limit reidentifiability risk, the organization went one step
+further than simply removing identifiers: they perturbed some attributes, and
+randomly shifted all dates by a random amount. The only data left was medical
+information, which didn't seem like something an attacker could know about! But
+for famous people, like politicians or athletes, some of this data can be
+public! This allows reidentification, and retrieval of additional private
+medical data.</p>
+<p>Even privacy notions from the scientific literature can fail to protect
+sensitive data. The first and most famous of these definitions is probably
+<a href="k-anonymity.html">k-anonymity</a>. Its intuition seems convincing: each individual is
+"hidden in a group" of other people with the same characteristics. Sadly,
+despite this intuition, k-anonymity fails at providing a good level of
+protection: <a href="https://techxplore.com/news/2022-10-kind-downcoding-flaws-anonymizing.html">downcoding attacks</a> succeed at reidentifying people in
+data releases.</p>
+<h1 id="aggregate-the-data">Aggregate the data</h1>
+<p>It seems like trying to look at each individual record to try to find out what
+to redact or randomize doesn't work. What if we aggregate multiple records
+together, instead? Surely releasing statistics across many people should be
+safe?</p>
+<p><center>
+<img alt="A diagram similar to before, but with multiple rows in both tables. In the
+first table, each row represents different people, and three rows contain fake
+data about three distinct people. The second table has columns Visit date, Visit
+reason, Count, and Average age, and multiple rows with different fake values,
+representing statistics for different visit dates and
+reasons." src="https://desfontain.es/blog/images/aggregating-data.png">
+</center></p>
+<p>Sadly, this is still not the case: there are multiple ways that individual
+information can be retrieved from aggregated data. One of these ways uses the
+correlations present in the data. Consider a dataset counting how many people
+were in specific areas over time.  This doesn't seem very identifying… Except
+human mobility data tends to be predictable: people travel approximately in the
+same direction between two points. This creates correlations, which attackers
+can then exploit: researchers managed to <a href="https://blog.acolyer.org/2017/05/15/trajectory-recovery-from-ash-user-privacy-is-not-preserved-in-aggregated-mobility-data/">retrieve individual
+trajectories</a> from such an aggregated dataset.</p>
+<p>And there is another complication: it is often possible to combine multiple
+statistics and retrieve individual records. This technique is called a
+reconstruction attack. The most prominent example was done by the <a href="us-census-reconstruction-attack.html">U.S. Census
+on the 2010 Decennial Census</a>. The results speak for themselves! Worse
+still, reconstruction attacks are <a href="https://www.pnas.org/doi/10.1073/pnas.2218605120">improving over time</a>… so they
+could become even more of a risk in the future.</p>
+<h1 id="what-do-these-attacks-have-in-common">What do these attacks have in common?</h1>
+<p>Let's take a step back and look at all these failures of bad anonymization
+techniques. Are there some themes we can discern?</p>
+<ul>
+<li><strong>Data is often more identifiable than it seems.</strong> Even a few
+  innocuous-looking pieces of information can be enough to identify someone. And
+  people tend to underestimate what data can be used to reidentify people in a
+  dataset.</li>
+<li><strong>Auxiliary data is a dangerous unknown variable.</strong> Information that seems
+  secret might be public for certain individuals, or become known to attackers
+  thanks to an unrelated data breach.</li>
+<li><strong>Even "obviously safe" data releases are at risk.</strong> Successful attacks happen
+  even on datasets that seem well-protected, like aggregated statistics.</li>
+<li><strong>Attacks improve over time, in unpredictable ways.</strong> Mitigating only known
+  attacks, or performing empirical privacy checks, is not enough: using e.g.
+  newer AI techniques or more powerful hardware can break legacy protections.
+  <br><br></li>
+</ul>
+<h1 id="what-to-do-then">What to do, then?</h1>
+<p>These failures of legacy techniques prove that we need something better. So,
+when does an anonymization method deserve our trust? It should at least address
+the four points in the previous section:</p>
+<ul>
+<li>it should avoid making assumptions on what is identifiable or secret in the
+  data;</li>
+<li>it should be resistant to auxiliary data — its guarantee should hold no matter
+  what an attacker might already know;</li>
+<li>it should provide a mathematical guarantee that doesn't rely on subjective
+  intuition;</li>
+<li>and it should protect against possible future attacks, not just ones known
+  today.</li>
+</ul>
+<p>It turns out that this is exactly what <a href="friendly-intro-to-differential-privacy.html">differential privacy</a> provides.</p>
+<ul>
+<li>It makes no assumptions on what a potential attacker might use in the data.</li>
+<li>Its guarantees do not depend on what auxiliary data the attacker has access to.</li>
+<li>It provides a quantifiable, provable guarantee about the worst-case privacy risk.</li>
+<li>And this guarantee holds for all possible attacks, so the guarantee is future-proof.</li>
+</ul>
+<p>It has a host of other benefits, too. For example, it can quantify the total
+privacy cost of <em>multiple</em> data releases. It also offers much more flexibility:
+many kinds of data transformation and analyses can be performed with
+differential privacy.</p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20230310,
+  title = &#123;What anonymization techniques can you trust?},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/trustworthy-anonymization.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2023},
+  month = &#123;03}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="litmus-test-differential-privacy.html">← previous</a>
+    </li>
+    <li>
+      <a href="privacy-enhancing-technologies.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

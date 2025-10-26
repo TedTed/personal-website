@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>The magic of Gaussian noise - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="The magic of Gaussian noise - Ted is writing things" />
+  <meta property="twitter:title" content="The magic of Gaussian noise - Ted is writing things" />
+  <meta name="description" property="og:description" content="Why is Gaussian noise a popular choice to make statistics and machine learning models differentially private?" />
+  <meta property="twitter:description" content="Why is Gaussian noise a popular choice to make statistics and machine learning models differentially private?" />
+  <meta property="summary" content="Why is Gaussian noise a popular choice to make statistics and machine learning models differentially private?" />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/gaussian-noise.html" />
+  <link rel="prev" href="privacy-loss-random-variable.html" />
+  <link rel="next" href="latex-to-html.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="privacy-loss-random-variable.html">← previous</a>
+ —     <a href="latex-to-html.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./gaussian-noise.html">The magic of Gaussian noise</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2020-11-15T00:00:00+01:00">
+      2020-11-15
+    </time>
+    <small>&mdash; updated
+      <time datetime="2021-03-17T00:00:00+01:00">
+        2021-03-17
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p></small></p>
+<hr>
+<p><span class='lettrine'>P</span><strong>reviously</strong>, we used Gaussian noise to explain
+the <a href="privacy-loss-random-variable.html">real meaning of <span class="math">\(\delta\)</span></a> in <span class="math">\((\varepsilon,\delta)\)</span>-differential
+privacy. One question was left unanswered: why would anyone use Gaussian noise
+in the first place? The guarantees it provides aren't as strong: it gives
+<span class="math">\((\varepsilon,\delta)\)</span>-DP with <span class="math">\(\delta&gt;0\)</span>, while Laplace noise provides pure
+<span class="math">\(\varepsilon\)</span>-DP. This blog post gives an answer to this question, and describes
+the situations in which Gaussian noise excels.</p>
+<h1 id="gaussian-noise-is-nice">Gaussian noise is nice</h1>
+<p>A first advantage of Gaussian noise is that the distribution itself behaves
+nicely. It's called the <a href="https://en.wikipedia.org/wiki/Normal_distribution"><em>normal</em> distribution</a> for a reason: it has
+convenient properties, and is very widely used in natural and social sciences.
+People often use it to model random variables whose actual distribution is
+unknown. If you sum many independent random variables, you <a href="https://en.wikipedia.org/wiki/Central_limit_theorem">end up with a normal
+distribution</a>. And these are just a few of the <a href="https://en.wikipedia.org/wiki/Normal_distribution#Properties">many
+properties</a> of this fundamental distribution. Thus, most data
+analysts and scientists are already familiar with Gaussian noise. It's
+convenient when you release anonymized statistics: analysts don't need to learn
+too many new concepts to understand what you're doing to protect the data.</p>
+<p>A second advantage is that the Gaussian distribution has nice, <em>thin</em> tails. The
+vast majority of its probability mass is focused around its mean. Take a normal
+distribution with mean 0 and standard deviation <span class="math">\(\sigma\)</span>. The <a href="https://en.wikipedia.org/wiki/68%E2%80%9395%E2%80%9399.7_rule">68–95–99.7
+rule</a> says that a random variable sampled from this distribution will be:</p>
+<ul>
+<li>in <span class="math">\([-\sigma,\sigma]\)</span> with 68% probability;</li>
+<li>in <span class="math">\([-2\sigma,2\sigma]\)</span> with 95% probability;</li>
+<li>and in <span class="math">\([-3\sigma,3\sigma]\)</span> with 99.7% probability.</li>
+</ul>
+<p>It even gets better as you go further away from the mean. The probability that
+the random variable is <em>outside</em> <span class="math">\([-k\sigma,k\sigma]\)</span> decreases faster than
+<span class="math">\(e^{-k^2/2}\)</span>. In practice, you're rarely surprised by the values that a Gaussian
+distribution takes. Even if you sample <span class="math">\(1,000,000\)</span> values, they are all probably
+going to be within <span class="math">\([-5\sigma,5\sigma]\)</span>.</p>
+<p>Laplace, by comparison, isn't quite as nice. Its tails decrease exponentially fast,
+but that's still much slower than Gaussian tails. Suppose you sample <span class="math">\(1,000,000\)</span>
+values from a Laplace distribution of standard deviation <span class="math">\(\sigma\)</span>. On average,
+<strong>849</strong> of them will be outside <span class="math">\([-5\sigma,5\sigma]\)</span>.</p>
+<p>OK, so Gaussian noise is nice. But that does not change a simple fact: to get
+a comparable level of privacy for a single statistic, Laplace is much better.
+Assume that we're adding noise to a simple count, of sensitivity <span class="math">\(1\)</span>. This graph
+compares the Laplace noise needed to get <span class="math">\(\varepsilon=1\)</span>, and Gaussian noise
+needed to get <span class="math">\(\varepsilon=1\)</span> and <span class="math">\(\delta=10^{-5}\)</span>.</p>
+<p><center>
+<img alt="Graph showing a Laplace distribution with scale 1/ln(3) and a Gaussian distribution of standard deviation 3.426, both centered on 0" src="https://desfontain.es/blog/images/laplace-gaussian-ln-3.svg">
+</center></p>
+<p>Despite its weaker privacy guarantees, the Gaussian distribution is much
+flatter. Its standard deviation is over 3.4, while Laplace's is less than 1.3.
+Thus, much more noise will need to be added, and analysts care a lot about
+minimizing the noise. Why, then, would Gaussian noise be a good option? The answer
+is simple: because it gets better when you're publishing a lot of statistics.</p>
+<h1 id="from-one-to-many-statistics">From one to many statistics</h1>
+<p>In most of our <a href="differential-privacy-in-practice.html">previous examples</a>, we assumed that each individual
+appeared in a <em>single</em> statistic. This case is common, for example when
+partitioning people based on demographic information. But in many applications,
+this assumption does not hold. Imagine, for example, that you want to answer the
+question: « what types of specialized physicians did people visit in the past 10
+years? »</p>
+<p>Assume we're working in the <a href="local-global-differential-privacy.html">central model</a>. We have a dataset of
+〈patient ID, specialist type〉 pairs, and each record corresponds to an
+individual visiting a specialized physician (cardiologist, dermatologist,
+radiologist, etc.). We want to count the number of unique patient IDs per
+specialty.</p>
+<p>Note that each patient can only influence a single count <em>once</em>. We count
+<em>distinct</em> patient IDs: if you visit dermatologists 10 times, you will only add 1
+to the "dermatologist" count. However, a single patient might visit many types of
+specialized physicians. There are <a href="https://en.wikipedia.org/wiki/Medical_specialty">many kinds of
+specialties</a>, and a single
+patient might influence all the counts. Say there are 50 of them.</p>
+<p>How to make these counts differentially private? A first solution is to <a href="differential-privacy-in-practice.html#multiple-statistics"><em>split
+the privacy budget</em></a> across all the counts. Here, we can
+split our privacy budget in 50. If we want to achieve <span class="math">\(\varepsilon=1\)</span>, we
+compute <span class="math">\(\varepsilon'=1/50=0.02\)</span>, and add Laplace noise of scale
+<span class="math">\(1/\varepsilon'=50\)</span> to all the counts.</p>
+<p>Unfortunately, this is a lot of noise.</p>
+<p><center>
+<img alt="Graph showing a Laplace distribution with scale 0.02, centered on 0" src="https://desfontain.es/blog/images/laplace-0.02.svg">
+</center></p>
+<p>Fortunately, this is exactly the kind of situation in which Gaussian noise
+shines. When a single patient can impact <span class="math">\(k\)</span> distinct statistics, we need to
+scale Laplace noise by <span class="math">\(k\)</span>. By contrast, Gaussian noise must only be scaled by
+<span class="math">\(\sqrt{k}\)</span>. Comparing the two gives a much more flattering view of the power of
+Gaussian noise.</p>
+<p><center>
+<img alt="Graph showing a Laplace distribution with scale 0.02, and a Gaussian distribution of standard deviation 26.38, both centered on 0" src="https://desfontain.es/blog/images/gaussian-laplace-50.svg">
+</center></p>
+<p>OK, so that's the general idea. Now, <em>why</em> does that happen? How come
+composition doesn't seem to behave in the same way for Laplace and Gaussian? To
+understand this better, we'll first introduce the concept of <em>sensitivity</em>.</p>
+<h1 id="different-kinds-of-sensitivities">Different kinds of sensitivities</h1>
+<p>Consider our example above. For each type of specialized physician, we count the
+people who consulted with one. But we won't consider this histogram as 50
+different counting queries. Instead, we'll consider it as a <em>single</em> function,
+with values in <span class="math">\(\mathbb{N}^{50}\)</span>. It outputs a <em>vector</em>: a list of 50
+coordinates, each of which corresponds to a fixed specialty. How to make such a
+function <span class="math">\(f\)</span> differentially private? We'll add noise, scaled by the function's
+<em>sensitivity</em>.</p>
+<p>The sensitivity of a function measures how much its output can change when you
+add one record in the database. If the function returns a single number, we
+measure the <em>absolute value</em> of the difference: the sensitivity of <span class="math">\(f\)</span> is the
+maximum value of <span class="math">\(\left|f\left(D_1\right)-f\left(D_2\right)\right|\)</span>. We already
+encountered the sensitivity before: when <a href="differential-privacy-in-practice.html#counting-things">counting things</a>, if each
+patient can change the statistic by more than <span class="math">\(1\)</span>, we needed to scale the noise
+accordingly. The same happened for sums.</p>
+<p>Here, the function <span class="math">\(f\)</span> returns a vector. How do we measure the distance between
+two vectors? We have a few options. We could use the <a href="https://en.wikipedia.org/wiki/Taxicab_geometry">Manhattan
+distance</a>, or the <a href="https://en.wikipedia.org/wiki/Euclidean_distance">Euclidean distance</a>, or even <a href="https://en.wikipedia.org/wiki/Norm_(mathematics)#p-norm">weirder
+stuff</a>. As it turns out, the distance we need to use depends on which noise
+function we're adding. Laplace noise is scaled by the <span class="math">\(L^1\)</span> sensitivity, itself
+based on the Manhattan distance. Here is its definition, denoting by <span class="math">\(f_i(D)\)</span>
+the <span class="math">\(i\)</span>-th coordinate of <span class="math">\(f(D)\)</span>:</p>
+<div class="math">$$
+\Delta_1(f) = \max \sum_{i=1}^{50} \left|f_i\left(D_1\right)-f_i\left(D_2\right)\right|
+$$</div>
+<p style="text-indent: 0em">where the <span class="math">\(\max\)</span> is taken over <span class="math">\(D_1\)</span>
+and <span class="math">\(D_2\)</span> differing in a single record. This is easy to understand: you just sum
+the sensitivities for each coordinate. For our function <span class="math">\(f\)</span>, we have
+<span class="math">\(\Delta_1(f)=50\)</span>: Laplace noise needs to be scaled by 50. You might have noticed
+that this is equivalent to using simple composition: the scale of Laplace noise
+is <span class="math">\(\Delta_1/\varepsilon\)</span>, so dividing <span class="math">\(\varepsilon\)</span> by <span class="math">\(50\)</span> is the same as
+considering all coordinates together.</p>
+<p>By contrast, Gaussian noise needs to be scaled by the <span class="math">\(L^2\)</span> sensitivity. This
+type of sensitivity is based on the Euclidean distance, and defined by:</p>
+<div class="math">$$
+\Delta_2(f) = \max \sqrt{\sum_{i=1}^{50} {\left|f_i\left(D_1\right)-f_i\left(D_2\right)\right|}^2}
+$$</div>
+<p style="text-indent: 0em">still taking the <span class="math">\(\max\)</span> over <span class="math">\(D_1\)</span> and
+<span class="math">\(D_2\)</span> differing in a single record. This formula might look complicated, but the
+Euclidean distance is a simple concept: it's the length of a straight line
+between two points. If you only have two dimensions, this formula might be
+reminiscent of the <a href="https://en.wikipedia.org/wiki/Pythagorean_theorem">Pythagorean theorem</a>!</p>
+<p>The standard deviation <span class="math">\(\sigma\)</span> of Gaussian noise will be proportional to
+<span class="math">\(\Delta_2(f)\)</span>. Let's compute this value for our function. Each patient can
+change a single count by at most one, and each can change all counts. Thus:</p>
+<div class="math">$$
+\Delta_2(f) = \sqrt{\sum_{i=1}^{50} 1^2} = \sqrt{50} \approx 7.07.
+$$</div>
+<p>The noise scales with the <em>square root</em> of the number of counts. This is key to
+Gaussian's superiority in such situations: the <span class="math">\(L^2\)</span> sensitivity grows much more
+slowly than the <span class="math">\(L^1\)</span> sensitivity. As a result, scaling the noise by the
+sensitivity hurts accuracy much less. Of course, using Gaussian noise gives you
+<span class="math">\((\varepsilon,\delta)\)</span>-DP, not pure DP, so there is still a tradeoff. As we saw
+in the <a href="privacy-loss-random-variable.html">previous article</a>, this isn't a super scary <span class="math">\(\delta\)</span>, so it's
+generally worth it.</p>
+<p><a name="formula"></a></p>
+<p><a href="https://arxiv.org/abs/1805.06530">This paper</a> (Theorem 8) gives the exact
+formula for calibrating Gaussian noise depending on <span class="math">\(\Delta_2(f)\)</span>, <span class="math">\(\varepsilon\)</span>
+and <span class="math">\(\delta\)</span>. You need to pick <span class="math">\(\sigma\)</span> such that the following equality holds:</p>
+<div class="math">$$
+  g\left(\frac{\Delta_2(f)}{\sigma},\varepsilon\right) = \delta
+$$</div>
+<p style="text-indent: 0em">where <span class="math">\(g\)</span> is a complicated function. As
+you can see, increasing <span class="math">\(\Delta_2(f)\)</span> and <span class="math">\(\sigma\)</span> simultaneously has no effect:
+<span class="math">\(\sigma\)</span> is proportional to <span class="math">\(\Delta_2(f)\)</span>. There is no analytic form for
+<span class="math">\(\sigma\)</span>, but since <span class="math">\(g\)</span> is monotonic, you use e.g. a binary search to
+approximate its value. If you want to know the exact formula, click here:
+<button id="toggleMath"></button>.</p>
+<div id="math" style="display: none; border-left: double; padding-left: 10px">
+<p>OK. You need to satisfy the inequality:</p>
+<p>
+<div class="math">$$
+  \Phi\left(\frac{\Delta_2(f)}{2\sigma}-\frac{\varepsilon\sigma}{\Delta_2(f)}\right)
+    - e^\varepsilon \Phi\left(-\frac{\Delta_2(f)}{2\sigma}-\frac{\varepsilon\sigma}{\Delta_2(f)}\right)
+      \le \delta
+$$</div>
+</p>
+<p style="text-indent: 0em">where <span class="math">\(\Phi\)</span> is the <a href="https://en.wikipedia.org/wiki/Normal_distribution#Cumulative_distribution_function">cumulative
+distribution function</a> of a Gaussian distribution of mean <span class="math">\(0\)</span> and variance
+<span class="math">\(1\)</span>. This is an inequality, but in practice, you want to get as close as
+possible to equality, to add as little noise as possible. Implementing this
+correctly on floating-point machines is, as usual, pretty tricky, <a href="https://github.com/google/differential-privacy/blob/0e95b99af5fedff95b8cab3739009bbc1366c068/go/noise/gaussian_noise.go#L300">here's an
+example</a>.</p>
+<p>This formula, called the <em>Analytic Gaussian mechanism</em>, is different from the
+more famous Gaussian mechanism introduced in <a href="https://www.cis.upenn.edu/~aaroth/Papers/privacybook.pdf">this paper</a>
+(Appendix A). The analytic version is tighter, and more importantly, it works
+for arbitrary values of <span class="math">\(\varepsilon\)</span>. The formula in the original Gaussian
+mechanism, by contrast, only works for <span class="math">\(\varepsilon&lt;1\)</span>.</p>
+</div>
+<p>Now, why do these two noise distributions work so differently? Rather than
+proving this formally, here is a visual intuition. Let's look at the density
+function of Gaussian and Laplace noise, in two dimensions. The first is
+Gaussian, the second is Laplace.</p>
+<p><center>
+<img alt="Graph showing a two-dimensional Gaussian distribution" src="https://desfontain.es/blog/images/gaussian-2d.svg">
+<img alt="Graph showing a two-dimensional Laplace distribution" src="https://desfontain.es/blog/images/laplace-2d.svg">
+</center></p>
+<p>As you can see, Gaussian noise has a circular shape, while Laplace noise has a
+square shape. How indistinguishable are two points, when noise is added to both
+of them? With Gaussian noise, it depends on their distance from each other <em>in
+a straight line</em>. By contrast, with Laplace, it depends on how far they are in
+<a href="https://en.wikipedia.org/wiki/Taxicab_geometry">Manhattan distance</a>.</p>
+<p>In conclusion, whether to use Laplace or Gaussian noise depends on two things:</p>
+<ul>
+<li>whether we are OK with a non-zero <span class="math">\(\delta\)</span>;</li>
+<li>how many statistics a single individual can influence.</li>
+</ul>
+<p>The first point is clear: if we want <span class="math">\(\delta=0\)</span>, we can't use Gaussian noise.
+Let's quantify the second point. If a single person can impact at most one
+statistic, Laplace is better. If they can impact many, Gaussian is better. Where
+does the boundary lie? The following graph answers this question, comparing both
+mechanisms by their standard deviation. We pick <span class="math">\(\varepsilon=1\)</span> and
+<span class="math">\(\delta=10^{-5}\)</span>, and we assume that each person can influence each statistic at
+most once.</p>
+<p><center>
+<img alt="Graph comparing the standard deviation of the noise" src="https://desfontain.es/blog/images/laplace-gaussian-comparison.svg">
+</center></p>
+<p>For these values of <span class="math">\(\varepsilon\)</span> and <span class="math">\(\delta\)</span>, Gaussian noise is better if each
+individual can influence 8 statistics or more. Of course, with different privacy
+parameters, the result might differ. But as the impact of a single individual
+grows, Gaussian noise will always end up being the least noisy choice.</p>
+<h1 id="further-uses">Further uses</h1>
+<p>What if each person can influence each statistic <em>differently</em>? Suppose, for
+example, that we count the number of <em>visits</em> to each type of physician. A
+single patient can add many visits to a single count. Worse, the maximum number
+of visits per patient can vary across physician types. Can we still use Gaussian
+noise? The answer (hat tip to <a href="https://crypto.stackexchange.com/q/85581">Mark</a>) is <em>yes</em>: you can scale down
+each statistic so the sensitivity becomes <span class="math">\(1\)</span>, add noise to them, then scale
+them back up. This makes Gaussian noise even more powerful: if you compute many
+statistics on the same data, you can use the Gaussian mechanism to reduce the
+noise magnitude, even if the statistics are completely unrelated.</p>
+<p>Finally, Gaussian noise is heavily used in differentially private machine
+learning. The fundamental reason is the same. Consider methods like <a href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent">stochastic
+gradient descent</a>, a popular algorithm in machine learning. At each
+iteration of this method, each data point influences many coordinates of a
+vector. To make it differentially private, we need to add noise to all
+coordinates. Thus, Gaussian noise is a good choice, for the exact same reason.
+Machine learning is full of more Gaussian-related goodness, but this article is
+long enough already.</p>
+<p>Maybe we'll come back to it in future posts! The <a href="more-useful-results-dp.html">next article</a>, though,
+tackles a much simpler problem: what do you do when you try using differential
+privacy on your data, but the results aren't accurate enough?</p>
+<hr>
+<p><small>Thanks to [Frank McSherry] and [Antoine Amarilli] for their helpful
+comments.</small></p>
+<script type="text/javascript">
+var button = document.getElementById('toggleMath');
+var defaultButton = 'show me the scary math';
+button.innerHTML = defaultButton
+button.addEventListener('click', function (event) {
+    button.innerHTML = button.innerHTML == defaultButton ? 'hide the scary math' : defaultButton;
+    math = document.getElementById('math');
+    math.style.display = math.style.display == 'none' ? 'block' : 'none';
+});
+</script>
+
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20201115,
+  title = &#123;The magic of Gaussian noise},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/gaussian-noise.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2020},
+  month = &#123;11}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="privacy-loss-random-variable.html">← previous</a>
+    </li>
+    <li>
+      <a href="latex-to-html.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

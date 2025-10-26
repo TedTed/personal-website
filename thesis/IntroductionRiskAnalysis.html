@@ -1,0 +1,374 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="AnalyzingPrivacyRisksAtScale.html" />
+  <link ref="next" href="DefinitionsAndSystemDesign.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="AnalyzingPrivacyRisksAtScale.html">← previous</a></li>
+        <li><a href="AnalyzingPrivacyRisksAtScale.html#IntroductionRiskAnalysis.html">up</a></li>
+        <li><a href="DefinitionsAndSystemDesign.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="AnalyzingPrivacyRisksAtScale.html">LINKPREV</a><a href="AnalyzingPrivacyRisksAtScale.html#IntroductionRiskAnalysis.html">LINKUP</a><a href="DefinitionsAndSystemDesign.html">LINKNEXT</a></p></div>
+  <h4 class="subsectionHead" id="introduction-u-ding-1"><span class="titlemark">4.1.1</span>&nbsp;&nbsp;<a id="x45-1320004.1.1"></a>Introduction <span class="bbding-10x-x-109">✿</span></h4> <!-- l. 3 --><p class="noindent">
+Understanding and monitoring the privacy state of production systems is a crucial element of privacy
+engineering. Data-flow analysis enables one to know which data processing workflows are reading
+which data and generating which outputs. Static and dynamic code analyses help to understand what
+binaries do at a more granular level e.g., whether they use pre-approved APIs, whether they read or
+write sensitive data types, or whether they use safe defaults. Potential violations of privacy policies can
+be surfaced during code review sessions, before an engineer is allowed to run workflows in production
+systems.
+</p><!-- l. 12 --><p class="indent">  However, while data flow analysis and code analysis are powerful tools, characterizing the data to
+assess their sensitivity (such as we propose in this chapter) can often be useful or necessary. While
+human reviewers often have good intuitions and context about the sensitivity of data, there are obvious
+limitations: humans may make mistakes, and are limited in how much they can review. An automated
+analysis system, on the other hand, can be accurate and scalable. Where humans would have to settle
+for evaluating a system or dataset once, automated systems can be re-run. This provides regression
+testing for privacy characteristics and enables data custodians to be confident about the properties of
+their systems.
+</p><!-- l. 23 --><p class="indent">  Automatic evaluation becomes challenging as dataset size increases and as data becomes
+increasingly heterogeneous. While brute force approaches could work for smaller datasets, their
+runtime and memory requirements become unworkable when run on petabytes of data.
+                                                                                
+                                                                                
+</p><!-- l. 28 --><p class="indent">
+<a id="subsubsection*.67"></a>
+</p>
+  <h5 class="subsubsectionHead" id="reidentifiability-and-joinability"><a id="x45-133000"></a>Reidentifiability and joinability</h5>
+<!-- l. 30 --><p class="noindent">We identify two characteristics of datasets that are often useful during privacy impact assessments:
+reidentifiability and joinability, and we develop a new, scalable, automated approach to measuring
+them. While these terms may have different connotations, we define them below, and use them
+consistently throughout this work.
+</p><!-- l. 36 --><p class="indent">  <span class="t1xi-x-x-109">Reidentifiability </span>is the potential risk that the identity of some users can be recovered in some
+pseudonymous datasets. A good practice is to keep such reidentifiable datasets guarded with strict
+access control and access audit trails. As companies collect more information to build useful services it
+can be difficult to manually determine when a dataset becomes reidentifiable and requires
+more careful handling. The ability to estimate the reidentifiability of datasets automatically
+and efficiently reduces the work required of data custodians to manually label the different
+datasets.
+</p><!-- l. 45 --><p class="indent">  <span class="t1xi-x-x-109">Joinability </span>measures whether datasets are linkable by unexpected join keys. Sometimes it is
+necessary to retain multiple datasets with different ID spaces. In those cases data custodians should
+avoid linking the two datasets to respect the choices of users who maintain separate identities. As an
+example, consider a website that can be used either signed-in or signed-out. A user may choose to use
+the website while signed-out to separate activities from their signed-in identity. If the website operator
+maintains datasets about activities of both signed-in and signed-out users, it might accidentally include
+granular information (e.g.&nbsp;web browser user agent) in both datasets that could allow the signed-in and
+signed-out identities to be linked. In that case, we would say that the identities in the two datasets are
+<span class="t1xi-x-x-109">joinable</span>.
+</p><!-- l. 57 --><p class="indent">  Some syntactic privacy definitions we listed in Chapter&nbsp;2, like
+<!-- l. 58 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+or <!-- l. 58 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-map,
+suggest a possible approach to quantifying reidentifiability: for each characteristic, we could
+quantify the total number of people associated to the same point. Similarly, taking the simplest
+approach to joinability, we could say that two datasets are joinable if there exists a pair
+of data fields, similar in content, that can serve as a join key. To measure this similarity
+between fields, or measure when the values of a field are a subset of the values of another
+field (a notion we call <span class="t1xi-x-x-109">containment </span>later), using the Jaccard index is a popular option&nbsp;[<a id="x45-133001"></a><a href="bibliography.html#cite.0@broder1997resemblance">55</a><a id="x45-133002"></a>,
+<a href="bibliography.html#cite.0@jaccard1902lois">205</a>].
+</p><!-- l. 68 --><p class="indent">  However, managing reidentifiability and joinability risks at scale is more challenging than
+it appears. The naive approach requires memory proportional to the size of the dataset,
+which becomes extremely difficult as dataset sizes climb into the petabytes. Our experiments
+reveal how costly this naive approach is even for datasets in the order of gigabytes (see
+Section&nbsp;4.1.4.0). Linear runtime and sublinear memory are necessary for large-scale data
+analysis.
+                                                                                
+                                                                                
+</p><!-- l. 75 --><p class="indent">
+<a id="subsubsection*.68"></a>
+</p>
+  <h5 class="subsubsectionHead" id="contributions"><a id="x45-134000"></a>Contributions</h5>
+<!-- l. 77 --><p class="noindent">We present the KHyperLogLog (KHLL) algorithm and demonstrate how it can be used
+to efficiently characterize both the reidentifiability and joinability of very large datasets.
+Adapted from the field of cardinality estimation, KHLL produces quantitative measures for
+reidentifiability and joinability using only a single pass over the dataset and minimal memory.
+Both reidentifiability and joinability of datasets can be estimated using the compact data
+structures (colloquially known as “sketches”) of KHLL rather than raw data. In addition, the
+approach is format-agnostic, allowing it to analyze any dataset without modification. We
+have validated that KHLL is fast, parallelizable and accurate on both proprietary and public
+datasets.
+</p><!-- l. 88 --><p class="indent">  KHLL can be used in a wide range of applications.
+</p>
+<!-- l. 90 --><p class="noindent"><span class="likeparagraphHead" id="quantitative-measurement"><a id="x45-135000"></a>Quantitative measurement</span>
+</p><!-- l. 92 --><p class="indent">  KHLL can be used to quantitatively measure the reidentifiability risk of a dataset, or a
+fraction of its columns. More precisely, it can be used to calculate the uniqueness distribution
+of an arbitrary combination of columns with respect to a user identifier. This can inform
+data custodians about the sensitivity of data and its risks so they can plan a suitable and
+appropriate data strategy (e.g., access controls, audit trails, or stronger anonymization) at
+points in the life cycle of the data, including data collection, usage, sharing, retention, or
+deletion.
+</p>
+<!-- l. 101 --><p class="noindent"><span class="likeparagraphHead" id="exploring-data-strategies"><a id="x45-136000"></a>Exploring data strategies</span>
+</p><!-- l. 103 --><p class="indent">  The efficiency of KHLL provides data custodians a powerful analysis tool for exploring different data
+sanitization strategies. Many data analysis tasks (e.g., experimentation to improve service availability,
+anti-spam and fraud detection) can use a projection (view) of a high-dimensional dataset that is protected with
+<!-- l. 107 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity.
+KHLL can be run on different possible combinations of columns in the dataset at once to estimate how
+much data will be lost as a function of the technique. Together, the data custodian and data analysts can
+decide how to trade off the utility of the data projection and the reidentifiability risk: which columns
+should be included, suppressed, generalized or made disjoint in separate datasets, and whether the data
+needs stronger guarantees like differential privacy.
+</p><!-- l. 115 --><p class="indent">  Consider the Netflix prize dataset, which contains the movie ids and ratings given by different users
+at different dates (year, month and day). Analyzing the dataset using KHLL, we obtain results that
+mirror those of Narayanan and Shmatikov&nbsp;[<a id="x45-136001"></a><a href="bibliography.html#cite.0@narayanan2008robust">294</a>]. While no single column has high uniqueness
+(e.g., we observe that all movies included in the dataset are rated by at least 50 users), the
+                                                                                
+                                                                                
+combination of movie ratings and dates are highly unique. An efficient analysis using KHLL
+might have helped the Netflix team measure the reidentifiability risks, explore alternatives
+for treating the data, or to potentially conclude that the risk was too high to share the data
+externally.
+</p>
+<!-- l. 125 --><p class="noindent"><span class="likeparagraphHead" id="regression-testing"><a id="x45-137000"></a>Regression testing</span>
+</p><!-- l. 127 --><p class="indent">  In  cases  where  data  custodians  regularly  produce
+<!-- l. 127 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymous
+(or the like) datasets, KHLL can be further used as a regression test. KHLL analysis can be run on the
+output as part of the anonymization pipeline to expose any implementation bugs, or to alert on any
+unexpected changes to the characteristics of the input data.
+</p>
+<!-- l. 133 --><p class="noindent"><span class="likeparagraphHead" id="joinability-assessment"><a id="x45-138000"></a>Joinability assessment</span>
+</p><!-- l. 135 --><p class="indent">  KHLL can also enable efficient joinability assessment to protect user privacy. If an organization
+collects data about users under multiple ID spaces in different contexts (e.g., signed in vs signed out),
+KHLL can be used to keep the IDs separate, respecting the choice of users to conduct certain
+activities in certain contexts. For example, KHLL analysis can be run on two datasets of
+different IDs, and be used to detect data columns in the two datasets that are similar (high
+containment in either direction) and that are highly unique. These data columns are potential
+join keys that can be used to trivially link the two ID spaces. To mitigate joinability risks,
+engineers can choose to suppress or generalize one of the columns, or use access controls
+to prevent someone from using the columns to join the two identifiers. The analysis can
+be run periodically and attached to an alerting system that notifies engineers if joinability
+exceeds pre-specified limits (e.g., to quickly detect whether any newly added columns increase
+joinability risks). Joinability assessment is highly intractable with pairwise comparisons of raw
+data, but KHLL enables joinability approximation based on its compact data structures
+(sketches).
+</p><!-- l. 152 --><p class="indent">  Periodic KHLL-based joinability analyses have enabled us to uncover multiple logging
+mistakes that we were able to quickly resolve. One instance was the exact position of the
+volume slider on a media player, which was mistakenly stored as a 64-bit floating-point
+number. Such a high entropy value would potentially increase the joinability risk between
+signed-in and signed-out identifiers. We were able to mitigate the risk by greatly reducing the
+precision of the value we logged. In other cases, we have mitigated joinability risks by dropping
+certain columns entirely, or by ensuring that the access control lists of both datasets are
+disjoint.
+</p>
+<!-- l. 162 --><p class="noindent"><span class="likeparagraphHead" id="miscellaneous"><a id="x45-139000"></a>Miscellaneous</span>
+                                                                                
+                                                                                
+</p><!-- l. 164 --><p class="indent">  If data custodians label their datasets with information about the semantics of certain columns,
+KHLL can be used to propagate labels through the system and find inconsistencies. If two columns
+have a high containment score (in either direction), they are likely to share the same semantics. If one of
+the columns is labelled but the other is not, then the label can be copied to the second column, and if the
+two columns have different labels then engineers can be alerted that one of the labels is likely
+incorrect. The scalability of KHLL means that it can be used to propagate labels across large
+datasets, and that the label correctness can be repeatedly checked by re-running analysis
+periodically.
+</p><!-- l. 175 --><p class="indent">  Although not a primary purpose, an additional side effect of making a powerful analysis tool
+available to different roles in an organization is the increased awareness of anonymization and user
+privacy. Data custodians, engineers and analysts can discuss the analysis results with each other, gain a
+better understanding of reidentifiability risks when working with user data, and understand why further
+anonymization may be necessary.
+</p><!-- l. 182 --><p class="indent">  For all of these use cases one needs to keep in mind the estimation errors of KHLL (see
+Section&nbsp;4.1.3.0 and Section&nbsp;4.1.3.0). It is possible that KHLL may underestimate reidentifiability or
+joinability risks (e.g., KHLL might miss values that are unique to a single user). In general, data
+custodians could use KHLL to estimate risks and impacts on data utility when exploring an appropriate
+data protection and anonymization strategy, but then use exact counting to execute the strategy. While
+the joinability analysis using KHLL might be sensitive to data formats and transformations, the
+efficiency of KHLL makes it the best regression test for data joinability that we are aware
+of.
+</p>
+<!-- l. 193 --><p class="noindent"><span class="likeparagraphHead" id="organization"><a id="x45-140000"></a>Organization</span>
+</p><!-- l. 195 --><p class="indent">  The rest of this section is organized as follows. We start by describing the design goals and
+challenges in Section&nbsp;4.1.2. We then provide some background on cardinality estimation and present
+our KHLL algorithm in Section&nbsp;4.1.2.0. Next, we describe the use of KHLL for reidentifiability and
+joinability analysis in Section&nbsp;4.1.3. We evaluate the performance and accuracy of KHLL
+empirically in Section&nbsp;4.1.4, and we summarize our work and discuss related and future work in
+Section&nbsp;4.1.5.
+                                                                                
+                                                                                
+</p>
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="AnalyzingPrivacyRisksAtScale.html">LINKPREV</a><a href="AnalyzingPrivacyRisksAtScale.html#IntroductionRiskAnalysis.html">LINKUP</a><a href="DefinitionsAndSystemDesign.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="AnalyzingPrivacyRisksAtScale.html">← previous</a></li>
+        <li><a href="AnalyzingPrivacyRisksAtScale.html#IntroductionRiskAnalysis.html">up</a></li>
+        <li><a href="DefinitionsAndSystemDesign.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

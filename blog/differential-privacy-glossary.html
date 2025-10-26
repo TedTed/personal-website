@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>A glossary of differential privacy terms - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="A glossary of differential privacy terms - Ted is writing things" />
+  <meta property="twitter:title" content="A glossary of differential privacy terms - Ted is writing things" />
+  <meta name="description" property="og:description" content="A list of short definitions of commonly used terms in differential privacy, with references for further reading." />
+  <meta property="twitter:description" content="A list of short definitions of commonly used terms in differential privacy, with references for further reading." />
+  <meta property="summary" content="A list of short definitions of commonly used terms in differential privacy, with references for further reading." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/glossary-basic-diagram.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/glossary-basic-diagram.png" />
+  <meta property="twitter:image:alt" content="A diagram showing common differential privacy terminology. Two boxes are on the left, one red labeled "Sensitive data (or confidential data, protected data, private data)", one blue labeled "Public data (or unprotected data)"; arrows labeled "input" go from those to a differently-shaped box labeled "DP mechanism (or private mechanism)", an arrow labeled "output" go to a green box labeled "Privatized data (or noisy data, privacy-protected data, private data)"." />
+  <link rel="canonical" href="https://desfontain.es/blog/differential-privacy-glossary.html" />
+  <link rel="prev" href="diffprivlib.html" />
+  <link rel="next" href="better-empirical-privacy-metrics.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="diffprivlib.html">← previous</a>
+ —     <a href="better-empirical-privacy-metrics.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./differential-privacy-glossary.html">A glossary of differential privacy terms</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2025-03-10T00:00:00+01:00">
+      2025-03-10
+    </time>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his is the first blog post in a <a href="friendly-intro-to-differential-privacy.html">series about
+differential privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see
+the next articles!</p>
+<p></small></p>
+<hr>
+<p><span class='lettrine'>D</span><strong>ifferential</strong> privacy has developed quite a
+sprawling zoo of new terms over the years… and a fair share of idiosyncratic
+uses of common terminology. This is an attempt to list the most common ones,
+with concise explanations and links to further reading. I try to favor
+friendlier references like blog posts or lecture notes whenever available.</p>
+<p><center>
+<a href="#private"><img alt="A diagram showing common differential privacy terminology. Two boxes are on
+the left, one red labeled &quot;Sensitive data (or confidential data, protected data,
+private data)&quot;, one blue labeled &quot;Public data (or unprotected data)&quot;; arrows
+labeled &quot;input&quot; go from those to a differently-shaped box labeled &quot;DP mechanism
+(or private mechanism)&quot;, an arrow labeled &quot;output&quot; go to a green box labeled
+&quot;Privatized data (or noisy data, privacy-protected data, private
+data)&quot;." src="https://desfontain.es/blog/images/glossary-basic-diagram.svg"></a>
+</center> </p>
+<div class="toc">
+<ul>
+<li><a href="#above-threshold">Above Threshold</a></li>
+<li><a href="#adaptive-composition">Adaptive composition</a></li>
+<li><a href="#add-or-remove">Add-or-remove</a></li>
+<li><a href="#amplification">Amplification</a></li>
+<li><a href="#approximate-differential-privacy">Approximate differential privacy</a></li>
+<li><a href="#binary-tree-mechanism">Binary tree mechanism</a></li>
+<li><a href="#bounded-differential-privacy">Bounded differential privacy</a></li>
+<li><a href="#central-differential-privacy">Central differential privacy</a></li>
+<li><a href="#clamping">Clamping</a></li>
+<li><a href="#clipping">Clipping</a></li>
+<li><a href="#composition">Composition</a></li>
+<li><a href="#continual-release">Continual release</a></li>
+<li><a href="#delta-delta">\(\delta\) ("Delta")</a></li>
+<li><a href="#differential-privacy-dp">Differential privacy ("DP")</a></li>
+<li><a href="#distributed-differential-privacy">Distributed differential privacy</a></li>
+<li><a href="#dp-sgd">DP-SGD</a></li>
+<li><a href="#varepsilon-epsilon">\(\varepsilon\) ("Epsilon")</a></li>
+<li><a href="#varepsilon-differential-privacy">\(\varepsilon\)-differential privacy</a></li>
+<li><a href="#varepsilondelta-differential-privacy">\((\varepsilon,\delta)\)-differential privacy</a></li>
+<li><a href="#event-level">Event-level</a></li>
+<li><a href="#exponential-mechanism">Exponential mechanism</a></li>
+<li><a href="#f-dp">\(f\)-DP</a></li>
+<li><a href="#fully-adaptive-composition">Fully adaptive composition</a></li>
+<li><a href="#gaussian-differential-privacy">Gaussian differential privacy</a></li>
+<li><a href="#gaussian-mechanism">Gaussian mechanism</a></li>
+<li><a href="#global-differential-privacy">Global differential privacy</a></li>
+<li><a href="#global-sensitivity">Global sensitivity</a></li>
+<li><a href="#hockey-stick-divergence">Hockey stick divergence</a></li>
+<li><a href="#item-level-differential-privacy">Item-level differential privacy</a></li>
+<li><a href="#l_1-sensitivity">\(L_1\)-sensitivity</a></li>
+<li><a href="#l_2-sensitivity">\(L_2\)-sensitivity</a></li>
+<li><a href="#laplace-mechanism">Laplace mechanism</a></li>
+<li><a href="#local-differential-privacy">Local differential privacy</a></li>
+<li><a href="#local-sensitivity">Local sensitivity</a></li>
+<li><a href="#mechanism">Mechanism</a></li>
+<li><a href="#neighboring-relation">Neighboring relation</a></li>
+<li><a href="#non-private">Non-private</a></li>
+<li><a href="#noise">Noise</a></li>
+<li><a href="#pan-privacy">Pan-privacy</a></li>
+<li><a href="#pate">PATE</a></li>
+<li><a href="#post-processing">Post-processing</a></li>
+<li><a href="#privacy-accounting">Privacy accounting</a></li>
+<li><a href="#privacy-budget">Privacy budget</a></li>
+<li><a href="#privacy-filter">Privacy filter</a></li>
+<li><a href="#privacy-loss">Privacy loss</a></li>
+<li><a href="#privacy-loss-distribution-pld">Privacy loss distribution ("PLD")</a></li>
+<li><a href="#privacy-odometer">Privacy odometer</a></li>
+<li><a href="#private">Private</a></li>
+<li><a href="#private-selection">Private selection</a></li>
+<li><a href="#public-data">Public data</a></li>
+<li><a href="#pure-differential-privacy">Pure differential privacy</a></li>
+<li><a href="#randomized-response">Randomized response</a></li>
+<li><a href="#replace-one">Replace-one</a></li>
+<li><a href="#report-noisy-max">Report Noisy Max</a></li>
+<li><a href="#renyi-differential-privacy-renyi-dp">Rényi differential privacy ("Rényi DP")</a></li>
+<li><a href="#shuffling">Shuffling</a></li>
+<li><a href="#smooth-sensitivity">Smooth sensitivity</a></li>
+<li><a href="#sensitivity">Sensitivity</a></li>
+<li><a href="#sparse-vector-technique-svt">Sparse vector technique ("SVT")</a></li>
+<li><a href="#streaming">Streaming</a></li>
+<li><a href="#top-k-selection">Top-\(k\) selection</a></li>
+<li><a href="#truncated-distributions">Truncated distributions</a></li>
+<li><a href="#unbounded-differential-privacy">Unbounded differential privacy</a></li>
+<li><a href="#user-level-differential-privacy">User-level differential privacy</a></li>
+<li><a href="#variant">Variant</a></li>
+<li><a href="#zero-concentrated-dp-zcdp">Zero-concentrated DP ("zCDP")</a></li>
+<li><a href="#zero-out">Zero-out</a></li>
+</ul>
+</div>
+<p></p>
+
+<h4 id="above-threshold">Above Threshold</h4>
+<p>See <a href="#svt">sparse vector technique</a>.</p>
+<h4 id="adaptive-composition">Adaptive composition <a name="adaptive"></a></h4>
+<p>A kind of <a href="#composition">composition</a> where each <a href="#mechanism">mechanism</a> takes the output of previously
+run mechanisms as input. <a href="https://differentialprivacy.org/open-problems-how-generic-can-composition-be/">This blog post</a> has a simple explanation of
+this setting and how it differs from other kinds of composition.</p>
+<h4 id="add-or-remove">Add-or-remove <a name="add"></a></h4>
+<p>A <a href="#neighbor">neighboring relation</a> where the two databases differ by adding or
+removing a single record. Also called <em>add-or-remove one record</em>, or <em>unbounded
+DP</em>.</p>
+<h4 id="amplification">Amplification <a name="amplification"></a></h4>
+<p>An operation that modifies a DP <a href="#mechanism">mechanism</a> in some way, leading to improved
+privacy guarantees. The term is used for multiple results, for different kinds
+of operations.</p>
+<ul>
+<li><em>Amplification by subsampling</em> (or simply <em>amplification by sampling</em>) means
+  that when taking a random sample of the input data before passing it to a DP
+  mechanism, we obtain stronger guarantees than when using all the data (or a
+  non-random subset). An overview of results can be found in
+  <a href="https://arxiv.org/abs/2210.00597">this book chapter</a>.</li>
+<li><em>Amplification by shuffling</em> means that after running a <a href="#ldp">local DP</a>
+  mechanism on each input record, randomly reordering the noisy records provides
+  stronger guarantees. <a href="https://arxiv.org/abs/1811.12469">This paper</a> introduced this idea;
+  <a href="https://differentialprivacy.org/privacy-doona/">this blog post</a> presents more recent improvements.</li>
+<li><em>Amplification by iteration</em> means that under some conditions, when running an
+  <a href="#adaptive">adaptive</a> sequence of DP mechanisms, releasing only the output of the last
+  mechanism provides a better guarantee than releasing all intermediary outputs.
+  This was introduced in <a href="https://arxiv.org/abs/1808.06651">this paper</a>.</li>
+</ul>
+<p>Also called <em>privacy amplification</em>.</p>
+<h4 id="approximate-differential-privacy">Approximate differential privacy <a name="approx"></a></h4>
+<p>A <a href="#variant">variant</a> of <a href="#pure">pure differential privacy</a> that allows for a non-zero
+probability that the <a href="#pl">privacy loss</a> is larger than <span class="math">\(\varepsilon\)</span>. Also
+often called <span class="math">\((\varepsilon,\delta)\)</span>-DP. <a href="almost-differential-privacy.html">This blog post</a> has an
+introduction to the definition, and <a href="privacy-loss-random-variable.html">this one</a> gives a more precise
+characterization.</p>
+<h4 id="binary-tree-mechanism">Binary tree mechanism <a name="binary"></a></h4>
+<p>A mechanism to maintain an increasing counter in a <a href="#streaming">streaming</a> setting; it is
+used as a building block for more complex mechanisms in this setting. An
+introduction to this can be found in <a href="https://xingyuzhou.org/blog/notes/DP-FTRL-and-matrix-factorization-(I)">this blog post</a>.</p>
+<h4 id="bounded-differential-privacy">Bounded differential privacy</h4>
+<p>See <a href="#replace">replace-one</a>.</p>
+<h4 id="central-differential-privacy">Central differential privacy <a name="central"></a></h4>
+<p>A setting in which a central entity holds the data of every individual in an
+input dataset, and then runs a DP mechanism on this data. This makes it possible
+to add relatively little noise for a given privacy budget, but requires trusting
+this central entity. <a href="local-global-differential-privacy.html">This blog post</a> presents this in more details.</p>
+<p>Also sometimes called <em>global differential privacy</em>.</p>
+<h4 id="clamping">Clamping <a name="clamping"></a></h4>
+<p>A simple technique to bound the <a href="#gs">sensitivity</a> of numeric functions like the
+sum or average of numeric values. Given <em>clamping bounds</em> <span class="math">\([low,high]\)</span>, the
+operation consists in changing all individual values below <span class="math">\(low\)</span> to <span class="math">\(low\)</span> and
+all values above <span class="math">\(high\)</span> to <span class="math">\(high\)</span>. A few examples can be found in <a href="differential-privacy-in-practice.html">this blog
+post</a>.</p>
+<p>Also called <em>clipping</em> (and the bounds <em>clipping bounds</em>).</p>
+<h4 id="clipping">Clipping</h4>
+<p>See <a href="#clamping">clamping</a>.</p>
+<h4 id="composition">Composition <a name="composition"></a></h4>
+<p>Composing two DP mechanisms is to run them both on the sensitive input data, and
+return the output of both of them.</p>
+<p>The composition property states that the composition of two DP mechanisms is
+also DP. Composition theorems provide a formula to compute the privacy
+parameters of the composition, depending on the original parameters. This is
+useful to build complex mechanisms from simple building blocks, or to quantify
+the privacy guarantees of <a href="differential-privacy-awesomeness#composition">multiple DP releases</a>.
+<a href="differential-privacy-in-more-detail.html#composition">This blog post</a> gives the statement and proof of the original and
+simplest composition theorem for pure DP.</p>
+<p>There can be multiple ways to combine two mechanisms, and so there are many
+different kinds of composition. <a href="https://differentialprivacy.org/open-problems-how-generic-can-composition-be/">This blog post</a> outlines a number of
+them.</p>
+<h4 id="continual-release">Continual release <a name="continual"></a></h4>
+<p>A setting in which a server is continuously receiving new data in a <a href="#streaming">streaming</a>
+fashion, and regularly publishes updated output statistics. The goal is to
+maintain differential privacy guarantees for the entirety of the outputs,
+typically either under <a href="#event">event-level</a> or <a href="#user">user-level</a> privacy. This
+model was introduced in <a href="https://guyrothblum.wordpress.com/wp-content/uploads/2014/11/dnpr10.pdf">this paper</a>.</p>
+<h4 id="delta-delta"><span class="math">\(\delta\)</span> ("Delta") <a name="delta"></a></h4>
+<p>The second parameter in <a href="#approx">approximate DP</a>. It can be interpreted as the
+maximal probability with which the mechanism has infinite privacy loss. A more
+complete explanation of its meaning can be found in <a href="privacy-loss-random-variable.html">this blog post</a>.</p>
+<h4 id="differential-privacy-dp">Differential privacy ("DP") <a name="dp"></a></h4>
+<p>The term has two meanings.</p>
+<ol>
+<li>A precise mathematical definition that, when enforced, limits the maximum
+   information that an algorithm can leak about any individual data point.
+   <a href="differential-privacy-in-more-detail.html">This blog post</a> provides and explains this formal notion. Also
+   called <a href="#pure">pure DP</a>.</li>
+<li>The more general idea, or framework, to mathematically quantify and limit the
+   privacy loss of operations performed on data. This second meaning is more of
+   an umbrella term that refers to the entire field of study, and also covers DP
+   <a href="#variant">variants</a>.</li>
+</ol>
+<p>The <a href="friendly-intro-to-differential-privacy.html">blog post series</a> that this glossary belongs to is a good starting
+point to learn about differential privacy.</p>
+<p></p>
+
+<h4 id="distributed-differential-privacy">Distributed differential privacy <a name="ddp"></a></h4>
+<p>A setting in-between <a href="#central">central</a> and <a href="#ldp">local</a> DP, where the aggregator
+doesn't collect data directly from each user, but only receives the output of
+some distributed computation over the users' data. Distributed DP protocols
+typically require much less noise than local DP mechanisms, and avoid the need
+for a central aggregator that knows everyone's data. <a href="local-global-differential-privacy.html">This blog post</a>
+explains this in more detail.</p>
+<h4 id="dp-sgd">DP-SGD <a name="dpsgd"></a></h4>
+<p>Short for Differentially Private Stochastic Gradient Descent. This is one of the
+main <a href="#mechanism">mechanisms</a> used to train machine learning models with DP.</p>
+<p>DP-SGD works like <a href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent">stochastic gradient descent</a>, except at each iteration,
+the gradient is <a href="#clamping">clamped</a>, and noise is added to it.
+<a href="https://medium.com/pytorch/differential-privacy-series-part-1-dp-sgd-algorithm-explained-12512c3959a3">This blog post</a> explains the algorithm at a high level;
+<a href="https://arxiv.org/abs/2303.00654">this paper</a> presents a survey of main results, oriented towards
+practical usage.</p>
+<!--
+[this paper][dpsgdpaper], and improved & adapted to deep learning in
+[this other paper][dpdl]. There is a rich literature on improvements to the
+original DP-SGD mechanism or its privacy accounting.
+[dpsgdpaper]: https://cseweb.ucsd.edu/~kamalika/pubs/scs13.pdf
+[dpdl]: https://arxiv.org/abs/1607.00133
+-->
+
+<h4 id="varepsilon-epsilon"><span class="math">\(\varepsilon\)</span> ("Epsilon") <a name="epsilon"></a></h4>
+<p>The main parameter in the original definition of differential privacy
+(<a href="#pure">pure DP</a>). <span class="math">\(\exp(\varepsilon)\)</span> is a measure of how much probabilistic
+information an attacker can learn by looking at the output of a DP mechanism.
+<a href="differential-privacy-in-more-detail.html">This blog post</a> provides more detail about this.</p>
+<p>It is also used as a parameter in multiple variants of differential privacy and
+<em>usually</em> corresponds to the same idea. There are exceptions, like
+<a href="#renyi">Rényi DP</a>.</p>
+<h4 id="varepsilon-differential-privacy"><span class="math">\(\varepsilon\)</span>-differential privacy</h4>
+<p>See <a href="#pure">pure differential privacy</a>.</p>
+<h4 id="varepsilondelta-differential-privacy"><span class="math">\((\varepsilon,\delta)\)</span>-differential privacy</h4>
+<p>See <a href="#approx">approximate differential privacy</a>.</p>
+<h4 id="event-level">Event-level <a href="event"></a></h4>
+<p>A <a href="#neighbor">neighboring relation</a> where the databases contain a list of
+individual events (e.g. someone visiting a webpage, or using a specific app
+feature), and neighboring databases differ by a single event. Often used in
+contrast to <a href="#user">user-level</a> DP, especially in <a href="#streaming">streaming</a> applications.</p>
+<h4 id="exponential-mechanism">Exponential mechanism <a name="exp"></a></h4>
+<p>A <a href="#mechanism">mechanism</a> to select the best choice out of a list of options with scores, in
+a DP way, when each record in the dataset can have an influence on some or all
+of the scores — the <a href="#selection">private selection</a> problem. This is an important
+building block in a large number of complex DP mechanisms.
+<a href="choosing-things-privately.html">This blog post</a> is a gentle introduction to this technique.</p>
+<h4 id="f-dp"><span class="math">\(f\)</span>-DP <a href="event"></a></h4>
+<p>A <a href="#variant">variant</a> of differential privacy that expresses the privacy guarantees by
+bounding the success of an attacker using the formalism of
+<a href="https://en.wikipedia.org/wiki/Statistical_hypothesis_test">hypothesis testing</a>. It was introduced in <a href="https://arxiv.org/abs/1905.02383">this paper</a>.</p>
+<h4 id="fully-adaptive-composition">Fully adaptive composition <a name="fully"></a></h4>
+<p>A kind of <a href="#composition">composition</a> where each <a href="#mechanism">mechanism</a> takes the output of previously
+run mechanisms as input, and where the privacy parameters of each mechanism can
+be influenced by the results of past queries. <a href="https://differentialprivacy.org/open-problems-how-generic-can-composition-be/">This blog post</a>
+explains this in more detail.</p>
+<h4 id="gaussian-differential-privacy">Gaussian differential privacy <a name="gdp"></a></h4>
+<p>A variant of differential privacy that enforces that the privacy loss is
+identical to the one obtained from a one-dimensional
+<a href="#gaussian">Gaussian mechanism</a>. It is particularly well-suited to do
+<a href="#accounting">privacy accounting</a> for algorithms based on the Gaussian
+mechanism. <a href="https://dongjs.github.io/2020/01/15/Privacy.html">This blog post</a> presents the definition and the intuition
+behind it.</p>
+<h4 id="gaussian-mechanism">Gaussian mechanism <a name="gaussian"></a></h4>
+<p>A function that adds <a href="#noise">noise</a> sampled from a <a href="https://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a> (more
+often called a "Gaussian distribution" in DP papers) to a numerical value or a
+vector of numbers. A central building blocks in differential privacy, it can be
+used to achieve a many DP variants (but not <a href="#pure">pure DP</a>).
+<a href="gaussian-noise.html">This blog post</a> gives a</p>
+<p>To add noise to integer-valued data, there is a <a href="https://arxiv.org/abs/2004.00010">discrete version</a> of
+the Gaussian mechanism, with provides the same privacy guarantees.</p>
+<h4 id="global-differential-privacy">Global differential privacy</h4>
+<p>Another, less common name for <a href="#central">central differential privacy</a>.</p>
+<h4 id="global-sensitivity">Global sensitivity <a name="gs"></a></h4>
+<p>The global sensitivity of a function, sometimes simply called "sensitivity", is
+the maximum possible change in its output when a single record is added to its
+input. The maximum is taken over all possible inputs. Simple DP mechanisms work
+by adding <a href="#noise">noise</a> to the result of a function; the scale of the noise is often
+multiplied ("calibrated") by the global sensitivity.</p>
+<p>Formally, the global sensitivity of a function <span class="math">\(f\)</span> is the maximal distance
+between <span class="math">\(f\left(D_1\right)\)</span> and <span class="math">\(f\left(D_2\right)\)</span>, where <span class="math">\(D_1\)</span> and <span class="math">\(D_2\)</span> are
+<a href="#neighbor">neighboring databases</a>. This distance can be quantified in different
+ways, see <a href="#l1"><span class="math">\(L_1\)</span>-sensitivity</a> and <a href="#l2"><span class="math">\(L_2\)</span>-sensitivity</a> for examples.</p>
+<h4 id="hockey-stick-divergence">Hockey stick divergence <a name="hockey"></a></h4>
+<p>A measure of a distance between two probability distributions that is closely
+linked with the definition of <a href="#approx">approximate DP</a>. <a href="https://research.google/blog/differential-privacy-accounting-by-connecting-the-dots/">This blog post</a>
+illustrates this notion and explains how it can be used in the context of
+<a href="#accounting">privacy accounting</a>.</p>
+<h4 id="item-level-differential-privacy">Item-level differential privacy <a href="item"></a></h4>
+<p>A <a href="#neighbor">neighboring relation</a> where each user can contribute multiple items
+(often data points used to train machine learning models), and neighboring
+databases differ by a single item, in contrast to <a href="#user">user-level</a> DP.</p>
+<h4 id="l_1-sensitivity"><span class="math">\(L_1\)</span>-sensitivity <a name="l1"></a></h4>
+<p>The <a href="#gs">sensitivity</a>, measured using the <span class="math">\(L_1\)</span> distance, more commonly known as
+the <a href="https://en.wikipedia.org/wiki/Taxicab_geometry">Manhattan distance</a>.
+Typically denoted by <span class="math">\(\Delta_1\)</span>, it is often used to calibrate the scale of
+<a href="#laplace">Laplace noise</a> to obtain a <span class="math">\(\varepsilon\)</span>-DP mechanism.</p>
+<h4 id="l_2-sensitivity"><span class="math">\(L_2\)</span>-sensitivity <a name="l2"></a></h4>
+<p>The <a href="#gs">sensitivity</a>, measured using the <span class="math">\(L_2\)</span> distance, more commonly known as
+the <a href="https://en.wikipedia.org/wiki/Euclidean_distance">Euclidean distance</a>.
+Typically denoted by <span class="math">\(\Delta_2\)</span>, it is often used to calibrate the scale of
+<a href="#gaussian">Gaussian noise</a> to obtain a mechanism satisfying
+<a href="#approx">approximate DP</a> and other DP variants.
+<a href="gaussian-noise.html">This blog post</a> explains this in more detail.</p>
+<h4 id="laplace-mechanism">Laplace mechanism <a name="laplace"></a></h4>
+<p>A function that adds <a href="#noise">noise</a> sampled from the <a href="https://en.wikipedia.org/wiki/Laplace_distribution">Laplace distribution</a> to a
+numeric value, or a vector of numbers. This is one of the most fundamental
+building blocks of differential privacy. It can be used to achieve
+<a href="#pure">pure DP</a> with well-chosen parameters.</p>
+<p>The <a href="https://arxiv.org/abs/0811.2841">two-sided geometric distribution</a> is sometimes simply called the
+"discrete Laplace distribution".</p>
+<h4 id="local-differential-privacy">Local differential privacy <a name="ldp"></a></h4>
+<p>A setting in which each person in the data randomizes their own data, then
+passes it to a central entity, who computes an output based on this noisy data.
+This has a key benefit compared to <a href="#central">central DP</a>: the aggregator does
+not need to be trusted, since they only ever see DP data.</p>
+<p>Local DP mechanisms are typically much less accurate than <a href="#central">central DP</a>
+mechanisms for the same task: the noise has to be added to every single data
+point, not only to the output of statistics.
+<a href="local-global-differential-privacy.html">This blog post</a> presents this setting in more detail.</p>
+<h4 id="local-sensitivity">Local sensitivity <a name="ls"></a></h4>
+<p>The maximum change in a mechanism's output when a single person's data is added
+to its input, <em>for a fixed input</em>.</p>
+<p>Formally, the local sensitivity of a function <span class="math">\(f\)</span> on input <span class="math">\(D\)</span> is the maximal
+distance between <span class="math">\(f\left(D\right)\)</span> and <span class="math">\(f\left(D'\right)\)</span>, where <span class="math">\(D'\)</span> is a
+neighboring database of <span class="math">\(D\)</span>. Some functions, like the median, have a very small
+local sensitivity for some inputs, and very large for others: calibrating noise
+to the local sensitivity is <em>not</em> enough to achieve DP. The local sensitivity is
+used as a building block in complex mechanisms; <a href="https://programming-dp.com/ch7.html">this page</a>
+lists a few examples.</p>
+<p>Somewhat confusingly, the use of the word "local" here has nothing to do with
+<a href="#ldp">local DP</a>.</p>
+<h4 id="mechanism">Mechanism <a name="mechanism"></a></h4>
+<p>A computer program (or function, if you prefer math terminology) that takes some
+data as input, and typically provides a privacy guarantee on its output. The
+word is typically used in two different contexts.</p>
+<ul>
+<li>It can refer to individual building blocks that are used as part of a larger
+  program. Example include the <a href="#laplace">Laplace mechanism</a> or the
+  <a href="#gaussian">Gaussian mechanism</a>.</li>
+<li>It can also refer to the larger program itself. In this case, "DP mechanism"
+  is a shorthand for "differentially private mechanism", which means "mechanism
+  that satisfies differential privacy".</li>
+</ul>
+<h4 id="neighboring-relation">Neighboring relation <a name="neighbor"></a></h4>
+<p>The neighboring relation defines how the two databases in the definition of
+<a href="#dp">differential privacy</a> differ from each other. It determines what exactly is
+protected by the DP guarantees: this can be the data from
+<a href="#add">a single record</a>, or <a href="#user">all records from the same user</a>, or the value
+of a single attribute, or anything in between. A list of some of the most common
+options can be found in Section 4 of <a href="https://arxiv.org/abs/1906.01337">this paper</a>.</p>
+<h4 id="non-private">Non-private <a name="np"></a></h4>
+<p>Refers to an operation that is performed on the sensitive input data, but does
+<em>not</em> provide any differential privacy guarantee. Not to be confused with
+<a href="#public">public</a>.</p>
+<h4 id="noise">Noise <a name="noise"></a></h4>
+<p>Randomness injected into a process to make it <a href="#dp">differentially private</a>. This
+is often a number sampled from a well-chosen probability distribution (like the
+<a href="#laplace">Laplace</a> or <a href="#gaussian">Gaussian</a> distribution), and added to the
+result of some operation. But this randomness can also take other forms, like
+directly sampling from some <a href="#exp">well-chosen distribution</a>, flipping coins, and
+so on.</p>
+<p>People refer to this process as <em>noise addition</em>, or <em>noise infusion</em>, or
+sometimes <em>noise injection</em>.</p>
+<h4 id="pan-privacy">Pan-privacy <a name="pan"></a></h4>
+<p>A setting within the <a href="#streaming">streaming</a> model where the DP guarantee covers not only
+the output data, but also the internal state of the algorithm at some
+intermediary points. This was introduced in <a href="https://conference.iiis.tsinghua.edu.cn/ICS2010/content/papers/6.html">this paper</a>.</p>
+<h4 id="pate">PATE <a name="pate"></a></h4>
+<p>A <a href="#mechanism">mechanism</a> to train classification models with differential privacy. It works
+by training multiple models on separate parts of the input data (in a
+<a href="#np">non-private</a> way), having them <em>vote</em> on the classification label for public,
+unlabeled data points, adding noise to the votes to select the winning label,
+and train a model on this labeled data. <a href="https://cleverhans.io/privacy/2018/04/29/privacy-and-machine-learning.html">This blog post</a> presents the
+technique in more detail.</p>
+<h4 id="post-processing">Post-processing <a name="pp"></a></h4>
+<p>Using the results of a DP mechanism as an input to some other operation (which
+doesn't otherwise take the sensitive data as input). Differential privacy is
+preserved by post-processing: the output of that other operation will still be
+DP, with the same parameters as the original mechanism. This is true for all
+common DP <a href="#variant">variants</a>.</p>
+<p>Post-processing can be used for many reasons:</p>
+<ul>
+<li>improving the usability of results, for example by removing negative counts or
+  otherwise correcting impossible values;</li>
+<li>improving the accuracy of results, for example by combining multiple DP
+  measurements at different levels of a hierarchy;</li>
+<li>generating synthetic data by post-processing DP statistics computed on the
+  sensitive data;</li>
+<li>using a machine learning model trained with DP (the inference step can be
+  viewed as a post-processing operation);</li>
+<li>and so on.</li>
+</ul>
+<h4 id="privacy-accounting">Privacy accounting <a name="accounting"></a></h4>
+<p>The task of quantifying the privacy guarantee of a given mechanism; typically,
+finding the smallest <span class="math">\(\varepsilon\)</span> and <span class="math">\(\delta\)</span> values such that the mechanism
+is <a href="#approx"><span class="math">\((\varepsilon,\delta)\)</span>-DP</a>.</p>
+<p>For complex mechanisms such as <a href="#dpsgd">DP-SGD</a>, or when releasing a large number
+of DP statistics, finding the best possible privacy parameters can be very
+complex. This led to a flourishing literature on different approaches to privacy
+accounting.</p>
+<h4 id="privacy-budget">Privacy budget <a name="budget"></a></h4>
+<p>The maximum <a href="#pl">privacy loss</a> allocated to a given mechanism; that is, the
+<span class="math">\(\varepsilon\)</span> value (or <span class="math">\((\varepsilon,\delta)\)</span> values, or more generally the
+numeric values of the definition's parameters) of this mechanism. Sometimes
+called the <em>privacy loss budget</em>.</p>
+<p>The term "budget" typically implies that the value is fixed in advance. The
+building blocks of the DP mechanism that take the sensitive data as input
+"consume" part of this budget.</p>
+<h4 id="privacy-filter">Privacy filter <a name="filter"></a></h4>
+<p>An object that keeps track of the <a href="#pl">privacy loss</a> of different DP mechanisms
+run by an analyst over time, and prevents the analyst from running further
+queries if the privacy loss exceeds a certain <a href="#budget">budget</a>. This contrasts with a
+<a href="#odometer">privacy odometer</a>, which does not enforce a fixed budget. The two
+distinct models were introduced in <a href="https://arxiv.org/abs/1605.08294">this paper</a>.</p>
+<h4 id="privacy-loss">Privacy loss <a name="pl"></a></h4>
+<p>A measure of the privacy leakage of a specific output of a DP mechanism. It
+answers the question: if the attacker observes this output, how much information
+can they learn about a single record? In differential privacy, the
+<a href="#budget">privacy budget</a> <span class="math">\(\varepsilon\)</span> bounds the privacy leakage regardless of
+output; by contrast, the privacy loss is the "actual" leakage observed for a
+specific output. <a href="privacy-loss-random-variable.html">This blog post</a> introduces this notion in more
+detail.</p>
+<p>Since the output of a DP mechanism is randomized, the privacy loss can be
+interpreted as a random variable. Considering the full distribution of this
+random variable is a fundamental tool in <a href="#accounting">privacy accounting</a>,
+called the <em>privacy loss distribution</em> (or PLD). An overview of related
+definitions and main results can be found in <a href="https://github.com/google/differential-privacy/blob/main/common_docs/Privacy_Loss_Distributions.pdf">this paper</a>.</p>
+<h4 id="privacy-loss-distribution-pld">Privacy loss distribution ("PLD")</h4>
+<p>See <a href="#pl">privacy loss</a>.</p>
+<h4 id="privacy-odometer">Privacy odometer <a name="odometer"></a></h4>
+<p>An object that keeps track of the <a href="#pl">privacy loss</a> of different DP mechanisms
+run by an analyst over time, and can return the overall privacy loss consumption
+over time. This contrasts with a <a href="#filter">privacy filter</a>, which enforces a
+maximum budget. The two distinct models were introduced in
+<a href="https://arxiv.org/abs/1605.08294">this paper</a>, which also proves a surprising separation result
+between the best possible composition theorems in those two cases.</p>
+<h4 id="private">Private <a name="private"></a></h4>
+<p>Confusingly, this word can have very distinct meanings, depending on the
+context.</p>
+<ul>
+<li>"Private data" can refer to the data used as <em>input</em> to a DP mechanism, which
+  needs to be protected (as opposed to <a href="#public">public data</a>). Other words used
+  for this include <em>sensitive data</em>, <em>confidential data</em>, or <em>protected data</em>.</li>
+<li>"Private data" can also refer to the <em>output</em> of a DP mechanism, as a
+  shorthand for "differentially private data". Other words used for this include
+  <em>privatized data</em>, <em>noisy data</em>, or… <em>privacy-protected data</em>.</li>
+<li>Finally, "private" can also refer to the DP mechanism itself, again as a
+  shorthand for "differentially private" (as opposed to <a href="#np">non-private</a>).</li>
+</ul>
+<p>The best option is probably to avoid using this overloaded word altogether.</p>
+<h4 id="private-selection">Private selection <a name="selection"></a></h4>
+<p>The problem that consists in picking the best choice out of a fixed list of
+options with <em>scores</em>, where the scores depend on the sensitive input data. The
+most common DP mechanisms for this task are the <a href="#exp">exponential mechanism</a> and
+<a href="#rnm">Report Noisy Max</a>. An introduction to both can be found in
+<a href="https://dpcourse.github.io/2023-spring/lecnotes-web/DP-S23-notes-lec-06-selection-exp-mech-RNM.pdf">these lecture notes</a></p>
+<h4 id="public-data">Public data <a name="public"></a></h4>
+<p>In the context of differential privacy, this refers to input data that is not
+protected by any DP guarantee. This does not always correspond to the common
+usage of the word: for example, inside a company, a list of commercial partners
+could be used as a side input to a DP mechanism that only protects user data,
+even if this list is not public information. Also called <em>unprotected data</em>.</p>
+<h4 id="pure-differential-privacy">Pure differential privacy <a name="pure"></a></h4>
+<p>The original definition of differential privacy, which gives a single bound on
+the worst-case <a href="#pl">privacy loss</a> of a mechanism, typically denoted by
+<span class="math">\(\varepsilon\)</span>. <a href="differential-privacy-in-more-detail.html">This blog post</a> outlines it in more detail.</p>
+<p>Also called <span class="math">\(\varepsilon\)</span>-differential privacy, or simply "differential
+privacy".</p>
+<h4 id="randomized-response">Randomized response <a name="rr"></a></h4>
+<p>A mechanism used to collect a single binary data point with <a href="#ldp">local DP</a>. It
+randomizes the input data of each participant, returning the true value with
+probability <span class="math">\(e^\varepsilon/(1+e^\varepsilon)\)</span>, and the other value with
+probability <span class="math">\(1/(1+e^\varepsilon)\)</span>; Extensions exist for data that can take more
+than two values, and this mechanism is used as a fundamental building block for
+much more complex algorithms satisfying local DP.</p>
+<p>A detailed example can be found in <a href="differential-privacy-in-more-detail.html#rr">this blog post</a>. Interestingly,
+randomized response was used to collect sensitive data for social sciences
+<a href="https://en.wikipedia.org/wiki/Randomized_response">decades before</a> the invention of differential privacy.</p>
+<h4 id="replace-one">Replace-one <a name="replace"></a></h4>
+<p>A <a href="#neighbor">neighboring relation</a> where the two databases differ by changing
+the value of a single record (but not adding or removing records). Also called
+<em>replace-one-record</em> or <em>bounded differential privacy</em>.</p>
+<p>This neighboring relation can be convenient to use in theory work, but has a
+somewhat counter-intuitive consequence: the total number of records in the
+dataset can be published without any noise, regardless of the <span class="math">\(\varepsilon\)</span>
+value.</p>
+<h4 id="report-noisy-max">Report Noisy Max <a name="rnm"></a></h4>
+<p>A simple DP mechanism for <a href="#selection">private selection</a>, which consists in
+adding <a href="#laplace">Laplace noise</a> to each score, and returning the option with the
+highest noisy score. <a href="https://dpcourse.github.io/2023-spring/lecnotes-web/DP-S23-notes-lec-06-selection-exp-mech-RNM.pdf">These lecture notes</a> outline this in more
+detail.</p>
+<h4 id="renyi-differential-privacy-renyi-dp">Rényi differential privacy ("Rényi DP") <a name="renyi"></a></h4>
+<p>A <a href="#variant">variant</a> of differential privacy that quantifies the <em>average</em> privacy loss
+of a mechanism. It is almost never used on its own, but is used as a tool for
+some <a href="#accounting">privacy accounting</a> techniques. An illustrated explanation of
+this definition can be found in <a href="renyi-dp-zero-concentrated-dp.html">this blog post</a>.</p>
+<h4 id="shuffling">Shuffling <a name="shuffling"></a></h4>
+<p>A technique to achieve <a href="#ddp">distributed DP</a> by adding noise to each individual
+data point (with a <a href="#ldp">local DP</a> mechanism), then randomly reordering the
+noisy outputs before passing them to a central aggregator. This idea was
+introduced in <a href="https://arxiv.org/abs/1710.00901">this paper</a>; it was later proven than this method
+has nice <a href="#amplification">privacy amplification</a> properties. </p>
+<h4 id="smooth-sensitivity">Smooth sensitivity <a name="ss"></a></h4>
+<p>The smooth sensitivity of a function <span class="math">\(f\)</span> on input database <span class="math">\(D\)</span> is a value
+obtained from the <a href="#ls">local sensitivities</a> of this function on <span class="math">\(D\)</span> and on
+datasets that are "not too far" from <span class="math">\(D\)</span>. Adding noise scaled by the smooth
+sensitivity can provide <a href="#approx"><span class="math">\((\varepsilon,\delta)\)</span>-DP</a>; this can be
+convenient for certain functions where the smooth sensitivity is often much
+smaller than the <a href="#gs">global sensitivity</a>. However, it is not always easy nor
+even feasible to compute in a reasonable time. More details can be found in the
+<a href="https://cs-people.bu.edu/sofya/pubs/smooth-sensitivity-stoc.pdf">paper</a> that introduced this tool.</p>
+<h4 id="sensitivity">Sensitivity <a name="sensitivity"></a></h4>
+<p>In the context of differential privacy, this is generally used as a synonym of
+<a href="#gs">global sensitivity</a>.</p>
+<p>Confusingly, this has absolutely nothing to do with how sensitive the data is
+(e.g. private health data being more important to protect than public blog
+posts).</p>
+<h4 id="sparse-vector-technique-svt">Sparse vector technique ("SVT") <a name="svt"></a></h4>
+<p>A technique that allows to run arbitrarily many queries on the input data, and
+learn which queries are the first <span class="math">\(c\)</span> (where <span class="math">\(c\)</span> is fixed) to pass a certain
+test. It relies on Above Threshold, a simpler version of this mechanism, which
+simply returns the first query in a list whose result is above a fixed
+threshold. SVT is an important building block used as part of more complex DP
+mechanisms. Introductions to this technique can be found on
+<a href="https://programming-dp.com/ch10.html">this page</a> or <a href="http://www.gautamkamath.com/CS860notes/lec9.pdf">these lecture notes</a>.</p>
+<h4 id="streaming">Streaming <a name="streaming"></a></h4>
+<p>A setting in which the input data isn't collected all at once, but incrementally
+over time. This typically come with additional challenges, which can be one or
+more among the following.</p>
+<ul>
+<li>The server collecting data cannot hold all the input data in memory, and has
+  to use memory-efficient data structures to compute the output.</li>
+<li>The server must update the output statistics regularly, as new data points
+  come in: this is the <a href="#continual">continual release</a> model.</li>
+<li>An attacker is allowed to have access to some intermediary states of the
+  computation, who must therefore also be covered by the DP guarantee: this is
+  the <a href="#pan">pan-private</a> model.</li>
+</ul>
+<h4 id="top-k-selection">Top-<span class="math">\(k\)</span> selection <a name="topk"></a></h4>
+<p>An extension of the <a href="#selection">private selection</a> problem where the goal is to
+return the <span class="math">\(k\)</span> items with the highest scores among a list of options. The most
+common mechanisms used for this task are the <a href="#exp">exponential mechanism</a> and
+<a href="#rnm">Report Noisy Max</a>. A summary of results for this problem can be found in
+<a href="https://differentialprivacy.org/one-shot-top-k/">this blog post</a>.</p>
+<h4 id="truncated-distributions">Truncated distributions <a name="truncated"></a></h4>
+<p>A <a href="#noise">noise</a> distribution that has been modified to never return an output that is
+too far from the real value. Using such distributions typically comes at some
+cost in privacy parameters, and in particularly <a href="#delta"><span class="math">\(\delta\)</span></a>.
+<a href="https://differentialprivacy.org/fail-prob/">This blog post</a> outlines possible approaches for this task.</p>
+<h4 id="unbounded-differential-privacy">Unbounded differential privacy</h4>
+<p>See <a href="#add">add-or-remove</a>.</p>
+<h4 id="user-level-differential-privacy">User-level differential privacy <a name="user"></a></h4>
+<p>A <a href="#neighbor">neighboring relation</a> where the databases differ by adding or
+removing all the records that have been contributed by a single user (typically,
+of the online service where data is collected). It approximates the common goal
+of protecting all the data coming from a single individual.</p>
+<h4 id="variant">Variant <a name="variant"></a></h4>
+<p>A variant of differential privacy (or "DP variant") is a definition that reuses
+the principles of DP, but changes one or more aspects of the original notion.
+For example, some variants quantify <a href="#pl">privacy loss</a> in a different way, or
+use an unusual <a href="#neighbor">neighborhing relation</a>. A large number of variants can
+be found in the scientific literature; <a href="why-not-differential-privacy.html">this blog post</a> mentions a few
+of those, <a href="https://arxiv.org/abs/1906.01337">this survey paper</a> presents a more comprehensive list.</p>
+<h4 id="zero-concentrated-dp-zcdp">Zero-concentrated DP ("zCDP") <a name="zcdp"></a></h4>
+<p>A variant of differential privacy that enforces many <a href="#renyi">Rényi DP</a>
+constraints simultaneously. It is particularly convenient for applications
+such as releasing a large number of statistics with the
+<a href="#gaussian">Gaussian mechanism</a>. An in-depth explanation of this definition can
+be found in <a href="renyi-dp-zero-concentrated-dp.html">this blog post</a>.</p>
+<h4 id="zero-out">Zero-out <a name="zero"></a></h4>
+<p>A <a href="#neighbor">neighboring relation</a> where the databases differ by replacing one
+record with a fixed value, typically 0 for numeric data. This is sometimes used
+instead of the <a href="#add">add-or-remove</a> neighboring relation to simplify the
+analysis.</p>
+<hr>
+<p><small>
+I am grateful to Alexander Knop, Anatoly Zavyalov, Arun Ganesh, Audra McMillan,
+Clément Canonne, Debanuj Nayak, Kunal Tawar, Marika Swanberg, Matthew Joseph,
+Shlomi Hod, Vikrant Singhal, and Xingyu Zhou for their comments and suggestions
+on early versions of this post.
+</small></p>
+<style>
+a[href^="#"] {
+    text-decoration: none;
+}
+</style>
+
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20250310,
+  title = &#123;A glossary of differential privacy terms},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/differential-privacy-glossary.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2025},
+  month = &#123;03}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="diffprivlib.html">← previous</a>
+    </li>
+    <li>
+      <a href="better-empirical-privacy-metrics.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

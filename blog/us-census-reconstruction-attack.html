@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Demystifying the US Census Bureau's reconstruction attack - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Demystifying the US Census Bureau's reconstruction attack - Ted is writing things" />
+  <meta property="twitter:title" content="Demystifying the US Census Bureau's reconstruction attack - Ted is writing things" />
+  <meta name="description" property="og:description" content="The US Census is moving to differential privacy, after running a successful privacy attack on their 2010 release. Let's look at this attack in more detail!" />
+  <meta property="twitter:description" content="The US Census is moving to differential privacy, after running a successful privacy attack on their 2010 release. Let's look at this attack in more detail!" />
+  <meta property="summary" content="The US Census is moving to differential privacy, after running a successful privacy attack on their 2010 release. Let's look at this attack in more detail!" />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/us-census-reconstruction-attack.html" />
+  <link rel="prev" href="why-not-differential-privacy.html" />
+  <link rel="next" href="more-useful-results-dp.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="why-not-differential-privacy.html">← previous</a>
+ —     <a href="more-useful-results-dp.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./us-census-reconstruction-attack.html">Demystifying the US Census Bureau's reconstruction attack</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2021-05-26T00:00:00+02:00">
+      2021-05-26
+    </time>
+    <small>&mdash; updated
+      <time datetime="2021-07-26T00:00:00+02:00">
+        2021-07-26
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p></small></p>
+<hr>
+<p><span class='lettrine'>E</span><strong>very</strong> 10 years, the <a href="https://en.wikipedia.org/wiki/United_States_Census_Bureau">US Census Bureau</a>
+asks every American household a series of questions. How many people are living
+here? How old are they? What is their race and ethnicity? What is their
+relationship to each other?</p>
+<p>The collected answers have very high quality, for two reasons. First, <em>all</em>
+households have to respond truthfully to these questions, by law. Second, the US
+Census Bureau has a legal duty to keep the answers secret for 72 years after
+each survey. Both aspects are key to convince everyone to answer truthfully.
+Appealing to people's sense of civic duty also helps!</p>
+<p>What is the data used for, then? The Census Bureau aggregates it and publishes
+statistics about the US population. A <em>lot</em> of statistics: in 2010, it released
+over 150 <em>billion</em> statistics about the US population. These statistics then
+have many applications: scientific research, informing public policy,
+determining election districts, etc.</p>
+<p>Confidentiality is central to the Census Bureau's mission.
+<a href="https://www.law.cornell.edu/uscode/text/13/9">By law</a>, they have to make sure
+that nobody can use their data to find out information about individuals.
+Disclosing such information even comes with
+<a href="https://www.law.cornell.edu/uscode/text/13/214">criminal penalties</a>! This has
+led to the creation of an entire field of study: <em>statistical disclosure
+control</em>. It predates even the oldest definition of privacy mentioned on this
+blog (<a href="k-anonymity.html"><em>k</em>-anonymity</a>).</p>
+<p>How did statistical disclosure control work in practice? Before 1990, the method
+was pretty blunt: they removed the tables with fewer than five individuals or
+households in them. Then, from 1990 to 2010, the Census Bureau used a more
+complex technique called <em>swapping</em>. Swapping works in two steps. First, it
+selects households at random in small geographic areas: those are the ones most
+at risk of re-identification. Then, it exchanges records between these
+households and others before generating the statistics. The details of this
+swapping process were secret, to make it harder for people to design attacks.</p>
+<p>Nowadays, the Census Bureau is moving towards formal notions: the statistics
+published for the 2020 Census will be differentially private. If you've read the
+<a href="differential-privacy-awesomeness.html">previous articles</a> of this blog, this might not surprise you.
+Differential privacy (DP) is designed to solve this exact problem: publishing
+statistics without revealing information about individuals. But this choice was
+far from obvious! Adding noise to statistics is quite scary for data
+users<sup id="fnref:users"><a class="footnote-ref" href="#fn:users">1</a></sup>. Using DP for such a complex release is also unprecedented.</p>
+<p>So, what convinced the Census Bureau to take this decision? Their scientists ran
+an <em>attack</em> on some of the 2010 data, to better understand the privacy risks.
+And they realized that the attack was much more successful than they expected.
+The attack is simple, not very expensive, and pretty scary. The scientists then
+measured how much more swapping it would take for the attack to fail… and
+observed that the utility loss would be catastrophic. Older techniques like
+suppression were also ineffective. The only way to mitigate the risks <em>and</em>
+limit accuracy loss was differential privacy.</p>
+<p>This choice, of course, has other benefits. Differential privacy provides
+<a href="differential-privacy-awesomeness.html#quantify">quantifiable guarantees</a>. It <a href="differential-privacy-awesomeness.html#composition">composes well</a>, and
+protects even against <a href="why-not-differential-privacy.html">very powerful attackers</a>. It's also good for
+transparency: for the first time, the Census Bureau will be able to publish the
+details of their process. But these nice theoretical properties weren't the main
+factor in their decision. Instead, the choice of DP was <em>pragmatic</em>: it worked
+best to prevent realistic attacks without sacrificing too much utility.</p>
+<p>In this blog post, we'll take a look at the details of this compelling attack,
+at the core of this decision. The attack has two stages: <em>reconstruction</em> and
+<em>reidentification</em>.</p>
+<h1 id="reconstruction">Reconstruction</h1>
+<p>The first step in the attack is to reconstruct records, using statistical data.
+The statistical data is as follows. In each geographic area (like <a href="https://en.wikipedia.org/wiki/Census_block">Census
+blocks</a>), we can get the answers to
+questions like: how many people of age 47 live there? How many people between
+the ages of 25 and 29 self-identify as white? How many households with 2 adults
+and 2 children are there?</p>
+<p>How can we use this kind of information and reconstruct the original records?
+Let's take a simplified example. Say that a hypothetical Census block has four
+people in it.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Age</th>
+<th style="text-align: center;">Race<sup id="fnref:race"><a class="footnote-ref" href="#fn:race">2</a></sup></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">17</td>
+<td style="text-align: center;">White</td>
+</tr>
+<tr>
+<td style="text-align: center;">17</td>
+<td style="text-align: center;">Asian</td>
+</tr>
+<tr>
+<td style="text-align: center;">43</td>
+<td style="text-align: center;">White</td>
+</tr>
+<tr>
+<td style="text-align: center;">47</td>
+<td style="text-align: center;">Asian</td>
+</tr>
+</tbody>
+</table>
+<p>Now, suppose that we have the following statistical data about this Census
+block.</p>
+<ol>
+<li>There are four people in total.</li>
+<li>Two of these people have age 17.</li>
+<li>Two of these people self-identify as White.</li>
+<li>Two of these people self-identify as Asian.</li>
+<li>The average age of people who self-identify as White is 30.</li>
+<li>The average age of people who self-identify as Asian is 32.</li>
+</ol>
+<p>This data is statistical in nature: these numbers are all <em>aggregated</em> over
+several people (here, two). Yet, it's not difficult to guess what the original
+table looks like based on the numbers.</p>
+<p>Not obvious yet? Take the two people aged 17. Points 1, 3 and 4 tell us that:</p>
+<ul>
+<li>either they both self-identify as White,</li>
+<li>either they both self-identify as Asian,</li>
+<li>either one of them self-identifies as White and the other as Asian.</li>
+</ul>
+<p>The first option is impossible: if they both self-identified as White, then
+their average age should be 17, not 30 (point 5). The second option is also
+impossible, for the same reason (with point 6). So the third option is correct.
+We now know the first two records, and we can find the age of both others using
+the average age of each race group. It's like a fun puzzle!</p>
+<p>That's the idea behind reconstruction attacks: taking statistical information
+and using simple reasoning to reverse-engineer the original records. Of course,
+when we have billions of statistics to work with, we don't do this by hand.
+Instead, we convert the data into a massive <a href="https://en.wikipedia.org/wiki/System_of_linear_equations">system of equations</a>.
+Each piece of individual information is an unknown variable. The data gives us
+the relationships between them. Then, we can use a big computer to find a
+possible solution to this large system. This solution, in turn, gives us
+reconstructed records.</p>
+<p>So, the team at the Census Bureau did exactly that, with statistical data from
+the 2010 Census. They transformed it into many equations, and used <a href="https://www.gurobi.com/">Gurobi</a> to
+reconstruct the raw data. The records they obtained matched <strong>46%</strong> of the
+original records exactly. That's pretty impressive! Especially since only a
+small fraction of the statistics were used in the attack (6.2 billion out of 150
+billion). Swapping was not enough to prevent accurate reconstruction.</p>
+<p>At first glance, that result looks pretty scary. But let's take a step back: how
+bad is it really? What does this 46% number actually tell us?</p>
+<h1 id="how-bad-is-reconstruction">How bad is reconstruction?</h1>
+<p>Imagine that a given Census block has a particularly homogeneous population: out
+of 100 habitants, 95 all self-identify as White, and are evenly distributed
+between the ages of 20 and 39<sup id="fnref:homogeneous"><a class="footnote-ref" href="#fn:homogeneous">3</a></sup>. The other 5% of people in this
+block do not belong to this demographic, and we don't have any information about
+them.</p>
+<p><center>
+<img alt="Visual representation of a hypothetical homogeneous population. A large block
+is labeled &quot;Majority population, Self-Identifies as White, Ages evenly
+distributed between 20 and 39&quot;; a smaller block underneath is labeled &quot;Minority
+population, no demographic information&quot;." src="https://desfontain.es/blog/images/homogeneous-population.svg">
+</center></p>
+<p>Can we "reconstruct" this dataset with high accuracy? Yes, and it will be easier
+than we expect: simply use the data on the majority group, and ignore the
+minority population. In practice, for each age between 20 and 39, we output 5
+records with this age, and White as a race.</p>
+<p>Given the statistics on this block, it's likely that our naive guess is pretty
+close to the truth. After all, only 5% of people don't belong to the majority
+demographic, and we know the distribution of the other 95%. Recall the success
+metric from the previous section: the percentage of matching records between
+real data and reconstructed data. According to this metric, our naive strategy
+performs very well! Accuracy is about 95%, if the age distribution is very
+uniform.</p>
+<p>Has this process revealed sensitive information? Well… not really, right? All
+reconstructed records are identical across many people. So they don't seem to
+reveal very sensitive information… And the people in demographic minorities are
+safe from the attack.</p>
+<p>It's also not clear yet how problematic these reconstructed records are. All we
+get is a list of records that are compatible with the published statistics. But
+how do we know which ones are actually correct? And how can we use them to learn
+something new and sensitive about individuals?</p>
+<p>These questions show that on its own, the 46% number from the Census Bureau
+doesn't tell us much. But the Census Bureau didn't stop at reconstruction. The
+attack has a second step, <em>re-identification</em>, and this one gets much scarier
+results. Let's take a look at how it works.</p>
+<h1 id="re-identification">Re-identification</h1>
+<p>In the Census Bureau attack, the reconstruction step outputs records with five
+characteristics: Census block, age, sex, race, and ethnicity. The idea of the
+re-identification attack is simple. First, they buy the kind of <em>commercial
+data</em> that an attacker could have access to. Second, they <em>link</em> this
+information with reconstructed records.</p>
+<p>This "commercial data" is exactly what it sounds like: information about people,
+compiled by random companies, and made available to anyone who pays for it (or
+<a href="https://en.wikipedia.org/wiki/2017_Equifax_data_breach">steals it</a>). These
+companies, called "data brokers", are largely unregulated in the US. Their
+privacy practices are about as awful as you can imagine<sup id="fnref:brokers"><a class="footnote-ref" href="#fn:brokers">4</a></sup>. For their
+attack, Census obtained data from five different companies. Their goal was to
+simulate what an attacker would likely have access to in 2010.</p>
+<p>These commercial datasets typically contain people's names, associated with
+demographic information: location of residence, age (or date of birth), and
+sex<sup id="fnref:sex"><a class="footnote-ref" href="#fn:sex">5</a></sup>. We will use these three characteristics to <em>re-identify</em>
+reconstructed records.</p>
+<p>The technique is simple. We look at each record of the commercial dataset, one
+after the other. And we try to match this record's characteristics with the
+reconstructed record. Is there a single reconstructed record with the same
+location, age, and sex? If so, we link both records together. Here is a
+visualization of that process (with made-up data). The commercial
+dataset is in blue, the reconstructed Census records are in green.</p>
+<p><center>
+<img alt="Visual representation of a join between a record from a commercial dataset,
+and a reconstructed Census record. The commercial record has a name, James Link
+(labeled Identity), a postal address, a date of birth, and a sex. The
+reconstructed Census record has five fields: Census block ID, age, sex, race,
+and ethnicity. Location, age and sex form a &quot;join key&quot;, and allow both records
+to be linked. The race and ethnicity are labeled &quot;newly learned
+information&quot;." src="https://desfontain.es/blog/images/re-identification.svg">
+</center></p>
+<p>Linking datasets in this way achieves two goals.</p>
+<ol>
+<li>It confirms that the reconstructed record corresponds to a specific
+   individual. In fact, it allows us to <em>re-identify</em> the reconstructed record.
+   Here, the commercial data tells us that this person is James Link.</li>
+<li>It gives us <em>more</em> information about this person, which the commercial data
+   didn't have. Here, we learn James Link's race and ethnicity.</li>
+</ol>
+<p>How do we quantify the success of this attack? We can look at two numbers.
+First, how many records can be linked between datasets in this way? Second, out
+of these linked records, how many are <em>accurate</em>? After all, some of these
+re-identifications might be wrong: both datasets might be incomplete or
+inaccurate. The percentage of correct answers is the <em>precision</em> of the attack:</p>
+<div class="math">$$
+  \text{precision} = \frac{\text{true re-identifications}}{\text{number of linked records}}.
+$$</div>
+<p>So how does the attack perform? Census Bureau scientists linked 138 million
+records between both datasets. And their average precision was 38%. This means
+that the attack <strong>successfully re-identified 52 million records</strong>. Scary!</p>
+<p>One could argue that the attacker can't know <em>which</em> records are correctly
+re-identified. Some of them will be false positives! After all, 38% aren't great
+odds. But the analysis from Census Bureau scientists doesn't stop there. Two
+further considerations make the attack even more compelling.</p>
+<ol>
+<li>The precision of re-identification goes <em>up</em> for people in small Census
+   blocks: it's <strong>72%</strong> on the smallest Census blocks (in which 8 million people
+   live). This makes sense: statistics across a few people are more revealing
+   than aggregates over large groups. It's not surprising, but it's still bad
+   news: it means that folks in minority populations are more at risk of being
+   re-identified. But disclosure avoidance is precisely trying to protect these
+   people!</li>
+<li>The precision also goes up if one has better-quality data. Census Bureau
+   scientists use a neat trick to find worst-case guarantees: they use the raw
+   Census data itself as an approximation of the best possible data an attacker
+   could find. Using this, they show that the global precision increases to 75%,
+   and even goes up to <strong>97%</strong> on small Census blocks.</li>
+</ol>
+<p>Is this assumption of high-quality data unrealistic? No, for two reasons.</p>
+<ul>
+<li>The commercial data used in the attack is what someone could have had access
+  to in 2010 — more than 10 years ago. Data brokers have much better data
+  available for sale by now.</li>
+<li>The re-identification step only requires high-quality data <em>about our
+  targets</em>. The attack works just fine even if we're trying to re-identify a
+  single person, or a handful of people. With high-quality information about
+  them, the precision goes up to these worst-case numbers.</li>
+</ul>
+<p>There's nothing preventing businesses from running this attack on their
+employees or customers. In this kind of context, access to high-quality
+data isn't an optimistic assumption: it's a given.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>This attack is bad news.</p>
+<p>It proves two points beyond doubt. First, anyone can reconstruct Census records.
+Many of these reconstructed records are accurate, especially in small Census
+blocks. This does not require massive computing power: you can run
+<a href="https://www.nytimes.com/2018/12/05/upshot/to-reduce-privacy-risks-the-census-plans-to-report-less-accurate-data.html">smaller-scale attacks</a>
+in minutes on your average laptop. Second, high-quality data about some people
+is enough to re-identify their Census records. This re-identification has high
+precision, and reveals previously-unknown information about these people.</p>
+<p>In the attack, the attacker could learn race and ethnicity information. Data
+brokers might want to do this to augment their datasets, for example. But the
+risks can get even more tangible. Remember: the attack only used a small
+fraction of all published statistics. The targeted tables had only demographic
+information. What if someone were to attack household tables instead? This could
+likely reveal intimate details about the people you live with. Do you have a
+have a partner of the same sex? Children of a different race? Anyone with basic
+information about you — employer, acquaintance, data broker… — might find out.</p>
+<p>Some of that information is particularly sensitive, and otherwise unavailable
+via data brokers. For example, reconstruction also works on children's data,
+which is illegal to sell in the US. Someone could combine household
+reconstruction with re-identification, and locate kids of a specific race, sex
+and age range in a given area. No need to spell out the possible harms this
+could enable.</p>
+<p>Risks to individuals can translate to risks to data quality in the long run.
+Suppose Census data can no longer be considered as confidential. How will it
+impact people's willingness to answer future Census surveys? Minority groups are
+already <a href="../PDFs/CensusBarriersReport.pdf">more likely to have privacy concerns</a> about their answers. This
+will get worse if the Census Bureau can no longer guarantee the confidentiality
+of the data.</p>
+<p>This explains the Census Bureau's decision to move to differential privacy.
+Everything we described is just one possible attack, and it used only a fraction
+of the released data. The Census must protect all other attacks that people
+might come up with in the future! And that's exactly what differential privacy
+provides: provable privacy guarantees, even against attacks that haven't
+invented yet.</p>
+<hr>
+<p>If you'd like to learn more about differential privacy, I have good news for
+you: this blog also contains an entire <a href="friendly-intro-to-differential-privacy.html">article series</a> about this
+notion, introducing it in friendly, non-technical terms. Head over to the <a href="friendly-intro-to-differential-privacy.html">table
+of contents</a> to see the other posts!</p>
+<hr>
+<p><small></p>
+<p>Nice, you made it all the way to the end of this article! Here are some more
+links and disclaimers.</p>
+<p>This article is almost entirely sourced using documents from a <a href="https://www.brennancenter.org/our-work/court-cases/alabama-v-us-dept-commerce">lawsuit</a>. The
+main one is this <a href="../PDFs/AlabamaLawsuitDocuments.pdf">declaration from John Abowd</a>, the Census Bureau's
+chief scientist. It explains the history and context behind the use of DP for
+the 2020 Census. It starts on page 85 of <a href="../PDFs/AlabamaLawsuitDocuments.pdf">this PDF</a>, and Appendix B
+(starting on page 147) describes the attack in more detail. Some of the numbers
+also come from Abowd's <a href="../PDFs/AbowdSupplementalDeclaration.pdf">supplemental declaration</a>.</p>
+<p>This last declaration has been filed as a response to a filing by a couple of
+demographers. They make an <a href="../PDFs/RugglesReconstructionExperiment.pdf">argument</a> similar to the one outlined in
+the second part of this article: you can reconstruct records by picking them
+randomly, so reconstruction doesn't mean anything. Hopefully, this post managed
+to convinced you that this argument has two flaws: it ignores the higher risks
+for minority groups, and it fails to address re-identification, the second part
+of the attack.</p>
+<p>Still hungry for more legal filings? Many leading data privacy experts filed an
+<a href="../PDFs/CensusDifferentialPrivacyAmicusBrief.pdf">amicus brief</a> supporting the use of DP for the 2020 Census. It's clear,
+concise, and makes a lot of great points. Worth a read!</p>
+<p>In case this wasn't obvious, this article made a <em>lot</em> of simplifications. I
+rounded all numbers so they would look nicer. I optimized the reconstruction
+example for clarity and fun, not for accuracy: in particular, the Census Bureau
+doesn't actually release statistics like "average age". The real attack doesn't
+use only a system of equations for reconstruction, but inequalities as well; I
+also suppose that there is some optimization done, but the details aren't
+public. The linking attack has some additional logic to do fuzzy matching. And
+I'm sure I made other shortcuts along the way. If you're looking for more
+accurate information, you will probably find it in the documents linked above.</p>
+<p>There's a lot more to say about <a href="https://www.census.gov/content/dam/Census/library/working-papers/2018/adrm/Disclosure%20Avoidance%20Techniques%20for%20the%201970-2010%20Censuses.pdf">swapping</a>, too. For example, it has surprising
+negative effects on data quality! Since folks in demographic minorities in each
+location are more likely to have their record swapped, the process biases the
+data: it makes all areas seem more homogeneous than they actually are. Recall
+that the details of swapping are secret: data users couldn't quantify such
+effects to take them into account in their analysis! Interestingly, the attack
+run by Census Bureau scientists ignored swapping entirely. A more clever attack
+might take it into account, and attempt to reverse it. This could make the
+attack even more accurate, especially for folks in demographic minorities.</p>
+<p>Finally: I have not been involved in any way with Census work. I'm thankful to
+Aloni Cohen, Cynthia Dwork, Thomas Steinke, Kunal Talwar, and Yuan Yuan Zheng
+for helpful comments and suggestions on drafts of this post. Of course, if there
+are inaccuracies or errors left, that's entirely on me — please let me know if
+you find any!</p>
+<p></small></p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:users">
+<p>The people <em>using the data</em>: scientists, people drawing electoral
+  district boundaries, public agencies, businesses, etc.&#160;<a class="footnote-backref" href="#fnref:users" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:race">
+<p>We're using the
+  <a href="https://www.census.gov/topics/population/race/about.html">classification from the Census</a>
+  here. Census data also has a separate
+  <a href="https://www.census.gov/topics/population/hispanic-origin/about.html">Hispanic origin</a>
+  field, called "ethnicity". Don't ask me to explain this, I have no idea.&#160;<a class="footnote-backref" href="#fnref:race" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:homogeneous">
+<p>This hypothetical Census block is basically a tech company.&#160;<a class="footnote-backref" href="#fnref:homogeneous" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:brokers">
+<p>To learn more about this industry,
+  <a href="https://www.eff.org/wp/behind-the-one-way-mirror#Data-brokers">this EFF paper</a>
+  is a pretty solid resource.&#160;<a class="footnote-backref" href="#fnref:brokers" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:sex">
+<p>Or gender, depending on the dataset. These are
+  <a href="https://en.wikipedia.org/wiki/Sex_and_gender_distinction">not the same thing</a>,
+  but the Census asks about sex, so we'll assume the commercial datasets use the
+  same notion. This inevitably introduces errors and feels a bit icky.&#160;<a class="footnote-backref" href="#fnref:sex" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20210526,
+  title = &#123;Demystifying the US Census Bureau's reconstruction attack},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/us-census-reconstruction-attack.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2021},
+  month = &#123;05}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="why-not-differential-privacy.html">← previous</a>
+    </li>
+    <li>
+      <a href="more-useful-results-dp.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

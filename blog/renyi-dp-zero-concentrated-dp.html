@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Averaging risk: Rényi DP & zero-concentrated DP - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Averaging risk: Rényi DP & zero-concentrated DP - Ted is writing things" />
+  <meta property="twitter:title" content="Averaging risk: Rényi DP & zero-concentrated DP - Ted is writing things" />
+  <meta name="description" property="og:description" content="Averaging the privacy loss random variable across outputs can be useful: introducing Rényi DP, and zero-concentrated DP." />
+  <meta property="twitter:description" content="Averaging the privacy loss random variable across outputs can be useful: introducing Rényi DP, and zero-concentrated DP." />
+  <meta property="summary" content="Averaging the privacy loss random variable across outputs can be useful: introducing Rényi DP, and zero-concentrated DP." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/multiple-averages-plrv.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/multiple-averages-plrv.png" />
+  <meta property="twitter:image:alt" content="A graph whose x-axis is labeled "probability" and whose y-axis is labeled "Bayesian attacker gain". A step-like blue curve goes down from 150 to 0, and four horizontal red dotted lines are labeled α=∞, α=3, α=2, and α=1." />
+  <link rel="canonical" href="https://desfontain.es/blog/renyi-dp-zero-concentrated-dp.html" />
+  <link rel="prev" href="real-world-differential-privacy.html" />
+  <link rel="next" href="bottom-up-differential-privacy.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="real-world-differential-privacy.html">← previous</a>
+ —     <a href="bottom-up-differential-privacy.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./renyi-dp-zero-concentrated-dp.html">Averaging risk: Rényi DP & zero-concentrated DP</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2022-02-20T00:00:00+01:00">
+      2022-02-20
+    </time>
+    <small>&mdash; updated
+      <time datetime="2022-11-13T00:00:00+01:00">
+        2022-11-13
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p></small></p>
+<hr>
+<p><span class='lettrine'>R</span><strong>emember</strong> the <a href="privacy-loss-random-variable.html">privacy loss random
+variable</a> (PLRV)? We saw that it described all values that the privacy
+leakage could take, and how likely each one was. And we saw that
+<span class="math">\(\varepsilon\)</span>-DP was a <em>worst-case</em> property: the PLRV must <em>always</em> be lower
+than <span class="math">\(\varepsilon\)</span>. By contrast, we described <span class="math">\((\varepsilon,\delta)\)</span>-DP as an
+"almost worst-case" notion: it left a little wiggle room for rare events with
+a privacy loss larger than <span class="math">\(\varepsilon\)</span>.</p>
+<p>In this article, we'll use the PLRV in yet another interesting way. Instead of
+only looking at its extreme values, we'll look at the <em>average</em> of the PLRV.
+This will give us an intuitive explanation of two useful variants of DP: <em>Rényi
+differential privacy</em>, and <em>zero-concentrated differential privacy</em>.</p>
+<h1 id="basic-idea">Basic idea</h1>
+<p>Recall the core intuition behind the privacy loss random variable (PLRV). Say
+our secret mechanism <span class="math">\(A\)</span> returns an output <span class="math">\(O\)</span>. The attacker is trying to find
+out whether the input was <span class="math">\(D_1\)</span> or <span class="math">\(D_2\)</span>, where both options differ in a single
+person's data. The PLRV <span class="math">\(\mathcal{L}_{D_1,D_2}(O)\)</span> was kind of the
+"<a href="privacy-loss-random-variable.html">actual</a> <span class="math">\(\varepsilon\)</span> value" for this attacker:
+<span class="math">\(e^{\mathcal{L}_{D_1,D_2}(O)}\)</span> was the advantage they gain when observing output
+<span class="math">\(O\)</span>. This gave us a reformulation of <span class="math">\(\varepsilon\)</span>-DP, as an <em>upper bound</em> on
+this value. If <span class="math">\(A\)</span> is <span class="math">\(\varepsilon\)</span>-DP, then for all possible choices for <span class="math">\(D_1\)</span>
+and <span class="math">\(D_2\)</span>, and all possible outputs <span class="math">\(O\)</span>:</p>
+<div class="math">$$
+\mathcal{L}_{D_1,D_2}(O)\le\varepsilon.
+$$</div>
+<p>How do we transform this worst-case property into an average case definition?
+Two options come to mind.</p>
+<ol>
+<li>We could average the privacy loss across possible databases <span class="math">\(D_1\)</span> and <span class="math">\(D_2\)</span>…</li>
+<li>… or we could average it across possible outputs <span class="math">\(O\)</span>.</li>
+</ol>
+<p>The first option turns out to be a Bad Idea™, for subtle reasons that I'm not
+going to go into here<sup id="fnref:partial"><a class="footnote-ref" href="#fn:partial">1</a></sup>. The second option, however, makes sense. This
+is the same "kind" of relaxation as <span class="math">\((\varepsilon,\delta)\)</span>-DP: there's a small
+probability that something goes worse than we'd like. Importantly, that this
+probability <em>doesn't depend on the attacker</em>. It only comes from the algorithm's
+randomness, and doesn't require additional assumptions.</p>
+<p>There is a significant difference, however. In <span class="math">\((\varepsilon,\delta)\)</span>-DP, there
+can be a small probability (at most <span class="math">\(\delta\)</span>) of <em>infinite</em> privacy loss. When
+we're averaging the privacy loss, that's no longer allowed. If the privacy loss
+is very low 99.99% of the time, but is infinite with probability 00.01%… then
+its average is still going to be infinite.</p>
+<p>So bounding the average PLRV will be a way of relaxing DP, but without allowing
+infinitely bad events. <em>Arbitrarily</em> bad events can still happen, but only with
+vanishing probability. Let's formalize this.</p>
+<h1 id="renyi-differential-privacy">Rényi differential privacy</h1>
+<p>Here's a first attempt at capturing this intuition of averaging risk. For every
+pair of databases <span class="math">\(D_1\)</span> and <span class="math">\(D_2\)</span> differing in a single record, we require that:</p>
+<div class="math">$$
+\underset{O\sim A(D_1)}{\mathbb{E}} \left[\mathcal{L}_{D_1,D_2}(O)\right]\le\varepsilon.
+$$</div>
+<p>Here, <span class="math">\(\mathbb{E}\)</span> is the <a href="https://en.wikipedia.org/wiki/Expected_value"><em>expected value</em></a>: you weigh each possible event
+by its probability. A very bad event can be acceptable if it happens almost
+never. This seems to capture our initial intuition.</p>
+<p>One problem with this approach, though, is that we're not really averaging the
+right thing. The advantage that a <a href="differential-privacy-in-more-detail.html#quantifying">Bayesian attacker</a> can gain is
+<span class="math">\(e^\varepsilon\)</span>, not <span class="math">\(\varepsilon\)</span>! So by averaging the privacy loss, we're not
+really averaging the risk. Let's show this with a little visualization. The
+following plot shows the attacker gain of a made-up mechanism: how much will the
+<a href="differential-privacy-in-more-detail.html#quantifying">betting odds</a> change, depending on the random output?</p>
+<p><center class="largeimg">
+<img alt="Graph showing a made-up distribution for the attacker's gain. With 30% probability, it has value 150, then decreases in a discrete, but exponential, manner." src="https://desfontain.es/blog/images/example-exp-plrv.svg">
+</center> </p>
+<p>With this distribution, the expected value of <span class="math">\(\mathcal{L}\)</span> (the "average
+<span class="math">\(\varepsilon\)</span>") is around <span class="math">\(3.4\)</span>. This translates to an attacker gain of about
+30.</p>
+<p><center class="largeimg">
+<img alt="Same graph as above, with a red dashed line at y=30. It looks too low to represent the average value." src="https://desfontain.es/blog/images/average-plrv.svg">
+</center> </p>
+<p>That doesn't look right. The actual risk is often a <em>lot</em> larger the "average"!
+If we want to average out the risk, we should take the mean of <span class="math">\(e^\mathcal{L}\)</span>
+instead. This would be closer to the intuition. The requirement would become…</p>
+<div class="math">$$
+\underset{O\sim A(D_1)}{\mathbb{E}} \left[e^{\mathcal{L}_{D_1,D_2}(O)}\right] \le e^\varepsilon.
+$$</div>
+<p>This makes more sense: this can be seen as the arithmetic mean of the risk. If
+we plot it, the corresponding <span class="math">\(e^\varepsilon\)</span> is the average of the blue line.</p>
+<p><center class="largeimg">
+<img alt="Graph with the made-up distribution, with a red dashed line at y=68.5" src="https://desfontain.es/blog/images/average-exp-plrv.svg">
+</center> </p>
+<p>This still feels a bit arbitrary. Why not take a different averaging function?
+Large values of the privacy loss correspond to the worst events. These are
+particularly scary: maybe we want to give them more "weight"? We could do this
+using a <a href="https://en.wikipedia.org/wiki/Root_mean_square">quadratic mean</a>, for
+example. We would then require something like this:</p>
+<div class="math">$$
+\underset{O\sim A(D_1)}{\mathbb{E}} \left[\left(e^{\mathcal{L}_{D_1,D_2}(O)}\right)^2\right] \le \left(e^\varepsilon\right)^2.
+$$</div>
+<p>This gives us a larger average than before.</p>
+<p><center class="largeimg">
+<img alt="Same graph as before, with a red dashed line at y=90.4" src="https://desfontain.es/blog/images/average-square-exp-plrv.svg">
+</center> </p>
+<p>Let's generalize this. To decide <a href="https://en.wikipedia.org/wiki/Generalized_mean">which kind of averaging
+function</a> to use, we'll
+introduce a parameter <span class="math">\(\alpha\)</span>.</p>
+<div class="math">$$
+\underset{O\sim A(D_1)}{\mathbb{E}} \left[\left(e^{\mathcal{L}_{D_1,D_2}(O)}\right)^{(\alpha-1)}\right] \le \left(e^\varepsilon\right)^{(\alpha-1)}.
+$$</div>
+<p>This is <em>Rényi differential privacy</em>. If <span class="math">\(A\)</span> satisfies the above inequality for
+all choices of <span class="math">\(D_1\)</span> and <span class="math">\(D_2\)</span>, we say it's <span class="math">\((\alpha,\varepsilon)\)</span>-Rényi
+differentially private.</p>
+<p>Some special values of <span class="math">\(\alpha\)</span> correspond to common averaging functions.</p>
+<ul>
+<li><span class="math">\(\alpha\rightarrow1\)</span> bounds the arithmetic mean of <span class="math">\(\mathcal{L}\)</span> or,
+  equivalently, the <a href="https://en.wikipedia.org/wiki/Geometric_mean">geometric mean</a> of <span class="math">\(e^\mathcal{L}\)</span>;</li>
+<li><span class="math">\(\alpha=2\)</span> bounds the <a href="https://en.wikipedia.org/wiki/Arithmetic_mean">arithmetic mean</a> of <span class="math">\(e^\mathcal{L}\)</span>;</li>
+<li><span class="math">\(\alpha=3\)</span> bounds the <a href="https://en.wikipedia.org/wiki/Root_mean_square">quadratic mean</a> of <span class="math">\(e^\mathcal{L}\)</span>;</li>
+<li><span class="math">\(\alpha=4\)</span> bounds the <a href="https://en.wikipedia.org/wiki/Cubic_mean">cubic mean</a> of <span class="math">\(e^\mathcal{L}\)</span>;</li>
+<li>and it's also possible to pick <span class="math">\(\alpha=\infty\)</span>, which bounds the maximum value
+  of <span class="math">\(e^\mathcal{L}\)</span>: it's then equivalent to <span class="math">\(\varepsilon\)</span>-DP.</li>
+</ul>
+<p>Let's visualize these options using our previous example.</p>
+<p><center class="largeimg">
+<img alt="Same graph as before, with four red dashed lines labeled alpha=1, 2, 3, and infinity. The infinity line is at 150, corresponding to the maximum of the blue line." src="https://desfontain.es/blog/images/multiple-averages-plrv.svg">
+</center> </p>
+<p>Rényi DP, <a href="https://arxiv.org/abs/1702.07476">invented</a> by Ilya Mironov, has a bunch of neat properties.
+In particular, it composes nicely, <a href="differential-privacy-awesomeness.html#composition">just like DP</a>. If a mechanism <span class="math">\(A\)</span>
+is <span class="math">\((\alpha,\varepsilon_1)\)</span>-Rényi DP and a mechanism <span class="math">\(A'\)</span> is
+<span class="math">\((\alpha,\varepsilon_2)\)</span>-DP, then releasing the output of both will be
+<span class="math">\((\alpha,\varepsilon_1+\varepsilon_2)\)</span>-DP.</p>
+<h1 id="zero-concentrated-differential-privacy">Zero-concentrated differential privacy</h1>
+<p>So Rényi DP is pretty neat, but it involves an additional parameter <span class="math">\(\alpha\)</span>.
+That's a bit annoying. Choosing <span class="math">\(\varepsilon\)</span> was already difficult. Having to
+make a new decision about "how to average the risk" seems even harder. Yet, this
+idea of averaging the privacy loss is pretty natural. Ideally, we would like to
+keep this intuition, but have a single parameter.</p>
+<p>What if we covered all possible values of <span class="math">\(\alpha\)</span> at once? Larger <span class="math">\(\alpha\)</span>
+values put more weight on bad events: the "average" also gets larger as <span class="math">\(\alpha\)</span>
+grows. So what if we put a bound on the average… but have this bound grow with
+<span class="math">\(\alpha\)</span>? This seems like a good idea. But now, the question becomes: how <em>fast</em>
+should it grow? There are a lot of increasing functions. But a logarithm doesn't
+exactly behave like an exponential!</p>
+<p>Since we have a choice, we can think of what other things we'd like from a
+single-parameter definition. We saw that <a href="gaussian-noise.html">Gaussian noise</a> was a neat tool
+to design DP mechanisms: it would be nice to describe its privacy guarantee in a
+simple way with our new definition. Composition is also important, and if
+possible, a <em>simple</em> composition result would be better.</p>
+<p>To sum up, we're looking for a formulation that:</p>
+<ol>
+<li>has a single parameter,</li>
+<li>corresponds to a larger <span class="math">\(\varepsilon\)</span> for growing values of <span class="math">\(\alpha\)</span>,</li>
+<li>describes the guarantee of Gaussian noise in a simple &amp; precise way,</li>
+<li>and has a simple composition guarantee.</li>
+</ol>
+<p>That's exactly what zero-concentrated differential privacy (zCDP) provides.
+<a href="https://arxiv.org/abs/1605.02065">Introduced</a> by Mark Bun &amp; Thomas Steinke, it can be interpreted in
+simple terms: given a single parameter <span class="math">\(\rho\)</span>, the <span class="math">\(\varepsilon\)</span> corresponding
+to each <span class="math">\(\alpha\)</span> must be at most <span class="math">\(\rho\alpha\)</span>. In the formalism above, the
+mechanism is <span class="math">\(\rho\)</span>-zCDP if:</p>
+<div class="math">$$
+\underset{O\sim A(D_1)}{\mathbb{E}} \left[\left(e^{\mathcal{L}_{D_1,D_2}(O)}\right)^{(\alpha-1)}\right] \le \left(e^{\rho\alpha}\right)^{(\alpha-1)}.
+$$</div>
+<p>It's easy to verify that it matches all the requirements above.</p>
+<ol>
+<li>The single parameter <span class="math">\(\rho\)</span> corresponds to the arithmetic average of the
+   privacy loss. (Or, equivalently, to the geometric average of the
+   <span class="math">\(e^\mathcal{L}\)</span>.)</li>
+<li>It guarantees that the relationship between <span class="math">\(\alpha\)</span> and <span class="math">\(\varepsilon\)</span> is at
+   most linear, which is very simple.</li>
+<li>It describes the <a href="gaussian-noise.html">Gaussian mechanism</a> beautifully. Suppose that the
+   statistics you're computing have a <span class="math">\(L^2\)</span> sensitivity of <span class="math">\(\Delta\)</span>. Then,
+   adding adding Gaussian noise of variance <span class="math">\(\sigma^2\)</span> to the result. Then the
+   result satisfies <span class="math">\(\rho\)</span>-zCDP, with <span class="math">\(\rho=\frac{\Delta^2}{2\sigma^2}\)</span>. So much
+   nicer than the <a href="gaussian-noise.html#formula">formula</a> giving the <span class="math">\((\varepsilon,\delta)\)</span>-DP guarantee!</li>
+<li>And composition is a breeze. If a mechanism is <span class="math">\(\rho_1\)</span>-zCDP and another is
+   <span class="math">\(\rho_2\)</span>-zCDP, then publishing the result of both is
+   <span class="math">\(\left(\rho_1+\rho_2\right)\)</span>-zCDP.</li>
+</ol>
+<p>The last two points are super useful to analyze <em>multiple</em> Gaussian mechanisms
+at once: we can look at them separately, and add their corresponding <span class="math">\(\rho\)</span>
+values. This works even if they use very different noise magnitudes. And the
+resulting guarantee is much more precise than if we'd done the accounting with
+<span class="math">\((\varepsilon,\delta)\)</span>-DP.</p>
+<p>These nice properties are why zCDP has been used in practice for some
+high-profile use cases, like the 2020 U.S. Census <a href="https://www2.census.gov/programs-surveys/decennial/2020/program-management/data-product-planning/2010-demonstration-data-products/ppmf20210608/2021-06-08-privacy-loss_budgetallocation.pdf">Redistricting Data</a>.
+If you want to release a lot of statistics, you might benefit from using this
+notion in your privacy analysis as well.</p>
+<h1 id="tldr">tl;dr</h1>
+<p>Can we describe all the definitions we've seen so far in a tweet-length summary?
+Here's an attempt.</p>
+<ul>
+<li><span class="math">\(\varepsilon\)</span>-DP: the absolute worst case is <span class="math">\(\varepsilon\)</span>.</li>
+<li><span class="math">\(\left(\varepsilon,\delta\right)\)</span>-DP: the worst case is <span class="math">\(\varepsilon\)</span>, almost
+  always.</li>
+<li><span class="math">\(\left(\alpha,\varepsilon\right)\)</span>-Rényi DP: the average case is <span class="math">\(\varepsilon\)</span>,
+  and <span class="math">\(\alpha\)</span> tells you which average function to use.</li>
+<li><span class="math">\(\rho\)</span>-zCDP: many <span class="math">\(\left(\alpha,\varepsilon\right)\)</span>-Rényi DP guarantees at
+  once, well-chosen for convenience.</li>
+</ul>
+<p>Simple, right?</p>
+<hr>
+<p><small></p>
+<p>Note: I optimized this article for simplicity. I tried to find the simplest
+possible intuition for these notions, and made up a neat storyline to introduce
+one after the other. This came at a cost in historical accuracy. If your main
+goal was getting an intuitive understanding of these definitions, then you can
+stop here. If you're also interested in learning about the history of these
+notions, keep reading.</p>
+<p>Contrary to the story above, zero-concentrated DP was introduced <em>before</em> Rényi
+DP. This work itself built on a prior definition, <a href="https://arxiv.org/abs/1603.01887"><em>concentrated DP</em></a>,
+invented by Dwork and Rothblum. This prior notion says that if you take the PLRV
+and subtract its mean, you get a distribution that's "smaller than a Gaussian".</p>
+<p>Concentrated DP was a fruitful notion, used to prove tighter composition
+theorems for <span class="math">\((\varepsilon,\delta)\)</span>-DP. It also described the privacy properties
+of the Gaussian mechanism in a neater way. But has also some shortcomings: it
+was not closed under post-processing, and its formulation was fairly complex.
+This is what zero-concentrated DP was introduced to fix: it formalized the "PLRV
+is smaller than a Gaussian" intuition in a simpler way, keeping the advantages
+without the problems.</p>
+<p>The original goal of both notions was to get better composition results, not to
+average risk. Rényi DP, introduced afterwards, followed this line of research.
+Fixing the parameter <span class="math">\(\alpha\)</span> was a way of getting more flexibility in the
+privacy analysis, in particular for machine learning use cases.</p>
+<p></small></p>
+<hr>
+<p><small>Thanks to Anthony Caruso for letting me know about a mistake in a
+previous version of this post.</small></p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:partial">
+<p><a href="https://differentialprivacy.org/average-case-dp/">This blog post</a>
+  gives a few examples of what this can look like, and the dangers of doing so.&#160;<a class="footnote-backref" href="#fnref:partial" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20220220,
+  title = &#123;Averaging risk: Rényi DP & zero-concentrated DP},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/renyi-dp-zero-concentrated-dp.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2022},
+  month = &#123;02}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="real-world-differential-privacy.html">← previous</a>
+    </li>
+    <li>
+      <a href="bottom-up-differential-privacy.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

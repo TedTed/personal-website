@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Almost differential privacy - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Almost differential privacy - Ted is writing things" />
+  <meta property="twitter:title" content="Almost differential privacy - Ted is writing things" />
+  <meta name="description" property="og:description" content="Publishing histograms without knowing the categories in advance: introducing (ε,δ)-differential privacy." />
+  <meta property="twitter:description" content="Publishing histograms without knowing the categories in advance: introducing (ε,δ)-differential privacy." />
+  <meta property="summary" content="Publishing histograms without knowing the categories in advance: introducing (ε,δ)-differential privacy." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/almost-differential-privacy.html" />
+  <link rel="prev" href="personal-open-access-policy.html" />
+  <link rel="next" href="cardinality-estimators.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="personal-open-access-policy.html">← previous</a>
+ —     <a href="cardinality-estimators.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./almost-differential-privacy.html">Almost differential privacy</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2019-02-20T00:00:00+01:00">
+      2019-02-20
+    </time>
+    <small>&mdash; updated
+      <time datetime="2020-03-05T00:00:00+01:00">
+        2020-03-05
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p></small></p>
+<hr>
+<p><span class='lettrine'>L</span><strong>et's</strong> continue where we left off. In the <a href="differential-privacy-in-practice.html">last
+article</a>, we saw how to publish histograms in a privacy-preserving way. Adding
+noise to each count was enough to get ε-differential privacy. But we finished
+with a puzzling statement: I mentioned that if you don't know the categories in
+advance, the technique no longer works. In fact, the problem gets much trickier.
+We'll even need to introduce a variant of the original definition! Let's dive
+in.</p>
+<h1 id="open-ended-survey-question">Open-ended survey question</h1>
+<p>Let's say you're doing a survey where you asked people what's their favorite
+color. Instead of giving them a list of fixed options, you let them write
+whatever text they want. Lots of answers are going to be common colors: <em>blue</em>,
+<em>green</em>, <em>pink</em>… But real-world data is noisy, and you're surely going to get
+unpredictable answers. Some might be junk answers: people misunderstanding the
+question, or trolling the survey. Other might simply be rare colors. You want to
+publish a histogram of answers.</p>
+<p>Let's use the same technique as before. What happens if we add <a href="https://en.wikipedia.org/wiki/Laplace_distribution">Laplace noise</a>
+of scale <span class="math">\(1/\varepsilon\)</span> to each category? We need to compare the output of this
+process for two databases that differ on a single element. There are two
+possibilities.</p>
+<h2 id="the-two-databases-have-the-same-categories">The two databases have the same categories</h2>
+<p>If you're lucky, the two databases have the same categories. For example:</p>
+<ul>
+<li>In one, you got 10 <em>green</em> answers, 5 <em>red</em>, and 2 <em>yellow</em>.</li>
+<li>In the other, you got 10 <em>green</em> answers, 5 <em>red</em>, and <strong>3</strong> <em>yellow</em>.</li>
+</ul>
+<p>Then, adding noise to each category works fine. The only difference is in the
+<em>yellow</em> category. By adding noise, we hide the difference between the two
+values, exactly like <a href="differential-privacy-in-practice.html">before</a>.</p>
+<h2 id="the-two-databases-dont-have-the-same-categories">The two databases don't have the same categories</h2>
+<p>This is where it gets trickier. For example:</p>
+<ul>
+<li>In one, you got 10 <em>green</em> answers, 5 <em>red</em>, 2 <em>yellow</em>.</li>
+<li>In the other, you got 10 <em>green</em> answers, 5 <em>red</em>, 2 <em>yellow</em>, <strong>and one
+  <em>ultramarine</em>.</strong></li>
+</ul>
+<p>Let's see what happens if you add noise to both. Each column will end up with a
+slightly different number than the real one. But there's something glaringly
+obvious: <em>the categories are different</em>!</p>
+<p><center>
+<img alt="Histogram with three columns corresponding to colors, with noise" src="https://desfontain.es/blog/images/3-color-noised-histogram.svg">
+<img alt="Histogram with four columns corresponding to colors, with noise" src="https://desfontain.es/blog/images/4-color-noised-histogram.svg">
+</center></p>
+<p>No need to squint at the numbers to notice the difference between these two
+histograms! It's easy for an attacker to tell apart outputs with different
+categories. We call this a <strong>distinguishing event</strong>: the attacker can learn with
+100% certainty which database is the right one. Thus, the process is not
+differentially private. How to fix this?</p>
+<p>Maybe we could list all <em>possible</em> categories, and add noise to each of them,
+including zero counts. Unfortunately, it's not as simple as that. In our
+example, people can enter <em>anything</em>: there's an infinite number of
+possibilities. The good news is that at the cost of a slight relaxation in our
+privacy guarantee, we can overcome that problem.</p>
+<h1 id="a-solution-thresholding">A solution: thresholding</h1>
+<p>It's fairly difficult to make sure distinguishing events never happen<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. Instead, we can settle for the next best thing: we prevent them from happening
+<strong>most of the time</strong>. One way to do that is <strong>thresholding</strong>. Not only do we add
+noise to each category, but we also remove all categories with low counts. Let's
+say that our threshold is <strong>5</strong>. In the example above, we would end up releasing
+only two categories:</p>
+<p><center>
+<img alt="Histogram with two columns corresponding to colors, with noise" src="https://desfontain.es/blog/images/2-color-noised-histogram.svg">
+</center></p>
+<p>There's a price to that strategy: we're losing rare categories. In this example,
+we didn't only drop the <em>ultramarine</em> category, but <em>yellow</em> as well. Any
+category whose count is close to 5 (or less) has a significant chance of being
+lost. Often, that's not a big problem: rare answers have a larger chance of
+being meaningless.</p>
+<p>That solution isn't perfect from a privacy perspective. For example, what if the
+noise added to the ultramarine category is larger than 4? Then the total count
+is 5 or more, we end up publishing this category, and it breaks differential
+privacy. Fortunately, this doesn't happen too often: only 0.6% of the time with
+Laplace noise of parameter <span class="math">\(1/\ln(3)\)</span>.</p>
+<h1 id="tying-it-all-together-varepsilondelta-differential-privacy">Tying it all together: <span class="math">\((\varepsilon,\delta)\)</span>-differential privacy</h1>
+<p>Our strategy is a little more complicated than before. We now have two
+parameters.</p>
+<ul>
+<li>The <strong>amount of noise</strong> we're adding. Just like before, if we're aiming for
+  <span class="math">\(\varepsilon\)</span>-differential privacy most of the time, we need to add Laplace
+  noise of scale <span class="math">\(1/\varepsilon\)</span>.</li>
+<li>The <strong>threshold</strong> we're using to drop rare categories, after adding noise. It
+  induces a natural trade-off. The bigger the threshold, you more data you lose…
+  But the bigger the threshold, the more you reduce the odds of having a
+  distinguishing event.</li>
+</ul>
+<p>Let's visualize this. For each threshold, what are the odds that by adding noise
+to a category with count 1, you end up above the threshold? The following graph
+assumes Laplace noise of parameter <span class="math">\(1/\ln(3)\)</span>. </p>
+<p><center> <img alt="Graph showing the probability of a distinguishing event depending on
+the threshold" src="https://desfontain.es/blog/images/laplace-tail-depending-on-threshold.svg">
+</center></p>
+<p>Using a logarithmic scale, the graph is a straight line. That makes sense:
+Laplace noise is a double exponential distribution.</p>
+<p>Now, the choice of threshold is specific to the algorithm. For a different
+algorithm, or a different noise function, the same threshold might have a
+different effect. So it's not a good idea to use it directly to quantify
+privacy. Instead, we use the <strong>odds of a distinguishing event</strong> as an additional
+parameter to our modified definition.</p>
+<h4 id="formal-definition">Formal definition</h4>
+<p>From <span class="math">\(\varepsilon\)</span>-differential privacy, we get
+<strong><span class="math">\((\varepsilon,\delta)\)</span>-differential privacy</strong>. This new definition is stricly
+weaker than the original definition, and has a similar formulation. For all
+databases <span class="math">\(D_1\)</span> and <span class="math">\(D_2\)</span> which differ in only one individual, and all sets <span class="math">\(S\)</span>
+of outputs:</p>
+<div class="math">$$
+\mathbb{P}[A(D_1)\in S] \le e^\varepsilon\cdot\mathbb{P}[A(D_2)\in S]+\delta.
+$$</div>
+<p>The meaning of <span class="math">\(\varepsilon\)</span> is the same as <a href="differential-privacy-in-more-detail.html#quantifying">before</a>. The only new
+element is the <span class="math">\(\delta\)</span>. It captures the odds that something goes wrong<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>. In
+our example above, <span class="math">\(\delta\approx0.006=0.6\%\)</span>. By using
+<span class="math">\((\varepsilon,\delta)\)</span>-differential privacy, we're saying that the algorithm is
+<em>almost</em> <span class="math">\(\varepsilon\)</span>-differentially private. And here, <em>almost</em> means <em>with
+probability <span class="math">\(1-\delta\)</span></em>: the closer <span class="math">\(\delta\)</span> is to 0, the better.</p>
+<h4 id="criticisms-of-the-definition">Criticisms of the definition</h4>
+<p>As I said, you can see <span class="math">\(\delta\)</span> as the probability that something goes terribly
+wrong. For a privacy definition, this seems like a bad thing to have. Consider
+the following algorithm, which takes a database as input. With probability
+<span class="math">\(1-\delta\)</span>, it returns 42. With probability <span class="math">\(\delta\)</span>, it returns the entire
+database. Talk about a data leak! Still, this algorithm is
+<span class="math">\((0,\delta)\)</span>-differentially private.</p>
+<p>This example illustrates that this <span class="math">\(\delta\)</span> parameter allows for <em>catastrophic
+failures</em><sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>. Knowing this, you have two options.</p>
+<ol>
+<li>Either you work harder to predefine categories, or use more advanced
+   techniques, and only use "true" differential privacy.</li>
+<li>Either you accept that bad things can happen, and try to limit the risk by
+   mandating a tiny <span class="math">\(\delta\)</span>.</li>
+</ol>
+<p>I'd argue that the second solution is not a bad choice. The probability of
+getting hit by lightning in your lifetime is on the order of
+<a href="https://www.weather.gov/safety/lightning-odds"><span class="math">\(10^{-4}\)</span></a>. The probability of a given bit in your RAM being
+randomly flipped by a cosmic ray in one year is about <a href="https://stackoverflow.com/a/23587649"><span class="math">\(10^{-6}\)</span></a>. In
+many situations, it's reasonable to consider these a negligible risk.</p>
+<p>My perspective is that everything in data protection is about risk mitigation.
+You'll never reduce the risk to 0. Even if you use "true" differential privacy,
+your implementation might have critical bugs. Or you might get hacked, and your
+entire anonymization strategy might become irrelevant. Or someone might drug you
+and hit you with a <a href="https://xkcd.com/538">&#36;5 wrench</a> until you give them your database.
+What are the odds of this happening? If your <span class="math">\(\delta\)</span> is even smaller, it might
+be an acceptable price to pay for more convenience.</p>
+<h4 id="how-to-choose-delta">How to choose <span class="math">\(\delta\)</span>?</h4>
+<p>Considering the catastrophic scenarios above, maybe our <span class="math">\(\delta\)</span> of 0.6% is a
+bit too large to use everywhere. But what's a good number? A common option is to
+pick a <span class="math">\(\delta\)</span> that is significantly smaller than <span class="math">\(1/n\)</span>, where <span class="math">\(n\)</span> is the total
+number of people in the database. The reasoning goes as follows. Each person
+has, in the worst case, a <span class="math">\(\delta\)</span> chance that their data leaks. So the total
+odds that someone's data leaks is <span class="math">\(\approx n\delta\)</span>: we need to make sure that
+this number is small enough<sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup>.</p>
+<p>Luckily, in the problem above, you don't need huge thresholds to get tiny values
+of <span class="math">\(\delta\)</span>. If you have a million users, and you want <span class="math">\(n\delta&lt;0.1\)</span>, a
+threshold of 15 is enough.</p>
+<h4 id="cool-properties">Cool properties</h4>
+<p><span class="math">\((\varepsilon,\delta)\)</span>-differential privacy has the same convenient properties
+as differential privacy.</p>
+<ul>
+<li><a href="differential-privacy-awesomeness.html#composition">Composition</a>: suppose you have two <span class="math">\((\varepsilon,\delta)\)</span>-differentially
+  private mechanisms. Then, publishing the result of both satisfies
+  <span class="math">\((2\varepsilon,2\delta)\)</span>-differential privacy.</li>
+<li><a href="differential-privacy-in-practice.html#post-processing">Post-processing</a>: suppose you have a <span class="math">\((\varepsilon,\delta)\)</span>-differentially
+  private mechanism. Then if you make its output go through a fixed
+  transformation, you still get <span class="math">\((\varepsilon,\delta)\)</span>-differential privacy.</li>
+</ul>
+<p>That means that most of what we learned in the <a href="differential-privacy-in-practice.html">simpler case</a> of predefined
+categories still applies. You can round noisy values to integers without risk.
+If the same person can be in multiple buckets, you can adapt the values of
+<span class="math">\(\varepsilon\)</span> and <span class="math">\(\delta\)</span>. You can also compute sums, although you should be
+careful in how you adapt the threshold when doing so.</p>
+<h1 id="future-steps">Future steps</h1>
+<p>With that, we covered the most frequent and easy use cases for differential
+privacy. Next, we'll take a closer look at this new definition,
+<span class="math">\((\varepsilon,\delta)\)</span>-differential privacy. We'll see that meaning of <span class="math">\(\delta\)</span>
+is actually a little more subtle than explained in this post. And this is the
+perfect excuse to introduce an important concept: the <a href="privacy-loss-random-variable.html">privacy loss random
+variable</a>. Or you can also head over to the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> of
+this blog post series to decide what to read next!</p>
+<hr>
+<p><small>Thanks to <a href="http://www.frankmcsherry.org/about/">Frank McSherry</a> and <a href="http://a3nm.net/">Antoine Amarilli</a> for their helpful
+comments.</small></p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:1">
+<p>But, as it turns out, not completely impossible. The "Improved Adaptative
+  Histogram" method described in
+  <a href="https://github.com/frankmcsherry/blog/blob/master/assets/Synth-SIGMOD.pdf">this paper</a>
+  does exactly that, even if the space of possible categories is infinite. I
+  don't know how it compares to the approach described in this post in terms of
+  data loss &amp; truthfulness. It'd be interesting to figure out!&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>This intuition is technically incorrect, but it's a good first
+  approximation. Most people can understand the idea of "a small chance that
+  something goes wrong". The real interpretation is more complex, as explained
+  in the <a href="privacy-loss-random-variable.html">next article in the series</a>.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>For more fun examples, check out this
+  <a href="https://github.com/frankmcsherry/blog/blob/master/posts/2017-02-08.md">blog post</a>.
+  Its author is one of the original creators of differential privacy. I
+  recommend checking his other posts!&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:4">
+<p>Note that this assumes independence between all the possible data leakage
+  events. This is wrong in general, but it's a good enough approximation in
+  practice.&#160;<a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20190220,
+  title = &#123;Almost differential privacy},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/almost-differential-privacy.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2019},
+  month = &#123;02}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="personal-open-access-policy.html">← previous</a>
+    </li>
+    <li>
+      <a href="cardinality-estimators.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

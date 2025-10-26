@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Faire fonctionner un tunnel IP over DNS - Ted écrit des trucs</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="archives.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blogue/" type="application/rss+xml" rel="alternate" title="Ted écrit des trucs - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Faire fonctionner un tunnel IP over DNS - Ted écrit des trucs" />
+  <meta property="twitter:title" content="Faire fonctionner un tunnel IP over DNS - Ted écrit des trucs" />
+  <meta name="description" property="og:description" content="Comment se connecter à Internet sans payer depuis un wifi mal protégé." />
+  <meta property="twitter:description" content="Comment se connecter à Internet sans payer depuis un wifi mal protégé." />
+  <meta property="summary" content="Comment se connecter à Internet sans payer depuis un wifi mal protégé." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blogue/ip-over-dns.html" />
+  <link rel="prev" href="serveur-mail.html" />
+  <link rel="next" href="client-mail-3-mutt.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Aller vers le contenu" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+              ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+              <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious-fr.html"> Présentation <img src="../flag-france.gif" alt=""/></a>
+          <a href="../serious.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-france.gif" alt=""/>
+          <a href="../blog/index.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recettes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="feed.xml">rss</a> —
+            <a href="archives.html">archives</a>
+          </span>
+          <span class="droite">
+            <a href="offlineimap-mbsync.html"
+                 title="Passer d'OfflineIMAP à isync/mbsync">← précédent</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted écrit des trucs</span>
+      </a></h1>
+      Sur des sujets en lien avec la vie privée, ou parfois pas.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./ip-over-dns.html">Faire fonctionner un tunnel IP over DNS</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2014-02-05T00:00:00+01:00">
+      2014-02-05
+    </time>
+    <small>&mdash; modifié le
+      <time datetime="2014-09-10T00:00:00+02:00">
+        2014-09-10
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><strong>J'ai</strong> essayé de faire fonctionner une solution IP over DNS sur mon serveur
+l'autre jour, et après avoir un peu galéré, j'ai fini par y arriver. J'ai été
+assez désagréablement surpris de la qualité médiocre des tutoriaux disponibles
+en ligne sur le sujet : la majorité donnent plein de détails inutiles (en
+expliquant par exemple comment on installe un logiciel) et considèrent qu'une
+fois qu'on a fait marcher la configuration de base, on a gagné et finissent là
+le tutoriel (alors qu'en pratique, on a envie de faire autre chose que juste
+envoyer des pings sur le serveur, et c'est pas évident si on ne sait pas comment
+faire).</p>
+<p>Ce billet est donc une tentative d'expliquer le principe, la configuration et
+l'utilisation d'un logiciel qui s'appelle iodine et qui fait de l'IP over DNS.</p>
+<h1 id="principe-et-interet">Principe et intérêt</h1>
+<p>Vous pouvez sauter jusqu'au dernier paragraphe de cette section si vous vous
+fichez de savoir ce qui se passe à « bas niveau » lors d'un tunnelling IP over
+DNS et que vous voulez juste savoir comment on arrive à l'étape « se connecter à
+Internet sans payer depuis un wifi mal protégé ». Ce qui suit est inspiré en
+grande partie par <a href="https://www.digitalbond.com/blog/2012/05/16/the-hidden-dangers-of-dns/">ce billet publié par Digital Bond sur le
+sujet</a>.</p>
+<p>Quand on utilise Internet, par exemple quand on navigue sur le Web, ce qui se
+passe « en pratique », c'est que l'ordinateur qu'on utilise envoie des petits
+paquets IP qui contiennent des informations (par exemple, « je veux récupérer le
+contenu de cette page », « je veux envoyer tel mail à telle adresse », etc.).
+Dans ces paquets, le morceau d'information « cette page » ou « telle adresse »
+est différent de l'information que l'utilisateur a l'impression d'utiliser : il
+ne s'agit pas d'une adresse web comme <code>https://desfontain.es/blog/</code>, ou d'une
+jolie adresse mail, mais d'une adresse IP (du genre <code>5.9.79.154</code> ou
+<code>2a01:4f8:161:9281:4000::beef</code> selon si on utilise IPv4 ou IPv6). Pour
+transformer la jolie adresse web qu'un humain peut retenir et communiquer
+facilement en une adresse IP, c'est le protocole DNS qui est utilisé. Donc,
+quand on tape <code>http://damien.desfontain.es</code> dans un navigateur, le navigateur va
+commencer par envoyer un paquet disant « je cherche l'adresse IP de
+<code>damien.desfontain.es</code> » à un serveur DNS local (dont il connaît déjà l'adresse
+IP), et le serveur DNS en question transmettra cette information jusqu'aux
+serveurs DNS responsable de la gestion de <code>desfontain.es</code> (dans mon cas,
+<code>dns102.ovh.net</code> et <code>ns102.ovh.net</code>). Ceux-là connaissent ma zone DNS, et
+la réponse se trouve dedans.</p>
+<p>Lors de cette communication, des « données » sont échangées entre « la machine
+qui a originellement émis la requête DNS » et les serveurs DNS gérant mon
+serveur, ici les serveurs d'OVH. Je peux aussi choisir de ne pas déléguer tout
+ou partie de ma zone DNS, pour que lors d'une requête spéciale, ça ne soit pas
+les serveurs d'OVH qui soient interrogés mais le mien. Dans l'exemple qui suit,
+je modifie ma zone DNS pour dire « toutes les requêtes concernant des adresses
+finissant par <code>.dns.desfontain.es</code> sont gérées par mon serveur »… Et c'est ça
+qui permet de détourner l'utilité première du DNS pour faire des choses
+intéressantes.</p>
+<p>En effet, supposons maintenant que la connexion qu'on utilise laisse passer
+les requêtes DNS mais bloque le reste. Rien ne m'empêche de coder des
+choses dans les données qui sont échangées par ce biais entre mon ordinateur
+local et mon serveur… Par exemple, des paquets IP « normaux ». C'est le
+principe de l'IP over DNS : on va envoyer depuis le client tout un tas de
+requêtes DNS de la forme « envoie-moi l'adresse associée à
+<code>nudhrpbhpbh.dns.desfontain.es</code> », où le serveur va répondre « c'est [une
+certaine adresse], et par ailleurs voilà un peu de données pour que le
+paquet fasse la bonne taille : lbhwhfgybfggurtnzr », et ce
+charabia correspond en fait à un échange contenant des données
+« intéressantes » encodées de cette façon.</p>
+<p>Ça paraît tordu, mais en fait c'est utile : il est très fréquent (dans les
+gares, hôtels, aéroports, et même chez les particuliers munis de certaines box)
+de rencontrer des réseaux Wifi qui sont non protégés, mais qui redirigent toutes
+les requêtes HTTP vers une page (« portail captif ») qui demande des
+identifiants, ou propose de payer pour accéder à Internet par ce réseau. Ces
+réseaux bloquent toutes les requêtes, à part les requêtes DNS, qui sont
+nécessaires pour permettre la redirection des pages Web normales vers le portail
+captif, et la résolution des adresses « autorisées » (par exemple, la page
+d'authentification). Je crois. En fait, je ne suis pas certain de la raison
+profonde pour laquelle il n'existe pas de système de portail captif qui bloque
+les requêtes DNS sans embêter les utilisateurs normaux, mais vu que ça n'existe
+pas, je suppose qu'il doit y avoir une raison profonde. Si quelqu'un la connaît,
+ça m'intéresse.</p>
+<p>Donc, faire passer tous les paquets IP par des requêtes DNS, ça sert à se
+connecter à Internet depuis un gros paquet d'endroits sans payer ni avoir les
+identifiants de tous les grands fournisseurs d'accès à Internet qui mettent des
+réseaux publics dans la box de leurs abonnés. Ça a l'air super cool comme ça
+donc avant qu'un lecteur enthousiaste ne passe une demi-heure à configurer ça
+et soit déçu à la fin, je préviens maintenant : même quand ça marche, c'est
+vraiment très, très lent, et la connexion est très loin d'être stable. C'est
+plus une solution d'appoint, et une démonstration de faisabilité intéressante.</p>
+<h1 id="prerequis">Prérequis</h1>
+<p>Il faut pour utiliser cet outil, disposer d'un serveur sur lequel on peut
+installer iodine, et posséder un nom de domaine sur lequel on peut manipuler les
+entrées DNS. Je vais dans toute la suite supposer que les deux machines sont
+sous Linux.</p>
+<p>On va dire que le serveur dont vous disposez a comme adresse coucou.com et que
+son IP est <code>42.17.42.17</code>.</p>
+<h1 id="configuration">Configuration</h1>
+<h2 id="installation">Installation</h2>
+<p>Installer <code>iodine</code> sur le client et le serveur. Sous Debian et dérivés, on tape
+dans une console root :</p>
+<div class="highlight"><pre><span></span><code>aptitude install iodine
+</code></pre></div>
+
+<p>et pour les autres systèmes, allez voir <a href="http://code.kryo.se/iodine/">le site
+officiel</a> pour avoir les instructions
+d'installation.</p>
+<h2 id="modification-de-la-zone-dns">Modification de la zone DNS</h2>
+<p>Ajouter les entrées suivantes à la zone DNS du serveur :</p>
+<div class="highlight"><pre><span></span><code>dns     IN  A   42.17.42.17
+t       IN  NS  dns.coucou.com
+</code></pre></div>
+
+<p>et attendre que ça se propage (sinon, on fait des tests et on comprend
+pas pourquoi ça marche pas), quelques heures devraient être plus que
+largement suffisantes. C'est utile pour dire plus tard à iodine quel genre
+de requête écouter : en l'occurence, les requêtes sur t.coucou.com et non
+pas juste sur coucou.com comme en temps normal. </p>
+<p>On peut remplacer "dns" par n'importe quoi, et "t" par n'importe quoi d'autre -
+par contre, le fait que "t" ne fasse qu'un seul caractère est relativement
+important, ça laisse plus de place pour les données et donc ça accélère la
+vitesse de connexion du tunnel DNS.</p>
+<h2 id="lancement-du-demon-sur-le-serveur">Lancement du démon sur le serveur</h2>
+<p>Lancer en root sur le serveur :</p>
+<div class="highlight"><pre><span></span><code>iodined 10.0.0.1 t.coucou.com
+</code></pre></div>
+
+<p>ce qui équivaut à lui dire « lance le démon d'iodine, donne l'adresse IP
+<code>10.0.0.1</code> au serveur, et fais-le écouter sur t.coucou.com ». Le programme
+demande un mot de passe, qui peut être n'importe quoi jusqu'à 32 caractères.
+Après cette commande, on peut vérifier notamment par :</p>
+<div class="highlight"><pre><span></span><code>ifconfig
+</code></pre></div>
+
+<p>(en root, toujours) qu'une nouvelle interface est apparue dans la liste (elle
+s'appelle en général <code>dns0</code>), c'est à travers elle que va passer tout le trafic
+géré par iodine.</p>
+<h2 id="lancement-du-tunnel-sur-le-client">Lancement du tunnel sur le client</h2>
+<p>Lancer en root sur le client :</p>
+<div class="highlight"><pre><span></span><code>iodine -f 42.17.42.17 t.coucou.com
+</code></pre></div>
+
+<p>l'option <code>-f</code> permet de lancer ça au premier plan et donc, de savoir si jamais
+ça plante. Évidemment, du coup, si on ferme le terminal dans lequel on a lancé
+la commande, ça marche plus. Dans la liste des lignes qui s'affichent alors, il
+devrait y avoir :</p>
+<div class="highlight"><pre><span></span><code>Setting IP of dns0 to 10.0.0.2
+Server tunnel IP is 10.0.0.1
+</code></pre></div>
+
+<p>(avec potentiellement <code>10.0.0.autrechoseque2</code>). Et comme pour le serveur, une
+catégorie de plus (aussi appelée <code>dns0</code>) devrait être apparue dans ce que
+renvoie (en root) :</p>
+<div class="highlight"><pre><span></span><code>ifconfig
+</code></pre></div>
+
+<p>Pour vérifier que tout va bien, on peut essayer de lancer :</p>
+<div class="highlight"><pre><span></span><code>ping 10.0.0.1
+</code></pre></div>
+
+<p>depuis le client, normalement ça devrait retourner quelque chose. De même, faire
+un ping sur <code>10.0.0.2</code> depuis le serveur devrait aussi retourner quelque chose.
+Sinon, hmmm, il y a un problème, et il faut vraisemblablement essayer de
+fouiller dans le manuel de iodine et de jouer avec les options.</p>
+<h2 id="faire-passer-les-paquets-dune-interface-a-lautre">Faire passer les paquets d'une interface à l'autre</h2>
+<p>Si on a réussi à pinger <code>10.0.0.1</code> depuis le client, ça veut dire qu'on arrive à
+lui dire bonjour en passant par DNS : c'est bien ! Maintenant, on aimerait faire
+un truc encore plus cool et accéder à l'extérieur. Par défaut, bien sûr, ça
+n'est pas possible : du point de vue du serveur, tout ce qui passe par
+l'interface <code>dns0</code> n'a aucune raison d'être renvoyé sur autre chose. Il faut
+donc activer (en root) le forwarding d'une interface à l'autre :</p>
+<div class="highlight"><pre><span></span><code>sysctl -w net.ipv4.ip_forward=1
+</code></pre></div>
+
+<p>et lui dire plus précisément de renvoyer tout ce qui vient de <code>10.0.0.*</code> (la
+plage d'adresses IP associées à iodine) vers eth0, et pareil dans l'autre sens
+(toujours en root) :</p>
+<div class="highlight"><pre><span></span><code>iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o eth0 -j MASQUERADE
+</code></pre></div>
+
+<p>Si l'interface « normale » du serveur n'est pas <code>eth0</code> (il faut aller voir dans
+ce que renvoie <code>ifconfig</code> pour le savoir), il faut bien sûr remplacer <code>eth0</code> par
+l'interface pertinente par laquelle on se connecte à Internet en temps normal.</p>
+<h2 id="tester-si-on-arrive-a-dire-bonjour-a-internet">Tester si on arrive à dire bonjour à Internet</h2>
+<p>Normalement, à ce stade, on devrait atteindre l'extérieur en passant par notre
+jolie configuration. Vérifier que tout marche toujours bien et relancer les
+commandes <code>iodined</code>/<code>iodine</code> si besoin (la connexion peut mourir s'il ne passe
+rien dessus pendant trop longtemps), et essayer d'envoyer un message vers
+l'extérieur en passant par notre interface depuis le client :</p>
+<div class="highlight"><pre><span></span><code>ping -I dns0 google.com
+</code></pre></div>
+
+<p>si ça marche, joie, bonheur et allégresse.</p>
+<h2 id="faire-passer-du-ssh-a-travers-notre-tunnel">Faire passer du SSH à travers notre tunnel</h2>
+<p>Bon, c'est bien gentil, mais on a envie de faire passer autre chose que ping par
+notre système. Par exemple, on voudrait bien faire passer du SSH. Mais
+contrairement à ping, il est impossible de dire à ssh « passe par telle
+interface », ça se décide au niveau du noyau. Il faut donc bidouiller le routage
+IP pour dire au noyau « envoie tout ce qui va vers telle machine par notre
+serveur ». Ça se fait de la façon suivante, en admettant que l'adresse IP du
+serveur SSH auquel vous vouliez vous connecter est <code>71.24.71.24</code> :</p>
+<div class="highlight"><pre><span></span><code>ip route add 71.24.71.24 via 10.0.0.1
+</code></pre></div>
+
+<p>(bien entendu, il faut faire ça en root, un utilisateur normal n'a pas le droit
+de décider de ce genre de truc). Maintenant, si on essaie :</p>
+<div class="highlight"><pre><span></span><code><span class="n">ssh</span><span class="w"> </span><span class="n">user</span><span class="mf">@71.24.71.24</span>
+</code></pre></div>
+
+<p>(ou bien l'URL du serveur et non pas son IP), ça va automatiquement passer par
+le tunnel. Si ça marche, joie, bonheur, et désillusion lorsqu'on ce rend compte
+à quel point ça lagge. C'est le prix de passer par des paquets DNS ! C'est pas
+vraiment prévu pour ça. Si ça marche pas, il y a quelque chose qui ne va pas.</p>
+<h2 id="faire-passer-une-connexion-au-web-a-travers-notre-tunnel">Faire passer une connexion au Web à travers notre tunnel</h2>
+<p>Pour aller plus loin que « se connecter à une machine en SSH », on peut ajouter
+plus de choses dans la table de routage. Au lieu de router une machine en
+particulier, on peut router une plage d'adresses IP. Pour lui dire « ne prends
+en compte que les n premiers bits », on utilise la notation /n.  Par exemple,
+la commande :</p>
+<div class="highlight"><pre><span></span><code>ip route add 71.24.0.0/16 via 10.0.0.1
+</code></pre></div>
+
+<p>signifie « fais passer tout ce qui vient d'une adresse en <code>71.24.*.*</code> via
+<code>10.0.0.1</code> ». Ainsi, si un navigateur essaie d'accéder à un site appartenant à
+cette adresse IP, la requête va passer par le système d'IP over DNS. Le problème
+c'est qu'on ne veut pas que les requêtes DNS elles-mêmes passent par là (le DNS
+over DNS, c'est relativement dénué d'intérêt). La solution la plus simple est
+vraisemblablement de disposer d'un serveur SSH, et de passer par un tunnel SSH.
+Pour ça, on fait comme au point 7) en faisant passer les requêtes envoyées à
+l'adresse du serveur par <code>10.0.0.1</code>, puis on lance :</p>
+<div class="highlight"><pre><span></span><code><span class="n">ssh</span><span class="w"> </span><span class="o">-</span><span class="n">ND</span><span class="w"> </span><span class="mi">3128</span><span class="w"> </span><span class="k">user</span><span class="nv">@serveur</span><span class="p">.</span><span class="n">com</span>
+</code></pre></div>
+
+<p>sur le client. Cette commande ne renvoie rien et c'est normal, on laisse la
+fenêtre ouverte, on va régler les paramètres de proxy de son navigateur pour lui
+dire d'utiliser le proxy localhost, sur le port <code>3128</code>, en précisant que c'est un
+proxy Socks version 5, et hop. Tout ce qui passe par le navigateur passera par
+le tunnel SSH, qui lui-même passe par le pont formé par iodine. </p>
+<p>Magie ! On est essentiellement en train de faire de l'HTTP over SSH over DNS, ce
+qui est quand même rigolo. </p>
+<h1 id="conclusion">Conclusion</h1>
+<p>Bon, revenons sur Terre, tout ça rame quand même affreusement. Si vous êtes
+arrivés jusqu'à ce stade, vous avez probablement eu l'occasion de réaliser que
+c'était quand même très, très moyennement utilisable. La « bonne » façon
+d'utiliser un tunnel DNS en pratique, c'est probablement de ne faire que du SSH,
+et d'aller chercher les informations qu'on veut récupérer en utilisant
+l'excellent <a href="http://weboob.org/">Weboob</a> ou bien un navigateur en mode texte. Ça
+permet que ça soit le serveur qui fasse les « vraies » requêtes qui prennent
+plein de bande passante, et que la seule chose qui passe du serveur au client,
+ce soit les requêtes et le texte des pages transformées. Pour avoir testé ça
+dans diverses situations, c'est généralement lent mais utilisable.</p>
+<p><sub><sub>Merci à <a href="http://a3nm.net/">a3nm</a> et <a href="http://louis.jachiet.com/">louis</a>
+pour leur relecture et corrections.</sub></sub></p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Citez cet article!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>L'entrée BibTeX a été copiée dans votre presse-papiers.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblogue20140205,
+  title = &#123;Faire fonctionner un tunnel IP over DNS},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blogue/ip-over-dns.html}},
+  note = &#123;Ted écrit des trucs (blog personnel)},
+  year = &#123;2014},
+  month = &#123;02}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="serveur-mail.html">← précédent</a>
+    </li>
+    <li>
+      <a href="client-mail-3-mutt.html">suivant →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">haut de page</a></li>
+    <li><a href="index.html">accueil</a></li>
+    <li><a href="archives.html">archives</a></li>
+  </ul>
+</nav>
+
+      <div class="feedback">
+        Tout ce que je raconte ici sont mes opinions personnelles, pas celles de
+        mon employeur.
+        <br>
+        Je suis toujours ravi de recevoir des réactions, critiques, questions,
+        ou autres commentaires sur ce que j'écris. Envoyez-moi ce qui vous
+        chante à <span class="baddirection">se.niatnofsed@neimad</span>.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          par 
+          <a rel="dct:publisher" href="http://desfontain.es/serious-fr.html">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="Je pense que le concept de propriété intellectuelle n'a aucun sens. Le contenu de ce blog est dans le domaine public."/>
+          </a>
+          &mdash;
+          mis en orbite par <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

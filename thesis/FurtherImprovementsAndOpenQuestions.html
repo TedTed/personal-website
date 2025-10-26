@@ -1,0 +1,243 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="RobustnessAndTesting.html" />
+  <link ref="next" href="BeyondCountsAndSums.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="RobustnessAndTesting.html">← previous</a></li>
+        <li><a href="FromTheoryToPractice.html#FurtherImprovementsAndOpenQuestions.html">up</a></li>
+        <li><a href="BeyondCountsAndSums.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="RobustnessAndTesting.html">LINKPREV</a><a href="FromTheoryToPractice.html#FurtherImprovementsAndOpenQuestions.html">LINKUP</a><a href="BeyondCountsAndSums.html">LINKNEXT</a></p></div>
+  <h3 class="sectionHead" id="further-improvements-and-open-questions-u-ding-"><span class="titlemark">4.3</span>&nbsp;&nbsp;<a id="x57-1980004.3"></a>Further improvements and open questions <span class="bbding-10x-x-109">✿</span></h3> <!-- l. 2 --><p class="noindent"><a id="further"></a> </p> <!-- l. 4 --><p class="indent">
+In the previous section, we presented a generic system to answer SQL queries with user-level
+differential privacy. This system is remarkably simple: it simply analyzes what are the possible ways in
+which a typical SQL query can break differential privacy, and proposes simple building blocks to
+overcome these obstacles. Importantly, it solves most use cases we see in practice: counts and sums are
+enough to cover the vast majority of aggregation queries that analysts and engineers typically need to
+run on sensitive data. For these typical use cases, our simple system performs well, scales to arbitrary
+data size, and can be implemented and tested in a robust, production-ready fashion. We hope that this
+simplicity, and the open-source publication of the implementation, will encourage further research
+and engineering contributions in this direction, and increase the adoption of differential
+privacy.
+</p><!-- l. 17 --><p class="indent">  In this section, we list possible improvements and extensions to our framework. We raise many
+questions and provide only a few answers, most of which are partial: the road to build a
+general-purpose, usable, scalable, and robust differentially private query engine is long and many
+aspects of this problem are still largely unexplored.
+</p><!-- l. 23 --><p class="indent">  First, in Section&nbsp;4.3.1, we discuss how to fit other kinds of aggregations within our framework. For
+some of them, this task is not trivial, and requires to make the computation model more generic, which
+presents interesting design challenges. Further, some of these primitives are simply not well-studied in
+the existing literature, especially under strict scalability requirements, and under the assumption that
+each user can contribute multiple data points.
+</p><!-- l. 31 --><p class="indent">  Second, in Section&nbsp;4.3.2, we come back to the problem of partition selection, introduced in
+Section&nbsp;4.2.2.0 and solved using Laplace noise and thresholding in Section&nbsp;4.2.3.0. We introduce an
+optimal partition selection primitive in the common special case where each user contributes to a single
+partition only, and we discuss its extension to other cases.
+</p><!-- l. 38 --><p class="indent">  Third, in Section&nbsp;4.3.3, we discuss other possible utility and usability improvements: we present
+Privacy on Beam, an open-source implementation of the framework described in Section&nbsp;4.2 making
+slightly different design trade-offs, and we explain how Gaussian noise can be used to boost utility
+when a single user can contribute to many partitions.
+</p><!-- l. 44 --><p class="indent">  Fourth, in Section&nbsp;4.3.4, we focus on operational questions that arise when rolling out differential
+privacy tooling in practice, and discuss policy topics such as parameter choice or privacy budget
+tracking.
+</p><!-- l. 48 --><p class="indent">  Finally, in Section&nbsp;4.3.5, we take a step back and discuss other possible directions for future research
+on differentially private query engines.
+                                                                                
+                                                                                
+</p><!-- l. 1 --><p class="noindent">
+</p>
+
+
+
+
+                                                                                
+                                                                                
+  <div class="footnotes"></div> <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="RobustnessAndTesting.html">LINKPREV</a><a href="FromTheoryToPractice.html#FurtherImprovementsAndOpenQuestions.html">LINKUP</a><a href="BeyondCountsAndSums.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="RobustnessAndTesting.html">← previous</a></li>
+        <li><a href="FromTheoryToPractice.html#FurtherImprovementsAndOpenQuestions.html">up</a></li>
+        <li><a href="BeyondCountsAndSums.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

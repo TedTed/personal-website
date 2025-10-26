@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Exhiber une proposition indémontrable « pour de vrai » - Ted écrit des trucs</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="archives.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blogue/" type="application/rss+xml" rel="alternate" title="Ted écrit des trucs - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Exhiber une proposition indémontrable « pour de vrai » - Ted écrit des trucs" />
+  <meta property="twitter:title" content="Exhiber une proposition indémontrable « pour de vrai » - Ted écrit des trucs" />
+  <meta name="description" property="og:description" content="Et si on écrivait une proposition indémontrable explicitement ?" />
+  <meta property="twitter:description" content="Et si on écrivait une proposition indémontrable explicitement ?" />
+  <meta property="summary" content="Et si on écrivait une proposition indémontrable explicitement ?" />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blogue/proposition-indemontrable.html" />
+  <link rel="prev" href="bonne-configuration-ssl-nginx.html" />
+  <link rel="next" href="pratiques-commerciales-xxieme-siecle.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Aller vers le contenu" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+              ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+              <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious-fr.html"> Présentation <img src="../flag-france.gif" alt=""/></a>
+          <a href="../serious.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-france.gif" alt=""/>
+          <a href="../blog/index.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recettes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="feed.xml">rss</a> —
+            <a href="archives.html">archives</a>
+          </span>
+          <span class="droite">
+            <a href="offlineimap-mbsync.html"
+                 title="Passer d'OfflineIMAP à isync/mbsync">← précédent</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted écrit des trucs</span>
+      </a></h1>
+      Sur des sujets en lien avec la vie privée, ou parfois pas.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./proposition-indemontrable.html">Exhiber une proposition indémontrable « pour de vrai »</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2015-02-14T00:00:00+01:00">
+      2015-02-14
+    </time>
+  </footer>
+  <div>
+    <p><span class='notlettrine'>t</span>l;dr
+<a href="proposition-indemontrable.ml.html">Ce code</a> genère
+<a href="proposition-indemontrable.txt">cette formule mathématique</a>, qui est vraie, mais
+indémontrable dans l'arithmétique de Tarksi. Woo.</p>
+<p><span class='lettrine'>I</span>l y a quelques années, j'ai lu <em>Les théorèmes
+d'incomplétude de Gödel</em>, un
+<a href="http://www.amazon.fr/Les-th%C3%A9or%C3%A8mes-dincompl%C3%A9tude-G%C3%B6del-Smullyan/dp/210005287X">petit bouquin</a>
+de Smullyan qui explique de façon claire et simple les théorèmes d'incomplétude
+de Gödel (incroyable, n'est-ce pas ?). À l'époque, j'en avais vaguement entendu
+parler, ça avait l'air fascinant, et j'avais envie de savoir comment ça marchait
+pour de vrai, et comment on pouvait construire en pratique l'étrange animal dont
+mon prof de maths de l'époque (béni soit-il) avait mentionné l'existence : une
+proposition mathématique vraie mais indémontrable, qui par une étrange pirouette
+arrive à exprimer exactement « je ne suis pas démontrable ».</p>
+<p>Le bouquin est très bien écrit, mais c'était quand même un poil ardu pour le
+taupin que j'étais, du coup je le lisais par petits bouts et puis l'oubliais.
+L'été entre mes deux années de prépa, je me suis plongé dedans sérieusement, et
+ai décidé d'avoir une lecture un peu plus organisée. Et comme je ne suis pas
+doué pour prendre des notes, et que j'ai compris que la preuve se résumait à
+répondre à la question « comment construit-on la proposition étrange qui affirme
+sa propre indémontrabilité ? », je me suis dit que j'allais faire mieux que
+prendre des notes, j'allais écrire la proposition pas à pas.</p>
+<p>Évidemment, comme le fait si justement remarquer David Monniaux dans un 
+<a href="http://david.monniaux.free.fr/dotclear/index.php/post/2015/02/09/Le-th%C3%A9or%C3%A8me-de-G%C3%B6del-pour-les-nuls">récent billet</a>,
+la construction est longue et la proposition obtenue est « très long[ue],
+illisible pour un humain », il n'est donc pas question de le faire à la main. Du
+coup, comme à l'époque, j'étais aussi en train d'apprendre OCaml (tout seul,
+parce que ma prépa pensait que c'était une bonne idée de nous apprendre le
+Pascal en cours d'informatique), je me suis dit que j'allais écrire un programme
+qui faisait ça à ma place.</p>
+<p>Du coup, c'est ce que j'ai fait. C'était effectivement fastidieux, ça n'a — pour
+reprendre les mots pleins de sagesse et de vérité de David Monniaux « pas grand
+intérêt », mais je me suis quand même amusé, et ça m'a permis d'avoir une idée
+plus "pratique" de comment ça marchait (vu qu'écrire un programme qui génère la
+proposition revient essentiellement à refaire toute la preuve étape par étape).
+Et sur les conseils d'amis qui m'ont prétendu que ça valait la peine de
+ressortir ça de mes dossiers poussiérieux, je me suis dit que j'allais le
+publier ici. Voici donc
+<a href="proposition-indemontrable.ml.html">le code avec une jolie coloration syntaxique</a>,
+et voilà <a href="proposition-indemontrable.ml">le fichier original</a>.</p>
+<p>C'est loin d'être le code le plus propre du monde (hé, je débutais), mais c'est
+commenté de façon assez extensive, et je l'ai relu et ré-indenté récemment, donc
+ça Devrait™ être lisible. Je reproduis presque intégralement la preuve dans les
+commentaires, mais c'est probablement beaucoup plus compréhensible avec le livre
+sous les yeux. Il y a peut-être des erreurs qui ont survécu aux multiples
+relectures ; et comme ce n'est pas vérifié en Coq, c'est impossible d'être
+absolument certain que le résultat est bien indécidable.</p>
+<p>À propos de résultat, voici <a href="proposition-indemontrable.txt">la formule obtenue</a>.
+Il y a plusieurs choses à dire à son sujet. L'alphabet utilisé est décrit dans
+le commentaire en haut du fichier <code>.ml</code>, mais je l'imprime en utilisant des
+raccourcis (pour les opérations arithmétiques, et surtout pour les numéros de
+variable), pour que ça soit (<em>ahem</em>) plus lisible. Les <code>E</code> et les <code>A</code> sont des
+quantificateurs (OCaml n'aime pas Unicode), respectivement existentiels et
+universels.</p>
+<p>La taille de la chaîne de caractère imprimée est de l'ordre de quelques
+centaines de milliers de caractères. Ça n'a en fait pas grande signification,
+étant donné que les nombres sont codés en unaire et que je les imprime en
+binaire… La véritable taille est donc plus grande, mais en fait, <em>beaucoup</em> plus
+grand, parce qu'elle contient des constantes du genre 812939 qui codent "en dur"
+le numéro de Gödel de certaines propositions. Évidemment, la présence de ces
+grosses constante n'est pas nécessaire, on pourrait écrire à la place un terme
+plus court qui est égal à cette formule… Bref, on ne peut pas dire grand-chose
+d'intelligent de la taille de cette formule, à part « c'est probablement
+non-trivial d'arriver sous la centaine de milliers de caractères à coup
+d'optimisations mineures ».</p>
+<p>(La question « quelle est la plus petite formule indémontrable » est, je pense
+(sans avoir le moindre morceau de science pour étayer cette hypothèse),
+indécidable — je doute qu'on puisse prouver d'une formule « ceci est la plus
+petite formule indémontrable » — mais ne serait-ce que savoir qu'une formule de,
+disons, quelques centaines ou milliers de caractères est indémontrable serait
+intéressant. Peut-être qu'une piste serait d'utiliser le 
+<a href="https://en.wikipedia.org/wiki/Kolmogorov_complexity#Chaitin.27s_incompleteness_theorem">théorème d'incomplétude de Chaitin</a>
+et d'encoder la formule <code>K(s) ≥ L</code> dans notre langage pour un L assez grand.)</p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Citez cet article!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>L'entrée BibTeX a été copiée dans votre presse-papiers.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblogue20150214,
+  title = &#123;Exhiber une proposition indémontrable « pour de vrai »},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blogue/proposition-indemontrable.html}},
+  note = &#123;Ted écrit des trucs (blog personnel)},
+  year = &#123;2015},
+  month = &#123;02}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="bonne-configuration-ssl-nginx.html">← précédent</a>
+    </li>
+    <li>
+      <a href="pratiques-commerciales-xxieme-siecle.html">suivant →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">haut de page</a></li>
+    <li><a href="index.html">accueil</a></li>
+    <li><a href="archives.html">archives</a></li>
+  </ul>
+</nav>
+
+      <div class="feedback">
+        Tout ce que je raconte ici sont mes opinions personnelles, pas celles de
+        mon employeur.
+        <br>
+        Je suis toujours ravi de recevoir des réactions, critiques, questions,
+        ou autres commentaires sur ce que j'écris. Envoyez-moi ce qui vous
+        chante à <span class="baddirection">se.niatnofsed@neimad</span>.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          par 
+          <a rel="dct:publisher" href="http://desfontain.es/serious-fr.html">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="Je pense que le concept de propriété intellectuelle n'a aucun sens. Le contenu de ce blog est dans le domaine public."/>
+          </a>
+          &mdash;
+          mis en orbite par <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

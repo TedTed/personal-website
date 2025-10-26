@@ -1,0 +1,196 @@
+== Étages ? ==
+
+- Un principal, sérieux
+- Un autre pour tous les trucs non-sérieux
+- Encore un autre pour quelques hobbys particuliers ? (Cuisine ?)
+
+
+== Salles ==
+
+- Salle principale (où le joueur spawne).
+    - Fontaines
+    - Dragon (parce que mourir rapidement lors des premières parties, c'est
+      rigolo)
+    - Piscines (pour les mêmes raisons)
+    - Altar (?) → Ou pas, rien n'empêche de le mettre ailleurs
+    - Coeur, qui donne une barre de vie ?
+- Labyrinthe (obscur ?)
+    - Énigme au bout, qui ramène à l'entrée du labyrinthe si elle n'est pas
+      faite correctement ?
+- Salle de présentation (avec marqué mon nom)
+    - Trouver un moyen que le joueur ait tendance à y aller en premier
+    - Deux potions (si le texte dit « Hey! I'm Damien Desfontaines. Nice to meet
+      you! ») : une de soin, une de poison.
+- Salle où y'a marqué que je suis à l'ENS
+    - le ( est une lampe
+    - le ) est un bâton
+    - le « est TODO
+    - le » est TODO
+    - le , est un serpent (monstre pas trop fort, mais sans armure, il faut le
+      bâton (ou beaucoup de PV) pour espérer le vaincre)
+    - le * est une améthyste (par exemple), avec marqué en-dessous « Well,
+      technically, right now I'm having a gap year. ».
+- Salle
+
+- Salle  
+- Salle où y'a marqué que je bosse chez Google 
+    - TODO
+- Salle où est mentionnée mon expérience d'enseignement
+- Salle avec mes publications
+- Salle où se reposer pour récupérer ses PV (référence à Pokémon).
+
+
+== Comportement général, système de tours, actions ==
+
+Le jeu est au tour-par-tour. Il y a une action par tour (TODO deux avec un objet
+spécial ?), qui peut être :
+- se déplacer d'une case (parmi les 8 adjacentes)
+- utiliser un objet (boire une potion, lire un parchemin, etc…)
+- équiper un objet
+- lire ce qui se trouve par terre
+- ne rien faire (le . de NetHack)
+
+Il y a des monstres. Tant que le joueur ne les a pas vus, ils restent à leur
+place.
+- A chaque tour, le joueur fait une action. Si, après cette action (qui peut
+  être un déplacement), le joueur finit son tour sur une case adjacente à un
+  ou plusieurs monstres, chacun de ces monstres attaque le joueur.
+- Sinon, chacun des monstres visibles se déplace suivant son déplacement
+  (généralement, une case).
+
+
+== Personnage ==
+
+Peut équiper simultanément une arme et une armure. (TODO autres pièces
+d'équipement ?)
+
+A une barre de vie égale au niveau, lui-même égal au nombre de monstres vaincus.
+
+
+== Objets ==
+
+=== Armes ===
+- Sans arme, on inflige 1 dégât.
+- Martinet ? :D
+- Arme faible (bâton or so) infligeant 2 dégâts.
+- Arme plus sérieuse (épée), 3-4 dégâts
+- Grosse arme (Excalibur or so) infligeant 6-7 dégâts.
+- Poison : +1 aux dégâts de l'arme
+- Enchantement : +1 aux dégâts de l'arme, transperce les armures
+
+=== Armure ===
+- Divise les dégâts physiques subis par 2.
+- Enchantement : 20% de chance d'éviter une attaque physique
+
+=== Bagues ===
+- Bague d'état gazeux
+    - rend insensible aux attaques physiques
+    - empêche d'attaquer qui que ce soit à part le fantôme
+    - permet de traverser les lettres et les monstres
+
+=== Potions ===
+- Quelques potions de soin (disons, +2 PV), 
+- Une potion rendant insensible au feu (pendant, disons, 25 tours, le temps de
+  tuer le dragon, mais sans second essai)
+- Une potion 
+
+=== Conteneurs ===
+
+=== Parchemins ===
+Leurs noms et positions sont distribués au hasard (parmi les emplacements de
+parchemin), contrairement aux autres objets dont la position est déterministe.
+- Parchemins d'identification
+- Parchemin d'enchantement d'arme
+- Parchemin de chute de cathédrale → instadeath à part en cas d'état gazeux
+- Parchemin d'enchantement d'armure
+- Parchemin de création de plante carnivore → crée des plantes carnivote dans
+  toutes les cases libres adjacentes au joueur.
+- Parchemin contenant mon CV → objet de quête, nécessaire pour récupérer le
+  diplôme ?
+
+
+== Monstres ==
+
+Les monstres ont tous un certain nombre de PV et leur attaque inflige un certain
+nombre de dégâts (qui peut ou non être aléatoire). Ils sont attachés à une pièce
+en particulier dont ils ne sortent pas, et leurs PVs sont remis au max. quand le
+joueur sort de la pièce.
+
+- Dragon : 
+    - Le dragon crache du feu dès qu'on s'approche à moins de deux cases. Ça
+      inflige 3 dégâts (non physiques).
+    - Il frappe fort (2-4 dégâts ?).
+    - Il a une armure (évidemment)
+
+- Newt :
+    - Monstres « faciles » : 2 PV, attaque 1 ?
+    - Trou
+
+- Gold golem :
+    - Permet de récupérer des sous
+    - A une armure, et pas mal de PV (5 ?)
+    - Frappe assez fort : 2-3 ?
+
+- Fantôme :
+    - Ne se voit pas bien (représenté par un espace)
+    - Ne frappe pas très fort, mais transperce les armures
+
+- Plante verte :
+    - Premier monstre à tuer pour récupérer le premier niveau ?
+
+- Plante carnivore :
+    - Ne peut pas se déplacer, ne fait pas gagner de niveau
+    - Ne tape pas très fort (
+
+
+== Scénario global ==
+
+Le but est de gagner les faveurs de son Dieu (qui est Loyal ou Chaotique, en
+fonction de l'alignement du joueur (décidé aléatoirement au départ)) et obtenir
+le rang de Demi-Dieu.
+
+Lorsqu'on est Loyal, il faut tuer le dragon rouge (pour ça, la façon la plus
+sûre est d'être insensible au feu et d'avoir Excalibur) et le sacrifier sur
+l'autel Loyal.
+
+Lorsqu'on est Chaotique, il faut s'attirer les faveurs du dragon, faire en sorte
+qu'il tue l'Ange de la Vie et le sacrifier sur la Forge du Mal.
+
+Pour tuer ou apprivoiser le dragon, il vaut mieux être insensible au feu. Ça
+n'est pas obligatoire, mais c'est très difficile sinon. Y'a plusieurs méthodes
+pour arriver à ça :
+- boire une potion rouge (mais ça ne marche que pendant un temps limité) ;
+- porter une armure qu'on a fait tremper dans une potion rouge (ça marche plus
+  longtemps, mais toujours un temps limité) ;
+- ou sacrifier deux monstres d'alignement opposé, dont la licorne, sur l'autel
+  de son Dieu.
+
+Dans tous les cas, il faut un artefact (qui dépend de l'alignement du joueur).
+Pour avoir Excalibur, il faut être loyal, et :
+- tremper une épée longue dans une fontaine, en étant de niveau minimum 4 ;
+- ou sacrifier
+Pour avoir Stormbringer, il faut être chaotique, et :
+- 
+
+
+== Système de points ==
+
+Points par achievements
+- Un certain nombre de points par niveau
+- Tuer le dragon
+    - Tuer le dragon sans résistance au feu
+    - Tuer tous les monstres
+- Faire une fontaine en chocolat
+- Comprendre comment marchent les parchemins (
+- Parler 5 fois au hibou
+- Tuer toutes les plantes (y compris celles du parchemin)
+
+
+== Idées en vrac ==
+
+Chocolat + fontaine + briquet = fontaine de chocolat \o/
+    → A une chance sur deux de soigner un PV quand utilisée :D
+Une oracle qui donne des indices ?
+    → Une oracle qui donne des indices *faux*
+    → Sauf quand on lui change sa fontaine en fontaine de chocolat \o/
+Un hibou qui parle pendant suuuper longtemps (référence à Zelda)

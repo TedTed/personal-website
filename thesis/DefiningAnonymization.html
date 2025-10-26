@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="Introduction.html" />
+  <link ref="next" href="FromSyntacticToSemanticPrivacy.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="Introduction.html">← previous</a></li>
+        <li><a href="index.html#DefiningAnonymization.html">up</a></li>
+        <li><a href="FromSyntacticToSemanticPrivacy.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="Introduction.html">LINKPREV</a><a href="index.html#DefiningAnonymization.html">LINKUP</a><a href="FromSyntacticToSemanticPrivacy.html">LINKNEXT</a></p></div>
+  <h2 class="chapterHead" id="defining-anonymization-u-ding-"><span class="titlemark">2</span>&nbsp;&nbsp;<a id="x7-160002"></a>Defining anonymization <span class="bbding-10x-x-109">✿</span></h2> <!-- l. 2 --><p class="noindent"><a id="defining"></a> </p>                                                     <div class="flushright"> <!-- l. 4 --><p class="noindent"> 
+                                                     </p> <!-- l. 15 --><p class="noindent"><span class="t1xss-x-x-95">Embrace diversity.</span><br>
+<span class="t1xss-x-x-95">Unite—</span><br>
+<span class="t1xss-x-x-95">Or be divided,</span><br>
+<span class="t1xss-x-x-95">robbed,</span><br>
+<span class="t1xss-x-x-95">ruled,</span><br>
+<span class="t1xss-x-x-95">killed</span><br>
+<span class="t1xss-x-x-95">By those who see you as prey.</span><br>
+<span class="t1xss-x-x-95">Embrace diversity</span><br>
+<span class="t1xss-x-x-95">Or be destroyed.</span><br>
+
+   <span class="t1xsssl-x-x-95">(Octavia Butler, </span><span class="t1xss-x-x-95">Parable of the
+                     Sower</span><span class="t1xsssl-x-x-95">)</span>
+</p>
+</div>
+<!-- l. 18 --><p class="indent">  The first step towards solving any problem is defining precisely what we are trying to achieve. In the
+case of anonymization, this is a surprisingly difficult endeavor. Informally, the objective is simple:
+anonymized data should not reveal sensitive information about individuals. This informal goal is simple
+and intuitive, the difficulty is to convert it into a formal statement.
+</p><!-- l. 24 --><p class="indent">  First, what kind of information counts as sensitive? Different people will have different expectations
+and opinions about what they would prefer to keep private about themselves. In some cases, there might
+be an obvious answer: for example, in a healthcare dataset, diagnostic information is sensitive. But in
+many other examples, it is not so obvious. Information that might seem benign to most people might
+reveal private facts about individuals: for example, revealing one’s gender in an old dataset might out a
+transgender person to their colleagues.
+</p><!-- l. 33 --><p class="indent">  One solution to this difficulty is to focus on the “about individuals” part of the informal definition
+above. The reasoning goes as follows. If it is impossible to associate any information with a specific
+individual, then that person is protected. Their anonymity is preserved.
+</p><!-- l. 38 --><p class="indent">  Organizations, when communicating about how they use anonymization to protect people’s privacy,
+typically focus on this aspect. The US Census Bureau states that it is “not permitted to publicly release
+[one’s] responses in any way that could identify you”&nbsp;[<a id="x7-16001"></a><a href="bibliography.html#cite.0@censusdataprotection">199</a>]; the relevant statute specifies that it may
+not “make any publication whereby data furnished by any particular […] individual […] can be
+identified”&nbsp;[<a id="x7-16002"></a><a href="bibliography.html#cite.0@percival2019federal">313</a>]. Similarly, some companies state that anonymized data “cannot be associated with
+any one individual”&nbsp;[<a id="x7-16003"></a><a href="bibliography.html#cite.0@googleanon">198</a>].
+</p><!-- l. 47 --><p class="indent">  Note the use of “could” or “can” in these definitions. They limit what can <span class="t1xi-x-x-109">potentially </span>be inferred
+from the data. This is in stark contrast with the misleading claim, all too common among
+companies and research organizations, that some data they publish is anonymized because it
+does not <span class="t1xi-x-x-109">immediately </span>reveal people’s identities&nbsp;[<a id="x7-16004"></a><a href="bibliography.html#cite.0@de2013unique">93</a><a id="x7-16005"></a><a id="x7-16006"></a>, <a href="bibliography.html#cite.0@de2015unique">94</a>, <a href="bibliography.html#cite.0@rocher2019estimating">331</a>]: there is a large difference
+                                                                                
+                                                                                
+between making reidentification vaguely non-trivial and making it impossible. This misuse of
+terminology leads to the frequent misconception that anonymization is simply impossible&nbsp;[<a id="x7-16007"></a><a href="bibliography.html#cite.0@campbell2018sorry">59</a><a id="x7-16008"></a>,
+<a href="bibliography.html#cite.0@morse2018sorry">287</a>].
+</p><!-- l. 57 --><p class="indent">  So, how to formalize the impossibility of reidentifying individuals? Over the past few decades, a
+large number of definitions has been proposed. These data privacy definitions fall into two broad
+categories. The first approach is to try to define a criterion that applies to the data itself. A dataset that
+passes this criterion is considered “anonymized enough”, and the problem is then to explore the
+different ways to transform data so the end result satisfies the criterion. In this chapter, we will
+introduce four such definitions, and explain the shortcomings of each, and of this general
+approach.
+</p><!-- l. 66 --><p class="indent">  A second possibility is to consider anonymization as a property of the <span class="t1xi-x-x-109">process</span>, rather than its outputs.
+This is one of the core insights of <span class="t1xi-x-x-109">differential privacy</span>, a definition that has encountered
+remarkable success since its introduction: a quick online search shows that in 2020, more
+than 3000 scientific papers mentioning differential privacy have been published. We will
+introduce this notion, explain what advantages it provides, and detail how its guarantees can be
+interpreted.
+</p><!-- l. 74 --><p class="indent">  This fundamental idea of a process-based definition of anonymization has proved very fruitful. In the
+decade following the introduction of differential privacy, a large number of variants and extensions of
+the original definition have been proposed. In the third and main part of this chapter, we propose a
+taxonomy of these variants and extensions. We list all the definitions based on differential privacy we
+could find in a systematic literature survey, and partition them into seven categories, depending on
+which aspect of the original definition is modified. We also establish a partial ordering of
+relative strength and expressibility between all these notions. Furthermore, we list which
+of these definitions satisfy some of the same desirable properties that differential privacy
+provides.
+</p>
+
+
+                                                                                
+                                                                                
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="Introduction.html">LINKPREV</a><a href="index.html#DefiningAnonymization.html">LINKUP</a><a href="FromSyntacticToSemanticPrivacy.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="Introduction.html">← previous</a></li>
+        <li><a href="index.html#DefiningAnonymization.html">up</a></li>
+        <li><a href="FromSyntacticToSemanticPrivacy.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

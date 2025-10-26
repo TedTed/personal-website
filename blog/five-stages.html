@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Five stages of accepting provably robust anonymization - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Five stages of accepting provably robust anonymization - Ted is writing things" />
+  <meta property="twitter:title" content="Five stages of accepting provably robust anonymization - Ted is writing things" />
+  <meta name="description" property="og:description" content="This post contains the slides and transcript for an invited talk I delivered at AnoSiDat in April 2024." />
+  <meta property="twitter:description" content="This post contains the slides and transcript for an invited talk I delivered at AnoSiDat in April 2024." />
+  <meta property="summary" content="This post contains the slides and transcript for an invited talk I delivered at AnoSiDat in April 2024." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/anosidat-title-slide.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/anosidat-title-slide.png" />
+  <meta property="twitter:image:alt" content="The introductory slide of a talk titled 'Five stages of accepting provably robust anonymization'. Under the title is a line with five emojis: person gesturing no, person pouting, person shrugging, person frowning, and person gesturing OK. The third line lists the author name (Damien Desfontaines) and affiliation (the Tumult Labs logo)." />
+  <link rel="canonical" href="https://desfontain.es/blog/five-stages.html" />
+  <link rel="prev" href="choosing-things-privately.html" />
+  <link rel="next" href="ml-privacy-evaluations.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="choosing-things-privately.html">← previous</a>
+ —     <a href="ml-privacy-evaluations.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./five-stages.html">Five stages of accepting provably robust anonymization</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2024-04-28T00:00:00+02:00">
+      2024-04-28
+    </time>
+  </footer>
+  <div>
+    <p>This post is a transcript of an invited talk I delivered to
+<a href="https://www.forschungsnetzwerk-anonymisierung.de/index.php/event/fn-kongress">AnoSiDat</a>
+in April 2024.</p>
+<hr>
+<p>Hi everybody! I’m Damien.</p>
+<p><center>
+<img alt="The introductory slide of a talk titled 'Five stages of accepting provably
+robust anonymization'. Under the title is a line with five emojis: person
+gesturing no, person pouting, person shrugging, person frowning, and person
+gesturing OK. A third line lists the author information (Damien
+Desfontaines) along with his affiliation (the Tumult Labs
+logo)" src="https://desfontain.es/blog/images/anosidat-title-slide.png">
+</center> </p>
+<p>I’m about to do something they always tell you not to do when you give
+presentations, and that’s “speak about myself for a little while”.</p>
+<p>I will to try to make it into a story though, so maybe it’s OK. You tell me.</p>
+<p><center>
+<img alt="A slide split in two columns. On the left, there's the Google logo, then a
+little factory icon representing the industry, then a diagram representing
+k-anonymity. On the right, there's the ETH Zürich logo, a graduation hat, and a
+diagram representing differential privacy." src="https://desfontain.es/blog/images/anosidat-01.png">
+</center> </p>
+<p>In 2016, I started splitting my time between my job at Google working in the
+privacy team, and pursuing a PhD at ETH Zürich.</p>
+<p>On both sides, I was working on <em>anonymization</em>. And anonymization had
+something very puzzling about it.</p>
+<p>At Google, and in the rest of the industry, people mostly used notions like
+<a href="k-anonymity.html"><em>k-anonymity</em></a>. The idea is to people into buckets of
+sufficiently many other people that they’re “basically anonymous”.</p>
+<p>It wasn’t always k-anonymity. It could be other notions based on an intuitive
+idea of what anonymous data should look like. The general idea was to try and
+see what could go wrong with a certain method, and if we couldn’t think of
+anything, we’d say: it’s probably good enough.</p>
+<p>In academia, though, especially among computer scientists, everyone seemed to
+have converged on another notion:
+<a href="friendly-intro-to-differential-privacy.html"><em>differential privacy</em></a>. DP, as we
+like to call it, is not just a new criterion to decide whether data “looks”
+anonymous enough. Instead, it’s a completely different approach, grounded in
+math. It tells you: there’s bad news and good news.</p>
+<ul>
+<li>The bad news is that <em>anything you publish</em> will leak some individual
+  information. You just can’t escape that fact.</li>
+<li>The good news, is that you can <em>quantify</em> this leakage and <em>limit</em> it,
+  regardless of the attack.</li>
+</ul>
+<p>A lot of people seemed to have seen this new concept and gone like: <em>this is
+it</em>. Not only is the math satisfying, but this is the right notion, on a
+<strong>political</strong> or even <strong>moral</strong> level. That’s how we <em>really</em> protect the people
+in the data.</p>
+<p><center>
+<img alt="The same slide as before, with a double arrow between the
+columns." src="https://desfontain.es/blog/images/anosidat-02.png">
+</center> </p>
+<p>That gap between practice and theory seemed weird to me. It looked like two
+separate worlds who weren’t really speaking to each other.</p>
+<p>So I thought: could we try and bring the two worlds together somehow? That was
+the big problem I wanted to solve during my PhD. I looked at older notions of
+anonymization, or practical tools used in industry, and asked: could you
+<a href="partial-knowledge.html">quantify their leakage in the language of DP</a>? Maybe
+show that they’re not that bad, and that they <em>do</em> provide good guarantees in
+practice?</p>
+<p>That didn’t quite work out.</p>
+<p><center>
+<img alt="A slide containing only the Google and ETH Zürich logos, along with the
+diagram representing differential privacy." src="https://desfontain.es/blog/images/anosidat-03.png">
+</center> </p>
+<p>Instead, I became a lot like these folks in academia: I started focusing much
+more heavily on differential privacy. I became convinced that this was the
+future, not just in academia, but for real-world use cases in industry as well.
+At Google, my team even tried to make it into the <em>default</em> approach used for
+anonymization. We made a ton of progress in that direction!</p>
+<p><center>
+<img alt="A slide containing only the Tumult Labs logo and the diagram representing
+differential privacy." src="https://desfontain.es/blog/images/anosidat-04.png">
+</center> </p>
+<p>Now, I’m at <a href="https://tmlt.io">Tumult Labs</a>, a startup that tries to make that
+happen at the scale of the entire industry. Our goal — my job — is to make
+differential privacy into this thing that everybody uses.</p>
+<p>Kind of like cryptography. If you’re not using HTTPS on your website today,
+that’s bad. People are like: “Yo, that’s unsafe. You’re putting your users at
+risk. Do better.”</p>
+<p>My dream is to live in a world where if you’re claiming to anonymize some data,
+and you’re not using DP… that’s kind of suspicious.</p>
+<p>A few years ago, I thought this industry-wide shift would happen very soon. Any
+day now.</p>
+<p><center>
+<img alt="A slide with a four-panel comic adapted from a comic by Mr. Lovenstein. The
+first panel shows someone with a neutral face. The second panel shows the same
+person with a slightly smiling face. The third panel has a second character,
+labeled &quot;real world&quot;, coming from the right side and saying &quot;No&quot;. The fourth
+panel has the original character frowning." src="https://desfontain.es/blog/images/anosidat-05.png">
+</center> </p>
+<p>Except: it’s not really happening. Or maybe it kind of is, but it’s moving much
+more slowly than I expected. Take a random government agency that publishes
+statistics about people. Or a random company sharing anonymized data with a
+third party. What are the chances they’re using differential privacy? Not great.</p>
+<p>That divergence between communities I observed 8 years ago? It’s still there. If
+anything, it got worse.</p>
+<p><center>
+<img alt="A slide with a cartoon city being split in two by an earthquake creating a
+big ravine in the middle. One side of the city is annotated with the k-anonymity
+diagram, the other with the DP diagram." src="https://desfontain.es/blog/images/anosidat-06.png">
+</center> </p>
+<p>Many academics and practitioners just… don’t use newer, more robust notions.
+Instead, they keep doing the thing they’ve done for decades! At least, that’s
+what it looks like from where I’m standing.</p>
+<p>And the differential privacy community — my community — has developed a sort of
+arrogance about people who haven’t made the switch. To us, differential privacy
+is so <em>obviously</em> the right approach. If you’re not getting it, there must be
+something wrong with you.</p>
+<p>In fact, you might feel exactly this way about me based what I’ve told you so
+far. “Urgh, another guy who’s going to lecture me about how I do anonymization.”</p>
+<p>Or maybe you <em>are</em> focusing on differential privacy, and I’ve just called you
+arrogant, and now you’re like “who does this guy think he is?”. I’m making
+everyone unhappy. This talk is going great. You’re so glad you’re here.</p>
+<p>In all seriousness though, I do think that as a community, we’re not doing
+enough to understand people who keep using ad hoc anonymization. We’re not
+really listening to what they’re telling us, or being empathetic to their
+experiences. And… that doesn’t feel right. That doesn’t feel very productive,
+either.</p>
+<p>So in this talk, I’ll try to do better.</p>
+<p><center>
+<img alt="A slide with two elements. At the top, two stylized hands with a speech bubble
+between the hands. At the bottom, five successive emojis: person gesturing no,
+person pouting, person shrugging, person frowning, and person gesturing
+OK." src="https://desfontain.es/blog/images/anosidat-07.png">
+</center> </p>
+<p>I’ll attempt to truly engage with the arguments of critics of differential
+privacy. Make sure I “get it” by making them mine. Fully understand the
+challenges in the way of our grand vision, and try to figure out how we,
+together, can address them.</p>
+<p>I’ve named this talk “Five stages of accepting provably robust anonymization”.
+The stages, are, of course: denial, anger, bargaining, depression, and
+acceptance.</p>
+<p>It’s silly, of course, especially since my understanding is that this “five
+stages of grief” <a href="https://en.wikipedia.org/wiki/Five_stages_of_grief">model</a> is
+actually kind of outdated in psychology.</p>
+<p>But discussing questions like “how do you define privacy” can actually be pretty
+emotional, for people like you and me. We care about this stuff. We do privacy
+because we want to do the right thing. We want to build better, more respectful
+ways of handling and sharing and publishing data. So when someone goes and say
+“the way you’re doing this is all wrong”, it’s not just an intellectual dispute.
+It makes us feel things.</p>
+<p>So, we’re going to go on a journey, and it’s going to be an emotional journey.</p>
+<p>Let’s dive in!</p>
+<p><center>
+<img alt="A slide with a large title: 1. Denial, followed by the &quot;person gesturing no&quot;
+emoji." src="https://desfontain.es/blog/images/anosidat-08.png">
+</center> </p>
+<p>The first phase is <strong>Denial</strong>.</p>
+<blockquote>
+<p><strong>We don’t actually need differential privacy</strong>. Whenever folks doing
+differential privacy do their “anonymization 101” lecture, it’s always the
+same story. First they come in, and start explaining some classical
+reidentification attacks. The governor of Massachusetts <a href="https://arstechnica.com/tech-policy/2009/09/your-secrets-live-online-in-databases-of-ruin/">reidentified by
+Sweeney</a>!
+<a href="https://www.nytimes.com/2006/08/09/technology/a-face-is-exposed-for-aol-searcher-no-4417749.html">AOL search
+queries</a>!
+The <a href="https://www.nytimes.com/2006/08/09/technology/a-face-is-exposed-for-aol-searcher-no-4417749.html">New York taxi
+dataset</a>!
+The <a href="https://www.nytimes.com/2006/08/09/technology/a-face-is-exposed-for-aol-searcher-no-4417749.html">Netflix prize
+dataset</a>! 
+Then, they go: “This stuff is bad, and it could happen to you. You need DP to
+make sure that you mitigate against that.”</p>
+<p>But let’s be honest. This isn’t very convincing.</p>
+</blockquote>
+<p><center>
+<img alt="A slide with three pictures and labels. The first one is a screenshot of
+Spongebob Squarepants looking unimpressed, labeled &quot;Attacks aren't that scary&quot;.
+The second is a screenshot from the Jurassic Park movie where someone says
+&quot;nobody cares&quot;, labeled &quot;Nobody cares about reidentifying my data&quot;. The third is
+a picture of a yellow gate in the middle of a path, but with no wall on either
+side, labeled &quot;Attacks only work on data with no
+protections&quot;." src="https://desfontain.es/blog/images/anosidat-09.png">
+</center> </p>
+<blockquote>
+<p>First, these attacks are honestly kind of underwhelming. <strong>The risk just seems
+overblown.</strong> Who cares if we figure out that the person who watched some movie
+also watched this other movie? Or if we can reidentify a couple of
+celebrities’ taxi trips? OK, this isn’t supposed to happen, but… nobody’s
+actually harmed in real life by this stuff.</p>
+<p>Plus… <strong>this is purely academic work</strong>. In real life, people won’t investigate
+your data on the off-chance that they’ll reidentify one person! Unless they’re
+people are academics trying to prove a point. What are the chances this
+happens to me?</p>
+<p>And also, in all attacks, <strong>the datasets were obviously badly protected</strong>. Of
+course removing names is not enough! Of course search engine queries are
+reidentifying! Their problem wasn’t that they weren’t using differential
+privacy. Their problem was that they didn’t even try! If they had thought
+about it for more than 5 minutes, and used any reasonable scheme to protect
+data, they’d probably have been fine.</p>
+</blockquote>
+<p><center>
+<img alt="The same slide as before, with additional boxes superposed on top of the
+previous elements. One reads &quot;Few, if any, known cases of cybercriminals running
+such attacks in the real world&quot;. Another one reads &quot;Most well-known attacks were on
+badly-protected datasets&quot;. A third one reads &quot;(Also: mediocre protections might
+be enough for compliance…)&quot;. They all end with a green checkmark
+emoji." src="https://desfontain.es/blog/images/anosidat-10.png">
+</center> </p>
+<p>These arguments are honestly pretty valid, and I wish we’d admit this more
+openly in the differential privacy community.</p>
+<p>First: most attacks, especially the shiny ones that got press coverage, were
+done on datasets that were pretty embarrassing. It makes total sense to see this
+and think: if I do my homework and try to do something reasonable to protect my
+data, that should be enough to make sure bad things don’t happen.</p>
+<p>This can also be the case for compliance-based motivations for anonymization.
+You know that joke about how, to escape a bear, you don’t have to run faster
+than the bear, you have to run faster than the slowest person running from the
+bear? Let’s be real: some people feel this way about data protection
+authorities. Regulators are still at the stage where they have to tell people
+“hashing identifiers is not anonymization”! If you can demonstrate to a
+regulator that you did something reasonable, surely they’re not going to be mad
+because you didn’t use the gold standard, right?</p>
+<p>Finally, it’s totally fair to say: “look, I know I have to do cybersecurity
+stuff, I’m going to get ransomware otherwise”. The risk is real, it’s tangible.
+We’ve all received emails like “we deeply care about your privacy, also all your
+data got stolen by random hackers”. We know it happens all the time.
+Re-identification attacks… not so much. The risk just isn’t that huge.</p>
+<p><center>
+<img alt="A slide with the &quot;Attacks only work on data with no protections&quot; picture from
+the previous slide on the bottom left, and a diagram representing a
+reconstruction attack in the center. It starts with &quot;published tabular
+summaries&quot;, an arrow goes to &quot;system of equations&quot;, then to &quot;reconstructed
+confidential microdata (without names)&quot;, then an arrow goes from that and a
+separate icon labeled &quot;external data source (with names)&quot; to go to &quot;linked
+microdata with names and confidential
+information&quot;." src="https://desfontain.es/blog/images/anosidat-11.png">
+</center> </p>
+<p>First, let’s look at the last argument that risks only exist on “obviously
+unsafe” data releases. One piece of data that doesn’t quite go in this direction
+are reconstruction attacks. Like <a href="us-census-reconstruction-attack.html">the one the U.S. Census did on their 2010
+data</a>.</p>
+<p>Here’s a diagram giving a rough ideas of how it works. The idea is remarkably
+simple: you consider every published statistic as an equation with a bunch of
+unknown variables — one per unknown attribute in each record. And then you
+simply… solve that system of equations. If you have enough statistics, you can
+just do that. This gives you <em>reconstructed</em> records. You went from statistics
+to actual individual records. If a bunch of those are correct, that seems bad.</p>
+<p>The attack doesn’t stop there, though. It has a second step: you use an
+auxiliary dataset to link each reconstructed record with an actual person, and
+learn something additional about this person.</p>
+<p><center>
+<img alt="The same slide as before, with a thinking face emoji on the picture, and a
+bunch of screenshots of paper titles." src="https://desfontain.es/blog/images/anosidat-12.png">
+</center> </p>
+<p>It’s fair to say that the attack was far easier, and far more successful, than
+people expected. It was a real wake-up call inside the U.S. Census Bureau. Plus,
+it was done on the data from 2010, which used well-researched disclosure
+avoidance techniques. So, that argument from earlier that attacks only happen on
+datasets that are “obviously” badly protected… It’s starting to look a little
+iffy.</p>
+<p>There’s still some debate about this attack, though. The initial description of
+the U.S. Census reconstruction attack did not give a lot of detail about how it
+worked, and people had <em>opinions</em> about its validity. One common question was
+around how to <em>quantify</em> the success of attacks, and against which <em>baselines</em>
+to compare it to. I’m not going to relitigate the argument here. The Census
+recently published a <a href="https://arxiv.org/abs/2312.11283">much more thorough technical description of what they
+did</a>, which I think puts to rest a lot of the
+technical debate. You should read it if you want to learn more.</p>
+<p>But this debate undoubtedly raised some good points and questions around what it
+means for an attack to be successful, and how to actually demonstrate attack
+success.</p>
+<p><center>
+<img alt="A slide with the &quot;Attacks aren't that scary&quot; picture from a previous slide on
+the bottom left, with additional elements. A diagram has a man emoji labeled
+2021 and an arrow going to a woman emoji labeled 2023. A screenshot of an
+article titled &quot;How Census Data Put Trans Children at Risk&quot;, by Os Keyes &amp;
+Abraham D. Flaxman; the subtitle reads &quot;The Census Bureau must improve its data
+anonymization methods to protect vulnerable groups&quot;. A screenshot of the text in
+the same article reads: &quot;Using our expertise in data science and data ethics,
+we took simulated data designed to mimic the data sets that the Census Bureau
+releases publicly and tried to reidentify trans teenagers, or at least narrow
+down where they might live, and unfortunately, we succeeded. With the
+data-anonymization approach the Census Bureau used in 2010, we were able to
+identify 605 trans kids. Thankfully, the Census Bureau is undertaking a new
+differential-privacy approach that will improve privacy overall, but it is still
+a work in progress.&quot;. A picture of a trans flag flying above a building
+completes the slide." src="https://desfontain.es/blog/images/anosidat-13.png">
+</center> </p>
+<p>Another way people have criticized the attack is by saying — let’s be real.
+Census data isn’t <em>that</em> sensitive. It’s just demographics: gender, age, racial
+information. It’s not like medical data. Nobody would go through all this
+trouble just to figure out “oh, this person’s age is 42”. Even if you
+reconstruct &amp; reidentify a Census record, you don’t really learn anything new
+and sensitive about that person.</p>
+<p>Here’s something you can do with this statistical releases of this kind.</p>
+<ul>
+<li>You can take data from one year, reconstruct and reidentify some records…</li>
+<li>… then you do the same attack on a more recent data release…</li>
+<li>… and you answer a simple question: “who reported a different sex/gender
+  attribute since last time”?</li>
+</ul>
+<p><a href="https://www.scientificamerican.com/article/how-census-data-put-trans-children-at-risk/">That’s exactly what two researchers
+did.</a>
+They showed <strong>you could reidentify hundreds of trans people</strong> based on
+statistical releases. In the current political climate… I don’t know about you,
+but that scares me.</p>
+<p>There’s a hard lesson in this: <strong>the real world will always find a way to
+surprise you</strong>. Not just in “how could an attacker do this nefarious thing”, but
+also in what nefarious thing can even be the goal. I’ve seen some bad stuff
+working on privacy in the industry for 10 years, but this attack still caught me
+by surprise.</p>
+<p><center>
+<img alt="A slide with the &quot;Nobody cares about reidentifying my data&quot; picture from the
+previous slide and additional elements. A screenshot from a paper reads &quot;As one
+prominent state demographer recently pointed out at a Federal State Cooperative
+for Population Estimates meeting “in past censuses, it was possible to create a
+PUMS-like [PublicUse Microdata Sample] file from the SF1 tables [i.e., decennial
+census publications]. It was just a pain in the neck”&quot;. An infographic shows
+dozens of ad tech companies in different parts of the ad tech
+industry." src="https://desfontain.es/blog/images/anosidat-14.png">
+</center> </p>
+<p>Let’s look at the last point — nobody cares about reidentifying your data.</p>
+<p>Here’s a <a href="https://www.census.gov/library/working-papers/2023/adrm/CES-WP-23-49.html">real
+quote</a>
+from a demographer in USA, complaining about the use of DP in the 2020 Census.
+“In past censuses, it was possible to create microdata from statistical tables,
+it was just a pain.”</p>
+<p>This is from a meeting Census folks had with some of their data users. This
+person is just saying out loud what everyone is doing. <strong>People do reconstruct
+data</strong> in order to do gerrymandering, political targeting, or any kind of
+research that would be made easier if we had microdata. This is an open secret.</p>
+<p>Speaking of open secrets… have you heard of the advertising industry? There’s a
+five-hundred-billion-dollar world who’s predicated on showing ads to precisely
+the right people, and having measurements that are as precise as possible. Data
+flows left and right, and companies have major financial incentives to run
+exactly this kind of attack, to get more information than what they’re supposed
+to.</p>
+<p>The fact that you don’t hear about this kind of thing in the press doesn’t mean
+it’s not happening. Nobody has any interest in publicly talking about it — not
+the people doing it, not the people that sell data and then get it exploited,
+not the people buying or using it. So it’s another one of these open secrets.</p>
+<p>Want to know the worst thing I’ve heard? There was a startup in the US that was
+reconstructing &amp; reidentifying Census records and linking them with medical info
+to better target health insurance advertising. Again, the real world keeps
+surprising you…</p>
+<p><center>
+<img alt="A slide titled &quot;How to help&quot;, with rainbow emojis on both sides of the title.
+A picture of a white cat with a bow tie and round glasses, in front of chemistry
+equipment, is labeled &quot;Educate decision-makers&quot;. A cartoon of a character
+wielding a broom and yelling with their hand up in the air is labeled &quot;Attack
+all the things!&quot;." src="https://desfontain.es/blog/images/anosidat-15.png">
+</center> </p>
+<p>How can we move people past the denial stage?</p>
+<p>First, <strong>we need to do a better job at educating people</strong>, and especially
+decision-makers — think data protection officers, regulators, product owners —
+about the risks of bad anonymization. Both about <em>what</em> can go unexpectedly
+wrong, and <em>how</em> that can happen. We can’t keep using the same examples we used
+10 years ago.</p>
+<p>Second, <strong>attacks are extremely valuable</strong> both to our academic understanding of
+real-world privacy risk, and to the larger societal conversation about what
+anonymization should protect against. Go look at what your government is
+publishing, or what kind of data sharing is done as part of your healthcare
+system. Try to understand what makes sense as an attack, what makes sense as a
+baseline, and how to actually demonstrate real-world risk. Just a few examples
+can go a long way in making people aware of a problem they didn’t think about so
+far.</p>
+<p><center>
+<img alt="A slide with a large title: 1. Anger, followed by the &quot;person pouting&quot;
+emoji." src="https://desfontain.es/blog/images/anosidat-16.png">
+</center> </p>
+<p>The second stage, after denial, is <strong>Anger</strong>.</p>
+<blockquote>
+<p>So, I’m a data scientist, I’ve been tasked to anonymize some data, so I
+thought I’d give differential privacy a try. I picked up an open-source
+library that does differential privacy, and tried to use it to solve my
+problem.</p>
+<p>And I have one question.</p>
+</blockquote>
+<p><center>
+<img alt="A slide with two pictures and labels. The first one is a cartoon drawing of a
+man preparing to hit a computer with a sledghammer, labeled &quot;Usability issues&quot;.
+The second one is the picture of a toy for toddlers to put the right shape into
+the right hole, except the cube is stuck on the round hole, labeled
+&quot;Incompatible requirements&quot;." src="https://desfontain.es/blog/images/anosidat-17.png">
+</center> </p>
+<blockquote>
+<p><strong>Why is it so hard to do anything?!</strong></p>
+<p>Why do I need to learn so many new concepts? Why is this not integrated with
+the tool I’m normally using? Why is this so slow? OK, those were multiple
+questions. What the hell, though?</p>
+<p>Also… it seems like I can only do simple analytics queries? Don’t get me
+wrong, a large part of what I need to do with data basically boils down to
+group-by count or group-by sum queries. But sometimes I need to do more
+complicated things! Like… Linear regression? Naïve Bayes classification?
+Anomaly detection? What am supposed to do if I need any of these?</p>
+</blockquote>
+<p><center>
+<img alt="The same slide as before, with additional boxes superposed on top of the
+previous elements. One reads &quot;Tools are not user-friendly&quot;. Another one reads
+&quot;Not enough tools / guidance to help users choose and optimize parameters&quot;. A
+third one reads &quot;Major feature gaps&quot;. They all end with a green checkmark
+emoji." src="https://desfontain.es/blog/images/anosidat-18.png">
+</center> </p>
+<p>Who in the audience has tried using DP libraries? Do you relate with that
+experience? I see some people nodding… Yeah. The anger is, honestly, justified.</p>
+<p><strong>It’s our job to make this stuff easy to use, and we’re simply not doing a great
+job.</strong> You can’t just run an SQL query that does some simple aggregations and get
+<em>good</em> results. You still have to learn about epsilon, and probably delta, and
+maybe even rho and other weird parameters.</p>
+<p>And even if you do, it’s unlikely that you will be able to solve your problem on
+your own. Real-world problems still often have requirements for which there is
+no good guidance, so <strong>you’ll probably need to hire an expert to even think
+about using the stuff</strong>. These can be because the necessary algorithms are still
+cutting-edge research, or simply because the context is somewhat unusual.</p>
+<p>Even in the best of cases, where the tool actually solves the problem, there’s
+are big questions about <strong>how to optimize the algorithm and choose its privacy
+budget</strong>. There’s very little guidance and even less tooling that helps people
+understand trade-offs.</p>
+<p><center>
+<img alt="A slide with a big Tumult Labs logo with four lines of text next to it:
+&quot;Familiar Python APIs&quot;, &quot;Smooth onboarding paths&quot;, &quot;Advanced features,
+extensible design&quot;, &quot;Parameter tuning and optimization&quot;. On the bottom right,
+additional text reads &quot;Learn more: tmlt.dev&quot;." src="https://desfontain.es/blog/images/anosidat-19.png">
+</center> </p>
+<p>At my company, we develop <a href="https://tmlt.dev">Tumult Analytics</a>, which we think
+is the best-in-class DP framework. These problems are top of mind for us, and we
+try to address them. Things are getting better!</p>
+<p>Here are some things we try to do to improve the status quo.</p>
+<ul>
+<li>Our tool is in Python, and its API mirrors the API of PySpark or Pandas, which
+  helps people learn fast.</li>
+<li>We invested a lot of time making a <a href="https://docs.tmlt.dev/analytics/latest/tutorials/index.html">user-friendly tutorial
+  series</a> that
+  helps people learn what they need to use the tool.</li>
+<li>We have a number of unique features that our clients need in their production
+  use cases, and the framework is built for extensibility, allowing ourselves to
+  easily add more capabilities in the future.</li>
+<li>Finally, we just shipped the first version of our parameter tuning &amp;
+  optimization features to a customer. Stay tuned for the public launch! (Or if
+  that sounds interesting to you, come say hi!)</li>
+</ul>
+<p><center>
+<img alt="A slide titled &quot;How to help&quot;, with rainbow emojis on both sides of the title.
+A picture of a group of people discussing around laptops in a meeting room is
+labeled &quot;Talk to people&quot;. A picture of a cartoon rocket is labeled &quot;Extend
+existing tools&quot;. A picture of someone riding a bike with his hands extended and
+not touching the bike is labeled &quot;Make algorithms
+hands-free&quot;." src="https://desfontain.es/blog/images/anosidat-20.png">
+</center> </p>
+<p>How can you help here?</p>
+<p>First: <strong>talking to people</strong>. What do I mean by this? Things like: running
+usability studies to understand how to make tooling more user-friendly.
+Interviews with potential users to understand their needs and identify gaps.
+Writing more simple explanations of this stuff for wider audiences.
+Collaborating with people outside of your field, especially if you want to apply
+DP to a new field of application. Building bridges. Solving other people’s
+problems.</p>
+<p>Second, when you make a new thing… <strong>why not extend existing open-source
+tools?</strong> Some frameworks, like Tumult Analytics or OpenDP, are designed for
+extensibility, so adding new things is easier than you’d think! The additional
+work is not huge, compared to doing the actual research or writing a paper. And
+when it’s super easy for people to reuse your work, you tend to get a lot more
+exposure &amp; citations!</p>
+<p>Third, if you make up new differential privacy mechanisms… make them hands-free?
+What I mean by that is “<strong>get rid of the hyperparameters</strong>”. Every single
+parameter that needs to be set manually is a big usability hurdle. So it’s worth
+figuring out — can we spend a little portion of the privacy budget to
+automatically select good values for these hyperparameters, rather than asking
+the user? End users will thank you!</p>
+<p><center>
+<img alt="A slide with a large title: 3. Bargaining, followed by the &quot;person shrugging&quot;
+emoji." src="https://desfontain.es/blog/images/anosidat-21.png">
+</center> </p>
+<p>The third stage is <strong>Bargaining</strong>.</p>
+<blockquote>
+<p>I’ve gone through denial already. I realize that there is a real problem, and
+that it’s worth fixing. After I got angry trying to use DP in practice, <strong>I
+started looking for alternative solutions.</strong> And I think some of them make
+sense! Hear me out.</p>
+</blockquote>
+<p><center>
+<img alt="A slide with three pictures and labels. The first one is a drinks can that
+looks like a Diet Coke, except it reads &quot;Differential Privacy Light&quot; in the
+Coca-Cola font, labeled &quot;Sort-of differential privacy&quot;. The second one is a
+database icon with sparkles, labeled &quot;Synthetic data generation&quot;. The third one
+is an arrow quantifying &quot;Risk&quot;, going from green (small label &quot;yay&quot;), to yellow
+(small label &quot;meh&quot;), to red (small label &quot;ew&quot;), labeled &quot;Empirical privacy
+metrics&quot;." src="https://desfontain.es/blog/images/anosidat-22.png">
+</center> </p>
+<blockquote>
+<p>First, I thought — <strong>what if I take some shortcuts?</strong> Maybe I can just add the
+same kind of noise they use in DP, but without doing all the rest of the
+annoying stuff? Like, adding some Gaussian samples in SQL or Excel to my
+statistics should be good enough, right?</p>
+<p>But then I had an even better idea: <strong>synthetic data</strong>! If I make synthetic
+data out of my original dataset, surely that’s safe enough to share and
+publish, right? The records aren’t real! They don’t actually correspond to
+anyone! It seems to me that <em>by definition</em>, it breaks linkability, and
+nothing in there can be reidentifiable.</p>
+<p>I had some lingering doubts about the safety of doing that, but then I talked
+to a synthetic data vendor. And he had a really compelling argument:
+<strong>empirical metrics</strong>. He said: “I’m not saying it’s always safe, but we have
+ways to verifying whether the data you generated it safe enough. We can run
+tests and compute a privacy score that tells us whether the data you got is
+anonymized enough.”</p>
+<p>That sounds great to me!</p>
+</blockquote>
+<p><center>
+<img alt="The same slide as before, with additional boxes superposed on top of the
+previous elements. One reads &quot;Almost certainly much better than ad hoc
+anonymization&quot;. Another one reads &quot;Better usability&quot;. A third one reads
+&quot;Measuring things is great!&quot;. They all end with a green checkmark
+emoji." src="https://desfontain.es/blog/images/anosidat-23.png">
+</center> </p>
+<p>Let’s be clear. <strong>This is already so much better than pretending the problem
+doesn’t exist.</strong></p>
+<p>Obviously, just adding Laplace noise of scale 1 to a sum of salaries in euros is
+not doing much. But if you try do DP, but maybe your noise is not
+cryptographically safe, or your sensitivity calculation is a little wrong…
+<em>probably</em> it’s better than not trying at all. Similarly, using synthetic data
+is much better than sharing the original dataset with the identifiers removed,
+or using a known broken approach. Academics will tell you: this isn’t a silver
+bullet! There are attacks on synthetic data that can retrieve the original
+information! But it’s also true that these attacks are not as convincing as the
+ones on de-identified datasets, or even reconstruction attacks I talked about
+earlier.</p>
+<p>It’s also <em>understandable</em> that people want to do that, when existing DP tools
+don’t solve their use case, or aren’t integrated with their existing workflows.
+<strong>Rolling your own anonymization by hand can seem much easier.</strong> Plus,
+sometimes, when you tell people that the first step to use DP is that they have
+to aggregate their data, you kind of lose them from the start. Synthetic data
+feels much more palatable, understandable. And the user experience can be pretty
+smooth. Press a button, you’re done.</p>
+<p>Finally, <strong>efforts to quantify privacy are laudable</strong>. Having a metric for
+something allows people to draw comparisons, make data-driven decisions, rely on
+something concrete.</p>
+<p>Plus, when you’re an engineer or a data scientist, a nice number just makes you
+feel warm and fuzzy inside. And when the number go up or down? Brrrr. Feelings.</p>
+<p>I’m joking, but this isn’t a bad thing! It’s great to use this as an emotional
+lever to encourage people to take better privacy decisions! We should absolutely
+measure and quantify things!</p>
+<p><center>
+<img alt="A slide with two pictures and labels. The first one is a picture from Judge
+Judy looking unimpressed, labeled &quot;Assuming unsafety by default&quot;. The second one
+is the conspiracy theory / Pepe Silvia meme from It's Always Sunny in
+Philadelphia, labeled &quot;investigating privacy
+metrics&quot;." src="https://desfontain.es/blog/images/anosidat-24.png">
+</center> </p>
+<p>Ask a DP expert to push back against these and they’ll tell you “there’s nothing
+that shows it’s safe, so we should assume it’s not”. Honestly, we find it even
+annoying that you’d ask us to make this case. It’s so obvious! Look at
+cryptography! They learned the hard way that everything should be grounded in
+math. You made a new fancy encryption algorithm but you can’t prove it’s safe?
+Get out of here!</p>
+<p>But let’s be real: the outside world doesn’t see things this way. Especially not
+with anonymization. Not yet. <strong>We’re just not going to win this argument on
+philosophical grounds.</strong></p>
+<p>So instead, let’s look more closely at these bargaining alternatives — synthetic
+data and empirical privacy metrics. We’ll need to dive a little deeper to figure
+out how to properly engage with this argument. <strong>How does one measure privacy,
+actually?</strong> Where do the warm and fuzzy numbers actually come from? As you can
+guess from the picture I chose there, it’s going to be <em>somewhat</em> of a rabbit
+hole. Bear with me.</p>
+<p><center>
+<img alt="A slide titled &quot;Similarity-based metrics&quot; with a diagram. A database icon
+labeled &quot;real data&quot; has two arrows going from it to two other database icons,
+labeled &quot;train data&quot; and &quot;test data&quot;. An arrow goes from &quot;train data&quot; to a
+fourth icon, with sparkles, labeled &quot;synthetic data&quot;. An additional, thicker,
+double arrow between train data and synthetic data is labelled &quot;D_train&quot;; a
+similar double arrow between test data is synthetic data is labeled &quot;D_test&quot;. A
+box on the bottom right reads &quot;D_train &lt; D_test
+?&quot;." src="https://desfontain.es/blog/images/anosidat-25.png">
+</center> </p>
+<p>Most people use something that falls into the umbrella of <em>similarity-based
+metrics</em>. The idea is relatively simple.</p>
+<p>First, you take your data and you split it in two parts — the train data and the
+test data, kind of like you do in machine learning.</p>
+<p>Then, you use only the train data to generate your synthetic data.</p>
+<p>Then — and this is where it gets interesting — you compute the <em>distance</em>
+between the synthetic data and the train data. There are many ways to compute
+a distance between two distributions; you end up with different metrics
+depending on the distance you choose. But for this explanation, we’ll ignore the
+details, and focus on the intuition of this distance: it tries to answer the
+question “am I generating something that’s suspiciously close to the real data?”</p>
+<p>But you don’t answer that question directly. Instead, you compute a second
+distance, this time between the synthetic data and the test data. Now you’ve got
+two numbers, so you’re doing the natural thing and compare them with each other:
+is the distance to the train data smaller than the distance with the test data?</p>
+<p>If yes, that’s… Is that bad or good? Think about it.</p>
+<p>Correct! That’s bad. That means we generated records that are close, not just to
+the real data, but to the specific points that we used for generation. We didn’t
+just end up matching the distribution well, we <em>overfit</em> to individual data
+points. That could be a sign that we leaked some private information. So, that’s
+bad.</p>
+<p>Conversely, if the two numbers are roughly the same, or even if the distance to
+the train data is larger, that means we’re fine. <strong>We didn’t leak any sensitive
+data.</strong> Right?</p>
+<p>… right?</p>
+<p>Well… not really.</p>
+<p><center>
+<img alt="A picture of someone's arm; they're hiding an ace in their jacket, labeled
+&quot;Easy to cheat&quot;. A robot emoji is added to the
+picture." src="https://desfontain.es/blog/images/anosidat-26.png">
+</center> </p>
+<p>First, it’s easy to <em>cheat</em> at these metrics. All we need to do is to make the
+distance to the training data large enough, and bam, the metric says we’ve done
+well. For example, with numerical data, I could just add a large constant number
+to every record. This way, the data I’m generating is “far away” from the train
+data. The metric tells me I’ve done a great job at privacy. But… all the
+sensitive information that was in the original dataset is still in the
+“synthetic” dataset. I’ve leaked all the information. That’s bad!</p>
+<p>Of course, you’ll tell me: “But, Damien, that’s unfair. We’re not measuring the
+privacy of evil algorithms made by attackers. These edge cases are meaningless.
+<strong>We don’t cheat in real life!</strong>”</p>
+<p>To which I say: <strong>you’re using machine learning!</strong> You’re giving your data to a
+neural network, you don’t really understand how it works, but you tell it: “Go
+optimize for these metrics. I want good utility and good privacy, and this is
+how both of these things are defined. Find a good way of achieving both
+objectives.”</p>
+<p>Guess what? Neural networks <em>are</em> going to cheat! That’s what they
+do! They’re just doing it in a smarter way that avoids obvious detection! So
+gameability — how easy is it to cheat at a metric — <em>is</em> something you should be
+concerned about.</p>
+<p><center>
+<img alt="The same slide as before with an additional picture of someone using a
+keyboard while handcuffed, labeled &quot;Meaningless attacker
+model&quot;." src="https://desfontain.es/blog/images/anosidat-27.png">
+</center> </p>
+<p>Second: using distances is basically saying that the <em>only</em> thing the attacker
+can do is “try to find records that are close to real records”. As in, if
+there’s a synthetic record that matches a real record, then the attacker wins.</p>
+<p>But… <strong>that doesn’t make any sense!</strong> The attacker doesn’t know which are real
+data points! That doesn’t correspond to something that people would actually
+<em>do</em> to breach privacy! And attackers can do a ton of things: exploit subtle
+details of your algorithm, use auxiliary information, or even influence your
+data sometimes. So using distances is restricting what the attacker is “allowed”
+to do, without good justification.</p>
+<p><center>
+<img alt="The same slide as before with an additional picture of a graph with a bunch of
+aligned points and one outlier point, labeled &quot;Average-case
+metric&quot;." src="https://desfontain.es/blog/images/anosidat-28.png">
+</center> </p>
+<p>Third, you’re computing a single number that captures a distance between
+distributions. You got data points on the left, data points on the right, and
+you’re getting an <em>averaged</em> metric about your system. It’s giving you, <em>at
+best</em>, information about the average level of “privacy” provided by the
+synthetic data generator.</p>
+<p>But — and I cannot stress this enough — <strong>everyone needs privacy guarantees!</strong>
+Including outliers! <strong>Especially outliers!</strong> If your approach works fine for
+most people, but leaks a ton of data for people in demographic minorities,
+<strong>that’s bad!</strong> In fact, it’s even worse than a system that leaks everyone’s
+information! At least you’d notice and fix it!</p>
+<p>Aaaargh! I thought we were past the anger stage but here you go, I got angry. I
+told you this stuff was emotional!</p>
+<p><center>
+<img alt="The same slide as before with an additional picture of a bunch of colorful
+cartoon dice, labeled &quot;Inherent randomness&quot;." src="https://desfontain.es/blog/images/anosidat-29.png">
+</center> </p>
+<p>Fourth, and finally, something fun about the empirical metrics used in practice.
+Try to generate synthetic data and measure its privacy. Then do it again, but
+with a different random seed, or different train/test data split.</p>
+<p>Are you obtaining the same number? Is the thing telling you whether it’s “safe
+enough” giving you the same information both times?</p>
+<p>I’ll spare you the experiment — the answer is “probably not”. Researchers <a href="https://arxiv.org/abs/2312.05114">tried
+it</a> on platforms offered by various synthetic
+data vendors and got <em>widely</em> inconsistent results. So even if the metric was
+more meaningful, it’s really hard to trust it if the “things look OK!” signal is
+super noisy.</p>
+<p>OK, so that’s bad. Bad news, though: <strong>it gets worse</strong>. Because if you think
+about it, at its core, what are we trying to achieve?</p>
+<p><center>
+<img alt="A slide with a bigger version of &quot;Risk&quot; arrow from a previous slide: it goes
+from green (small label &quot;yay&quot;), to yellow (small label &quot;meh&quot;), to red (small
+label &quot;ew&quot;). An arrow points somewhere in the green zone, and is labeled &quot;You
+are here&quot;." src="https://desfontain.es/blog/images/anosidat-30.png">
+</center> </p>
+<p>We’re trying to <em>quantify risk</em>. There’s some kind of scale, some end of the
+scale is great, the other end is bad, and we want to know where we are on that
+scale. Well, we’ve seen that maybe we’re not exactly measuring risk, more like
+“risk”, but let’s set that aside.</p>
+<p>People building and selling synthetic data are basically telling you: you
+generate some data and know where you are on the scale. Like, for example,
+there. You’re in the safe zone. You’re fine. But <strong>that’s not what empirical
+privacy metrics can ever tell you</strong>, even if you fix all the problems I
+mentioned before!</p>
+<p><center>
+<img alt="The same slide as before with the risk arrow, except the &quot;You are here&quot; arrow
+has been replaced with a large accolate from the green zone to all the way on
+the right, past the red &quot;ew&quot; zone, labeled &quot;You are somewhere in here
+idk&quot;." src="https://desfontain.es/blog/images/anosidat-31.png">
+</center> </p>
+<p>At most, they can tell you something like “you’re somewhere here.” We know for
+sure that you’re not on the left of this. Maybe we ran an attack and found that
+this is the success rate of the attack. So it’s <em>at least</em> that bad. We got a
+<em>lower bound</em> on risk. But <strong>we don’t know how much worse this can get!</strong> Maybe
+a better attack would have a much better success rate! We don’t know!</p>
+<p>It’s critical to keep this framing in mind when you evaluate privacy claims
+based on empirical metrics. There are still tons of papers that introduce a new
+algorithm, compare it to prior work using empirical privacy metrics, and
+conclude something like “our algorithm is better for privacy”. No it’s not! You
+don’t know that! At best, <em>this specific attack</em> seems to be mitigated more
+effectively <em>in this specific context</em>. There’s a crucial difference!</p>
+<p>Mitigating specific attacks is useful. By all means, we should do it. But we
+can’t jump from that to making general claims that we have no evidence for.</p>
+<p><center>
+<img alt="A slide titled &quot;How to help&quot;, with rainbow emojis on both sides of the title.
+The risk arrow from earlier, but the label says &quot;Risk, except it makes sense
+this time&quot;, with a larger &quot;Better metrics&quot; labels. A close-up picture of a
+wrench near a nail and a hammer about to strike a screw, labeled &quot;Better use of
+metrics&quot;. The sparkling database from earlier, with the &quot;magic&quot; gif on top of
+it, labeled &quot;Synthetic data with DP&quot;." src="https://desfontain.es/blog/images/anosidat-32.png">
+</center> </p>
+<p>OK, so that’s depressing, and we’re not even at the depression stage yet. Let’s
+be a bit hopeful. What should we do?</p>
+<p>First, <strong>we need better metrics</strong> with better properties. Metrics should match
+specific attacks, with clear assumptions about the attacker. They should report
+the risk to the <em>least</em> well-protected people in the dataset, not the average
+case. They shouldn’t be too trivial to game, and so on. We’re not yet at a stage
+where we know what these metrics should be. But the current ones just aren’t
+cutting it.</p>
+<p>Not only do we need better tools, we need to <em>use</em> them better. We should be
+honest about what they actually tell us, especially if we use them to
+communicate with people about privacy properties. And <strong>we should not use them
+on their own</strong>, but in conjunction with <em>upper bounds</em> on the risk.</p>
+<p>Which naturally leads me to <strong>synthetic data with differential privacy</strong>.
+There’s a lot of research on the topic already, but there’s so much more to be
+done. Better tools. Better usability. Better utility for various realistic
+workloads. Better benchmarks. Capturing functional dependencies, time series.
+And so on, and so forth. More talking to people who actually need this
+technology, listening to their needs, addressing them.</p>
+<p>There’s a lot more I could say about synthetic data, but you probably don’t want
+me to at that point. Thanks for indulging me. Now, sadly, we have to move on…</p>
+<p><center>
+<img alt="A slide with a large title: 4. Depression, followed by the &quot;person frowning&quot;
+emoji." src="https://desfontain.es/blog/images/anosidat-33.png">
+</center> </p>
+<p>… to <strong>Depression</strong>.</p>
+<blockquote>
+<p>OK, Damien. I listened to you talk for 30 minutes, and then I was like: Urgh,
+OK, fine. Stop talking. I’ll do it the right way. I'll use differential
+privacy, and do whatever is necessary to make it work. No shortcuts.</p>
+<p>Except… I’ve been trying for months now.</p>
+</blockquote>
+<p><center>
+<img alt="A slide with two elements. A picture of an overflowing garbage can in a field,
+labeled &quot;Terrible utility&quot;. The risk arrow from earlier, with the arrow that
+points all the way on the right side of the arrow, labeled &quot;I am here&quot; with a
+crying emoji; the graphic is labeled &quot;Meaningless privacy
+parameters&quot;." src="https://desfontain.es/blog/images/anosidat-34.png">
+</center> </p>
+<blockquote>
+<p>And <strong>there’s just so much garbage in my data</strong>. It turns out, my use case
+<em>is</em> complex. I <em>do</em> have lots of statistics and weird requirements.</p>
+<p>I tried all the things that they told me to try in the literature. I used
+fancy techniques like zero-concentrated DP and dimensionality reduction and
+adaptive algorithms. I even got some experts to help me. But even with their
+help, it seems like my problem is impossible to solve. The noise is just too
+bad.</p>
+<p>Unless… well, unless I use, like, an epsilon of 30 or anything. But sadly, I
+understand the <a href="https://desfontain.es/privacy/differential-privacy-in-more-detail.html">explanation of what epsilon
+means</a>!
+Kind of. I know that large privacy parameters are basically providing
+meaningless protection! So why would I even bother, if the best I can do is a
+number that tells me that the privacy levels are terrible?</p>
+<p>I should probably just stop trying to do anonymization altogether and go to
+the mountains. Raise some goats or something. That seems nice.</p>
+</blockquote>
+<p><center>
+<img alt="The same slide as before, with additional boxes superposed on top of the
+previous elements. One reads &quot;Privacy-utility trade-offs can be painful&quot;.
+Another one reads &quot;No guidance or consensus about these choices&quot;. A third one
+reads &quot;Large budgets are pretty much uninterpretable&quot;. They all end with a green
+checkmark emoji." src="https://desfontain.es/blog/images/anosidat-35.png">
+</center> </p>
+<p>Honestly… yeah.</p>
+<p>For many problems, the trade-off between privacy and utility can be frankly
+brutal. That’s just a fact.</p>
+<p>And if you give me an algorithm and the only thing you tell me is “it’s DP with
+an epsilon of 20”… it doesn’t spark joy. There’s no magic explanation that I
+could give you that would make it acceptable.</p>
+<p>Plus, it’s not like there’s good guidance about this, either. If you can use a
+low privacy budget, you can understand what’s going on. You can rely on the
+math. But when your epsilon is, like, 10… the math interpretation stops making
+sense, and what do you have to replace it?</p>
+<p>In an ideal world, there’d be some standard that tells you: in this context,
+under these conditions, an epsilon of 10 is OK. In this other context, you can
+go up to 15. Even if it feels a bit iffy from a mathematical standpoint, at
+least there would be community agreement that this is acceptable. People could
+defend their choices to their executives, to regulators, and to the people in
+their data. But there’s nothing like that right now. So when people have to face
+hard decisions regarding parameter choices, of course that can feel hopeless.</p>
+<p>Until we have some form of community agreement or standard on what parameters
+make sense in which context, we won’t solve that problem entirely. But in the
+meantime, here are some ways we can look at the current situation under a more
+hopeful lens.</p>
+<p><center>
+<img alt="A slide with three pictures and labels. The first one is a box labeled
+epsilon, and an arrow going from this box to a version of this box divided in 5,
+each labeled epsilon_1 to epsilon_5, the diagram is labeled &quot;Per-attribute
+privacy accounting&quot;. The second one are three boxes of various sizes, labeled
+from epsilon_1 to epsilon_3, the whole thing is labeled &quot;Varying privayc loss&quot;.
+The third one is the &quot;Not sure if…&quot; meme from Futurama showing Fry looking
+suspicious, labeled &quot;Empirical effectiveness&quot;." src="https://desfontain.es/blog/images/anosidat-36.png">
+</center> </p>
+<p>First, here’s an idea that has a lot of potential: privacy analyses don’t need
+to be limited to a single number. You can do finer-grained things, like looking
+at the privacy loss of individual attributes instead of entire records.</p>
+<p>Say your total epsilon is 10. That seems not so great. But maybe each person in
+your dataset has 20 attributes. And maybe you can show that if all you do is
+change a <em>single</em> attribute, then that information is protected with an epsilon
+or 0.5. Or maybe 1, or 2, depending on which attribute. That feels better: it
+gives you interpretable guarantees on smaller pieces of information. Maybe
+that’s enough to give you some peace of mind.</p>
+<p>Another idea that is largely uncharted territory today is to have the privacy
+loss vary across protected entities, instead of being constant on the entire
+dataset.</p>
+<p>This is particularly useful for economic data that is typically very
+heavy-tailed: one large supermaket might have 1000 employees and millions in
+monthly revenue, while the mom-and-pop store next door is 500 times smaller.
+Protecting both at the same time can be tricky, or outright impossible, if we
+protect them in the exact same way. But it might make sense to adopt a privacy
+loss accounting framework where the smaller contributors have a better privacy
+parameter than the large contributors. We’re doing things along these lines with
+the U.S. Department of Agriculture and the economic branch of the U.S. Census
+Bureau — come talk to me if you want to hear more.</p>
+<p>Finally, and this might sound funny considering everything I told you so far,
+but… Even with very large epsilons, differential privacy seems to achieve better
+practical protection than other approaches?</p>
+<p>This is particularly flagrant in machine learning use cases. If you want to
+train a deep neural network with differential privacy, you typically need very
+large epsilons to get decent results. But somehow, this seems to not only be
+enough to mitigate practical attacks — at least, those we know of today — but it
+also seems to work much better than alternative approaches that don’t provide
+any formal guarantees. I don’t think we have a great explanation for this. My
+guess is that DP forces you to do some things — like tracking and bounding
+sensitivity, and adding noise — that are inherently good for privacy?</p>
+<p>But my point is that even if you’re a empiricist through and through and you
+don’t care about formal guarantees, only about making practical decisions…
+You may still want to consider using differential privacy! It just seems to work
+better at mitigating attacks, even when it shouldn’t.</p>
+<p><center>
+<img alt="The same slide as before, with the &quot;How to help&quot; title between rainbow emojis,
+and three arrows pointing to the three graphics. They are labeled &quot;Studying
+this&quot;, &quot;and this&quot;, &quot;and also this&quot;." src="https://desfontain.es/blog/images/anosidat-37.png">
+</center> </p>
+<p>How can you help?</p>
+<p>First, what I said about finer-grained privacy analysis — there’s a lot to do
+here. It’s still largely uncharted territory.</p>
+<ul>
+<li>Some of it is systems design: how to make DP frameworks that make it easy to
+  compute per-attribute privacy loss?</li>
+<li>Some of it is theory. This idea to vary the privacy loss across protected
+  things: we don’t know what are the best mechanisms to do that in practice, and
+  what are the fundamental limitations of the approach. As always with new
+  ideas, we’ll probably bump into more open problems as we try to use this
+  approach to address real-world use cases.</li>
+</ul>
+<p>Also, it would be nice to understand better why DP is so effective at mitigating
+practical attacks. Maybe it’s because it protects against worst-case attackers,
+and real attackers are weaker than this? In which case, modeling more realistic
+attackers seems worthwhile, maybe to gain a deeper theoretical understanding of
+the advantage they can get. This idea is not new; we actually <a href="https://desfontain.es/privacy/partial-knowledge.html">tried to do
+exactly that</a> during my
+PhD, but formalizing it and obtaining convincing results seems surprisingly
+difficult. There’s probably a lot more to be done there.</p>
+<p><center>
+<img alt="A slide with a large title: 5. Acceptance, followed by the &quot;person gesturing
+OK&quot; emoji." src="https://desfontain.es/blog/images/anosidat-38.png">
+</center> </p>
+<p>We’re reaching the end of this talk with the final stage: <strong>Acceptance</strong>.</p>
+<p>I think most people working on differential privacy in academia did not reach
+this stage the hard way, by going through all the steps that came before, and
+persevering. Instead, a lot of them were attracted to the abstract properties of
+this framework. It felt elegant and robust.</p>
+<p>… we just like the math, you know?</p>
+<p>But more and more, as we ship DP to practical use cases, we see practitioners
+get converted. Not because all the nice theory, but because of very practical
+considerations. I count four of them, but I’m certainly missing some.</p>
+<p><center>
+<img alt="A slide with four graphics. On the top left, picture of a number of diplomats
+sitting around a table, with flags from different countries in the background,
+labeled &quot;Better data negotiations&quot;. On the top right, the logos of the IRS and
+the US Department of Education. On the bottom left, speech bubbles from two
+parties going: &quot;Can we have the results of queries A, B, C, and D?&quot; &quot;Uhh… what
+about only A and D, with bigger granularity?&quot; &quot;Hmm. How about…&quot; &quot;…&quot;. On the
+bottom right, another, shorter dialog: &quot;You get this much privacy budget. Tell
+us how you want to spend it.&quot; &quot;OK!&quot;." src="https://desfontain.es/blog/images/anosidat-39.png">
+</center> </p>
+<p>The first one is <strong>making data negotiations smoother</strong>. What do I mean by that?</p>
+<p>We work with the IRS — the tax office in the US — to help them share data with
+the Department of Education. The Department of Education wants to publish income
+information depending on degree: when students go to this college to do this
+degree, how much do they earn on average after 2 or 5 years? This is used by
+policymakers to better allocate federal resources, and by students to make
+decisions about their education and the way they finance it.</p>
+<p>The Department of Education wants as much income data as possible, as precisely
+as possible. The IRS, on the other hand, has a constitutional duty to not leak
+tax information of specific people.</p>
+<p>Before using DP, there would be dozens and dozens of emails and meetings back
+and forth where one side would ask for more statistics and the other would be
+like “eeeeeh, I don’t know, this seems a bit scary, what if we do something else
+instead”, and so on.</p>
+<p>Differential privacy aligned the incentives. It allowed the IRS to say: “OK,
+here is your total budget. We’re OK with giving you this much epsilon. You
+decide which queries you want to run, at which level of granularity, and which
+queries are more important to you and require more budget.” That saved them a
+ton of time and led to both better data for the Department of Education, and
+better privacy outcomes for IRS.</p>
+<p><center>
+<img alt="A slide with four graphics. On the top left, the same picture as earlier,
+still labeled &quot;Better data negotiations&quot;. On the top right, a sytlized document
+with a green check, labeled &quot;Automated policy approvals&quot;. On the bottom left, a
+speech bubble saying &quot;Please answer these 37 questions and give us a few weeks
+to audit your use case. We’ll let you know what we think you should do.&quot;. On the
+bottom right, a speech bubble saying &quot;Use this standard tool with default
+parameters. If it works for you, great! Otherwise, please answer these 37
+questions…&quot;." src="https://desfontain.es/blog/images/anosidat-40.png">
+</center> </p>
+<p>The second also has to do with saving time and effort, in another context:
+<strong>automated approval flows</strong>.</p>
+<p>When I was at Google, my team was in charge of evaluating and approving
+anonymization strategies for all other teams. People would come to us, and ask:
+“we want to share statistics about user data with a third party, or keep some
+metrics forever, can you please help us anonymize that data?”</p>
+<p>When I started in this team, we were using ad hoc methods. Because these methods
+only make sense depending on context, we had to ask a lot of questions to
+people. Can an attacker influence the data? Are you using windowed statistics?
+Are you releasing multiple statistics about the same data point? We had to
+verify a lot of this stuff by hand, and we could never know for sure that a
+given launch would not have a bad privacy interaction with another launch from a
+different team using the same data.</p>
+<p>After investing in building DP libraries, we were able to tell people: “Use this
+library with these default parameters. If you’re satisfied with the result,
+we’ll approve your launch super quickly.”</p>
+<p>Just like before, it aligned incentives, <strong>putting individual teams in charge of
+their own success.</strong> <em>You</em> do the work because you have a vested interest in
+making it work <em>for you</em>. We save ourselves review time, which means we have
+more time to improve the tooling, which benefits everyone.</p>
+<p><center>
+<img alt="A slide with four graphics. On the top , the same two pictures as earlier,
+&quot;Better data negotiations&quot; and &quot;Automated policy approvals&quot;. On the bottom left,
+a woman stretching on a yoga mat, labeled &quot;Unmached flexibility&quot;. On the bottom
+right, close-up of Lego bricks, labeleda &quot;Ability to reuse
+work&quot;." src="https://desfontain.es/blog/images/anosidat-41.png">
+</center> </p>
+<p>A third point is that DP allows you almost unlimited flexibility about what you
+can do. It gives you a very clear, well-defined boundary: you have to track the
+privacy loss of everything. Within this boundary, you can go wild! You don’t
+need to second-guess yourself every time you introduce a new aspect to your
+algorithm, or optimize an existing approach. You just need to do the math to
+quantify how much privacy budget each step costs. That’s really convenient.</p>
+<p>Finally, DP makes it super easy to build on other people’s work. It composes
+nicely, so you can use individual ideas as building blocks, swap one out for
+another. If you’re using 5 different basic mechanisms in your overall strategy
+and one of them gets improved in a new paper, you can start using it and get
+immediate benefits. And once you start having a good overview of what tools are
+out there, it’s not super hard to start addressing novel use cases — the basic
+ideas are very reusable and effective.</p>
+<p> </p>
+
+<p> </p>
+
+<p> </p>
+
+<p>In conclusion.</p>
+<p><center>
+<img alt="A slide with a large cartoon of a happy character, throwing confetti on a
+rainbow, with little stars, joyful smiley faces, and a happy sun in the
+background; above the cloud is written &quot;maybe everything isn't hopeless
+bullshit&quot;." src="https://desfontain.es/blog/images/anosidat-42.png">
+</center> </p>
+<p>I do believe there that there are some real, scary issues with the use of unsafe
+anonymization practices. It’s also clear to me that the future lies in provably
+robust approaches, grounded in math, like differential privacy.</p>
+<p>It’s not just an intellectual preference or emotional investment — I believe
+that this is truly the right thing to do from a moral and political standpoint.</p>
+<p>But we can’t expect everyone to move there without solving many major problems,
+like the ones I tried to talk about today.</p>
+<p>I think we can actually do this. And I sure hope that you will help!</p>
+<p><center>
+<img alt="A final slide, split in two. On the left, a large &quot;Thank you&quot; is followed by a
+sparkling heart emoji, and some text says &quot;Special thanks to Andrej Bauer for
+his  “Five stages of accepting constructive mathematics” talk &amp; paper, the
+source of inspiration for this presentation.&quot;. On the right is the name of the
+author, Damien Desfontaines, along with his email address, LinkedIn page,
+Mastodon page, and DP blog." src="https://desfontain.es/blog/images/anosidat-43.png">
+</center> </p>
+<p>The inspiration from this talk came from a
+<a href="https://www.youtube.com/watch?v=21qPOReu4FI">talk</a> by Andrej Bauer, who used
+this "Five stages" structure for a lecture about constructive mathematics, later
+converted into a
+<a href="https://www.ams.org/journals/bull/2017-54-03/S0273-0979-2016-01556-4/S0273-0979-2016-01556-4.pdf">paper</a>.
+I heartily recommend both. I hope I did justice to the format.</p>
+<p>Thanks a ton for listening. Here’s my email address,
+<a href="https://desfontain.es/linkedin">LinkedIn</a>, and
+<a href="https://desfontain.es/mastodon">Mastodon</a> if you want to stay in touch, and a
+link to my <a href="friendly-intro-to-differential-privacy.html">blog post series</a> about
+differential privacy if you want to learn more about this stuff.</p>
+<hr>
+<p>I'm very grateful to
+<a href="https://www.its.uni-luebeck.de/mitarbeiterinnen/esfandiar-mohammadi">Esfandiar Mohammadi</a>
+for inviting me to speak to this congress, to
+<a href="https://people.cs.umass.edu/~miklau/">Gerome Miklau</a> for supporting my
+preparing and delivering this talk, and to
+<a href="https://www.linkedin.com/in/haristephenkumar/">Hari Kumar</a> for his fantastic
+feedback on this presentation.</p>
+<p><small>Thanks as well to <a href="http://a3nm.net/">Antoine Amarilli</a> for his helpful comments on this
+transcript.</small></p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20240428,
+  title = &#123;Five stages of accepting provably robust anonymization},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/five-stages.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2024},
+  month = &#123;04}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="choosing-things-privately.html">← previous</a>
+    </li>
+    <li>
+      <a href="ml-privacy-evaluations.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

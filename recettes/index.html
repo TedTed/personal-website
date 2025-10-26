@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Les bonnes recettes de Ted</title>
+    <link rel="stylesheet" href="../style/serious.css" />
+    <link rel="stylesheet" href="../style/menu.css" />
+    <link rel="icon" href="images/favicon.ico" sizes="any">
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="manifest" href="images/site.webmanifest">
+    </head>
+  <body>
+    <div id="menuGlobal">
+        <table>
+            <tr>
+            <td>
+                <a href="../index.html">
+                    ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+                    <img src="../flag-uk.png" alt=""/>
+                </a>
+            </td>
+            <td>
+                <a href="../serious-fr.html"> Présentation <img src="../flag-france.gif" alt=""/></a>
+                <a href="../serious.html"><img src="../flag-uk.png" alt=""/></a>
+            <td>
+                <a href="../blogue/index.html">Blog <img src="../flag-france.gif" alt=""/></a>
+                <a href="../privacy/index.html"><img src="../flag-uk.png" alt=""/></a>
+            </td>
+            <td id="menuCourant">
+                Recettes <img src="../flag-france.gif" alt=""/>
+            </td>
+            </tr>
+            <tr id="sousMenu">
+                <td colspan="4">
+                    <div class="center">
+                        <a href="index.html#entrees">Entrées</a> — 
+                        <a href="index.html#plats">Plats principaux</a> — 
+                        <a href="index.html#sucre">Desserts</a> —
+                        <a href="index.html#boisson">Boissons</a> —
+                        <a href="index.html#tech">Techniques</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="contenu">
+      <h1>Miam&nbsp;!</h1>
+      <p>Cette section de mon site contient une liste de mes recettes favorites.
+      Je les ai toutes essayées et personnellement approuvées, souvent avec
+      quelques modifications.</p> 
+      <p>Les recettes sont classées dans les catégories suivantes.</p>
+      <ul>
+        <li>
+          <a href="#dip">Sauces</a> pour tremper des chips ou des crudités en
+          apéro
+        </li>
+        <li>
+          <a href="#apero">Amuse-bouches</a> salés à grignoter en apéro ou en
+          entrée
+        </li>
+        <li>
+          <a href="#salade">Salades</a> et plats non cuits
+        </li>
+        <li>
+          <a href="#soupe">Soupes</a>
+        </li>
+        <li>
+          <a href="#brunch">Plats de brunch</a>, typiquement à base d'œufs
+        </li>
+        <li>
+          <a href="#grill">Grillades</a>
+        </li>
+        <li>
+          <a href="#mijote">Plats mijotés</a>
+        </li>
+        <li>
+          <a href="#poele">Plats cuits à la poêle</a>
+        </li>
+        <li>
+          <a href="#puree">Purées</a>, qui peuvent aisément être transformés
+          en gratins
+        </li>
+        <li>
+          <a href="#tarte">Tartes salées</a>, quiches, flans, etc.
+        </li>
+        <li>
+          <a href="#roti">Plats rôtis</a> ne rentrant pas dans la catégorie
+          précédente
+        </li>
+        <li>
+          <a href="#pate">Plats à base de pâtes</a>
+        </li>
+        <li>
+          <a href="#risotto">Risottos</a> et autres plats à base de riz
+        </li>
+        <li>
+          <a href="#accompagnement">Accompagnements</a> de légumes qui ne
+          constituent pas un plat complet, et qui ne rentrent pas dans une des
+          catégories précédentes
+        </li>
+        <li>
+          <a href="#biscuit">Biscuits</a>, au sens large: trucs sucrés, solides
+          et individuels
+        </li>
+        <li>
+          <a href="#gateau">Gâteaux</a> sucrés et autres cakes
+        </li>
+        <li>
+          <a href="#glace">Glaces et sorbets</a>
+        </li>
+        <li>
+          <a href="#dessert">Autres desserts</a>
+        </li>
+        <li>
+          <a href="#boisson">Boissons</a>
+        </li>
+      </ul>
+      <p>Une dernière catégorie contient des <a href="#tech">techniques de
+      base</a> de cuisine utilisées dans le reste des recettes, mais ne
+      constituant pas des plats à part entière. Pour finir, j'ai aussi listé les
+      recettes qui <a href="#blanc">utilisent plus de blancs d'œuf que de
+      jaunes</a>, ou <a href="#jaune">plus de jaunes que de blancs</a>, parce
+      que c'est un problème classique lorsqu'on fait à manger de se retrouver
+      avec des blancs ou des jaunes d'œuf en trop.</p>
+      <p>Pour rendre cette page plus utile, j'ai aussi ajouté trois filtres pour
+      ne montrer qu'une sous-partie des recettes. Vous pouvez cliquer sur l'un
+      ou plusieurs des boutons suivants pour…<p>
+      <ul>
+        <li>
+          <button id="boutonFacile"></button> (essentiellement inratables, et où
+          je prends soin d'éviter d'utiliser du vocabulaire technique)
+        </li>
+        <li>
+          <button id="boutonRapide"></button> (nécessitant maximum 15-20 minutes
+          de préparation, sans compter le temps de cuisson)
+        </li>
+        <li>
+          <button id="boutonVege"></button> (ou qui proposent aussi une variante
+          végétarienne testée et approuvée)
+        </li>
+      </ul>
+      <!-- <p>Par ailleurs, certaines recettes sont marquées d'un ✨</p> -->
+      <p>N'hésitez pas à m'envoyer des mails pour suggérer des variantes ou pour
+      corriger des typos&nbsp;!</p>
+
+      <h2 id="entrees">Entrées</h2>
+      <h3 id="dip">À tartiner ou tremper</h3>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="Tapenade.html">
+            <img alt="Tapenade" src="images/VignetteTapenade.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette vege"><a href="BabaGanousch.html">Baba ganousch</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="CaviarDAubergines.html">Caviar d'aubergines</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="ChutneyDeMangues.html">Chutney de mangues</a></li>
+        <li class="recette facile vege"><a href="ConfitDOignons.html">Confit d'oignons</a></li>
+        <li class="recette facile vege"><a href="CremeDAilNouveau.html">Crème d'ail nouveau</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="CremeDAvocatAuxAmandes.html">Crème d'avocat aux amandes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="Guacamole.html">Guacamole</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="Houmous.html">Houmous facile</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="HoumousDeCourgette.html">Houmous de courgette</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="PateDeChampignons.html">Pâté de champignons</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="PestoRouge.html">Pesto rouge</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="SauceTartare.html">Sauce tartare</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="Tapenade.html">Tapenade</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+          </ul>
+        </div>
+      </div>
+      <h3 id="apero">Amuse-bouches</h3>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="TarteSoleil.html">
+            <img alt="Tarte soleil" src="images/VignetteTarteSoleil.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette facile vege"><a href="BiscuitsAuxTomatesSechees.html">Biscuits aux tomates séchées</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="BoucheesLandaises.html">Bouchées landaises</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="ChipsDePommes.html">Chips de pommes</a></li>
+        <li class="recette facile vege"><a href="ChipsMagiques.html">Chips magiques</a></li>
+        <li class="recette vege"><a href="Kimchi.html">Kimchi</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="MarinadeDeSaumon.html">Marinade de saumon</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="MarronsChauds.html">Marrons chauds</a></li>
+        <li class="recette facile rapide"><a href="MiniCroissantsDeSaucisse.html">Mini-croissants de saucisse</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="PainDePoisson.html">Pain de poisson</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="Pissaladiere.html">Pissaladière</a> (végétarienne ou non)</li>
+        <li class="recette vege"><a href="PoireauxVinaigrette.html">Poireaux vinaigrette</a></li>
+        <li class="recette vege"><a href="PoivronsMarines.html">Poivrons marinés</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="RillettesDeLapin.html">Rillettes de lapin</a></li>
+        <li class="recette facile rapide"><a href="RillettesDeSardine.html">Rillettes de sardine</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TarteSoleil.html">Tarte-soleil</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="ToastsAuxPoivronsRotis.html">Toasts aux poivrons rôtis</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TomatesCerisesFarcies.html">Tomates cerises farcies</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+          </ul>
+        </div>
+      </div>
+      <h3 id="salade">Salades</h3>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="SaladeDeChou.html">
+            <img alt="Salade de chou" src="images/VignetteSaladeDeChou.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette facile rapide vege"><a href="CeleriRemoulade.html">Céleri rémoulade</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="OiMuchim.html">Oi muchim</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (salade de concombres coréenne)</li>
+        <li class="recette vege"><a href="Panzanella.html">Panzanella classique</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (salade de pain italienne)</li>
+        <li class="recette"><a href="PanzanellaConcombreSaumon.html">Panzanella au concombre et saumon</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="PanzanellaDHiver.html">Panzanella d'hiver</a></li>
+        <li class="recette facile rapide vege"><a href="SaladeDEndives.html">Salade d'endives</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="SaladeDeChampignons.html">Salade de champignons</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="SaladeDeChayotes.html">Salade de chayotes</a></li>
+        <li class="recette facile rapide vege"><a href="SaladeDeChou.html">Salade de chou</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="SaladeDeChouFleurPistacheEtGrenade.html">Salade de chou-fleur, pistaches et grenade</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="SaladeDeChouFleurRoti.html">Salade de chou-fleur rôti, sauce au sésame</a></li>
+        <li class="recette facile vege"><a href="SaladeDeConcombres.html">Salade de concombres</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="SaladeDePatates.html">Salade de patates</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="SaladeDePates.html">Salade de pâtes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="SaladeDeQuinoaAvocatsGrenade.html">Salade de quinoa avocats-grenade</a></li>
+        <li class="recette facile rapide vege"><a href="SaladeDeTomates.html">Salade de tomates</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="SaladeTiedeDePoivronsAuCumin.html">Salade tiède de poivrons au cumin</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="SteakTartare.html">Steaks tartare</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TagliatellesDeCourgettes.html">Tagliatelles de courgette</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide"><a href="TartareDeSaumon.html">Tartare de saumon</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+          </ul>
+        </div>
+      </div>
+      <h3 id="soupe">Soupes</h3>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="SoupeCarottesOranges.html">
+            <img alt="Soupe carottes-oranges" src="images/VignetteSoupeCarottesOranges.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette vege"><a href="Brotsuppe.html">Brotsuppe</a> (soupe de pain franconienne)</li>
+        <li class="recette vege"><a href="Gaspacho.html">Gaspacho</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="GaspachoDePasteque.html">Gaspacho de pastèque</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="Minestrone.html">Minestrone</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="Okrochka.html">Okrochka</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (ou plutôt, « Окрошка »)</li>
+        <li class="recette vege"><a href="SoupeALAilDesOurs.html">Soupe à l'ail des ours</a></li>
+        <li class="recette vege"><a href="SoupeALOignon.html">Soupe à l'oignon</a></li>
+        <li class="recette vege"><a href="SoupeAutomnale.html">Soupe automnale</a></li>
+        <li class="recette facile vege"><a href="SoupeAuxChampignons.html">Soupe aux champignons</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="SoupeCarottesOranges.html">Soupe carottes-oranges</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="SoupeDAsperges.html">Soupe d'asperges</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="SoupeDEpinards.html">Soupe d'épinards</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="SoupeDHiverAuJambon.html">Soupe d'hiver au jambon</a></li>
+        <li class="recette facile rapide vege"><a href="SoupeDeCourgettes.html">Soupe veloutée de courgettes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="SoupeDePoivronsRotis.html">Soupe de poivrons rôtis</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="SoupeLentillesAubergines.html">Soupe lentilles-aubergines</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="SoupeMexicaineAuxChampignons.html">Soupe mexicaine aux champignons</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="SoupeRusseALaBetterave.html">Soupe russe à la betterave</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (Свекольник)</li>
+        <li class="recette vege"><a href="SoupeVerteDePaques.html">Soupe verte de Pâques</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (« Grüendonnschtigsoppe »)</li>
+        <li class="recette facile rapide vege"><a href="VelouteDeCarottesAuxCacahuetes.html">Velouté de carottes aux cacahuètes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="VelouteDeChouFleur.html">Velouté de chou-fleur</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 id="plats">Plats principaux</h2>
+      <h3 id="brunch">Plats de brunch</h3>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="CrepesFamiliales.html">
+            <img alt="Crêpe avec des poivrons poêlés au miel" src="images/VignetteCrepes.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette vege"><a href="BriocheTressee.html">Brioche tressée</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="CrepesFamiliales.html">Crêpes familiales</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="DutchBaby.html">Dutch baby</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/> (gros pancake au four)</li>
+        <li class="recette facile rapide vege"><a href="GaufresDePommesDeTerre.html">Gaufres de pommes de terre</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="Latkes.html">Latkes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (galettes juives de pommes de terres)</li>
+        <li class="recette facile vege"><a href="OeufsALaCoqueAuBeurreMiso.html">Œufs à la coque au beurre miso</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="OeufsBrouillesFabuleux.html">Œufs brouillés fabuleux</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="OeufsFlorentine.html">Œufs Florentine</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="OeufsPochesEnsoleilles.html">Œufs pochés ensoleillés</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="OmeletteAuxChampignons.html">Omelette aux champignons</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (ou à autre chose)</li>
+        <li class="recette vege"><a href="OmeletteEspagnole.html">Omelette espagnole</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="PainPerdu.html">Pain perdu</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="Pancakes.html">Pancakes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette rapide vege"><a href="PancakesALaBanane.html">Pancakes à la banane du voyageur</a></li>
+        <li class="recette vege"><a href="Rosti.html">Rösti</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="Shakshuka.html">Shakshuka</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (œufs au plat tunisiens)</li>
+          </ul>
+        </div>
+      </div>
+      <h3 id="grill">Grillades</h3>
+      <p>Les recettes de cette section ont été testées avec un barbecue à
+      charbon. Elles sont sûrement adaptables avec d'autres types de grill (y
+      compris du four, probablement&nbsp;?), mais je n'ai encore jamais
+      essayé.</p>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="PouletMarineALAntillaise.html">
+            <img alt="Poulet mariné à l'antillaise en train de griller" src="images/VignettePouletMarineALAntillaise.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette facile vege"><a href="AuberginesMarinees.html">Aubergines marinées</a></li>
+        <li class="recette facile vege"><a href="CourgettesMarinees.html">Courgettes marinées</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette facile rapide vege"><a href="MaisGrille.html">Maïs grillé</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette facile rapide"><a href="PorcMarineALaCoreenne.html">Porc mariné à la coréenne</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette facile rapide"><a href="PorcMarineToutSimple.html">Porc mariné tout simple</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette facile"><a href="PouletMarineALAntillaise.html">Poulet mariné à l'antillaise</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/> (à griller)</li>
+        <li class="recette vege"><a href="Stockbrot.html">Stockbrot</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (torsade de pain à la broche)</li>
+          </ul>
+        </div>
+      </div>
+      <h3 id="mijote">Plats mijotés</h3>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="CurryDeLentilles.html">
+            <img alt="Lentilles coco" src="images/VignetteLentillesCoco.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette"><a href="AxoaDeVeau.html">Axoa de veau</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="BarbunyaPilaki.html">Barbunya Pilaki</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (haricots borlotti à la tomate)</li>
+        <li class="recette"><a href="BlanquetteDeVeau.html">Blanquette de veau</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="BoeufBourguignon.html">Bœuf bourguignon</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="BoeufMode.html">Bœuf mode</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="CaillesAuPortoEtSafran.html">Cailles au porto et safran</a></li>
+        <li class="recette"><a href="CarbonadeFlamande.html">Carbonade flamande</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="CarottesAuLaitDeCoco.html">Carottes mijotées au lait de coco</a></li>
+        <li class="recette vege"><a href="CassouletVegetarien.html">Cassoulet végétarien</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="CeleriRaveALOrange.html">Céleri-rave entier à l'orange</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="ChiliVegetarien.html">Chili végétarien</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette"><a href="Choucroute.html">Choucroute à l'ancienne</a></li>
+        <li class="recette"><a href="CivetDeCerf.html">Civet de cerf</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="CivetDeSanglier.html">Civet de sanglier</a></li>
+        <li class="recette"><a href="CoqAuVin.html">Coq au vin</a></li>
+        <li class="recette"><a href="CoqAuVinRose.html">Coq au vin rosé</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="CotesDePorcProvencales.html">Côtes de porc à la provençale</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="CurryDAgneau.html">Curry d'agneau</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="CurryDAuberginesRoties.html">Curry d'aubergines rôties</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="CurryDeCourgettes.html">Curry de courgettes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="CurryDeLentilles.html">Curry de lentilles</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (ou « Lentilles coco »)</li>
+        <li class="recette vege"><a href="CurryDePoisChichesNoixDeCajouEpinards.html">Curry de pois chiches aux épinards</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="CurryDePouletAuxFruitsExotiques.html">Curry de poulet aux fruits exotiques</a></li>
+        <li class="recette"><a href="CurryJaponaisDePoulet.html">Curry japonais de poulet</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide"><a href="DiotsALaBiere.html">Diots à la bière</a></li>
+        <li class="recette"><a href="DiotsAuVinBlanc.html">Diots au vin blanc</a></li>
+        <li class="recette"><a href="Feijoada.html">Feijoada</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="FeijoadaVegetarienne.html">Feijoada végétarienne</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="FiletMignonSaugeRomarin.html">Filet mignon à la sauge et au romarin</a></li>
+        <li class="recette facile"><a href="GoulaschDePorcALaTomate.html">Goulasch de porc à la tomate</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="GoulaschTraditionnel.html">Goulasch traditionnel</a></li>
+        <li class="recette facile"><a href="JoueDePorcALaCitronnelle.html">Joue de porc à la citronnelle</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide"><a href="LentillesSaucisses.html">Lentilles-saucisses</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="MijoteDePorcAuxEndives.html">Mijoté de porc aux endives</a></li>
+        <li class="recette facile"><a href="MijoteDePorcAuxPatatesDouces.html">Mijoté de porc aux patates douces</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette"><a href="MijoteDePorcDeDijon.html">Mijoté de porc de Dijon</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="MoulesALaDiable.html">Moules à la diable</a></li>
+        <li class="recette facile rapide"><a href="MoulesMariniere.html">Moules marinières</a></li>
+        <li class="recette"><a href="OssoBucco.html">Osso bucco</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="PintadeALaBiere.html">Pintade à la bière</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="PintadeALaChoucroute.html">Pintade à la choucroute</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="PoisChichesConfits.html">Pois chiches confits</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/> (et leur sauce)</li>
+        <li class="recette facile"><a href="PorcEffiloche.html">Porc effiloché</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/> (« Pulled pork »)</li>
+        <li class="recette"><a href="PotAuFeu.html">Pot-au-feu véritable, vénérable et insurpassable</a></li>
+        <li class="recette"><a href="PouletAuCidre.html">Poulet au cidre</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="PouletBasquaise.html">Poulet basquaise</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="PouletPoivronsPaprika.html">Poulet poivrons-paprika</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="RagoutCremeuxDeLentillesNoires.html">Ragoût crémeux de lentilles noires</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="RagoutDAgneauOrangesEtMarrons.html">Ragoût d'agneau, oranges et marrons</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="RagoutDeLegumesDeNoel.html">Ragoût de légumes de Noël</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="RagoutDeLentillesAuxChampignons.html">Ragoût de lentilles aux champignons</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="RagoutDePoissonBlanc.html">Ragoût de poisson blanc</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="RagoutDePouletALaMoutarde.html">Ragoût de poulet à la moutarde</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="Ratatouille.html">Ratatouille</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="SanglierSauceAuMiel.html">Sanglier et sa sauce au miel</a></li>
+        <li class="recette facile"><a href="SauteDeVeauAuPorto.html">Sauté de veau au porto</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="SauteDeVeauCarottesOranges.html">Sauté de veau aux carottes et oranges</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="TajineDAgneauAuxAbricots.html">Tajine d'agneau aux abricots</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TajineDeLegumesAuCitron.html">Tajine de légumes au citron</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TajineDeLegumesParfume.html">Tajine de légumes parfumé</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette"><a href="TajineDePouletAuCitron.html">Tajine de poulet au citron</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+          </ul>
+        </div>
+      </div>
+      <h3 id="poele">Plats cuits à la poêle</h3>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="GalettesCourgettesEtPommesDeTerre.html">
+            <img alt="Galettes courgettes & pommes de terre et salade verte" src="images/VignetteGalettesCourgettesPommesDeTerre.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette facile rapide"><a href="AiguillettesDePouletAuxMandarines.html">Aiguillettes de poulet aux mandarines</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="Bibimbap.html">Bibimbap</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="BoulettesDePouletAuxCarottes.html">Boulettes de poulet aux carottes</a></li>
+        <li class="recette"><a href="BoulettesDeViandeSuedoises.html">Boulettes de viande à la suédoise</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette rapide"><a href="CabillaudMielSoja.html">Cabillaud au miel et soja</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="ChiliConCarneFacile.html">Chili con carne super facile</a></li>
+        <li class="recette"><a href="CrevettesALaDiabla.html">Camarones a la diabla</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (crevettes mexicaines)</li>
+        <li class="recette"><a href="CrevettesMielSoja.html">Crevettes au miel et sauce soja</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide"><a href="CrevettesSauceFaconFacon.html">Crevettes sauce façon-façon</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide"><a href="CroqueMadame.html">Croque-madame</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide"><a href="DindeAuCitron.html">Escalopes de dinde au citron</a></li>
+        <li class="recette"><a href="DindePanee.html">Dinde panée</a></li>
+        <li class="recette"><a href="EspadonAuCombava.html">Espadon au combava</a></li>
+        <li class="recette vege"><a href="Falafels.html">Falafels</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="GalettesCourgettesEtPommesDeTerre.html">Galettes courgettes & pommes de terre</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide"><a href="MagretsDeCanardAuMiel.html">Magrets de canard au miel</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="MagretsDeCanardFarcis.html">Magrets de canards farcis</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="PoissonSauceBasilic.html">Poisson sauce basilic</a></li>
+        <li class="recette"><a href="PouletALIndonesienne.html">Poulet à l'indonésienne</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide"><a href="PouletCitronPaprika.html">Poulet citron-paprika</a></li>
+        <li class="recette facile rapide"><a href="PouletCoco.html">Poulet coco</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="PouletSauceCombava.html">Poulet sauce combava</a></li>
+        <li class="recette vege"><a href="RisottoDeMarrons.html">Risotto de marrons</a></li>
+        <li class="recette facile rapide"><a href="SaumonSafrane.html">Saumon safrané</a></li>
+        <li class="recette facile rapide"><a href="SteaksALechalote.html">Steaks à l'échalote</a></li>
+        <li class="recette"><a href="SteaksAuxChampignons.html">Steaks aux champignons</a></li>
+        <li class="recette"><a href="SteaksDAutrucheAuxPommes.html">Steaks d'autruche aux pommes</a></li>
+        <li class="recette rapide"><a href="SteaksDeCerfFlambesALArmagnac.html">Steaks de cerf flambés à l'Armagnac</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette rapide"><a href="SteaksFlambesAuPoivre.html">Steaks flambés au poivre</a></li>
+          </ul>
+        </div>
+      </div>
+      <h3 id="puree">Purées et gratins</h3>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="GratinDeCucurbitacee.html">
+            <img alt="Gratin de doubeurre" src="images/VignetteGratinDeDoubeurre.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette vege"><a href="FondueDePoireaux.html">Fondue de poireaux</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="GratinAuPotironEtAuxNoix.html">Gratin aux potiron et aux noix</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="GratinDAutomne.html">Gratin d'automne</a></li>
+        <li class="recette vege"><a href="GratinDauphinois.html">Gratin dauphinois</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="GratinDeCourgettes.html">Gratin de courgettes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="GratinDeCucurbitacee.html">Gratin à la gloire de la divinité des Cucurbitacées</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="GratinDeRaviolisAuxChampignons.html">Gratin de raviolis aux champignons</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="GratinHaricotsChampignons.html">Gratin de haricots verts aux champignons</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="GratinNuageDeChouFleur.html">Gratin-nuage de chou-fleur</a></li>
+        <li class="recette facile rapide vege"><a href="PureeDeCarottes.html">Purée de carottes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="PureeDeChouVert.html">Purée de chou vert</a></li>
+        <li class="recette facile vege"><a href="PureeDeNavets.html">Purée de navets </a></li>
+        <li class="recette facile vege"><a href="PureeDePanais.html">Purée de panais</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="PureeDePatatesDoucesGratinee.html">Purée gratinée de patates douces</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="PureeDePommesDeTerreDeGrandChef.html">Purée de pommes de terre de grand chef</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette facile vege"><a href="PureeFenouilAneth.html">Purée de fenouils à l'aneth</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+          </ul>
+        </div>
+      </div>
+      <h3 id="tarte">Tartes, quiches, pizzas, flans…</h3>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="QuicheOignonsChampignons.html">
+            <img alt="Quiche oignons-champignons" src="images/VignetteQuicheOignonsChampignons.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette facile rapide"><a href="CakePoivronsMerguez.html">Cake poivrons-merguez</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="FlanDeCourgette.html">Flan de courgettes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="FlanDeThonProvencal.html">Flan de thon provençal</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="Pizza.html">Pizza</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="QuicheAuxOignons.html">Quiche aux oignons</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="QuicheAuxPoireaux.html">Quiche aux poireaux</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="QuicheLorraine.html">Quiche lorraine</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="QuicheOignonsChampignons.html">Quiche oignons-champignons</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="QuicheSaumonEpinards.html">Quiche saumon-épinards</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="TarteBoeufCourgettes.html">Tarte bœuf-courgettes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="TarteTatinAuxOignons.html">Tarte Tatin pommes-oignons</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TarteTatinPoivronsAubergines.html">Tarte Tatin poivrons-aubergines</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TarteTomateMoutarde.html">Tarte à la tomate et à la moutarde</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TourtePanaisNoixDePecan.html">Tourte panais et noix de pécan</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+          </ul>
+        </div>
+      </div>
+      <h3 id="roti">Autres plats rôtis</h3>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="PouletOrangeSumac.html">
+            <img alt="Cuisse de poulet à l'orange et au sumac avec carottes rôties et semoule" src="images/VignettePouletOrangeSumac.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette vege"><a href="ArtichautsRotis.html">Artichauts rôtis</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="BlancsDePouletFarcisALaSauge.html">Blancs de poulet farcis à la sauge</a></li>
+        <li class="recette facile rapide"><a href="BoudinNoirAuxPoires.html">Boudin noir aux poires</a></li>
+        <li class="recette"><a href="CanetteAuxFruitsExotiques.html">Canette aux fruits exotiques</a></li>
+        <li class="recette vege"><a href="ChouFleurBuffalo.html">Chou-fleur buffalo</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="Croziflette.html">Croziflette</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="DindeDeThanksgiving.html">Dinde de Thanksgiving</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette"><a href="DindeFarcieAuxPommes.html">Dinde farcie aux pommes</a></li>
+        <li class="recette"><a href="FiletDAgneauEnCrouteDEpices.html">Filets d'agneau en croûte d'épices</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="FiletMignonAuxOignons.html">Filet mignon aux oignons</a></li>
+        <li class="recette"><a href="FiletsDeDauradeAuFour.html">Filets de daurade au four</a></li>
+        <li class="recette"><a href="FiletsDeSandreAuVinBlanc.html">Filets de sandre au vin blanc</a></li>
+        <li class="recette facile rapide vege"><a href="GnocchisRotisAuxBrocolis.html">Gnocchis rôtis aux brocolis</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="GnocchisRotisAuxChampignons.html">Gnocchis rôtis aux champignons</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="HachisParmentierVegetarien.html">Hachis parmentier végétarien</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="HaricotsBlancsConfitsAuCitron.html">Haricots blancs confits au citron</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="HaricotsRougesConfitsEnChili.html">Haricots rouges confits en chili</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="LegumesDEteConfitsAuFour.html">Légumes d'été confits au four</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="LegumesFarcis.html">Légumes farcis</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="LegumesRotis.html">Légumes rôtis</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="LegumesRotisAuPesto.html">Légumes rôtis au pesto</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="OieRotieAuxEpices.html">Oie rôtie aux épices</a></li>
+        <li class="recette vege"><a href="OignonsFarcisVegetariens.html">Oignons farcis végétariens</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide"><a href="PapillotesDeSaumonAuxPoivronsEtAuMiel.html">Papillotes de saumon poivron-miel</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="PintadeFarcie.html">Pintade farcie</a></li>
+        <li class="recette facile"><a href="PouletALIrlandaise.html">Poulet à l'irlandaise</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="PouletDoubeurre.html">Poulet butternut</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide"><a href="PouletOrangeSumac.html">Cuisses de poulet à l'orange et au sumac</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="RosbifMignonette.html">Rosbif en mignonnette</a></li>
+        <li class="recette"><a href="RotiDeBoeufPoivreRomarin.html">Rôti de bœuf poivre-romarin</a></li>
+        <li class="recette facile"><a href="RotiDePorcAmbre.html">Rôti de porc ambré</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="RotiDePorcAuxPommes.html">Rôti de porc aux pommes</a></li>
+        <li class="recette facile rapide"><a href="SaucisseDeMorteauAuFour.html">Saucisse de Morteau au four</a></li>
+        <li class="recette facile"><a href="SaumonAuChampagne.html">Saumon au champagne</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="SaumonAuxMandarines.html">Saumon aux mandarines</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="SaumonEnCrouteDeNoix.html">Saumon en croûte de noix</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="SaumonEnPapilloteDePoires.html">Saumon en papillote de poires</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide"><a href="SourisDAgneauAuxHerbes.html">Souris d'agneau aux herbes</a></li>
+        <li class="recette vege"><a href="TianProvencal.html">Tian provençal</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="TofuAuMielEtSoja.html">Tofu rôti au miel et soja</a></li>
+          </ul>
+        </div>
+      </div>
+      <h3 id="pate">Plats à base de pâtes</h3>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="PatesAuxTomatesCerises.html">
+            <img alt="Pâtes aux tomates cerises" src="images/VignettePatesAuxTomatesCerises.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette rapide"><a href="CarbonaraVeritable.html">Carbonara véritable</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="LasagnesAilDesOursRoquette.html">Lasagnes ail des ours & roquette</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="LasagnesDeChampignonsEpices.html">Lasagnes de champignons épicés</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="LasagnesSaumonPoireaux.html">Lasagnes saumon-poireaux</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="LasagnesTruiteÉpinards.html">Lasagnes truite-épinards</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="NouillesChinoisesViteFait.html">Nouilles chinoises vite fait</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="NouillesDeRizSautees.html">Nouilles de riz sautées</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="PastaEFagioli.html">Pasta e Fagioli</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (soupe de pâtes et de haricots)</li>
+        <li class="recette facile vege"><a href="PatesALAilCarameliseEtAuxEpinards.html">Pâtes à l'ail caramélisé et aux épinards</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette rapide vege"><a href="PatesALAilRoti.html">Pâtes à l'ail rôti</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="PatesALaTruffe.html">Pâtes à la truffe</a></li>
+        <li class="recette vege"><a href="PatesAllaNorma.html">Pâtes alla Norma</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile"><a href="PatesAuSaumon.html">Pâtes au saumon</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="PatesAuxAubergines.html">Pâtes aux aubergines</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="PatesAuxChampignons.html">Pâtes aux champignons</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="PatesAuxEchalotes.html">Pâtes aux échalotes caramélisées</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="PatesAuxTomatesCerises.html">Pâtes aux tomates cerises</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="PatesAuxTomatesEpicees.html">Pâtes aux tomates épicées</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="PatesAuxTomatesRoties.html">Pâtes aux tomates rôties</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="PatesChingaderinara.html">Pâtes chingaderinara</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="PatesCremeusesAuxPoireaux.html">Pâtes crémeuses aux poireaux</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="PatesMiso.html">Pâtes miso</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide"><a href="PatesNicoises.html">Pâtes à la niçoise</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="PestoALAilDesOurs.html">Pesto à l'ail des ours</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="PestoDeRoquette.html">Pesto de roquette</a></li>
+        <li class="recette facile vege"><a href="PestoVegetalien.html">Pesto végétalien</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="RaviolisRusses.html">Raviolis russes</a> (« Пельмени »)</li>
+        <li class="recette facile vege"><a href="SauceBeurreNoisetteSaugeChampignons.html">Sauce à la sauge et aux champignons</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="SauceBolognaise.html">Sauce bolognaise</a></li>
+          </ul>
+        </div>
+      </div>
+      <h3 id="risotto">Risottos & compagnie</h3>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="RisottoAuxCourgettesEtCitron.html">
+            <img alt="Risotto aux courgettes et au citron" src="images/VignetteRisottoAuxCourgettesEtCitron.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette"><a href="PaellaRoyale.html">Paëlla royale</a></li>
+        <li class="recette vege"><a href="RisottoAuFenouilEtCitron.html">Risotto au fenouil et citron</a></li>
+        <li class="recette vege"><a href="RisottoAuxAsperges.html">Risotto aux asperges</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="RisottoAuxChampignons.html">Risotto aux champignons</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="RisottoAuxCourgettesEtCitron.html">Risotto aux courgettes et au citron</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="RisottoAuxPoiresEtAuxNoix.html">Risotto aux poires et aux noix</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette"><a href="RisottoCrevettesPetitsPois.html">Risotto citronné aux crevettes et petits pois</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette rapide vege"><a href="RisottoMinuteALaChinoise.html">Risotto-minute à la chinoise</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="RisottoToutVert.html">Risotto tout vert</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="RizAuSafran.html">Riz au safran</a></li>
+        <li class="recette vege"><a href="RizMexicain.html">Riz mexicain</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+          </ul>
+        </div>
+      </div>
+      <h3 id="accompagnement">Accompagnements</h3>
+      <p>Cette catégorie ne liste que les accompagnements de légumes qui ne
+      constituent pas vraiment des plats complets, et qui ne rentrent pas dans
+      une des catégories précédentes (donc excluant les
+      <a href="#puree">purées</a>, <a href="salade">salades</a>, etc.).
+      <div class="recettes">
+        <div class="vignette">
+          <a href="FenouilsRotis.html">
+            <img alt="Fenouils rôtis" src="images/VignetteFenouilsRotis.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette facile rapide vege"><a href="AspergesRoties.html">Asperges rôties</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="ChouBlancAuBeurreDeGenievre.html">Chou blanc au beurre de genièvre</a></li>
+        <li class="recette vege"><a href="ChouRougeCuit.html">Chou rouge mijoté</a></li>
+        <li class="recette vege"><a href="ChouRougeDouxEnCuissonLente.html">Chou rouge doux en cuisson lente</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette facile rapide vege"><a href="CourgettesAuFour.html">Courgettes au four</a></li>
+        <li class="recette vege"><a href="FarofaALOrange.html">Farofa à l'orange</a></li>
+        <li class="recette facile rapide vege"><a href="FenouilsRotis.html">Fenouils rôtis</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="FritesAuFour.html">Frites au four</a></li>
+        <li class="recette vege"><a href="Gnocchis.html">Gnocchis</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette rapide vege"><a href="PatatesAuFourDivines.html">Patates au four divines</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="PatatesHerisson.html">Patates-hérisson</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="PetitsPoisFrais.html">Petits pois frais</a></li>
+        <li class="recette facile vege"><a href="Piperade.html">Piperade</a></li>
+        <li class="recette facile rapide vege"><a href="PommesDeTerreRoties.html">Pommes de terre rôties</a></li>
+        <li class="recette facile vege"><a href="TomatesProvencales.html">Tomates provençales</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 id="sucre">Desserts et délices sucrés</h2>
+      <h3 id="biscuit">Biscuits et autres petits trucs individuels</h3>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="Brigadeiros.html">
+            <img alt="Brigadeiros" src="images/VignetteBrigadeiros.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette facile rapide vege"><a href="Amaretti.html">Amaretti</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (rochers aux amandes)</li>
+        <li class="recette vege"><a href="BiscuitsCraquelesAuCitron.html">Biscuits craquelés au citron</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="BiscuitsGateauxCitronPavot.html">Biscuits-gâteaux citron-pavot</a></li>
+        <li class="recette vege"><a href="Brigadeiros.html">Brigadeiros</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (bonbons brésiliens)</li>
+        <li class="recette vege"><a href="CookiesAuMatcha.html">Cookies au matcha</a></li>
+        <li class="recette vege"><a href="CookiesNoixChocolat.html">Cookies noisettes-chocolat</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="CupcakesDErable.html">Cupcakes d'érable</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="Financiers.html">Financiers</a></li>
+        <li class="recette vege"><a href="Florentins.html">Florentins</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="Macarons.html">Macarons </a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette facile rapide vege"><a href="Meringues.html">Meringues</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="MuffinsAuxBleuets.html">Muffins aux bleuets</a></li>
+        <li class="recette facile vege"><a href="MuffinsAuxFruitsSecs.html">Muffins aux fruits secs</a></li>
+        <li class="recette rapide vege"><a href="MuffinsDeCarottes.html">Muffins de carottes</a></li>
+        <li class="recette facile vege"><a href="MuffinsVeganAuCacao.html">Muffins vegan au cacao</a></li>
+        <li class="recette vege"><a href="PetitBonhommeEnPainDepices.html">Petits bonshommes en pain d'épices</a></li>
+        <li class="recette facile rapide vege"><a href="RochersCoco.html">Rochers coco</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="RosesDesSables.html">Roses des sables</a></li>
+        <li class="recette vege"><a href="SablesAuMatcha.html">Sablés au matcha</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="SablesFamiliaux.html">Sablés familiaux</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TruffesAuChocolat.html">Truffes de Noël au chocolat</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TruffesNoixChocolat.html">Truffes noix-chocolat</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TuilesAuxAmandes.html">Tuiles aux amandes</a></li>
+        <li class="recette vege"><a href="Vanillekipferl.html">Vanillekipferl</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (biscuits de Noël autrichiens)</li>
+        <li class="recette vege"><a href="Visitandines.html">Visitandines</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (madeleines à la noix de coco)</li>
+          </ul>
+        </div>
+      </div>
+      <h3 id="gateau">Gâteaux et tartes sucrées</h3>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="CakeMarbreMatchaNoisettes.html">
+            <img alt="Cake marbré matcha-noisettes" src="images/VignetteCakeMarbreMatchaNoisettes.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette vege"><a href="BiscuitRouleALaConfiture.html">Biscuit roulé à la confiture</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="Blechkuchen.html">Blechkuchen</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (gâteau allemand aux fruits)</li>
+        <li class="recette vege"><a href="BriocheAuxPralines.html">Brioche aux pralines</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette facile vege"><a href="BrownieAmericain.html">Brownie américain</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="BrownieAuMiso.html">Brownie au miso</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="BucheALaPoire.html">Bûche à la poire</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="BucheChocolatCointreauOrangesConfites.html">Bûche au chocolat noir, Cointreau, et oranges confites</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="CakeAuCitron.html">Cake au citron</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="CakeChocolatGingembre.html">Cake chocolat-gingembre</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="CakeMangueBanane.html">Cake mangue-banane</a></li>
+        <li class="recette vege"><a href="CakeMarbreMatchaNoisettes.html">Cake marbré matcha-noisettes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="CarrotCake.html">Carrot cake</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="CarrotCakeVegan.html">Carrot cake, version végétalienne</a></li>
+        <li class="recette vege"><a href="ClafoutisAuxKiwis.html">Clafoutis aux kiwis</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="ClafoutisAuxPommes.html">Clafoutis aux pommes</a></li>
+        <li class="recette facile vege"><a href="CrumbleAuxAbricots.html">Crumble</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (aux abricots, par exemple)</li>
+        <li class="recette facile vege"><a href="GaletteALaNoisette.html">Galette des rois aux noisettes</a></li>
+        <li class="recette vege"><a href="GateauALOrangeSansGluten.html">Gâteau à l'orange</a> (sans gluten)</li>
+        <li class="recette vege"><a href="GateauALaBanane.html">Gâteau à la banane</a></li>
+        <li class="recette vege"><a href="GateauALaPistache.html">Gâteau à la pistache</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (sans gluten)</li>
+        <li class="recette facile vege"><a href="GateauAnglaisAuxEpices.html">Gâteau anglais aux épices</a></li>
+        <li class="recette facile rapide vege"><a href="GateauAuxAmandes.html">Gâteau aux amandes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="GateauAuxNoisettes.html">Gâteau aux noisettes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="GateauAuxOranges.html">Gâteau aux oranges</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="GateauAuxPeches.html">Gâteau aux pêches</a></li>
+        <li class="recette facile vege"><a href="GateauAuxPommes.html">Gâteau aux pommes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="GateauChocolatSesameNoirs.html">Gâteau au chocolat et sésame noirs</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette facile vege"><a href="GateauDeNoix.html">Gâteau de noix</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="GateauDePotiron.html">Gâteau au potiron</a></li>
+        <li class="recette vege"><a href="GateauNoisettesMiel.html">Gâteau noisettes-miel</a></li>
+        <li class="recette facile rapide vege"><a href="GateauVapeurAuxRaisins.html">Gâteau "vapeur" aux raisins</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="KouignAmann.html">Kouign-amann</a></li>
+        <li class="recette vege"><a href="Megascone.html">Méga-scone enthousiasmant</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="PortalCake.html">Portal cake</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="Rohrnudeln.html">Rohrnudeln</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/> (petits pains à la confiture)</li>
+        <li class="recette vege"><a href="TarteALAnanas.html">Tarte à l'ananas</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TarteALaRhubarbe.html">Tarte à la rhubarbe</a></li>
+        <li class="recette vege"><a href="TarteAuChocolat.html">Tarte au chocolat</a></li>
+        <li class="recette vege"><a href="TarteAuCitron.html">Tarte au citron</a></li>
+        <li class="recette facile rapide vege"><a href="TarteAuxAbricots.html">Tarte aux abricots</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="TarteAuxPommes.html">Tarte aux pommes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="TarteAuxPrunes.html">Tarte aux prunes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TartePoireChocolat.html">Tarte poire-chocolat</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TartePoireFrangipane.html">Tarte poire-frangipane</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="TarteTatin.html">Tarte Tatin</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+          </ul>
+        </div>
+      </div>
+      <h3 id="glace">Glaces et sorbets</h3>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="GlaceMielLavande.html">
+            <img alt="Tarte aux abricots et glace miel-lavande" src="images/VignetteTarteAuxAbricotsGlaceMielLavande.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette vege"><a href="CitronsGivres.html">Citrons givrés</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="GlaceALaBananeAntillaise.html">Glace à la banane antillaise</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="GlaceALaNoix.html">Glace à la noix</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="GlaceAuChocolatIndecente.html">Glace au chocolat indécente</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="GlaceCoco.html">Glace à la noix de coco</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="GlaceCocoMatcha.html">Glace coco-matcha végétalienne</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="GlaceMielLavande.html">Glace au miel et à la lavande</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="GlacePassion.html">Glace aux fruits de la passion</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="GlaceRhumRaisins.html">Glace rhum-raisins</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="GlaceVanille.html">Glace à la vanille</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="OrangeGivreeCremeuse.html">Oranges givrées crémeuses</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="SorbetAcaiMure.html">Sorbet açai-mûre</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="SorbetPoireRieslingGingembre.html">Sorbet poire, riesling et gingembre</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="Sorbets.html">Sorbets</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/> (recette canonique)</li>
+          </ul>
+        </div>
+      </div>
+      <h3 id="dessert">Autres desserts</h3>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="RosesDePommes.html">
+            <img alt="Tarte aux abricots et glace miel-lavande" src="images/VignetteRosesDePommes.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette rapide vege"><a href="BananesFlambees.html">Bananes flambées</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="BeignetsDePommes.html">Beignets aux pommes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="Bouligou.html">Bouligou</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile rapide vege"><a href="CerisesALAnglaise.html">Cerises à l'anglaise</a></li>
+        <li class="recette vege"><a href="CompoteDAutomne.html">Compote d'automne</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="CompotePommeRhubarbe.html">Compote pomme-rhubarbe en cuisson lente</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="CremeAnglaise.html">Crème anglaise</a></li>
+        <li class="recette vege"><a href="CremeCaramel.html">Crème caramel</a></li>
+        <li class="recette vege"><a href="CremeChocolatMatcha.html">Crème chocolat-matcha</a></li>
+        <li class="recette vege"><a href="CremeDessertALOrange.html">Crème dessert à l'orange</a></li>
+        <li class="recette facile rapide vege"><a href="FraisesParfaites.html">Fraises parfaites</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="FruitsDuDemon.html">Fruits du Démon</a></li>
+        <li class="recette vege"><a href="MousseAuChocolat.html">Mousse au chocolat</a></li>
+        <li class="recette vege"><a href="MousseDePoires.html">Mousse de poires</a></li>
+        <li class="recette facile rapide vege"><a href="PamplemoussesAuMiel.html">Pamplemousses au miel</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="PoiresAuSirop.html">Poires au sirop</a></li>
+        <li class="recette vege"><a href="Profiteroles.html">Profiteroles</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="RosesDePommes.html">Roses de pommes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TourtesDePoche.html">Tourtes de poche</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 id="boisson">Boissons</h2>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="Sangria.html">
+            <img alt="Sangria" src="images/VignetteSangria.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette facile vege"><a href="ClubMateMaison.html">Club-mate fait maison</a></li>
+        <li class="recette facile rapide vege"><a href="GenmaichaGlace.html">Genmaicha glacé</a></li>
+        <li class="recette facile rapide vege"><a href="Grog.html">Grog amélioré</a></li>
+        <li class="recette facile vege"><a href="InfusionAuxEpices.html">Infusion aux épices</a> (contre le rhume)</li>
+        <li class="recette facile vege"><a href="JusDePommeChaud.html">Jus de pomme chaud</a></li>
+        <li class="recette vege"><a href="Kvas.html">Kvas</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/> (ou plutôt, Квас)</li>
+        <li class="recette facile vege"><a href="MasalaChai.html">Masala Chai</a></li>
+        <li class="recette facile rapide vege"><a href="MatchaGlace.html">Matcha glacé</a></li>
+        <li class="recette facile rapide vege"><a href="RhumsArranges.html">Rhums arrangés</a></li>
+        <li class="recette facile vege"><a href="Sangria.html">Sangria</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 id="tech">Techniques de cuisine</h2>
+      <p>et autres préparations de base que j'essaie d'expliquer le plus
+      simplement possible.</p>
+      <div class="recettes">
+        <div class="vignette">
+          <a href="PateBrisee.html">
+            <img alt="Pâte brisée" src="images/VignettePateBrisee.jpg" />
+          </a>
+        </div>
+        <div class="liste">
+          <ul>
+        <li class="recette facile rapide vege"><a href="AilFrit.html">Ail frit</a></li>
+        <li class="recette rapide vege"><a href="Aioli.html">Aïoli</a></li>
+        <li class="recette facile rapide vege"><a href="Bechamel.html">Béchamel de grand débutant</a></li>
+        <li class="recette facile rapide"><a href="BouillonDeVolaille.html">Bouillon de volaille</a></li>
+        <li class="recette facile rapide vege"><a href="CapresFrites.html">Câpres frites</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="CitronsConfitsAuSel.html">Citrons confits au sel</a></li>
+        <li class="recette vege"><a href="Confitures.html">Confitures</a> (recette canonique)</li>
+        <li class="recette facile rapide vege"><a href="CoulisDeFramboises.html">Coulis de framboises</a></li>
+        <li class="recette facile rapide vege"><a href="EchalotesFrites.html">Échalotes frites</a></li>
+        <li class="recette vege"><a href="GeleeDeRaisins.html">Gelée de raisins</a></li>
+        <li class="recette facile rapide vege"><a href="GlacageAuMatcha.html">Glaçage au matcha</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="JaunesDOeufsSechesAuSel.html">Jaunes d'œufs séchés au sel</a></li>
+        <li class="recette vege"><a href="LaitConcentreVegan.html">Lait concentré vegan</a></li>
+        <li class="recette vege"><a href="MarmeladeDOrangesAmeres.html">Marmelade d'oranges amères</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="MarmeladeDeCitrons.html">Marmelade de citrons</a></li>
+        <li class="recette rapide vege"><a href="Mayonnaise.html">Mayonnaise</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="MeringueItalienne.html">Meringue italienne</a></li>
+        <li class="recette facile rapide vege"><a href="NappageChocolat.html">Nappage au chocolat</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="NoixCaramelisees.html">Noix caramélisées</a> (façon fête foraine)</li>
+        <li class="recette vege"><a href="OignonsCaramelises.html">Oignons caramélisés</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="OrangesConfites.html">Oranges confites</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (ou citrons confits)</li>
+        <li class="recette vege"><a href="Orangettes.html">Orangettes</a></li>
+        <li class="recette vege"><a href="PateAPizza.html">Pâte à pizza</a></li>
+        <li class="recette facile vege"><a href="PateBrisee.html">Pâte brisée</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette facile vege"><a href="PateDAmandes.html">Pâte d'amandes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette rapide vege"><a href="RasElHanout.html">Ras el-hanout</a></li>
+        <li class="recette vege"><a href="Rougail.html">Rougail</a> (sauce piquante aux tomates)</li>
+        <li class="recette facile rapide vege"><a href="SauceChocolatSimplissime.html">Sauce au chocolat simplissime</a></li>
+        <li class="recette rapide"><a href="SauceDeDinde.html">Sauce de dinde</a> (« Turkey gravy »)</li>
+        <li class="recette facile rapide vege"><a href="SauceDeSalade.html">Sauce de salade</a></li>
+        <li class="recette facile rapide vege"><a href="SauceHollandaiseSousVide.html">Sauce hollandaise sous vide</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+          </ul>
+        </div>
+      </div>
+
+      <h2>Recettes utilisant…</h2>
+      <h3 id="blanc">… plus de blancs que de jaunes d'œuf</h3>
+      <ul>
+        <li class="recette facile rapide vege"><a href="Amaretti.html">Amaretti</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (rochers aux amandes)</li>
+        <li class="recette vege"><a href="CitronsGivres.html">Citrons givrés</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="Financiers.html">Financiers</a></li>
+        <li class="recette vege"><a href="GateauAuxNoisettes.html">Gâteau aux noisettes</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="Macarons.html">Macarons </a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="MeringueItalienne.html">Meringue italienne</a></li>
+        <li class="recette facile rapide vege"><a href="Meringues.html">Meringues</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TarteALAnanas.html">Tarte à l'ananas</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TarteAuCitron.html">Tarte au citron</a></li>
+        <li class="recette vege"><a href="TuilesAuxAmandes.html">Tuiles aux amandes</a></li>
+        <li class="recette vege"><a href="Visitandines.html">Visitandines</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (madeleines à la noix de coco)</li>
+      </ul>
+      <h3 id="jaune">… plus de jaunes que de blancs d'œuf</h3>
+      <ul>
+        <li class="recette rapide vege"><a href="Aioli.html">Aïoli</a></li>
+        <li class="recette"><a href="BoulettesDeViandeSuedoises.html">Boulettes de viande à la suédoise</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="Brotsuppe.html">Brotsuppe</a> (soupe de pain franconienne)</li>
+        <li class="recette rapide"><a href="CarbonaraVeritable.html">Carbonara véritable</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="CremeAnglaise.html">Crème anglaise</a></li>
+        <li class="recette vege"><a href="CremeCaramel.html">Crème caramel</a></li>
+        <li class="recette vege"><a href="CremeChocolatMatcha.html">Crème chocolat-matcha</a></li>
+        <li class="recette vege"><a href="CremeDessertALOrange.html">Crème dessert à l'orange</a></li>
+        <li class="recette"><a href="DindePanee.html">Dinde panée</a></li>
+        <li class="recette vege"><a href="GateauALaPistache.html">Gâteau à la pistache</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (sans gluten)</li>
+        <li class="recette vege"><a href="GlaceALaNoix.html">Glace à la noix</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="GlaceAuChocolatIndecente.html">Glace au chocolat indécente</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="GlaceCoco.html">Glace à la noix de coco</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="GlaceMielLavande.html">Glace au miel et à la lavande</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="GlacePassion.html">Glace aux fruits de la passion</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="GlaceRhumRaisins.html">Glace rhum-raisins</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette vege"><a href="GlaceVanille.html">Glace à la vanille</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette facile vege"><a href="JaunesDOeufsSechesAuSel.html">Jaunes d'œufs séchés au sel</a></li>
+        <li class="recette rapide vege"><a href="Mayonnaise.html">Mayonnaise</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="Megascone.html">Méga-scone enthousiasmant</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="OeufsFlorentine.html">Œufs Florentine</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="Rohrnudeln.html">Rohrnudeln</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/> (petits pains à la confiture)</li>
+        <li class="recette facile rapide vege"><a href="SauceHollandaiseSousVide.html">Sauce hollandaise sous vide</a> <img class="inline" title="Nécessite du matériel non-standard" alt="(Nécessite du matériel non-standard)" src="images/gear.png"/></li>
+        <li class="recette facile rapide vege"><a href="SauceTartare.html">Sauce tartare</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="SoupeVerteDePaques.html">Soupe verte de Pâques</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (« Grüendonnschtigsoppe »)</li>
+        <li class="recette facile"><a href="SteakTartare.html">Steaks tartare</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TarteALAnanas.html">Tarte à l'ananas</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TruffesAuChocolat.html">Truffes de Noël au chocolat</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="TruffesNoixChocolat.html">Truffes noix-chocolat</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/></li>
+        <li class="recette vege"><a href="Vanillekipferl.html">Vanillekipferl</a> <img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif"/> (biscuits de Noël autrichiens)</li>
+      </ul>
+
+      <p>Note : ces recettes sont parfois inspirées d'ouvrages commerciaux ou de
+      sites Web, d'autres sont des recettes familiales ou des créations
+      personnelles. Dans tous les cas, rien n'est copié-collé&nbsp;: je
+      reformule tout, et je modifie généralement les quantités et/ou les temps
+      de cuisson. J'estime donc que je peux les placer sous la licence que je
+      veux, en l'occurrence la 
+      <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Universal</a>, 
+      parce que ce serait passablement absurde d'empêcher quiconque de faire
+      quoi que ce soit de mes recettes de cuisine. Parmi mes sources régulières
+      de nouvelles idées, je recommande particulièrement
+      <a href="https://owiowifouettemoi.com/">Owi Owi Fouette-Moi</a>,
+      <a href="https://www.seriouseats.com/">Serious Eats</a>, et
+      <a href="https://www.youtube.com/@internetshaquille">Internet Shaquille</a>.</p>
+      <p>Si vous voulez regarder à quoi ressemble le script qui me permet de
+      générer cette page Web, il est disponible
+      <a href="genererhtml.py">par ici</a>. Mais vous ne voulez probablement pas
+      faire ça, il n'est ni très propre ni très intéressant.</p>
+      <p>L'icône <img class="inline" title="Nécessite du matériel non-standard"
+      alt="(Nécessite du matériel non-standard)" src="images/gear.png"/>
+      signifie que la recette nécessite du matériel non-standard pour être
+      préparée, comme une mijoteuse, une sorbetière, un moulin à légumes, une
+      cocotte en fonte… Un mixeur ou un batteur électrique sont considérés comme
+      de l'équipement standard.</p>
+      <p>Si vous aimez ce genre de site personnel de recettes sans fioritures et
+      sans roman inutile et long introduisant chaque recette, vous aimerez sans
+      doute les pages de mes amis <a href="https://nomnom.tobast.fr/">tobast</a>
+      et <a href="https://miam.twal.org/">TWal</a>, qui suivent le même
+      principe.
+    </div>
+    <script type="text/javascript">
+      // Constantes
+      var boutonFacile = document.getElementById('boutonFacile');
+      var boutonRapide = document.getElementById('boutonRapide');
+      var boutonVege = document.getElementById('boutonVege');
+      var boutonFacileOff = '… ne montrer que les recettes les plus faciles';
+      var boutonFacileOn = '… montrer aussi les recettes qui ne sont pas faciles';
+      var boutonRapideOff = '… ne montrer que les recettes les plus rapides';
+      var boutonRapideOn = '… montrer aussi les recettes qui ne sont pas rapides';
+      var boutonVegeOff = '… ne montrer que les recettes végétariennes';
+      var boutonVegeOn = '… montrer aussi les recettes qui ne sont pas végétariennes';
+      // Status (false signifie "le filtre est désactivé", ce qui est le cas par défaut)
+      var facile = false; 
+      var rapide = false;
+      var vege = false;
+      // Fonction pour changer le HTML quand une des variables de status change
+      function changerHTML() {
+        boutonFacile.innerHTML = facile ? boutonFacileOn : boutonFacileOff;
+        boutonRapide.innerHTML = rapide ? boutonRapideOn : boutonRapideOff;
+        boutonVege.innerHTML = vege ? boutonVegeOn : boutonVegeOff;
+        elements = document.getElementsByClassName('recette');
+        for (var i = 0; i < elements.length; i++) {
+          e = elements[i];
+          if ((facile && ! e.classList.contains("facile"))
+              || (rapide && ! e.classList.contains("rapide"))
+              || (vege && ! e.classList.contains("vege"))) {
+            e.style.display = 'none';
+          } else {
+            e.style.display = 'list-item';
+          }
+        }
+      }
+      // On appelle cette function lors de l'initialisation de la page
+      changerHTML(); 
+      // On fait en sorte que les boutons changent le status et appellent la
+      // fonction précédente lorsqu'on clique dessus
+      boutonFacile.addEventListener('click', function (event) {
+        facile = ! facile;
+        changerHTML();
+      });
+      boutonRapide.addEventListener('click', function (event) {
+        rapide = ! rapide;
+        changerHTML();
+      });
+      boutonVege.addEventListener('click', function (event) {
+        vege = ! vege;
+        changerHTML();
+      });
+    </script>
+  </body>
+</html>

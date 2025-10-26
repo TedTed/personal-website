@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="ConclusionPartial.html" />
+  <link ref="next" href="AnalyzingPrivacyRisksAtScale.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="ConclusionPartial.html">← previous</a></li>
+        <li><a href="index.html#FromTheoryToPractice.html">up</a></li>
+        <li><a href="AnalyzingPrivacyRisksAtScale.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="ConclusionPartial.html">LINKPREV</a><a href="index.html#FromTheoryToPractice.html">LINKUP</a><a href="AnalyzingPrivacyRisksAtScale.html">LINKNEXT</a></p></div>
+  <h2 class="chapterHead" id="from-theory-to-practice-u-ding-"><span class="titlemark">4</span>&nbsp;&nbsp;<a id="x43-1300004"></a>From theory to practice <span class="bbding-10x-x-109">✿</span></h2> <!-- l. 2 --><p class="noindent"><a id="practice"></a> </p>                                                     <div class="flushright"> <!-- l. 4 --><p class="noindent"> </p> <!-- l. 7 --><p class="noindent">
+<span class="t1xss-x-x-95">Without a plane, what was I
+supposed to do? Math the
+problem to death?</span><br>
+
+    <span class="t1xsssl-x-x-95">(Mary Robinette Kowal, </span><span class="t1xss-x-x-95">The
+            Calculating Stars</span><span class="t1xsssl-x-x-95">)</span>
+</p>
+</div>
+<!-- l. 10 --><p class="indent">  Despite the academic success of differential privacy, practical applications have largely lagged
+behind. Scientific papers on DP often cite a few high-profile use cases to show the relevance of this
+field of research, but these examples almost always come from very large companies or
+organizations: Google&nbsp;[<a id="x43-130001"></a><a href="bibliography.html#cite.0@erlingsson2014rappor">141</a>], Apple&nbsp;[<a id="x43-130002"></a><a href="bibliography.html#cite.0@apple2017dp">360</a>], the US Census Bureau&nbsp;[<a id="x43-130003"></a><a href="bibliography.html#cite.0@abowd2010formal">4</a><a id="x43-130004"></a>, <a href="bibliography.html#cite.0@garfinkel2018issues">159</a>], Microsoft&nbsp;[<a id="x43-130005"></a><a href="bibliography.html#cite.0@ding2017collecting">107</a><a id="x43-130006"></a>, <a href="bibliography.html#cite.0@kenthapadi2018pripearl">224</a>],
+Uber&nbsp;[<a id="x43-130007"></a><a href="bibliography.html#cite.0@chorus2018johnson">210</a>], and others. Is differential privacy a luxury that only large organizations can
+afford?
+</p><!-- l. 20 --><p class="indent">  Of course, there might be some selection bias in play in the previous observation. Researchers might
+think that use cases from large organizations are the best way to demonstrate practical relevance, and
+smaller organizations using DP might not have the incentives nor resources to publish about their
+anonymization practices. Still, using state-of-the-art privacy techniques makes for good press, and
+the cost of writing a blog post is not high. Despite this, in 2020, looking up differential
+privacy in a search engine still surfaces mostly academic resources and use cases from large
+organizations.
+</p><!-- l. 29 --><p class="indent">  There are a few exceptions, most of which are fairly recent. Some startups are using differential
+privacy as a core part of their offering&nbsp;[<a id="x43-130008"></a><a href="bibliography.html#cite.0@bluecoredp">19</a><a id="x43-130009"></a>, <a href="bibliography.html#cite.0@hazy">192</a><a id="x43-130010"></a>, <a href="bibliography.html#cite.0@leapyear">241</a><a id="x43-130011"></a>, <a href="bibliography.html#cite.0@tumult">370</a>], and a few efforts have been initiated to
+implement differential privacy libraries and publish them as open-source software&nbsp;[<a id="x43-130012"></a><a href="bibliography.html#cite.0@diffprivlib">105</a><a id="x43-130013"></a>, <a href="bibliography.html#cite.0@googledp">173</a><a id="x43-130014"></a>, <a href="bibliography.html#cite.0@opendp">308</a><a id="x43-130015"></a>,
+<a href="bibliography.html#cite.0@openmineddproadmap">356</a>]. Even in those cases, the people behind those projects frequently have an academic
+background: only organizations that can afford to hire or train domain experts get to use
+differential privacy. This lag between theory and practice feels surprising: as we showed
+in Section&nbsp;2.1.6, the basic intuition behind DP is simple, and it seems easy to generate
+differentially private statistics by combining simple mechanisms and using the composition
+properties.
+</p><!-- l. 41 --><p class="indent">  What are then the obstacles that prevent a wider adoption of differential privacy? In this chapter, we
+present a number of results and insights from four years of working on anonymization at a large
+company, in a role encompassing consulting, policy, and engineering.
+</p><!-- l. 46 --><p class="indent">  First, we show that certain practical problems simply cannot be solved by applying differential
+privacy. In particular, this is the case for <span class="t1xi-x-x-109">risk analysis</span>, where the goal is not to make data anonymous,
+but estimate “how risky” a given dataset is, under some risk models. Tackling this class of problems can
+                                                                                
+                                                                                
+be the first step in a company’s journey towards stronger anonymization practices: before deciding to
+implement better techniques for data sharing and retention, data owners want to understand the risk
+associated with their existing practices. This setting will force us to revisit syntactic privacy definitions
+presented in Section&nbsp;2.1, since in cases where we only have access to the <span class="t1xi-x-x-109">output </span>of a certain algorithm,
+without any information about the algorithm itself, we cannot know whether it is differentially
+private.
+</p><!-- l. 59 --><p class="indent">  Second, we present a differentially private SQL engine, whose primary goal is to make it easy for
+people—especially non-experts—to generate differentially private statistics. Safety, scalability and
+usability are the three main requirements of this system. Taking our SQL engine as an example, we
+explain how each of these requirements can be met. Safety considerations require a thoughtful and
+realistic attacker model, going beyond the classical “untrusted analyst” assumption from the scientific
+literature. Scalability is obtained via a massively parallelizable design, which can be reproduced in
+other contexts than this SQL engine. To make the system usable, we design an interface
+that mirrors the ones data analysts are already familiar with. This requires the use of novel
+methods to remove roadblocks that classical differential privacy mechanism would otherwise
+require.
+</p><!-- l. 72 --><p class="indent">  Third, we raise a number of natural open questions which emerged as we were building and rolling
+out this differentially private SQL engine, and partially answer them when feasible. Some of these
+questions are about supporting a wider range of differentially private aggregations, or about improving
+the utility of particularly crucial feature; in particular, we present a novel algorithm to improve the
+utility of partition selection primitive. Other questions are about <span class="t1xi-x-x-109">operational </span>aspects: how to choose
+anonymization parameters, and how to provide helpful guidance for users of differential privacy
+tools?
+</p><!-- l. 81 --><p class="indent">  Taken together, we hope that the insights gathered in this chapter can prove helpful to current and
+future anonymization practitioners.
+</p>
+
+
+                                                                                
+                                                                                
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="ConclusionPartial.html">LINKPREV</a><a href="index.html#FromTheoryToPractice.html">LINKUP</a><a href="AnalyzingPrivacyRisksAtScale.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="ConclusionPartial.html">← previous</a></li>
+        <li><a href="index.html#FromTheoryToPractice.html">up</a></li>
+        <li><a href="AnalyzingPrivacyRisksAtScale.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

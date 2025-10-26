@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>A bottom-up approach to making differential privacy ubiquitous - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="A bottom-up approach to making differential privacy ubiquitous - Ted is writing things" />
+  <meta property="twitter:title" content="A bottom-up approach to making differential privacy ubiquitous - Ted is writing things" />
+  <meta name="description" property="og:description" content="This post contains the slides and speaker notes for an invited talk I delivered at PPAI-22." />
+  <meta property="twitter:description" content="This post contains the slides and speaker notes for an invited talk I delivered at PPAI-22." />
+  <meta property="summary" content="This post contains the slides and speaker notes for an invited talk I delivered at PPAI-22." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/ppai-22-title-slide.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/ppai-22-title-slide.png" />
+  <meta property="twitter:image:alt" content="The introductory slide of a talk titled 'A bottom-up approach to making differential privacy ubiquitous'. The slide contains author information (Damien Desfontaines, @TedOnPrivacy), affiliation (the Tumult Labs logo), and a copyright notice. The text is in white, the image behind is a series of perturbed purple lines on a black background." />
+  <link rel="canonical" href="https://desfontain.es/blog/bottom-up-differential-privacy.html" />
+  <link rel="prev" href="renyi-dp-zero-concentrated-dp.html" />
+  <link rel="next" href="partial-knowledge.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="renyi-dp-zero-concentrated-dp.html">← previous</a>
+ —     <a href="partial-knowledge.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./bottom-up-differential-privacy.html">A bottom-up approach to making differential privacy ubiquitous</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2022-03-09T00:00:00+01:00">
+      2022-03-09
+    </time>
+  </footer>
+  <div>
+    <p>This post is a transcript of an invited talk I delivered to
+<a href="https://aaai-ppai22.github.io/">PPAI-22</a>. It was also published on the <a href="https://www.tmlt.io/resources">Tumult
+Labs website</a>. <a href="https://users.cs.duke.edu/~ashwin/">Ashwin Machanavajjhala</a>, <a href="https://people.cs.umass.edu/~miklau/">Gerome
+Miklau</a>, <a href="https://www.linkedin.com/in/philip-bohannon-88624a2">Philip Bohannon</a>, and <a href="https://www.linkedin.com/in/samuel-haney-47a16819b">Sam Haney</a> contributed to
+these slides.</p>
+<hr>
+<p>Hi everybody! Here is a graph counting the number of academic papers related to
+differential privacy, over time.</p>
+<p><center>
+<img alt="Line graph labeled &quot;year&quot; on the horizontal axis, and &quot;publications&quot; on the
+vertical axis. It goes up from 0 in 2006 to approximately 4300 in
+2021." src="https://desfontain.es/blog/images/ppai-22-talk-00.png">
+</center> </p>
+<p>In academia, differential privacy essentially won. There is broad agreement, at
+least among computer scientists, that this is the notion of choice to formally
+bound the privacy leakage when publishing data. Differential privacy has become
+the default tool that people use to quantify trade-offs between privacy and
+accuracy.</p>
+<p>The field is growing every year, with exciting new domains of application,
+empirical improvements, and theoretical advances.</p>
+<p>For comparison, here is a graph showing the number of <a href="real-world-differential-privacy.html">real-world
+deployments</a> that I could find public information about. </p>
+<p><center>
+<img alt="The same graph, except the vertical axis is labeled &quot;deployments&quot;, and the line is completely flat, at 0." src="https://desfontain.es/blog/images/ppai-22-talk-01.png">
+</center> </p>
+<p>As you can see… Ooops! Sorry. I forgot to change the scale of the vertical axis.</p>
+<p><center>
+<img alt="The same graph, but the vertical axis now goes from 0 to 10. Besides a single
+point at 1 in 2008, the line starts going up in 2016, and reaches 6 in
+2021." src="https://desfontain.es/blog/images/ppai-22-talk-02.png">
+</center> </p>
+<p>OK, now we’re seeing something… It’s not much, though. We’re still at a stage
+where I can list all public deployments of differential privacy in a <a href="real-world-differential-privacy.html">single
+blog post</a>.</p>
+<p>I know what you’re going to say, though. There might not be many use cases, but
+some of these are <em>really big</em>. </p>
+<p><center>
+<img alt="A slide containing the logos for the following organizations: the U.S. Census
+Bureau, Google, Facebook, Microsoft, LinkedIn, the Internal Revenue Service,
+Appl, and OhmConnect," src="https://desfontain.es/blog/images/ppai-22-talk-03.png">
+</center> </p>
+<p>The <a href="https://www.census.gov/programs-surveys/decennial-census/decade/2020/planning-management/process/disclosure-avoidance.html">2020 Decennial Census</a>! Mobility data from around the globe to
+<a href="https://arxiv.org/abs/2004.04145">help combat COVID-19</a>! <a href="https://www.microsoft.com/en-us/research/publication/collecting-telemetry-data-privately/">Telemetry collection</a> from <a href="https://docs-assets.developer.apple.com/ml-research/papers/learning-with-privacy-at-scale.pdf">billions of
+devices</a>!</p>
+<p>If we look at who is deploying DP, one thing in common for almost all of these
+organizations is that they’re <em>large</em>. They can afford to invest in, or contract
+with, specialized science and engineering teams to help them roll out this
+technology.</p>
+<p>Special mention to <a href="https://www.ohmconnect.com/">OhmConnect</a>, the only exception I could find to
+this rule! They’re a startup sharing <a href="https://assets.website-files.com/5cb0a177570549b5f11b9550/5ffddb83b5ea5d67f5c43661_Quantifying%20The%20OhmConnect%20Virtual%20Power%20Plant%20During%20the%20California%20Blackouts.pdf">smart meter data</a> to increase
+power grid reliability.</p>
+<p>But the problem that differential privacy solves isn’t limited to these
+massively large organizations: smaller organizations also have data sharing and
+publishing needs! Everyone could benefit from using strong anonymization
+techniques, not just these giants.</p>
+<p>This is the question I’m here to talk about today. How do we bridge that gap?
+How do we make differential privacy ubiquitous?</p>
+<p><center>
+<img alt="The introductory slide of a talk titled &quot;A bottom-up approach to making
+differential privacy ubiquitous&quot;. The slide contains author information (Damien
+Desfontaines, @TedOnPrivacy), affiliation (the Tumult Labs logo), and a
+copyright notice. The text is in white, the image behind is a series of
+perturbed purple lines on a black
+background." src="https://desfontain.es/blog/images/ppai-22-talk-04.png">
+</center> </p>
+<p>I’m <a href="/serious.html">Damien</a>, and I work as a scientist for <a href="tmlt.io">Tumult
+Labs</a>. We’re a startup trying to make widespread adoption of
+differential privacy into a reality.</p>
+<p>In this presentation, I’ll outline a <em>bottom-up</em> approach for reaching that
+goal.</p>
+<p>What do I mean by “bottom-up”? Well, first, here’s what a “top-down” approach
+could look like.</p>
+<p><center>
+<img alt="A slide split in two. On the left, the title is &quot;Top-down&quot;, and lists three
+bullet points: &quot;Lobby decision makers&quot;, &quot;Get DP into standards, laws, internal
+best practices…&quot;, and &quot;Adoption follows&quot;. On the right, the slide is
+empty." src="https://desfontain.es/blog/images/ppai-22-talk-05-01.png">
+</center> </p>
+<ul>
+<li>First, we lobby decision-makers: we convince executives, regulators, standard
+  committees, etc., that differential privacy should be the notion of choice for
+  anonymizing data.</li>
+<li>Then, once DP has become a requirement in different places, like standards,
+  regulations, internal best practices, etc.…</li>
+<li>People adopt it because they have to.</li>
+</ul>
+<p>This comes with many challenges.</p>
+<ul>
+<li>First, writing good policy documents and guidance is very difficult. We would
+  need to answer questions like “how to choose parameters”, which are already
+  tricky for specific use cases, but even harder to decide on in generic terms.</li>
+<li>Second, people won’t sign off on a technology unless they’re convinced it can
+  work in practice. Differential privacy needs to prove itself in the field, in
+  sufficiently many cases, in each vertical it can be applied to, before that
+  happens.</li>
+<li>Finally, when privacy/security efforts are compliance-oriented, implementation
+  can often be people doing the bare minimum. That might not be too great.</li>
+</ul>
+<p>To be clear: this outreach work with key decision-makers is still valuable, and
+worth doing! But this isn’t what we’re focusing on in the immediate future.</p>
+<p>Instead, we’re pushing for a bottom-up approach.</p>
+<p><center>
+<img alt="The same slide as before, with the right part filled in. The title is
+&quot;Bottom-up&quot;, and lists three bullet points: &quot;Get data scientists excited&quot;,
+&quot;Train them to become DP practitioners and advocates&quot;, and &quot;Make deployment
+super easy&quot;." src="https://desfontain.es/blog/images/ppai-22-talk-05-02.png">
+</center> </p>
+<ul>
+<li>First, we create excitement among data scientists and engineers, across the
+  industry.</li>
+<li>Then, we create a well-lit path that makes it super easy for these people to
+  go from “I’m curious what this technology can do” to “I know exactly how it
+  will work for my use case!”</li>
+<li>And we create tools to make this entire process super easy, all the way to
+  deployment.</li>
+</ul>
+<p>Sign-off from decision-makers happens at the end of the process, not at the
+beginning. By that time, all they need to do is confirm that it works.</p>
+<p>Note that as far as I know, this is what happened for most of the deployments
+that I could find described publicly. There wasn’t an executive giving the order
+to use differential privacy, out of the blue. Instead, individual teams of
+engineers and scientists built prototypes, showed that it worked in practice,
+did internal advocacy, and eventually got the go-ahead.</p>
+<p>So, how do enable many more people and organizations to get to this point?</p>
+<p>We have a vision, and we need your help.</p>
+<p>We said that the way to get adoption is to make usable tools for differential
+privacy, and train people to use them. By the end, we want thousands of
+engineers and data analysts to become DP practitioners. What does that learning
+path look like in practice?</p>
+<p><center>
+<img alt="A slide containing a horizontal arrow labeled &quot;Time invested / level of
+expertise gained.&quot;, with 8 boxes describing different points on the line:
+&quot;Downloading and installing an open-source library&quot;, &quot;Following tutorials&quot;,
+&quot;Generating DP data for the first time&quot;, &quot;Iterating to optimize privacy-accuracy
+tradeoffs&quot;, &quot;Selecting parameters&quot;, &quot;Getting sign-off from decision makers&quot;,
+&quot;Figuring out operational issues, preparing to deploy&quot;, and a rocket ship
+emoji." src="https://desfontain.es/blog/images/ppai-22-talk-06.png">
+</center> </p>
+<ul>
+<li>First, people might hear about differential privacy, and decide to give it a
+  try, using an open-source tool.</li>
+<li>They’ll follow tutorials to get the hang of it…</li>
+<li>… and maybe reach a point where they’re giving it a first try on their own
+  data.</li>
+<li>Then, they’ll probably need to optimize privacy-accuracy trade-offs…</li>
+<li>… and if they’re convinced that this is workable, start thinking of which
+  parameters would make sense for their use case.</li>
+<li>Once they get the sign-off from their hierarchy…</li>
+<li>… they will need to do a bunch of operational deployment stuff …</li>
+<li>… and end up shipping a differentially private data release.</li>
+</ul>
+<p><center>
+<img alt="A graph where the horizontal axis is labeled &quot;Time invested / level of
+expertise gained.&quot;, the vertical axis is labeled &quot;Number of users&quot;, and a dashed
+vertical line near the right of the graph is labeled &quot;Expertise necessary to
+ship a given production use case&quot;. The OhmConnect logo is on the right size of
+this dashed line." src="https://desfontain.es/blog/images/ppai-22-talk-07.png">
+</center> </p>
+<p>Our goal is to get people to that point on the right, where they can deploy DP
+to production.</p>
+<p>As I mentioned earlier, I could find one small company that went further than
+this line. We want to get to many more such examples.</p>
+<p>In fact, we’re going to visually represent how many people there are at each
+step of the process.</p>
+<p><center>
+<img alt="The same graph as earlier, with a line starting halfway to the vertical axis,
+and going down in cliffs, reaching the horizontal line before the &quot;shipping to
+production&quot; indicator. Each cliff is labeled: &quot;I don’t understand half the words
+in this interface &amp; docs!&quot;, &quot;What are all these new parameters I need to
+specify? I’ve never needed that in SQL!&quot;, &quot;Wow, my initial results are basically
+pure noise. What do I do about it?!&quot;, and &quot;I can’t predict nor explain how
+accurate my output data is going to be. I can’t ship
+this!&quot;" src="https://desfontain.es/blog/images/ppai-22-talk-08.png">
+</center> </p>
+<p>Today, the curve might look like this. Even though there might be some initial
+interest, almost nobody ends up crossing that line we’re interested in. So why
+is that?</p>
+<p>We don’t know the answer for sure, but we’ve heard of a lot of hurdles that
+people encounter when trying to roll out differential privacy. Here are a few of
+them.</p>
+<ul>
+<li>First off, people might be immediately put off by how complex tooling looks
+  like. If the interface &amp; documentation looks like it was designed for people
+  who already know what they’re doing, they might simply think “OK, I’m not the
+  target audience”, and give up before even trying it out.</li>
+<li>Second, DP comes with additional requirements: things like group-by keys, or
+  clamping bounds, are new concepts that people never had to think about before.
+  People might think: why is it so hard to do even basic things that would take
+  me 3 lines in SQL? And drop off, thinking that it’s just going to get worse
+  from there.</li>
+<li>If people reach the point of trying it out on their own data, the initial
+  results might be absolute garbage, because the strategy is extremely
+  sub-optimal. This can be demoralizing, and make people feel like they won't
+  ever make this work.</li>
+<li>Even if the results end up looking kind of reasonable when plotted on a graph,
+  this might not be enough. People need stronger guarantees on how accurate the
+  data is, and if the tool doesn’t provide this, this might also be a hard
+  blocker.</li>
+</ul>
+<p><center>
+<img alt="The same graph as earlier, but this time, the line starts higher, and only
+goes down a little, before crossing the &quot;deployment&quot; line a little higher than
+half-way. A circle marks the intersection
+point." src="https://desfontain.es/blog/images/ppai-22-talk-09.png">
+</center> </p>
+<p>Instead, this is where we want to be. We won’t ever make the line entirely flat,
+that’s normal, every software project loses users in the learning process. But
+our goal is to maximize the number of people reaching deployment. We want the
+intersection point to be as high as possible.</p>
+<p>OK, so how do we do it?</p>
+<p><center>
+<img alt="The same graph as earlier, with an arrow pointing up next to the beginning of
+the line. This early stage is labeled &quot;Marketing efforts, blog posts,
+outreach…&quot;." src="https://desfontain.es/blog/images/ppai-22-talk-10.png">
+</center> </p>
+<p>First, we make the line start higher. We want to get as many people as we can who know that differential privacy exists, and have an idea of what problem it solves. Further than that, we want to get them excited about trying it out.</p>
+<p>Some of this is the job of companies like mine: we need to do a good job at
+marketing this technology.</p>
+<p>But researchers can also help there: we need many more resources that are
+accessible to beginners, like blog posts! These serve the dual purpose of
+helping people learn, and of making our field more widely known to the public.</p>
+<p>We also need y’all to contribute to the public discussions around data privacy,
+beyond research papers. There can be many examples of that kind of work.</p>
+<ul>
+<li>Opinion pieces in scientific publications, like the ACM magazines, or in
+  newspapers, can do wonders to raise awareness.</li>
+<li>Participating to events or workshops discussing adjacent problems can be great
+  to open your research horizons, and to socialize with people outside of your
+  usual research community. Attending non-academic events around data privacy,
+  in particular, can be eye-opening.</li>
+<li>Finally, getting into the contact list of a tech journalist whose work you
+  follow is easier than you think! Reach out and let them know that you’re happy
+  to comment on technical topics in your area of expertise, and they’ll be happy
+  to take you up on the offer some time.</li>
+</ul>
+<p>All of these can have a major impact. Thanks to everyone who is already doing
+this kind of work today! We need even more.</p>
+<p>OK, once we made that line start as high as we could, what do we do next?</p>
+<p><center>
+<img alt="The same graph as earlier, with a dashed angle showing that the line must
+initially go down not too fast. This is labeled &quot;Simple interfaces, great
+learning docs&quot;" src="https://desfontain.es/blog/images/ppai-22-talk-11.png">
+</center> </p>
+<p>We make sure that we lose as few people as we can in the initial learning
+stages. We make that curve as flat as possible, avoiding those cliffs from
+earlier. We make the learning process as smooth as we can.</p>
+<p>To do that, we need interfaces that are super simple to use, and a great
+onboarding experience. Let me give you a sneak peek of what the interface looks
+like on our platform right now.</p>
+<p><center>
+<img alt="A Python code snippet.
+session = Session.from_dataframe(
+    dataframe=private_data,
+    source_id=&quot;my_data&quot;,
+    privacy_budget=PureDPBudget(1.7),
+)
+query = (
+    QueryBuilder(&quot;my_data&quot;)
+    .filter(&quot;age &gt; 42&quot;)
+    .groupby(zip_codes)
+    .median(&quot;income&quot;, low=0, high=10**6)
+)" src="https://desfontain.es/blog/images/ppai-22-talk-12.png">
+</center> </p>
+<p>Our platform is built in Python, and runs on top of Spark, so we can scale to
+very large datasets.</p>
+<ol>
+<li>To use it, you start by defining a <em>session</em>. This session encapsulates your
+   data, given as a Spark dataframe, and gives you clear privacy guarantees.
+   Here, the library promises you that everything downstream of this session
+   will satisfy differential privacy, with ε=1.7.</li>
+<li>Then, you write a <em>query</em>, using a Spark-like query language. Here, the query
+   filters the records to only keep the individuals older than 42, then we group
+   by zip codes, and we compute the median income for each zip code.</li>
+<li>Finally, you <em>evaluate</em> the query using a portion of your privacy budget,
+   here, 0.8. The result is a regular Spark dataframe. We could, later, evaluate
+   further queries, as long as we don’t spend more budget than was initially
+   allocated.</li>
+</ol>
+<p>There are a couple of things that will still seem unfamiliar to data scientists
+without prior experience with differential privacy: the way we specify group-by
+keys, for example, or clamping bounds. We’re working hard to make these even
+simpler and more accessible.</p>
+<p>That’s what we’re doing. Now, what can the academic community do to help users
+in this initial learning stage?</p>
+<p><center>
+<img alt="The same graph as earlier, with the dashed angle. This time, the label
+shows &quot;usable algorithms&quot; in bold, in addition to &quot;Simple interfaces, great
+learning docs&quot;." src="https://desfontain.es/blog/images/ppai-22-talk-13.png">
+</center> </p>
+<p>One way is by thinking about usability when designing new techniques to achieve
+DP. How many choices will a user have to think about before using a given
+mechanism?</p>
+<p>Suppose, for example, that you found a novel a way to compute quantiles. It’s
+better than the state of the art, but it introduces new hyperparameters: for
+example, you need to discretize the data first, and the user can choose the
+granularity. Can you recommend a good default for this new parameter? If there
+is no universally reasonable choice, can you automatically and privately select
+it based on the data, using some portion of the budget?</p>
+<p>Doing this will make it much more likely that people can use your fancy
+algorithms, even in the early stages of the process.</p>
+<p>Ok, so that was the initial learning stage. What comes next?</p>
+<p><center>
+<img alt="The same graph as earlier, with the dashed angle further on the right,
+closer to the deployment line, indicating that the line should become flat. The
+label says &quot;advanced features&quot;." src="https://desfontain.es/blog/images/ppai-22-talk-14.png">
+</center> </p>
+<p>As people start moving out of the learning phase and closer to the deployment
+stage, we need to keep supporting them. Again, we want that curve to stay flat.
+We don’t want people to drop off just before the finish line.</p>
+<p>Once people start trying to ship their initial idea to production, they start
+having more complex needs that require advanced features. For example, in one of
+the data releases we’re working on with the US Census Bureau, the goal is to
+publish statistics on various population groups, depending on geographic and
+racial characteristics. These groups can vary tremendously in size: in some
+cases, we can only publish total counts with reasonable accuracy, while in
+others, we also want to split these groups into more fined-grained categories.</p>
+<p>This requires an adaptive algorithm. Let me show you what it looks like in our
+interface. It’s going to be little more complicated than the previous example,
+but don't worry, I’ll walk you through it step by step.</p>
+<p><center>
+<img alt="Three code snippets with accompanying visuals. //
+budget_10 = RhoZCDP(total_budget / 10.)
+budget_90 = RhoZCDP(total_budget * 9./10.)
+This is represented by a pie chart splitting a disc in 1/10 and 9/10. //
+histogram = session.evaluate(
+    QueryBuilder(&quot;data&quot;)
+        .groupby(geo_races)
+        .count(),
+    privacy_budget=budget_10,
+)
+This is represented by a histogram, and uses the 1/10 part of the privacy budget
+pie. //
+hist_with_category = histogram.withColumn(
+    &quot;under_threshold&quot;,
+    &quot;IF(count &lt; 42, ‘true', 'false')&quot;,
+)
+This is represented by the same histogram, with a horizontal dashed line
+determining whether each bucket is above and below, and marking it with
+different colors depending." src="https://desfontain.es/blog/images/ppai-22-talk-15.png">
+</center> </p>
+<p>First, we set aside 10% of our total budget. Here, we use zero-concentrated DP,
+because each individual will contribute to many statistics, so we’re using
+Gaussian noise and tight privacy accounting methods. Note that here, switching
+to another privacy definition is as simple as changing the privacy budget type:
+the framework is extensible enough to make this kind of operation very easy.</p>
+<p>We then use that budget to compute, for each population group, a total count of
+people. Here, we group by geography and race/ethnicity combinations.</p>
+<p>Then, we augment these results by checking, for each of these groups, whether
+the count is below or above a certain threshold. Later on, we will want to do
+different things depending on the value of this column.</p>
+<p><center>
+<img alt="Two code snippets with accompanying visuals. //
+session.create_view(
+    QueryBuilder(&quot;data&quot;)
+        .join_public(hist_with_category),
+    &quot;data_with_category&quot;,
+)
+This is represented by the same histogram split in two as earlier. //
+budget_10 = RhoZCDP(total_budget / 10.)
+budget_90 = RhoZCDP(total_budget * 9./10.)
+This is represented by a pie chart splitting a disc in 1/10 and 9/10.
+new_sessions = session.partition_and_create(
+    &quot;data_with_category&quot;,
+    privacy_budget=budget_90,
+    attr_name=&quot;under_threshold&quot;,
+    splits={
+        &quot;total&quot;: &quot;true&quot;,
+        &quot;detail&quot;: &quot;false&quot;
+    },
+)
+This is represented by two arrows leading to two separate histograms, one with
+the buckets above the threshold, one with the buckets under the
+threshold. This uses the 9/10 part of the privacy budget
+pie." src="https://desfontain.es/blog/images/ppai-22-talk-16.png">
+</center> </p>
+<p>At this point, we have a table that tell us, for each group, whether the noisy
+count of people is above or below a threshold.</p>
+<ul>
+<li>We join our secret data with this augmented table. Each
+  individual record is now associated with additional information telling us
+  whether the group they’re a part of has a count below or above the threshold.</li>
+<li>And once we have this new, augmented private data set, we partition the
+  session into two sessions, depending on the value of this column. One session
+  will have part of the data, the other will have the rest. These sessions are
+  allocated a given privacy budget; here, we use the entirety of the privacy
+  budget we have left. That budget is depleted from the original session, and
+  transferred to the new sessions.</li>
+</ul>
+<p><center>
+<img alt="Two code snippets with accompanying visuals. //
+total_session = new_sessions[&quot;total&quot;]
+total_counts = total_session.evaluate(
+    QueryBuilder(&quot;data_with_category&quot;)
+        .groupby(geo_races)
+        .count(),
+    privacy_budget=budget_90,
+)
+This is represented by the smaller histogram changing a little bit, using the
+9/10 part of the budget. //
+detail_session = new_session[&quot;detail&quot;]
+detail_counts = detail_counts.evaluate(
+    QueryBuilder(&quot;data_with_category&quot;)
+        .groupby(geo_races * age)
+        .count(),
+    privacy_budget=budget_90,
+)
+This is represented by the larger histogram, where each bucket is split in three
+sub-buckets, using the 9/10 part of the
+budget." src="https://desfontain.es/blog/images/ppai-22-talk-17.png">
+</center> </p>
+<p>Now, we have two sessions, so we can do different things in each.</p>
+<ul>
+<li>For the records that are in small groups, we only compute the total counts,
+  with the rest of the privacy budget. This is the same aggregation as earlier,
+  but with more precise results.</li>
+<li>And for the records that are in bigger groups, we compute the counts at a more
+  granular level, also including age. Here, the multiplication operator in the
+  groupby correspond to doing the cross-product of groupby keys for different
+  attributes.</li>
+</ul>
+<p>Of course, the actual algorithm is a lot more complicated. We actually split the
+data in four different levels of granularity, so we have three different
+thresholds, ages are bucketed, we use more demographic information, and we
+compute a lot more things. But hopefully, this gives you an idea of what
+real-world use cases can require, and what kind of advanced features our
+platform can support.</p>
+<p>OK, so that’s an example of what we’re doing to support people at this stage.
+Can the academic community also help flattening this curve, and make it easy for
+people to reach deployment?</p>
+<p><center>
+<img alt="The same graph as before the code snippets, with the dashed angle at the same
+place as before. The label now says &quot;and so. many. open problems.&quot; in addition
+to &quot;advanced features&quot;." src="https://desfontain.es/blog/images/ppai-22-talk-18.png">
+</center> </p>
+<p>Yes. Yes, yes, yes. In this path towards deployment, there are so many open
+problems. People routinely need things that don’t exist yet. Our customers are
+constantly asking us for very reasonable things, natural requests that… turn out
+to be open science problems. This is why we’re <a href="https://tmlt.io/careers">hiring scientists</a>, by
+the way.</p>
+<p>Let me give you a distilled list of areas where we desperately need more
+progress in research and engineering.</p>
+<p><center>
+<img alt="A slide titled &quot;Open problems&quot;, listing four areas: &quot;Explainability /
+Transparency&quot;, &quot;Decision support&quot;, &quot;Fitness-for-use&quot;, and &quot;Operational
+challenges&quot;." src="https://desfontain.es/blog/images/ppai-22-talk-19.png">
+</center> </p>
+<p>First, explainability and transparency. Releasing private error measures along
+with the DP output is easy for simple mechanisms, but still hard for things like
+quantiles, or when clamping bounds are involved. More generally, can we explain
+to non-expert users what was done to the data? Can we give them a summary they
+can understand and use in later analyses? Finally, DP algorithms can introduce
+biases in the data – can we make these transparent, and allow data users to take
+them into account? Explainability and transparency are absolutely critical to
+build trust, and trust is key to adoption. We, as a field, need to have better
+answers for these questions.</p>
+<p>A second one is decision support tools. Dashboards and visualizations that allow
+people to understand the privacy/accuracy trade-offs in their data, and
+fine-tune parameters, are critical. In our experience, this is often what makes
+people “get it”, and make them feel like they can actually use this tech. This
+is a promising area of research for visualization and usable privacy folks, but
+there are also complicated algorithmic questions here: how do we do that
+efficiently?</p>
+<p>When people want to generate DP data, they don’t want to specify a budget:
+instead, it would be much nicer if they could decide what level of data quality
+is fit-for-use – good enough for their use case – and specify that as input to
+the algorithm. Note that these data quality measures are often interpreted as
+the error of a single noisy estimate or parameter. But in real use cases, it can
+be a lot more complex: for example, will the relative ranking of items based on
+noisy estimates be approximately correct?</p>
+<p>Finally, operational aspects of DP are critical. How do we keep a good
+accounting of the privacy loss over time, for data releases that happen every
+day or week? How can we validate that the DP data is correct before publishing
+it? How should we handle failures? How do we detect drifts in accuracy, and how
+should we handle these alerts? Work on these topics is starting to emerge in
+academia, but there is a lot more to be done.</p>
+<p><center>
+<img alt="The same graph as before, but the dashed angle has been replaced with an arrow
+starting at the dashed deployment line, and pointing to the left. It is labeled
+&quot;More data!&quot;." src="https://desfontain.es/blog/images/ppai-22-talk-20.png">
+</center> </p>
+<p>Back to our curve. One last thing we can do is lowering the level of expertise
+necessary to ship DP to production is as small as possible. The faster people
+get there, the less likely they’re going to drop off.</p>
+<p>This first requires more data: what do people actually need to do? Once we know,
+we can build the advanced features that people need, and build interfaces that
+make them easier to use.</p>
+<p>The call to action here is: if you know of more people using differential
+privacy in practice, try convincing them to communicate about this! Even when
+there isn’t novel science involved, it’s still worth telling the world what you
+did, and ideally, why you did it. This way, we can know what problems people
+encounter in practice, and what are the most pressing issues to solve to
+increase adoption. As a an added bonus, communicating about your use case for
+differential privacy is a great way to foster trust among stakeholders, and to
+convince other people to also try using DP!</p>
+<p><center>
+<img alt="A slide split in two, titled &quot;Two more ways to help&quot;. On the left, it says
+&quot;Beta-test the Tumult Platform!&quot;, and links to tmlt.io/connect. On the right,
+&quot;Join our team!&quot;, with a link to
+tmlt.io/careers." src="https://desfontain.es/blog/images/ppai-22-talk-21.png">
+</center> </p>
+<p>There are two more ways you can help.</p>
+<ul>
+<li>If the little code snippets I showed sounded interesting, and you’d like to
+  play with our platform and give us feedback, <a href="https://tmlt.io/connect">let us know</a>! We’re
+  happy to give you a preview before our open-source launch later this year.</li>
+<li>Finally, if you’d like to apply your research skills to hard, impactful
+  real-world problems, and work with a great team, <a href="https://tmlt.io/careers">drop us a line</a>!
+  We’re looking for scientists in Europe and in the US.</li>
+</ul>
+<p><center>
+<img alt="An outro slide, saying &quot;Thanks ♥&quot;, giving displaying author information, the
+Tumult Labs logo, and the two links from the previous
+slide." src="https://desfontain.es/blog/images/ppai-22-talk-22.png">
+</center> </p>
+<p>Thanks again for the invitation and for attending this presentation! I'm looking
+forward to your questions, and I'm also happy to continue the conversation by
+email or via Twitter.</p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20220309,
+  title = &#123;A bottom-up approach to making differential privacy ubiquitous},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/bottom-up-differential-privacy.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2022},
+  month = &#123;03}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="renyi-dp-zero-concentrated-dp.html">← previous</a>
+    </li>
+    <li>
+      <a href="partial-knowledge.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

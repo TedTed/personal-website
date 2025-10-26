@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Local vs. central differential privacy - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Local vs. central differential privacy - Ted is writing things" />
+  <meta property="twitter:title" content="Local vs. central differential privacy - Ted is writing things" />
+  <meta name="description" property="og:description" content="Differential privacy is used in two very distinct contexts. Come learn about the distinction between the two, and interesting new directions that combine them!" />
+  <meta property="twitter:description" content="Differential privacy is used in two very distinct contexts. Come learn about the distinction between the two, and interesting new directions that combine them!" />
+  <meta property="summary" content="Differential privacy is used in two very distinct contexts. Come learn about the distinction between the two, and interesting new directions that combine them!" />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/local-global-differential-privacy.html" />
+  <link rel="prev" href="cardinality-estimators.html" />
+  <link rel="next" href="privacy-engineer.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="cardinality-estimators.html">← previous</a>
+ —     <a href="privacy-engineer.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./local-global-differential-privacy.html">Local vs. central differential privacy</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2019-06-27T00:00:00+02:00">
+      2019-06-27
+    </time>
+    <small>&mdash; updated
+      <time datetime="2024-08-31T00:00:00+02:00">
+        2024-08-31
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p></small></p>
+<hr>
+<p><span class='lettrine'>W</span><strong>hen</strong> people talk about differential privacy,
+they don't always have the same thing in mind. People agree on the
+<a href="differential-privacy-in-more-detail.html">definition</a>, but context also matters a <em>lot</em>. There are three main
+settings in which differential privacy can be deployed: the <strong>central model</strong>
+(or <strong>global model</strong>), the <strong>local model</strong>, and the <strong>distributed model</strong>. In
+this post, I'll outline these three options, and the differences between them.</p>
+<p>First, what do I mean by "context", or "setting"? When you only look at the
+abstract definition, differential privacy is simple: it applies to a function
+that transforms an input into an output.</p>
+<p><center>
+<img alt="Diagram &quot;raw input&quot; → &quot;anonymized output&quot;, with &quot;magic&quot; on the arrow." src="https://desfontain.es/blog/images/input-output-diagram.svg">
+</center></p>
+<p>The question we'll be answering in this post is: <em>where</em> is differential privacy
+applied? Who do we protect the data <em>from</em>, and who has access to the raw data?</p>
+<h1 id="central-differential-privacy">Central differential privacy</h1>
+<p><a name="central"></a></p>
+<p>In the <em>central model</em> (or <em>global model</em>) of differential privacy, a <em>central
+aggregator</em> has access to the real data. What is this "aggregator"? Typically,
+it's a service or a research organization collecting data about individuals. In
+this model, each user sends their data to this aggregator without noise. The
+aggregator takes this data, and transforms it with a differentially private
+mechanism.</p>
+<p><center>
+<img alt="Diagram &quot;users&quot; → &quot;aggregator&quot; → &quot;anonymized output&quot;, with &quot;magic&quot; on the second arrow." src="https://desfontain.es/blog/images/global-dp-diagram.svg">
+</center></p>
+<p>The differentially private mechanism is only applied <em>once</em>, at the end of the
+process. The aggregator can then e.g. publish the result or share it with
+third parties.</p>
+<p>This model has one big advantage: <strong>accuracy</strong>. In the central model, you usually
+don't need to add a lot of noise to get valuable results with a low
+<span class="math">\(\varepsilon\)</span>. Remember when I explained how to release <a href="differential-privacy-in-practice.html">statistics</a>
+or <a href="almost-differential-privacy.html">histograms</a> using differential privacy? These examples were using
+this central model. It worked pretty well: only a <a href="differential-privacy-in-practice.html#laplace">little noise</a> was
+needed to hide someone in a count.</p>
+<p>Where's the catch, then? Well, the central aggregator needs to know the real
+data. In the scenarios above, we added noise to <em>real counts</em>. This is only
+possible if we know the true numbers in the first place… To enable this, <strong>each
+user has to trust the aggregator</strong> enough to share data with it. That might be
+difficult: the aggregator can be an untrusted company or government. Also, with
+the central model, all the data is collected in one place. It increases the risk
+of catastrophic failure, for example if the aggregator gets hacked and leaks all
+the data.</p>
+<p>The most famous real-world example of the central model is probably the US
+Census. In 2020, the US Census will use differential privacy to anonymize the
+data before publication. This is pretty exciting! You can read more about it
+<a href="https://www.census.gov/newsroom/blogs/random-samplings/2019/02/census_bureau_adopts.html">here</a>.</p>
+<h1 id="local-differential-privacy">Local differential privacy</h1>
+<p><a name="local"></a></p>
+<p>What's the alternative, then? A major contender is the <em>local model</em> of
+differential privacy. In this model, there is still an aggregator, but they no
+longer have access to the real data. Instead, each user applies a differentially
+private mechanism to their <em>own</em> data. And they only send their data to the
+aggregator once it's already anonymized.</p>
+<p><center>
+<img alt="Diagram &quot;users&quot; → &quot;aggregator&quot; → &quot;anonymized output&quot;, with &quot;magic&quot; on the first arrow." src="https://desfontain.es/blog/images/local-dp-diagram.svg">
+</center></p>
+<p>After collecting this noisy data, the aggregator can compute some statistics,
+and publish them. This last step doesn't need to be differentially private: the
+data is anonymous to begin with. In theory, the aggregator could publish the
+entire dataset they collected.</p>
+<p>The big advantage of this model is that it <strong>no longer requires trust</strong>. Since
+each user is protecting their own data, they're safe even if the aggregator is
+malicious. This makes the local model well-suited to situations where trust is
+difficult to get. And we already saw an example of this! Remember the survey
+about drug use that used <a href="differential-privacy-in-more-detail.html#rr">randomized response</a> to gather data. The scheme
+allowed subjects to answer honestly without admitting to breaking the law. This
+is a typical application of the local model.</p>
+<p>Can you guess the drawback of this model? Since each user must add noise to
+their own data, <strong>the total noise is much larger</strong>. You typically need many more
+users than in the central model to get useful results. To mitigate this problem,
+practical applications often use high values of <span class="math">\(\varepsilon\)</span>.</p>
+<p>Besides randomized response, the most famous example of this model is probably
+<a href="https://github.com/google/rappor">RAPPOR</a>. This clever scheme was invented to collect differentially private data
+in Google Chrome. Another example, a bit more recent, is the <a href="https://machinelearning.apple.com/2017/12/06/learning-with-privacy-at-scale.html">mechanism</a>
+that Apple uses to collect data on the iOS keyboard.</p>
+<h1 id="distributed-differential-privacy-somewhere-in-between">Distributed differential privacy: somewhere in between</h1>
+<p><a name="shuffling"></a></p>
+<p>The choice between central and local differential privacy can seem harsh: either
+accept a much larger level of noise, or collect raw data. That's why researchers
+looked for compromises, and came up with in-between solutions. These models are
+collectively called <em>distributed differential privacy</em>. They try to get the best
+of both worlds.</p>
+<p>The common idea behind all these models is to add an intermediary step to data
+collection. The data is not sent directly from users to the aggregator. Instead,
+some distributed protocol is run, and the aggregator only sees its output.</p>
+<p><center>
+<img alt="Diagram &quot;Users&quot; ←→ &quot;A lot of magic!&quot; ←→ &quot;Aggregator&quot; → &quot;Anonymized output&quot;" src="https://desfontain.es/blog/images/distributed-dp-diagram.svg">
+</center></p>
+<p>There are a few different ways to implement this core idea.</p>
+<ul>
+<li>Some system architectures, like <a href="https://arxiv.org/abs/1710.00901">Encode-Shuffle-Analyze</a>, introduce a new
+  system component called a <em>shuffler</em>. It removes identifiers, groups similar
+  data points, and returns them in a random order.</li>
+<li>Other systems use cryptographic protocols to aggregate data before the server
+  sees it. The aggregator only learns e.g. the sum of all values, not individual
+  values. This can be used, for example, as part of a <a href="http://research.google/blog/distributed-differential-privacy-for-federated-learning/">federated learning</a>
+  pipeline.</li>
+</ul>
+<p>Note that the arrows on the diagram above go both ways. This is because some
+distributed DP mechanisms are <em>interactive</em>: the protocol requires several
+rounds of two-way communication between users and aggregator.</p>
+<p>Not all distributed DP protocols have the same trust assumptions. Is the
+aggregator assumed to be <a href="https://crypto.stanford.edu/pbc/notes/crypto/sfe.html">honest-but-curious</a>, or actively malicious? Are
+there multiple participants, and are they assumed not to collude? Do the
+guarantees only rely on standard cryptographic assumptions? Or do they only
+depend on the security of <a href="https://en.wikipedia.org/wiki/Confidential_computing">hardware components</a>? Different
+implementations will have different answers to these questions.</p>
+<p>Research on distributed DP explores the space of trade-offs between trust and
+accuracy. It sheds light on even more trade-offs: protocols must also minimize
+how much computational resources and bandwidth they need. The many possibilities
+and challenges have led to a flourishing research area. Distributed DP holds a
+ton of potential for use cases where collecting raw data isn't a viable option!</p>
+<hr>
+<p>Interested in learning more about differential privacy? Head over to the <a href="friendly-intro-to-differential-privacy.html">table
+of contents</a> of this series to see its other posts. Or you can directly
+go to the <a href="why-not-differential-privacy.html">next article in the series</a>, which is somewhat paradoxical:
+it explores what it means for an algorithm to <em>not</em> be differentially private.</p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20190627,
+  title = &#123;Local vs. central differential privacy},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/local-global-differential-privacy.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2019},
+  month = &#123;06}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="cardinality-estimators.html">← previous</a>
+    </li>
+    <li>
+      <a href="privacy-engineer.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

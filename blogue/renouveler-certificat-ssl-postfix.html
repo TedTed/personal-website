@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Comment renouveler le certificat SSL utilisé par Postfix - Ted écrit des trucs</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="archives.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blogue/" type="application/rss+xml" rel="alternate" title="Ted écrit des trucs - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Comment renouveler le certificat SSL utilisé par Postfix - Ted écrit des trucs" />
+  <meta property="twitter:title" content="Comment renouveler le certificat SSL utilisé par Postfix - Ted écrit des trucs" />
+  <meta name="description" property="og:description" content="Un mini-guide de renouvellement de certificat SSL pour Postfix." />
+  <meta property="twitter:description" content="Un mini-guide de renouvellement de certificat SSL pour Postfix." />
+  <meta property="summary" content="Un mini-guide de renouvellement de certificat SSL pour Postfix." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blogue/renouveler-certificat-ssl-postfix.html" />
+  <link rel="prev" href="stockage-securise-de-bitcoins.html" />
+  <link rel="next" href="bonne-configuration-ssl-nginx.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Aller vers le contenu" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+              ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+              <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious-fr.html"> Présentation <img src="../flag-france.gif" alt=""/></a>
+          <a href="../serious.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-france.gif" alt=""/>
+          <a href="../blog/index.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recettes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="feed.xml">rss</a> —
+            <a href="archives.html">archives</a>
+          </span>
+          <span class="droite">
+            <a href="offlineimap-mbsync.html"
+                 title="Passer d'OfflineIMAP à isync/mbsync">← précédent</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted écrit des trucs</span>
+      </a></h1>
+      Sur des sujets en lien avec la vie privée, ou parfois pas.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./renouveler-certificat-ssl-postfix.html">Comment renouveler le certificat SSL utilisé par Postfix</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2014-10-21T00:00:00+02:00">
+      2014-10-21
+    </time>
+  </footer>
+  <div>
+    <p><strong>J'ai</strong> dû renouveler le certificat SSL de mon serveur mail (qui tourne grâce à
+Postfix) aujourd'hui. On trouve des tutoriels sur Internet pour configurer un
+serveur mail, mais évidemment, un an plus tard, lorsqu'il s'agit de rebidouiller
+parce que le certificat utilisé arrive à expiration, on passe un bon quart
+d'heure à chercher et parcourir de longs tutoriels pour trouver un petit bout
+d'information pertinente. Voilà donc le petit bout en question.</p>
+<p>L'autorité de certification qui vous a fourni un certificat vous a envoyé un
+mail vous disant qu'il fallait le renouveler, vous avez cliqué sur le lien,
+suivi les instructions, et obtenu un joli bloc de texte qui ressemble à :</p>
+<div class="highlight"><pre><span></span><code><span class="gh">-----BEGIN CERTIFICATE-----</span>
+<span class="s">MlfjmdCCA+2gAwIBAgVQQ7zoZN0GCSqGSIb3DQEBDDHNZUxkRQNOBgNVBAoTB1Jv</span>
+<span class="s">[quelques</span><span class="w"> </span><span class="s">dizaines</span><span class="w"> </span><span class="s">de</span><span class="w"> </span><span class="s">lignes</span><span class="w"> </span><span class="s">inintelligibles</span><span class="w"> </span><span class="s">du</span><span class="w"> </span><span class="s">même</span><span class="w"> </span><span class="s">genre]</span>
+<span class="s">2gAwIBAgVQQ7zoZN</span>
+<span class="gh">-----END CERTIFICATE-----</span>
+</code></pre></div>
+
+<p>et vous vous demandez ce que vous devez en faire. Allez donc voir dans le
+fichier de configuration de Postfix (<code>/etc/postfix/main.cf</code> sur Debian), et
+cherchez la ligne qui commence par <code>smtpd_tls_cert_file =</code>. L'emplacement
+indiqué par cette valeur, c'est le fichier dans lequel il faut mettre le
+certificat. Chez moi, ça ressemble à :</p>
+<div class="highlight"><pre><span></span><code>smtpd_tls_cert_file = /etc/postfix/tls/server.crt
+</code></pre></div>
+
+<p>il faut donc que je fasse une sauvegarde de ce fichier, et que je remplace son
+contenu par le bloc de texte donné par l'autorité de certification. Après avoir
+redémarré Postfix (<code>service postfix restart</code>), pouf ça marche.</p>
+<hr>
+<p>Remarque potentiellement importante : dans des configurations (comme la mienne)
+où l'empreinte du certificat est stockée en dur sur un client particulier (par
+exemple, j'ai un <code>tls_fingerprint 5D:7C:…</code> dans mon <code>.msmtprc</code>), il faut bien
+entendu renouveler cette empreinte. On fait ça avec :</p>
+<div class="highlight"><pre><span></span><code>openssl x509 -in /etc/postfix/tls/server.crt -sha1 -noout -fingerprint
+</code></pre></div>
+
+<p>et l'on peut copier ce qui est renvoyé après le <code>=</code> dans le morceau de
+configuration en question.</p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Citez cet article!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>L'entrée BibTeX a été copiée dans votre presse-papiers.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblogue20141021,
+  title = &#123;Comment renouveler le certificat SSL utilisé par Postfix},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blogue/renouveler-certificat-ssl-postfix.html}},
+  note = &#123;Ted écrit des trucs (blog personnel)},
+  year = &#123;2014},
+  month = &#123;10}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="stockage-securise-de-bitcoins.html">← précédent</a>
+    </li>
+    <li>
+      <a href="bonne-configuration-ssl-nginx.html">suivant →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">haut de page</a></li>
+    <li><a href="index.html">accueil</a></li>
+    <li><a href="archives.html">archives</a></li>
+  </ul>
+</nav>
+
+      <div class="feedback">
+        Tout ce que je raconte ici sont mes opinions personnelles, pas celles de
+        mon employeur.
+        <br>
+        Je suis toujours ravi de recevoir des réactions, critiques, questions,
+        ou autres commentaires sur ce que j'écris. Envoyez-moi ce qui vous
+        chante à <span class="baddirection">se.niatnofsed@neimad</span>.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          par 
+          <a rel="dct:publisher" href="http://desfontain.es/serious-fr.html">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="Je pense que le concept de propriété intellectuelle n'a aucun sens. Le contenu de ce blog est dans le domaine public."/>
+          </a>
+          &mdash;
+          mis en orbite par <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

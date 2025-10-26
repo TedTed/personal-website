@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Choosing things privately with the exponential mechanism - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Choosing things privately with the exponential mechanism - Ted is writing things" />
+  <meta property="twitter:title" content="Choosing things privately with the exponential mechanism - Ted is writing things" />
+  <meta name="description" property="og:description" content="A simple introduction to an essential building block for differential privacy: how to select a value among many." />
+  <meta property="twitter:description" content="A simple introduction to an essential building block for differential privacy: how to select a value among many." />
+  <meta property="summary" content="A simple introduction to an essential building block for differential privacy: how to select a value among many." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/book-selection-four-probabilities.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/book-selection-four-probabilities.png" />
+  <meta property="twitter:image:alt" content="A bar chart showing an intermediary step in the derivation of a simple exponential mechanism applied to a vote." />
+  <link rel="canonical" href="https://desfontain.es/blog/choosing-things-privately.html" />
+  <link rel="prev" href="privacy-enhancing-technologies.html" />
+  <link rel="next" href="five-stages.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="privacy-enhancing-technologies.html">← previous</a>
+ —     <a href="five-stages.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./choosing-things-privately.html">Choosing things privately with the exponential mechanism</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2023-10-09T00:00:00+02:00">
+      2023-10-09
+    </time>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p></small></p>
+<hr>
+<p><span class='lettrine'>T</span><strong>he</strong> goal of most differential privacy
+mechanisms is to publish <em>statistics</em>: numbers giving some information about
+groups of people. But to build more complex DP mechanisms, we sometimes need a
+different kind of building block. In this article, we won't be adding noise to
+numbers. Instead, we'll make a <em>choice</em> among multiple options, in a
+differentially private way.</p>
+<h1 id="a-simple-example">A simple example</h1>
+<p>Let's say that we're designing a poll to pick the best science-fiction books
+published in 2020. First, we'll collect a big list of books published that year.
+Then, we ask people to select the books they liked. Each person can pick as many
+books as they want, and we want to select the book with most votes. If there is
+a tie, we select the winner randomly.</p>
+<p>How do we publish this in a privacy-preserving way? Let's take a look at the
+books with the most votes in our voting results.</p>
+<p><img alt="A bar chart showing the number of votes on 6 books; the x-axis ends in a
+dotted line, suggesting some books are not being shown. &quot;Network Effect&quot; has 50
+votes, &quot;Hench&quot; and &quot;The Hidden Girl&quot; have 49 votes, &quot;The Relentless Moon&quot; has 47
+votes, &quot;Axiom's End&quot; and &quot;Riot Baby&quot; have 46 votes." src="https://desfontain.es/blog/images/book-votes.svg"></p>
+<p>We can't simply publish the true answer without randomness. Otherwise, we would
+be publishing the most popular book (here, <em>Network Effect</em>) 100% of the time.
+But imagine that we add a single person, who only votes for one of the
+second-most popular books.</p>
+<p><img alt="The same bar chart as before, except &quot;The Hidden Girl&quot; now has 50 votes, and
+its bar is a slightly darker shade of blue." src="https://desfontain.es/blog/images/book-votes-tie.svg"></p>
+<p>In that case, we would want to release either one or the other with equal
+probability. This is a violation of differential privacy: 50% of the time, we
+publish <em>The Hidden Girl</em>, and this couldn't happen without this added user!</p>
+<p><img alt="A bar chart as before with the same books in the x-axis; now the y-axis is
+labeled &quot;Probability of being selected as winner&quot;. In light blue, labeled
+&quot;Original data&quot;, there is only one bar, at probability 1, for &quot;Network Effect&quot;.
+In dark blue, labeled &quot;With one added vote&quot;, there are two bars at probability
+0.5: one for &quot;Network Effect&quot; and one for &quot;The Hidden Girl&quot;. The bars for &quot;The
+Hidden Girls&quot; are labeled 0 and 0.5, in red, and circled; red text above the
+circle says &quot;DP violation!&quot;." src="https://desfontain.es/blog/images/book-selection-dp-violation.svg"></p>
+<p>To avoid this, we need to add more randomness in our process. How do we do that
+exactly?</p>
+<p>Well, we already know how to publish <a href="differential-privacy-in-practice#many-things">histograms</a> with differential privacy:
+we add well-calibrated Laplace noise to each of the statistics. So why don't we
+just do that? If we make the entire histogram private, we can release all of it.
+In particular, we can see which book has the highest noisy vote count, and
+declare it the winner.</p>
+<p>But we have a problem here. The noise has to be scaled by the number of
+statistics that each user can contribute to. In our setting, a particularly
+enthusiastic user could vote for <em>all the books</em>. If our list has 10,000 books
+to choose from, then we have to multiply the noise scale by 10,000. This seems…
+not great. And it also feels unnecessary: we don't <em>want</em> to release the entire
+histogram, we only want to pick a winner. Could we use that fact to inject less
+noise into the process?</p>
+<p>Let's try to think about what a good strategy would look like. Say we are using
+<span class="math">\(\varepsilon=\ln(2)\)</span>. Let's look at the votes for the most popular books again.</p>
+<p><img alt="The same bar chart as the first one, showing the number of votes on 6 books.
+The x-axis ends in a dotted line, suggesting some books are not being shown.
+&quot;Network Effect&quot; has 50 votes, &quot;Hench&quot; and &quot;The Hidden Girl&quot; have 49 votes, &quot;The
+Relentless Moon&quot; has 47 votes, &quot;Axiom's End&quot; and &quot;Riot Baby&quot; have 46
+votes." src="https://desfontain.es/blog/images/book-votes.svg"></p>
+<p>The true winner is <em>Network Effect</em>. So we want to select this true answer with
+some probability, hopefully as high as possible.</p>
+<p><img alt="A bar chart showing the probability distribution of the book selected as a
+winner. It has a single bar for &quot;Network Effect&quot;, all other bars are empty and
+replaced by question marks." src="https://desfontain.es/blog/images/book-selection-single-probability.svg"></p>
+<p>Now, what is the probability of selecting one of the second-best choices? They
+both have one fewer vote than the winner. They're <em>not</em> the correct answer, so
+we want to select them with as small a probability as possible. But we're also
+constrained by our differential privacy guarantee.</p>
+<p>Imagine that we add a single new person to the data, and they vote for <em>Hench</em>.
+Then, we should be selecting <em>Network Effect</em> and <em>Hench</em> with equal
+probability.</p>
+<p><img alt="The same bar chart as earlier, with an additional grey &amp; dotted-line bar for
+&quot;Hench&quot;, of equal height to the one for &quot;Network
+Effect&quot;." src="https://desfontain.es/blog/images/book-selection-hypothetical.svg"></p>
+<p>With DP, we must select <em>Hench</em> with similar probability as in this hypothetical
+scenario. How similar? We chose <span class="math">\(e^\varepsilon=2\)</span>, so there can be a factor of
+at most 2 between these probabilities. We want it to be as small as possible, so
+let's make it exactly half.</p>
+<p><img alt="The same bar chart as earlier, with an additional blue bar for &quot;Hench&quot;, whose
+height is half that of the grey bar. A red arrow labeled &quot;Selection probability
+divided by e^ε = 2&quot; goes from the grey bar to the blue
+bar." src="https://desfontain.es/blog/images/book-selection-two-probabilities.svg"></p>
+<p>The exact same reasoning holds for <em>The Hidden Girl</em>, which has as many votes as
+<em>Hench</em>.</p>
+<p><img alt="A bar chart showing the probabilities of the three books with most votes.
+&quot;Network effect&quot; has the biggest bar, &quot;Hench&quot; and &quot;The Hidden Girl&quot; each have a
+bar whose height is half, all other books have a question
+mark." src="https://desfontain.es/blog/images/book-selection-three-probabilities.svg"></p>
+<p>What about one of the books that is a little further away from the winner? <em>The
+Relentless Moon</em>, for example, is 3 votes short: we would need three more votes
+to get to the winning probability. If we can add one person at a time, we need
+<em>three steps</em> to get there.</p>
+<p><img alt="The number of votes for each book; with three arrows on top of the bar for
+&quot;The Relentless Moon&quot;, labeled &quot;3 more votes needed to reach the
+winner&quot;" src="https://desfontain.es/blog/images/book-votes-three-steps.svg"></p>
+<p>And each time we add one person, we have to respect the differential privacy
+constraint: we can at most double the probability of selecting <em>The Relentless
+Moon</em>. To arrive there after these three steps, we need to start from at least
+<span class="math">\(\left(\frac{1}{2}\right)^3=1/8\)</span> of the maximum probability.</p>
+<p><img alt="A bar chart showing the probabilities of the four books with most votes.
+&quot;Network effect&quot; has the biggest bar, &quot;Hench&quot; and &quot;The Hidden Girl&quot; each have a
+bar whose height is half, &quot;The Relentless Moon&quot; has a bar whose height is 8
+times smaller, the other two books have a question
+mark." src="https://desfontain.es/blog/images/book-selection-four-probabilities.svg"></p>
+<p>We can repeat this idea and draw our full probability distribution. For each
+book, if it's <span class="math">\(k\)</span> votes short of the true winner, its selection probability
+should be <span class="math">\(1/2^k\)</span> of the true winner.</p>
+<p><img alt="A bar chart showing the probabilities of all the books displayed on the chart.
+&quot;Network effect&quot; has the biggest bar, &quot;Hench&quot; and &quot;The Hidden Girl&quot; each have a
+bar whose height is half, &quot;The Relentless Moon&quot; has a bar whose height is 8
+times smaller, &quot;Axiom's End&quot; and &quot;Riot Baby&quot; each have a bar whose height is 16
+times smaller." src="https://desfontain.es/blog/images/book-selection-all-probabilities.svg"></p>
+<p>Achieving this for an arbitrary <span class="math">\(\varepsilon\)</span> is straightforward: the
+probability of selecting a book <span class="math">\(i\)</span> with <span class="math">\(k_i\)</span> votes should be proportional to
+<span class="math">\(\exp\left(\varepsilon \cdot k_i\right)\)</span>. After normalizing to make the
+probabilities sum to <span class="math">\(1\)</span>, we get the following formula:</p>
+<div class="math">$$
+\mathbb{P}\left[\text{We choose book }i\right] =
+    \frac{\exp\left(\varepsilon \cdot k_i\right)}{\sum_i \exp\left(\varepsilon \cdot k_i\right)}.
+$$</div>
+<p>We call this DP procedure the <em>exponential mechanism</em>.</p>
+<h1 id="a-generic-statement-and-a-simple-optimization">A generic statement and a simple optimization</h1>
+<p>The example above is very simple: each book is simply associated to the number
+of votes it received. But the exponential mechanism is much more generic, and we
+can use it in more complex settings. Let's say we have a database <span class="math">\(D\)</span>, and we
+have to choose between many items <span class="math">\(O_1\)</span>, <span class="math">\(O_2\)</span>, and so on. We assume that each
+item <span class="math">\(O_i\)</span> has a <em>score</em> <span class="math">\(s_i(D)\)</span>, which depends on the dataset. Let <span class="math">\(\Delta\)</span> be
+the <em>sensitivity</em> of the scoring function: the maximum change to <span class="math">\(s_i(D)\)</span> when
+one person is added to (or removed from) <span class="math">\(D\)</span>, for all <span class="math">\(i\)</span>. Then the exponential
+mechanism <span class="math">\(\mathcal{M}\)</span> is defined as:</p>
+<div class="math">$$
+\mathbb{P}\left[\mathcal{M}(D) = O_i\right] =
+    \frac{\exp\left(\varepsilon\cdot\frac{s_i(D)}{2\Delta}\right)}{\sum_i \exp\left(\varepsilon\cdot\frac{s_i(D)}{2\Delta}\right)}.
+$$</div>
+<p>Proving that it satisfies ε-DP is very easy — the proof in the <a href="http://kunaltalwar.org/papers/expmech.pdf">original paper</a>
+is just 3 lines long! Try to come up with it by yourself. Or you can also click
+here: <button id="toggleProof1"></button></p>
+<div id="proof1" style="display: none; border-left: double; padding-left: 10px">
+<p>If you add or remove a single person from <span class="math">\(D\)</span>, the numerator of the fraction
+above changes by at most a factor of <span class="math">\(e^{\varepsilon/2}\)</span>. Each term in the
+denominator does the same, so the denominator also changes at most by the same
+factor. So the entire probability changes by a factor of at most
+<span class="math">\(e^\varepsilon\)</span>, which is exactly what we want to satisfy <span class="math">\(\varepsilon\)</span>-DP.</p>
+</div>
+<p>In our example above, the <span class="math">\(O_i\)</span> are the books, and the score of each book is its
+number of votes. Adding or removing one person modifies the scores by at most
+one, so <span class="math">\(\Delta=1\)</span>, and we get the same…</p>
+<p>Wait a second. We're not getting the same thing! There's a factor of <span class="math">\(2\)</span> in the
+generic formula that we didn't have in our voting example. So if we were using
+the generic formula, we would get worse utility: the probability of selecting
+the winner would be smaller. Can we get rid of this multiplicative factor?</p>
+<p>The answer is yes, because our scores are <em>monotonic</em>: if we add a user, they
+will <em>all</em> get larger. If we remove one, they will all get smaller. That's a
+common special case, and in that case, you can remove the <span class="math">\(2\)</span> factor:</p>
+<div class="math">$$
+\mathbb{P}\left[\mathcal{M}(D) = O_i\right] =
+    \frac{\exp\left(\varepsilon\cdot\frac{s_i(D)}{\Delta}\right)}{\sum_i \exp\left(\varepsilon\cdot\frac{s_i(D)}{\Delta}\right)}.
+$$</div>
+<p>Again, this is quite easy to prove, especially if you've understood the previous
+proof. <button id="toggleProof2"></button></p>
+<div id="proof2" style="display: none; border-left: double; padding-left: 10px">
+<p>If you add or remove a single person from <span class="math">\(D\)</span>, the numerator of the fraction
+above changes by at most a factor of <span class="math">\(e^{\varepsilon}\)</span>. Each term in the
+denominator will do the same, <em>in the same direction</em>: it's impossible for the
+numerator to increase and for the denominator to decrease. So the maximum
+multiplicative change to the probability is <span class="math">\(e^\varepsilon\)</span>.</p>
+</div>
+<p>Note that here, we assumed that we're protecting the addition or removal of a
+single person in the dataset. If we want to protect <em>any change</em> in a single
+person's votes instead, the privacy analysis changes: someone could add one vote
+to a book and remove a vote to another. The scores would no longer be monotonic,
+and we would need to pay the <span class="math">\(2\)</span> factor in our formula.</p>
+<h1 id="more-results">More results?!</h1>
+<p>The exponential mechanism is a central building block in differential privacy.
+It's been studied from many different angles, so there is a lot to say about it.
+This blog post is long enough already, but here are a few ✨ selected facts ✨.
+Follow the links if you'd like to learn more!</p>
+<ul>
+<li>The exponential mechanism can be <a href="https://timvieira.github.io/blog/post/2014/07/31/gumbel-max-trick/">implemented</a> in a simple way:
+  add noise from a <a href="https://en.wikipedia.org/wiki/Gumbel_distribution">Gumbel distribution</a> to each score, and choose
+  the item with the highest noisy score.</li>
+<li>Its privacy guarantees can be finely analyzed using a notion called <a href="https://differentialprivacy.org/exponential-mechanism-bounded-range/">bounded
+  range</a>. This allows you to prove that an exponential mechanism
+  calibrated for <span class="math">\(\varepsilon\)</span>-DP also satisfies <span class="math">\(\rho\)</span>-<a href="renyi-dp-zero-concentrated-dp.html">zCDP</a> with
+  <span class="math">\(\rho=\frac{1}{8}\varepsilon^2\)</span>: a lot better than the typical conversion of
+  <span class="math">\(\rho=\frac{1}{2}\varepsilon^2\)</span>.</li>
+<li>Using the exponential mechanism several times? Don't use regular composition
+  theorems! Instead, using the special structure of this mechanism can get you
+  <a href="https://arxiv.org/abs/1909.13830">tighter results</a>.</li>
+<li>You can do better than the exponential mechanism, with a mechanism called
+  <em>Permute-and-Flip</em>. Its <a href="https://arxiv.org/abs/2010.12603">original definition</a> is somewhat complicated,
+  but people found a <a href="https://arxiv.org/abs/2105.07260">nice characterization</a> afterwards: add noise
+  from a <a href="https://en.wikipedia.org/wiki/Geometric_distribution">geometric distribution</a> to each score, and pick the highest
+  noisy score.</li>
+<li>However, the exponential mechanism still retains one advantage: it can also be
+  used when the space of possible choices is <em>continuous</em>, like "every real
+  number between 0 and 1"<sup id="fnref:continuous"><a class="footnote-ref" href="#fn:continuous">1</a></sup>. This is very useful, for example to
+  compute the median of values in a dataset.</li>
+</ul>
+<hr>
+<p><small>
+I'm thankful to Daniel Simmons-Marengo, Liudas Panavas, and PeoriaBummer for
+helpful feedback on this post.
+</small></p>
+<script type="text/javascript">
+var defaultButton = 'Show me the proof';
+var button1 = document.getElementById('toggleProof1');
+button1.innerHTML = defaultButton
+button1.addEventListener('click', function (event) {
+    button1.innerHTML = button1.innerHTML == defaultButton ? 'Hide the proof' : defaultButton;
+    proof1 = document.getElementById('proof1');
+    proof1.style.display = proof1.style.display == 'none' ? 'block' : 'none';
+});
+var button2 = document.getElementById('toggleProof2');
+button2.innerHTML = defaultButton
+button2.addEventListener('click', function (event) {
+    button2.innerHTML = button2.innerHTML == defaultButton ? 'Hide the proof' : defaultButton;
+    proof2 = document.getElementById('proof2');
+    proof2.style.display = proof2.style.display == 'none' ? 'block' : 'none';
+});
+</script>
+
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:continuous">
+<p>In that case, the <em>density</em> of the probability distribution on
+<span class="math">\(x\)</span> must be proportional to
+<span class="math">\(\exp\left(\varepsilon\cdot\frac{s_x(D)}{2\Delta}\right)\)</span>. The normalization
+factor (in the denominator) also becomes an integral instead of a discrete
+sum.&#160;<a class="footnote-backref" href="#fnref:continuous" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20231009,
+  title = &#123;Choosing things privately with the exponential mechanism},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/choosing-things-privately.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2023},
+  month = &#123;10}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="privacy-enhancing-technologies.html">← previous</a>
+    </li>
+    <li>
+      <a href="five-stages.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

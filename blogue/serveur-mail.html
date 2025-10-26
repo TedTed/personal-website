@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>De la configuration d'un serveur mail - Ted écrit des trucs</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="archives.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blogue/" type="application/rss+xml" rel="alternate" title="Ted écrit des trucs - RSS Feed" />
+
+  <meta name="title" property="og:title" content="De la configuration d'un serveur mail - Ted écrit des trucs" />
+  <meta property="twitter:title" content="De la configuration d'un serveur mail - Ted écrit des trucs" />
+  <meta name="description" property="og:description" content="Autohéberger ses mails, c'est compliqué : retour d'expérience." />
+  <meta property="twitter:description" content="Autohéberger ses mails, c'est compliqué : retour d'expérience." />
+  <meta property="summary" content="Autohéberger ses mails, c'est compliqué : retour d'expérience." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blogue/serveur-mail.html" />
+  <link rel="prev" href="bienvenue.html" />
+  <link rel="next" href="ip-over-dns.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Aller vers le contenu" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+              ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+              <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious-fr.html"> Présentation <img src="../flag-france.gif" alt=""/></a>
+          <a href="../serious.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-france.gif" alt=""/>
+          <a href="../blog/index.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recettes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="feed.xml">rss</a> —
+            <a href="archives.html">archives</a>
+          </span>
+          <span class="droite">
+            <a href="offlineimap-mbsync.html"
+                 title="Passer d'OfflineIMAP à isync/mbsync">← précédent</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted écrit des trucs</span>
+      </a></h1>
+      Sur des sujets en lien avec la vie privée, ou parfois pas.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./serveur-mail.html">De la configuration d'un serveur mail</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2014-02-04T00:00:00+01:00">
+      2014-02-04
+    </time>
+    <small>&mdash; modifié le
+      <time datetime="2014-09-10T00:00:00+02:00">
+        2014-09-10
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><strong>J'ai</strong> récemment installé un serveur mail sur mon serveur. Je voulais que tout
+soit autohébergé : les mails eux-mêmes, le moyen d'y accéder, ainsi que le
+serveur SMTP qui envoie les mails vers l'extérieur. Bien sûr, je tenais aussi à
+ce que tout ce qui pouvait être chiffré le soit, en particulier que je ne risque
+pas de me faire intercepter quoi que ce soit lorsque je me connecte au serveur.
+Ça m'a pris un temps vraiment long, j'ai perdu pas mal de temps sur quelques
+problèmes, et je n'ai trouvé nulle part une liste de toutes les choses qu'il
+fallait que je fasse pour arriver à mes fins. </p>
+<p>Ce billet est donc une tentative d'établir cette liste, de mentionner chacun des
+problèmes embêtants que j'ai rencontré, et la façon dont j'en suis venu à bout.
+Ça ne sera <em>pas</em> un tutoriel détaillé, ça prendrait trop de temps de le faire,
+il aurait fallu que je note tout ce que j'ai fait au fur et à mesure pour ça.
+Info potentiellement utile : j'ai fait tout ça sur une machine qui tourne sous
+Debian Wheezy, avec un noyau <code>3.2.0-4-amd64</code>.</p>
+<h1 id="liste-de-trucs-quil-a-fallu-que-je-fasse">Liste de trucs qu'il a fallu que je fasse</h1>
+<ol>
+<li>Installer les bons paquets Debian :<ul>
+<li><code>postfix</code>, le serveur mail ;</li>
+<li><code>dovecot-imapd</code>, le serveur IMAP ;</li>
+<li><code>opendkim</code> et <code>opendkim-tools</code>, qui sert ajouter le protocole DKIM à ses
+  mails sortants, ce qui évite de passer pour un spammeur aux yeux de
+  certains grands serveurs mails comme Yahoo! ;</li>
+<li><code>postfix-tls</code>, pour que le serveur mail sache utiliser TLS ;</li>
+<li>et enfin, <code>cyrus-common-2.2</code> et <code>sasl2-bin</code>, pour faire de
+  l'authentification sécurisée au serveur SMTP.</li>
+</ul>
+</li>
+<li>Configurer ma zone DNS (sur le manager de la société qui me fournit mon nom de
+domaine, ici OVH) pour :<ul>
+<li>rajouter un champ MX pour le serveur mail pour dire quel sous-domaine 
+  utiliser pour le SMTP sur desfontain.es (ici, <code>smtp.desfontain.es</code>) ;</li>
+<li>et ajouter deux champs (un de type A et un de type AAAA, respectivement pour
+  l'IPv4 et pour l'IPv6) pour lier <code>smtp.desfontain.es</code> à la bonne IP.</li>
+</ul>
+</li>
+<li>Changer mon hostname en <code>smtp.desfontain.es</code>.</li>
+<li>Ajouter un utilisateur par boîte mail que je veux créer.</li>
+<li>Configurer Postfix et dovecot pour envoyer mes premiers mails.</li>
+<li>Configurer les alias Postfix qui vont bien : j'ai envie que toutes les
+adresses du type <span class="baddirection">,<code>se.niatnofsed@retsamtsop</code></span>
+<span class="baddirection">,<code>se.niatnofsed@retsamtsoh</code></span> etc., atterrissent
+dans ma boîte mail, mais sans créer un utilisateur par adresse.</li>
+<li>En profiter pour mettre des regex dans les alias en question : je veux que
+n'importe quelle adresse de la forme 
+<span class="baddirection"><code>se.niatnofsed@iouqetropmin.maps</code></span> soit reconnue
+comme valide et redirigée vers une adresse spam maître. Ça permet de donner une
+adresse <em>différente</em> à chaque fournisseur de serveur ou site marchand sur
+Internet, et si jamais des spammeurs la récupèrent, on peut savoir qui a vendu
+mon adresse (et lancer des œufs sur leur maison) et la bloquer.</li>
+<li>Rajouter un champ SPF dans ma zone DNS pour ne pas passer pour un spammeur.</li>
+<li>Configurer OpenDKIM pour encore moins passer pour un spammeur.</li>
+<li>Rajouter un champ DKIM dans ma zone DNS pour que mes signatures DKIM
+puissent être vérifiées par les destinataires de mes messages.</li>
+<li>Ajouter un reverse DNS IPv4 <em>et</em> IPv6 pour ne pas passer pour un spammeur
+aux yeux de Google, qui vérifie spécifiquement (pour une raison qui m'échappe,
+mais alors, complètement) que le DNS et que le reverse DNS correspondent. C'est
+un truc qui se configure dans les options de mon hébergeur, pas sur mon serveur
+lui-même.</li>
+<li>Créer et mettre en place un certificat SSL signé par une autorité externe
+(StartSSL) sur <code>desfontain.es</code>. (Non, ça n'a aucun rapport avec le reste.)</li>
+<li>Créer un certificat SSL pour <code>smtp.desfontain.es</code>, ici sur CAcert : autant
+c'est important d'avoir un certificat signé par une autorité reconnue par tout
+le monde pour mon site Web (je ne veux pas que les visiteurs de mon site
+reçoivent un message d'erreur lorsqu'ils essaient de s'y connecter en HTTPS),
+autant ça l'est beaucoup moins pour mon serveur SMTP où je suis a priori le seul
+à me connecter.</li>
+</ol>
+<p>Normalement, avec ça, trouver les mots à googler pour chaque détape ne devrait
+pas être difficile. Comme d'habitude, si vous trouvez que quelque chose n'est
+pas clair et que vous avez des questions, n'hésitez pas à m'envoyer un mail.</p>
+<h1 id="problemes-rencontres">Problèmes rencontrés</h1>
+<ul>
+<li>
+<p>À l'étape d'ajout du champ SPF, j'ai mis du temps à comprendre qu'il fallait
+  impérativement cliquer sur « Type SPF » dans le manager d'OVH, parce que même
+  si en théorie ça Devrait Marcher™, ça ne fonctionnait pas lorsque je rajoutais
+  un champ TXT comme l'indiquait mon tutoriel.</p>
+</li>
+<li>
+<p>Exactement la même chose à l'étape d'ajout du champ DKIM. C'est très foireux
+  parce qu'en plus, lorsque ça ne marche pas directement lorsqu'on change le
+  DNS, c'est <em>normal</em>, il faut le temps que ça se propage, du coup on ne
+  s'alarme pas, et on perd plein de temps.</p>
+</li>
+<li>
+<p>La plus grosse prise de tête que j'ai eue était probablement pour établir une
+  communication entre Postfix (qui forme et envoie les messages) et OpenDKIM
+  (qui les signe avec la clé globale du serveur). Dans la majorité des tutoriaux
+  que j'ai trouvé sur le sujet, les deux communiquent en passant par un port
+  particulier de localhost. Pour une raison qui m'échappe toujours (un ami m'a
+  après suggéré que c'était potentiellement parce qu'il y avait peut-être un
+  localhost IPv4 et un localhost IPv6 ?), ça ne fonctionnait désespérément pas,
+  alors même que les deux démons tournaient : <code>netstat</code> renvoyait bien opendkim
+  qui écoutait sur le bon port, et les logs de postfix indiquaient désespérément
+  « Connection refused ». Je m'en suis sorti en les faisant communiquer par un
+  fichier de socket :</p>
+<ul>
+<li>
+<p>dans <code>/etc/defaults/opendkim</code> :</p>
+<div class="highlight"><pre><span></span><code><span class="n">SOCKET</span><span class="o">=</span><span class="s2">&quot;local:/var/spool/postfix/var/run/opendkim/opendkim.sock&quot;</span>
+</code></pre></div>
+
+</li>
+<li>
+<p>et dans <code>/etc/postfix/main.conf</code> :</p>
+<div class="highlight"><pre><span></span><code><span class="n">smtpd_milters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unix</span><span class="p">:</span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">opendkim</span><span class="o">/</span><span class="n">opendkim</span><span class="o">.</span><span class="n">sock</span>
+<span class="n">non_smtpd_milters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unix</span><span class="p">:</span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">opendkim</span><span class="o">/</span><span class="n">opendkim</span><span class="o">.</span><span class="n">sock</span>
+</code></pre></div>
+
+</li>
+</ul>
+</li>
+</ul>
+<p>Ah oui, et évidemment, au début, j'avais mis le même chemin dans les deux cas
+  et ça ne marchait pas, parce que postfix est lancé dans un chroot.</p>
+<ul>
+<li>Au moment où je voulais faire des tests d'authentification à mon serveur SMTP
+  par SASL, la majorité des tutoriels utilisent la commande :<div class="highlight"><pre><span></span><code>telnet smtp.serveur.ext 25
+</code></pre></div>
+
+</li>
+</ul>
+<p>et il m'a fallu un certain temps pour piger que si ça ne fonctionnait pas, ça
+  n'était pas à cause de mon serveur mais de mon fournisseur d'accès à Internet
+  local qui bloquait le port 25. Pour pouvoir non seulement faire des tests mais
+  aussi utiliser msmtp (mon client smtp local) depuis chez moi au quotidien,
+  j'ai dû utiliser le port 465 à la place. Il a fallu que j'indique ça dans la
+  configuration de msmtp en utilisant l'option <code>port</code> (incroyable), et que je
+  décommente la ligne commençant par <code>smtps</code> dans <code>/etc/postfix/master.cf</code>.</p>
+<h1 id="liens">Liens</h1>
+<p>J'ai pas noté au fur et à mesure ce que j'ai fait, j'aurais pu écrire un
+tutoriel bien mieux foutu si j'y avais pensé. Par contre, j'ai quand même
+l'habitude de mettre des liens en commentaire de mes fichiers de configuration,
+pour me souvenir de l'origine d'un bout de code. En général, le lien comporte
+des explications, donc ça aide à se souvenir de ce que telle ligne fait à cet
+endroit-là. Voilà donc la liste des liens présents dans mes fichiers de
+config' :</p>
+<ul>
+<li><a href="https://www.startssl.com/?app=42">un article sur le site de StartSSL</a> pour
+  faire fonctionner nginx (mon serveur Web) avec SSL ;</li>
+<li><a href="http://tipstricks.itmatrix.eu/?p=1494">un tutorial</a> pour l'installation de
+  OpenDKIM ;</li>
+<li><a href="https://www.isalo.org/wiki.debian-fr/Configuration_d%27un_serveur_mail_avec_Postfix">une page de wiki</a>
+  pour la configuration « de base » du serveur mail - c'est en français, ce qui
+  vaut la peine d'être mentionné ;</li>
+<li>et <a href="http://rene.bz/setting-smtp-authentication-over-tls-postfix/">un tutorial</a>
+  pour la configuration d'une authentification chiffrée via TLS au serveur SMTP.</li>
+</ul>
+<h1 id="conclusion">Conclusion</h1>
+<p>C'était <em>vraiment</em> long de faire tout ça, de l'ordre de quelques dizaines
+d'heures. Une partie importante du travail que j'ai eu (et des soucis que j'ai
+rencontrés) vient du fait que je voulais avoir mon propre serveur SMTP, donc non
+seulement héberger le stockage de mes mails et la gestion de mon nom de domaine,
+mais aussi leur envoi vers l'extérieur. Il aurait probablement été plus simple
+d'utiliser un SMTP externe, par exemple celui de l'ENS. Mais j'ai appris plein
+de choses sur le fonctionnement du système d'e-mails, donc je ne regrette pas
+d'y avoir passé du temps.</p>
+<p>J'ai fait tout ça dans le but de me rendre aussi indépendant que possible des
+services centralisés qui s'occupaient des mails auparavant, et pour avoir plus
+de contrôle sur le caractère privé de mes données. En pratique, l'immense
+majorité de mes mails est toujours interceptable (et, selon toute probabilité,
+<a href="http://arstechnica.com/tech-policy/2013/06/use-of-tor-and-e-mail-crypto-could-increase-chances-that-nsa-keeps-your-data/">interceptée</a>)
+car une part infime de mes contacts utilise des méthodes de chiffrement comme
+GPG. Et comme le protocole d'envoi d'e-mails n'est clairement pas conçu pour la
+sécurité, les métadonnées sont toujours interceptables au moment où elles
+passent sur le réseau.</p>
+<p>Néanmoins, je vois quelques différences importantes : d'une part, le contenu de
+mes correspondances n'est pas utilisé pour faire des statistiques ou de la
+publicité ciblée. D'autre part, si quelqu'un veut lire et surveiller mes mails,
+il faut qu'il intercepte ce que j'envoie et reçois en permanence, ça devient
+impossible d'aller juste voir mon fournisseur de messagerie électronique pour
+lui dire « tiens, fais-nous une copie des messages dans la boîte aux lettres de
+telle personne ». Ça me semble être une amélioration significative qui valait le
+coup d'y passer autant de temps.</p>
+<p>En revanche, il faut admettre que le gain en terme de vie privée entre « avoir
+son propre serveur SMTP » et « utiliser un serveur SMTP externe de confiance
+(celui d'une université, par exemple) » est quasi-nul, et c'est pourtant ça qui
+m'a pris le plus de temps. Le seul avantage que je vois, c'est qu'on ne peut
+jamais être sûr qu'un serveur SMTP que l'on ne contrôle pas n'est pas compromis
+(c'est évident si on parle de ceux de multinationales américaines, mais après
+tout, ça n'est pas délirant d'imaginer que ceux des universités, points
+stratégiquement importants s'il en est, aient des backdoors de services de
+renseignements divers).</p>
+<p><sub><sub>Merci à <a href="http://a3nm.net/">a3nm</a> pour sa relecture et ses propositions
+d'améliorations.</sub></sub></p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Citez cet article!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>L'entrée BibTeX a été copiée dans votre presse-papiers.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblogue20140204,
+  title = &#123;De la configuration d'un serveur mail},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blogue/serveur-mail.html}},
+  note = &#123;Ted écrit des trucs (blog personnel)},
+  year = &#123;2014},
+  month = &#123;02}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="bienvenue.html">← précédent</a>
+    </li>
+    <li>
+      <a href="ip-over-dns.html">suivant →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">haut de page</a></li>
+    <li><a href="index.html">accueil</a></li>
+    <li><a href="archives.html">archives</a></li>
+  </ul>
+</nav>
+
+      <div class="feedback">
+        Tout ce que je raconte ici sont mes opinions personnelles, pas celles de
+        mon employeur.
+        <br>
+        Je suis toujours ravi de recevoir des réactions, critiques, questions,
+        ou autres commentaires sur ce que j'écris. Envoyez-moi ce qui vous
+        chante à <span class="baddirection">se.niatnofsed@neimad</span>.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          par 
+          <a rel="dct:publisher" href="http://desfontain.es/serious-fr.html">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="Je pense que le concept de propriété intellectuelle n'a aucun sens. Le contenu de ce blog est dans le domaine public."/>
+          </a>
+          &mdash;
+          mis en orbite par <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

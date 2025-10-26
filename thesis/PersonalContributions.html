@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="Acknowledgements.html" />
+  <link ref="next" href="Notations.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="Acknowledgements.html">← previous</a></li>
+        <li><a href="index.html#PersonalContributions.html">up</a></li>
+        <li><a href="Notations.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="Acknowledgements.html">LINKPREV</a><a href="index.html#PersonalContributions.html">LINKUP</a><a href="Notations.html">LINKNEXT</a></p></div>
+  <h4 class="likesubsectionHead" id="personal-contributions-u-ding-"><a id="x4-8000"></a>Personal contributions <span class="bbding-10x-x-109">✿</span></h4> <!-- l. 3 --><p class="noindent">
+Almost all this thesis is the result of work done in collaboration with other researchers, engineers, and
+other colleagues. It was an utmost privilege to work with so many exceptional people. Much of the
+credit goes to them, although I am solely responsible for all the mistakes that might still be present.
+Large portions of this work have also been published in some other form in other venues.
+This section gives more context on existing publications and gives credit where credit is
+due.
+</p><!-- l. 11 --><p class="indent">  The historical overview of syntactic definitions of privacy, and the introduction of differential privacy
+present in Section&nbsp;<a href="FromSyntacticToSemanticPrivacy.html#from-syntactic-to-semantic-privacy-u-ding-">2.1<!-- tex4ht:ref: sec:syntactic  --></a> merely presents existing work. They are based on a series of blog posts
+published on my personal website&nbsp;[<a id="x4-8001"></a><a href="bibliography.html#cite.0@desfontainesblog">98</a>].
+</p><!-- l. 16 --><p class="indent">  The systematization of knowledge on variants and extensions of differential privacy exposed in
+Section&nbsp;<a href="SystematizingVariantsExtensionsOfDifferentialPrivacy.html#systematizing-variants-extensions-of-differential-privacy-u-ding-">2.2<!-- tex4ht:ref: sec:survey  --></a> was done in collaboration with Balazs Pejo. We contributed equally to this work, whose
+short version was published as&nbsp;[<a id="x4-8002"></a><a href="bibliography.html#cite.0@desfontaines2020sok">102</a>]. The long version is available on arXiv&nbsp;[<a id="x4-8003"></a><a href="bibliography.html#cite.0@desfontaines2020sokfull">101</a>], and is currently
+under review.
+</p><!-- l. 22 --><p class="indent">  The exploration on differential privacy with partial knowledge presented in Sections&nbsp;<a href="DefinitionalIntricaciesOfPartialKnowledge.html#definitional-intricacies-of-partial-knowledge-u-ding-">3.1<!-- tex4ht:ref: sec:subtleties  --></a> and&nbsp;<a href="OpportunitiesAggregationsThresholding.html#opportunities-aggregations-thresholding-u-ding-">3.2<!-- tex4ht:ref: sec:aggregations  --></a> is
+the result of a collaboration with Elisabeth Krahmer and Esfandiar Mohammadi, supervised by David
+Basin. I developed and wrote most of the original paper, but the core insights behind the concept
+acceptable normalizations emerged from productive discussions with Esfandiar, who also
+pushed for and came up with most of the composition results. Elisabeth proved the results on
+<!-- l. 28 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">Θ</span></span></span></span></span></span>-reducibility,
+and implemented the experiments in these sections; she and David also found critical flaws in initial
+versions of many results. The corresponding paper is available on arXiv&nbsp;[<a id="x4-8004"></a><a href="bibliography.html#cite.0@desfontaines2019differential">100</a>] and is currently under
+review.
+</p><!-- l. 33 --><p class="indent">  The work on cardinality estimators presented in Section&nbsp;<a href="LimitsCardinalityEstimation.html#limits-cardinality-estimation-u-ding-">3.3<!-- tex4ht:ref: sec:cardinality  --></a> and published in&nbsp;[<a id="x4-8005"></a><a href="bibliography.html#cite.0@desfontaines2019cardinality">99</a>] was done in
+collaboration with David Basin and Andreas Lochbihler. I defined the original problem, which
+originated from a Google privacy review, came up with the core results, and wrote most of the
+original paper. However, this could not have happened without Andreas and David, and I am
+grateful for their patience and mentorship: the clear definition of the attacker model is theirs,
+they found multiple critical flaws in earlier versions of the proofs, and I learned how to
+write scientific papers thanks to the many rounds of reviews they performed on my initial
+drafts.
+</p><!-- l. 43 --><p class="indent">  The original design and implementation of KHyperLogLog is largely due to Pern Hui Chia. The
+work written up in Section&nbsp;<a href="AnalyzingPrivacyRisksAtScale.html#analyzing-privacy-risks-at-scale-u-ding-">4.1<!-- tex4ht:ref: sec:risk  --></a> is the result of a collaboration with Wei-Yen Day, Miguel Guevara,
+Chao Li, Milinda Perera, Daniel Simmons-Marengo, Qiushi Wang, and myself; it was published
+as&nbsp;[<a id="x4-8006"></a><a href="bibliography.html#cite.0@chia2019khyperloglog">76</a>]. I contributed to the production implementation of the system, helped with thorny design issues,
+re-implemented it in SQL, ran the experimental validation, and published the experimental code as
+                                                                                
+                                                                                
+open-source software. I also helped write the paper and convince various internal stakeholders that this
+was worth publishing.
+</p><!-- l. 53 --><p class="indent">  The differentially private SQL engine from Section&nbsp;<a href="BuildingAUsableDifferentiallyPrivateQueryEngine.html#building-a-usable-differentially-private-query-engine-u-ding-">4.2<!-- tex4ht:ref: sec:building  --></a> was designed and built by Bryant Gipson,
+William Lam, Daniel Simmons-Marengo, Royce J Wilson, and Celia Zhang; since the publication of
+the corresponding paper as&nbsp;[<a id="x4-8007"></a><a href="bibliography.html#cite.0@wilson2020differentially">388</a>], many more people have contributed to it. My personal
+contribution consists mostly in reviewing the design of various elements, and turning the core
+engineering contribution into a scientific paper by framing the contributions, organizing
+them into a coherent story, defining the experimental setup, and performing many rounds of
+reviews.
+</p><!-- l. 62 --><p class="indent">  The work on partition selection in Section&nbsp;<a href="PartitionSelection.html#partition-selection">4.3.2<!-- tex4ht:ref: sec:partition  --></a> was done in collaboration with Bryant Gipson and
+James Voss. I came up with the original insight, write-up and experiments, Bryant did the initial math
+for the closed-form formula, and James implemented it and properly wrote it up, fixing a number of
+subtle problems in the process.
+</p><!-- l. 68 --><p class="indent">  I wrote the initial proof of concept of Privacy on Beam, mentioned in Section&nbsp;<a href="#x60-2130004.3.3.0">4.3.3.0<!-- tex4ht:ref: sec:beam  --></a>; Miraç Vuslat
+Başaran, Christoph Dibak, and Maria Telyatnikova turned it into a production-grade, open-source
+library, with contributions from Skye Berghel, Manushree Vijayvergiya, and James Voss.
+Privacy on Beam is the Go version of a tool previously designed and implemented in C++ by
+Kareem Amin, Jenny Gillenwater, Alex Kulesza, Andrés Muñoz Medina, and Sergei
+Vassilvitski.
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+<a id="x4-8008r1"></a>
+                                                                                
+                                                                                
+</p>
+  <!-- l. 5 --><div class="crosslinks"><p class="noindent"><a href="Acknowledgements.html">LINKPREV</a><a href="index.html#PersonalContributions.html">LINKUP</a><a href="Notations.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="Acknowledgements.html">← previous</a></li>
+        <li><a href="index.html#PersonalContributions.html">up</a></li>
+        <li><a href="Notations.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

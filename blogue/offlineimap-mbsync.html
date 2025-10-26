@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Passer d'OfflineIMAP à isync/mbsync - Ted écrit des trucs</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="archives.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blogue/" type="application/rss+xml" rel="alternate" title="Ted écrit des trucs - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Passer d'OfflineIMAP à isync/mbsync - Ted écrit des trucs" />
+  <meta property="twitter:title" content="Passer d'OfflineIMAP à isync/mbsync - Ted écrit des trucs" />
+  <meta name="description" property="og:description" content="Un guide pour remplacer OfflineIMAP par mbsync, qui marche vachement mieux." />
+  <meta property="twitter:description" content="Un guide pour remplacer OfflineIMAP par mbsync, qui marche vachement mieux." />
+  <meta property="summary" content="Un guide pour remplacer OfflineIMAP par mbsync, qui marche vachement mieux." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blogue/offlineimap-mbsync.html" />
+  <link rel="prev" href="evitez-envoimoinscher-et-chronopost.html" />
+  <link rel="next" href="x1-carbon.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Aller vers le contenu" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+              ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+              <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious-fr.html"> Présentation <img src="../flag-france.gif" alt=""/></a>
+          <a href="../serious.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-france.gif" alt=""/>
+          <a href="../blog/index.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recettes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="feed.xml">rss</a> —
+            <a href="archives.html">archives</a>
+          </span>
+          <span class="droite">
+            <a href="offlineimap-mbsync.html"
+                 title="Passer d'OfflineIMAP à isync/mbsync">← précédent</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted écrit des trucs</span>
+      </a></h1>
+      Sur des sujets en lien avec la vie privée, ou parfois pas.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./offlineimap-mbsync.html">Passer d'OfflineIMAP à isync/mbsync</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2015-05-26T00:00:00+02:00">
+      2015-05-26
+    </time>
+    <small>&mdash; modifié le
+      <time datetime="2017-04-02T00:00:00+02:00">
+        2017-04-02
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><strong>Ça</strong> fait un petit bout de temps que j'en ai marre d'OfflineIMAP. À l'époque,
+la seule raison pour laquelle je l'avais choisi comme utilitaire de
+synchronisation IMAP, c'était sa position proéminente dans les résultats de
+recherche sur Internet. Puis, je l'ai gardé pendant longtemps par inertie, et
+parce que faute de point de comparaison, je ne savais pas si ce que je lui
+reprochais était inhérent à n'importe quel utilitaire du genre. Mes griefs
+principaux étaient les suivants :</p>
+<ul>
+<li>c'est leeent (30 secondes pour synchroniser cinq comptes, en ne comptant pas
+    le temps de téléchargement) ;</li>
+<li>lorsque je n'ai pas de connexion Internet, ça devient <em>vraiment</em> lent, comme
+    s'il ne comprenait pas qu'il était hors-ligne ;</li>
+<li>lorsqu'on lance une instance d'OfflineIMAP alors qu'il y en a déjà une qui
+    tourne, ça crée une situation chaotique et imprévisible, une sorte de
+    deadlock (aw, Wikipédia me dit que ça s'appelle une « étreinte fatale » en
+    français, n'est-ce pas adorable) qui nécessite souvent de tuer le processus
+    à la main pour que ça aille mieux, et si on lance OfflineIMAP
+    automatiquement toutes les deux minutes, ce genre de situation arrive
+    <em>souvent</em> ;</li>
+<li>puis, finalement, j'ai rencontré un
+    <a href="http://comments.gmane.org/gmane.mail.imap.offlineimap.general/7239">bug incompréhensible</a>
+    qui m'a convaincu d'aller voir ailleurs si l'herbe était plus verte.</li>
+</ul>
+<p>J'ai donc installé et fait marcher isync/mbsync (le premier nom est historique,
+le second est le nom de la nouvelle version de l'exécutable). Je ne sais pour
+l'instant pas si c'est significativement mieux qu'OfflineIMAP, mais ça a l'air
+rapide, les gens en disent du bien sur Internet, et surtout, ça a l'avantage de
+ne pas être OfflineIMAP.</p>
+<p>Bref, voilà un mini-guide pour passer de l'un à l'autre. Mon <code>.offlineimaprc</code>
+ressemblait à ça :</p>
+<div class="highlight"><pre><span></span><code><span class="k">[general]</span>
+<span class="na">accounts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">damien</span>
+<span class="na">ui</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">quiet</span>
+
+<span class="k">[Account damien]</span>
+<span class="na">localrepository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">damien_local</span>
+<span class="na">remoterepository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">damien_remote</span>
+
+<span class="k">[Repository damien_local]</span>
+<span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Maildir</span>
+<span class="na">localfolders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">~/Mail/ikura_damien/</span>
+
+<span class="k">[Repository damien_remote]</span>
+<span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">IMAP</span>
+<span class="na">ssl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">yes</span>
+<span class="na">remotehost</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">desfontain.es</span>
+<span class="na">remoteuser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">damien</span>
+<span class="na">remotepasseval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">monsupermotdepasse</span>
+<span class="na">realdelete</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">no</span>
+<span class="na">cert_fingerprint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">[plein de lettres et de chiffres]</span>
+</code></pre></div>
+
+<p>et la section correspondante de mon <code>.mbsyncrc</code> ressemble maintenant à ça :</p>
+<div class="highlight"><pre><span></span><code>IMAPAccount dam
+Host desfontain.es
+User damien
+Pass monsupermotdepasse
+CertificateFile ~/Documents/cert-imap-ikura.pem
+
+IMAPStore dam-remote
+Account dam
+
+MaildirStore dam-local
+Path ~/Mail/ikura_damien/
+Inbox ~/Mail/ikura_damien/INBOX
+
+Channel dam
+Master :dam-remote:
+Slave :dam-local:
+Create Both
+SyncState *
+</code></pre></div>
+
+<p>et une fois que c'est fait, il faut bien sûr remplacer l'appel à l'exécutable
+d'OfflineIMAP par <code>mbsync -a</code> (typiquement, dans le crontab). Passons donc les
+configurations en revue pour comprendre comment traduire l'une en l'autre.</p>
+<h2 id="trucs-generaux">Trucs généraux</h2>
+<p>Pas mal de trucs ne nécessitent pas qu'on s'y attarde : j'imagine que vous aurez
+compris que les options basiques ont changé de nom, que la syntaxe diffère un
+peu. Les trucs nouveaux sont essentiellement le <code>Create Both</code> (qui signifie :
+quand y'a un dossier qui est créé en local, le créer aussi sur le serveur ; et
+de même dans l'autre sens) et le <code>SyncState *</code> qui dit de créer le fichier
+contenant les informations sur l'état des dossiers dans les deux sens dans un
+emplacement qui dépend du compte (<code>~/Mail/ikura_damien/INBOX/.mbsyncstate</code> dans
+mon exemple).</p>
+<h2 id="configuration-ssl">Configuration SSL</h2>
+<p>Mon serveur IMAPS utilise un certificat auto-signé, donc par défaut, mbsync
+(comme OfflineIMAP) va logiquement m'envoyer balader lorsque je vais essayer de
+m'y connecter. Avec OfflineIMAP, on pouvait indiquer un fichier <code>.crt</code> contenant
+le certificat en question, ou bien directement son empreinte.</p>
+<p>Avec mbsync, on peut aller chercher le certificat et le mettre dans un fichier
+de la façon suivante :</p>
+<div class="highlight"><pre><span></span><code><span class="n">openssl</span> <span class="n">s_client</span> <span class="o">-</span><span class="n">connect</span> <span class="n">desfontain</span><span class="p">.</span><span class="n">es</span><span class="p">:</span><span class="mi">993</span> <span class="o">-</span><span class="n">showcerts</span> <span class="mi">2</span><span class="o">&gt;&amp;</span><span class="mi">1</span> <span class="o">&lt;</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span> <span class="err">\</span>
+    <span class="p">|</span> <span class="n">sed</span> <span class="o">-</span><span class="n">ne</span> <span class="s">&#39;/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p&#39;</span> <span class="err">\</span>
+    <span class="p">|</span> <span class="n">sed</span> <span class="o">-</span><span class="n">ne</span> <span class="s">&#39;1,/-END CERTIFICATE-/p&#39;</span> <span class="o">&gt;</span> <span class="o">~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">cert</span><span class="o">-</span><span class="n">imap</span><span class="o">-</span><span class="n">ikura</span><span class="p">.</span><span class="n">pem</span>
+</code></pre></div>
+
+<p>puis on indique <code>CertificateFile ~/Documents/cert-imap-ikura.pem</code> dans le
+fichier de configuration, et pouf ça marche. (Évidemment, il faut utiliser
+l'adresse de votre serveur imap à la place de <code>desfontain.es</code> — le port 993
+utilisé est le standard 993, mais vous aurez peut-être aussi besoin de changer
+sa valeur par défaut.)</p>
+<h2 id="les-mots-de-passe-en-clair-cest-mal">Les mots de passe en clair, c'est mal</h2>
+<p>Vous vous souvenez peut-être que dans un
+<a href="https://desfontain.es/blog/client-mail-4-gpg.html#msmtp">article précédent</a>,
+j'expliquais que j'appelais un script Python depuis OfflineIMAP pour stocker mes
+mots de passe IMAP dans un fichier chiffré par GPG, et non pas en dur dans le
+fichier de configuration. mbsync ne sait pas appeler un script Python, mais il
+sait lancer une commande externe. J'ai donc transformé mon <code>.offlineimap.py</code> en
+un <a href="decryptpasswd.py">script indépendant</a>, que j'ai rendu exécutable et que j'ai
+mis dans un dossier de mon
+<a href="http://www.generation-linux.fr/index.php?post/2008/10/15/Changer-les-dossiers-par-defaut-dans-le-PATH">$PATH</a>,
+ce qui me permet de traduire mon <code>remotepass = mailpasswd("damien")</code> en un
+<code>PassCmd "decryptpasswd.py damien"</code> (qui remplace le <code>Pass monsupermotdepasse</code>
+précédent).</p>
+<p>(Précision : le script <code>decryptpasswd.py</code> contient en dur le chemin du dossier
+dans lequel je stocke mes mots de passe chiffré : vous aurez probablement envie
+de changer ça avant de l'utiliser.)</p>
+<h2 id="conclusion-ajoutee-en-avril-2017">Conclusion <small>(Ajoutée en avril 2017)</small></h2>
+<p>Ça fait donc presque deux ans que j'utilise isync et j'en suis très content.</p>
+<ul>
+<li>Les rares problèmes que j'ai eus sont arrivés avec une fréquence bien
+    moindre que quand j'utilisais OfflineIMAP.</li>
+<li>C'est beaucoup plus rapide, ça n'ajoute qu'une à deux secondes au temps
+    nécessaire pour télécharger les nouveaux mails.</li>
+<li>Ça arrive que ça échoue parce qu'il y a plusieurs instances qui tournent en
+    même temps, mais c'est vraiment rare. Tuer toutes les instances de <code>mbsync</code>
+    suffit à le refaire fonctionner.</li>
+</ul>
+<p>Je recommande :-)</p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Citez cet article!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>L'entrée BibTeX a été copiée dans votre presse-papiers.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblogue20150526,
+  title = &#123;Passer d'OfflineIMAP à isync/mbsync},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blogue/offlineimap-mbsync.html}},
+  note = &#123;Ted écrit des trucs (blog personnel)},
+  year = &#123;2015},
+  month = &#123;05}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="evitez-envoimoinscher-et-chronopost.html">← précédent</a>
+    </li>
+    <li>
+      <a href="x1-carbon.html">suivant →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">haut de page</a></li>
+    <li><a href="index.html">accueil</a></li>
+    <li><a href="archives.html">archives</a></li>
+  </ul>
+</nav>
+
+      <div class="feedback">
+        Tout ce que je raconte ici sont mes opinions personnelles, pas celles de
+        mon employeur.
+        <br>
+        Je suis toujours ravi de recevoir des réactions, critiques, questions,
+        ou autres commentaires sur ce que j'écris. Envoyez-moi ce qui vous
+        chante à <span class="baddirection">se.niatnofsed@neimad</span>.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          par 
+          <a rel="dct:publisher" href="http://desfontain.es/serious-fr.html">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="Je pense que le concept de propriété intellectuelle n'a aucun sens. Le contenu de ce blog est dans le domaine public."/>
+          </a>
+          &mdash;
+          mis en orbite par <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

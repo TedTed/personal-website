@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Damien Desfontaines’ personal page - sober version</title>
+    <link rel="stylesheet" href="style/serious.css">
+    <link rel="stylesheet" href="style/menu.css">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="title" property="og:title" content="Damien Desfontaines' personal page — sober version">
+    <meta property="twitter:title" content="Damien Desfontaines' personal page — sober version">
+    <meta name="description" property="og:description" content="Damien Desfontaines' personal webpage: about me, research, other publications, contact information.">
+    <meta property="twitter:description" content="Damien Desfontaines' personal webpage: about me, research, other publications, contact information.">
+    <meta property="summary" content="Damien Desfontaines' personal webpage: about me, research, other publications, contact information.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="image" property="og:image" content="https://desfontain.es/thesispicture.jpeg">
+    <meta property="twitter:image" content="https://desfontain.es/thesispicture.jpeg">
+    <meta property="twitter:image:alt" content="A picture of Damien Desfontaines, smiling and looking to the right.">
+    <link rel="canonical" href="https://desfontain.es/serious.html">
+  </head>
+  <body>
+    <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+    <a aria-label="Skip to content" href="#contenu"></a>
+    <div id="menuGlobal">
+        <table>
+            <tr>
+            <td>
+                <a href="index.html">
+                    ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+                    <img src="flag-uk.png" alt="">
+                </a>
+            </td>
+            <td id="menuCourant">
+                About <img src="flag-uk.png" alt="">
+                <a href="serious-fr.html"><img src="flag-france.gif" alt=""></a>
+            </td>
+            <td>
+                <a href="blog/index.html">Blog <img src="flag-uk.png" alt=""></a>
+                <a href="blogue/index.html"><img src="flag-france.gif" alt=""></a>
+            </td>
+            <td>
+                <a href="recettes/index.html">Recipes <img src="flag-france.gif" alt=""></a>
+            </td>
+            </tr>
+
+            <tr id="sousMenu">
+                <td colspan="4">
+                    <span class="gauche">
+                        <a href="#about">About me</a> — 
+                        <a href="#research">Research</a> — 
+                        <a href="#other">Other publications</a> — 
+                        <a href="#contact">Contact</a>
+                    </span>
+                    <span class="droite">
+                        <a href="serious-fr.html">Version française <img src="flag-france.gif" alt=""/></a>
+                    </span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="contenu">
+      <div id="serious">
+<p id="lastupdated">Last update: 2025-07-08</p>
+
+<p><img id="thesispicture" src="thesispicture.jpeg" alt="A picture of me, smiling, looking to the right."></p>
+
+<h1>Hello!</h1>
+
+<p>My name is <strong>Damien Desfontaines</strong> — also known as Ted, or any pseudonym
+recognized by the (Ted)+ regular expression — and this is the sober version of
+my personal webpage. The fancier one, which is now quite outdated, can be
+found <a href="index.html">here</a>.</p>
+
+<h3>About me <a id="about"></a></h3>
+
+<p>I'm the founder of <a href="https://hiding-nemo.com">Hiding Nemo</a>, an
+  independent consultancy helping organizations do more with data in a
+  responsible way, using privacy-enhancing technology.</p>
+
+<p>Before that, I led the anonymization consulting team at Google, and worked as
+  a staff scientist at <a href="https://www.tmlt.io/">Tumult Labs</a>. In both
+  jobs, I focused on making it easier to deploy
+  <a href="blog/friendly-intro-to-differential-privacy.html">differential privacy</a>
+  for practical applications.</p>
+
+<p>In December 2020, I defended my PhD thesis at
+  <a href="https://www.ethz.ch/en.html">ETH Zürich</a>, which I worked on
+  part-time in the
+  <a href="http://www.infsec.ethz.ch/">Information Security Group</a>, under the
+  supervision of <a href="https://www.inf.ethz.ch/personal/basin/">David Basin</a>.</p>
+
+<p>Previously, I studied at the
+  <a href="https://www.ens.fr">École normale supérieure</a>, where I completed a
+  Master's degree in mathematical logic and theoretical computer science called
+  the <a href="https://master.math.univ-paris-diderot.fr/en/annee/m2-lmfi/">LMFI</a>.</p>
+
+<p>You can find more information on my
+  <a href="http://www.linkedin.com/pub/damien-desfontaines/10/411/527/en">LinkedIn profile</a>.
+  I'm also on <a rel="me" href="https://hachyderm.io/@tedted">Mastodon</a> and
+  <a href="https://bsky.app/profile/desfontain.es">Bluesky</a>.</p>
+
+<h3>Research <a id="research"></a></h3>
+
+<p>When I was studying for my Master's degree, I did research in theoretical
+  computer science, and more specifically
+  <a href="https://en.wikipedia.org/wiki/Computability_theory">computability theory</a>.</p>
+
+<ul>
+
+<li><a href="https://calude.net/cristianscalude/about/">Cristian S. Calude</a>, Damien Desfontaines<br />
+<strong>Universality and Almost Decidability</strong><br />
+<a href="https://fi.mimuw.edu.pl/index.php/FI">Fundamenta Informaticae</a>,
+  <a href="https://doi.org/10.3233/FI-2015-1199">2015</a>
+  (<a href="https://www.cs.auckland.ac.nz/~cristian/crispapers/FI2015.pdf">PDF</a>)<br />
+<em>tl;dr: maybe it's possible to approximate the
+  <a href="https://en.wikipedia.org/wiki/Halting_problem">halting problem</a>!</em></li>
+
+<li><a href="https://calude.net/cristianscalude/about/">Cristian S. Calude</a>, Damien Desfontaines<br />
+<strong>Anytime Algorithms for Non-Ending Computations</strong><br />
+<a href="https://www.worldscientific.com/worldscinet/ijfcs">IJFCS</a>,
+  <a href="https://doi.org/10.1142/S0129054115500252">2015</a>
+  (<a href="https://www.cs.auckland.ac.nz/~cristian/crispapers/anytimeFFF.pdf">PDF</a>)<br />
+<em>tl;dr: longer version of the previous paper.</em></li>
+
+<li><a href="https://www.labri.fr/perso/lbienvenu/">Laurent Bienvenu</a> Damien Desfontaines, <a href="http://www.lirmm.fr/~ashen/">Alexander Shen</a><br />
+<strong>What Percentage of Programs Halt?</strong><br />
+<a href="http://eatcs.org/index.php/international-colloquium">ICALP</a>,
+  <a href="https://doi.org/10.1007/978-3-662-47672-7_18">2015</a>,
+  (<a href="PDFs/WhatPercentageOfProgramsHalt.pdf">PDF</a>)<br />
+<em>tl;dr: actually, no, it's impossible.</em></li>
+
+<li><a href="https://www.labri.fr/perso/lbienvenu/">Laurent Bienvenu</a> Damien Desfontaines, <a href="http://www.lirmm.fr/~ashen/">Alexander Shen</a><br />
+<strong>Generic algorithms for halting problem and optimal machines revisited</strong><br />
+<a href="https://lmcs.episciences.org/">LMCS</a>,
+  <a href="https://doi.org/10.2168/LMCS-12(2:1)2016">2016</a>
+  (<a href="https://arxiv.org/pdf/1505.00731">PDF</a>)<br />
+<em>tl;dr: longer version of the previous paper.</em></li>
+</ul>
+
+<p>Since then, I've been working on
+  <a href="https://en.wikipedia.org/wiki/Data_anonymization">data anonymization</a>,
+  and more specifically
+  <a href="blog/friendly-intro-to-differential-privacy.html">differential privacy</a>.</p>
+
+<ul>
+
+<li>Damien Desfontaines, <a href="http://www.andreas-lochbihler.de/">Andreas Lochbihler</a>,
+  <a href="https://inf.ethz.ch/personal/basin/">David Basin</a><br />
+<strong>Cardinality Estimators do not Preserve Privacy</strong><br />
+<a href="https://petsymposium.org/">PETS</a>, <a href="https://doi.org/10.2478/popets-2019-0018">2019</a>
+  (<a href="https://petsymposium.org/popets/2019/popets-2019-0018.pdf">PDF</a>,
+  <a href="blog/cardinality-estimators.html">blog post</a>,
+  <a href="https://youtu.be/wjlAbh0qQQQ?t=54">recording of my talk</a>)<br />
+<em>tl;dr: when counting people, in order to remember who you've already
+  counted, you have to remember who you've already counted.</em><br />
+<strong> <em><a href="https://petsymposium.org/student-paper-award.php">✨ Best Student Paper Award ✨</a></em> </strong></li>
+
+<li><a href="https://www.linkedin.com/in/pern-hui-chia-66124352/">Pern Hui Chia</a>,
+  Damien Desfontaines, <a href="https://milinda-perera.com/">Milinda Perera</a>, Daniel Simmons-Marengo,
+  <a href="https://people.cs.umass.edu/~chaoli/">Chao Li</a>,
+  <a href="https://ai.google/research/people/WeiYenDay/">Wei-Yen Day</a>, Qiushi Wang,
+  <a href="https://www.linkedin.com/in/miguel-guevara-8a5a332a/">Miguel Guevara</a><br />
+<strong>KHyperLogLog: Estimating Reidentifiability and Joinability of Large Data at Scale</strong><br />
+<a href="https://www.ieee-security.org/TC/SP2019/">IEEE S&amp;P</a>, <a href="https://doi.ieeecomputersociety.org/10.1109/SP.2019.00046">2019</a>
+  (<a href="https://ai.google/research/pubs/pub47664.pdf">PDF</a>,
+  <a href="https://youtu.be/watch?v=JaM-95r9iXE">recording of Pern's talk</a>)<br />
+<em>tl;dr: a clever way of estimating how easy it is to reidentify people
+  in very large datasets.</em></li>
+
+<li>Damien Desfontaines, <a href="https://mohammadi.eu/">Esfandiar Mohammadi</a>,
+  <a href="https://inf.ethz.ch/personal/basin/">David Basin</a>, Elisabeth Krahmer<br />
+<strong>Differential privacy with partial knowledge</strong><br />
+<a href="https://arxiv.org/abs/1905.00650">arXiv preprint</a>, 2019
+  (<a href="https://arxiv.org/pdf/1905.00650">PDF</a>,
+  <a href="blog/partial-knowledge.html">blog post</a>)<br />
+<em>tl;dr: what happens to differential privacy when modeling an attacker
+  with only partial knowledge over the data.</em></li>
+
+<li><a href="https://research.google/people/RoyceJWilson/">Royce J Wilson</a>,
+  <a href="https://www.linkedin.com/in/celia-zhang-14293999/">Celia Yuxin Zhang</a>,
+  <a href="https://www.ics.uci.edu/~willmlam/">William Lam</a>,
+  Damien Desfontaines, Daniel Simmons-Marengo, <a href="https://www.linkedin.com/in/bryant-gipson-33478419/">Bryant Gipson</a><br />
+<strong>Differentially Private SQL with Bounded User Contribution</strong><br />
+<a href="https://petsymposium.org/">PETS</a>, <a href="https://doi.org/10.2478/popets-2020-0025">2020</a>
+  (<a href="https://arxiv.org/pdf/1909.01917">PDF</a>,
+  <a href="https://www.youtube.com/watch?v=1F6pRMVGWdc">recording of Royce's talk</a>)<br />
+<em>tl;dr: an SQL-based system to anonymize data easily and securely using
+  differential privacy.</em></li>
+
+<li>Damien Desfontaines, <a href="https://www.crysys.hu/~pejo/">Balázs Pejó</a><br />
+<strong>SoK: Differential Privacies</strong><br />
+<a href="https://petsymposium.org/">PETS</a>, <a href="https://doi.org/10.2478/popets-2020-0028">2020</a>
+  (<a href="https://arxiv.org/pdf/1906.01337">PDF</a>,
+  <a href="https://www.youtube.com/watch?v=P2GyJYb9FOc">recording of my talk</a>,
+  <a href="https://link.springer.com/book/10.1007/978-3-030-96398-9">book</a>)<br />
+<em>tl;dr: a categorized list of all variants and extensions of
+  differential privacy</em></li>
+
+<li><a href="https://www.linkedin.com/in/shruthigorantala?o">Shruthi Gorantala</a>,
+  <a href="https://www.linkedin.com/in/rob-springer-0519631/">Rob Springer</a>,
+  <a href="https://www.linkedin.com/in/sean-purser-haskell-30b5268">Sean Purser-Haskell</a>,
+  <a href="https://www.ics.uci.edu/~willmlam/">William Lam</a>, <a href="https://research.google/people/RoyceJWilson/">Royce Wilson</a>,
+  <a href="https://twitter.com/AsraEntr0py">Asra Ali</a>,
+  <a href="https://www.ericastor.info/">Eric P. Astor</a>,
+  <a href="https://www.linkedin.com/in/itai-zukerman-b0a6a115?">Itai Zukerman</a>,
+  <a href="https://www.linkedin.com/in/samuelruth">Sam Ruth</a>,
+  <a href="https://www.linkedin.com/in/christoph-dibak/">Christoph Dibak</a>,
+  <a href="https://www.linkedin.com/in/schoppmp/">Phillipp Schoppmann</a>,
+  <a href="http://www-sop.inria.fr/members/Oleksandra.Kulankhina/">Sasha Kulankhina</a>,
+  <a href="https://www.linkedin.com/in/alain-forget-49397633">Alain Forget</a>,
+  <a href="https://www.linkedin.com/in/dmarn/">David Marn</a>,
+  <a href="https://www.linkedin.com/in/cameron-tew">Cameron Tew</a>,
+  <a href="https://www.linkedin.com/in/rafael-misoczki-phd-24b33013">Rafael Misoczki</a>,
+  <a href="https://ch.linkedin.com/in/bernatguillen">Bernat Guillen</a>,
+  <a href="https://www.linkedin.com/in/xinyuyetony">Xinyu Ye</a>,
+  <a href="https://de.linkedin.com/in/denniskraft14142?">Dennis Kraft</a>,
+  Damien Desfontaines,
+  <a href="https://de.linkedin.com/in/aishe-k">Aishe Krishnamurthy</a>,
+  <a href="https://www.linkedin.com/in/miguel-guevara-8a5a332a/">Miguel Guevara</a>, <a href="https://milinda-perera.com/">Milinda Perera</a>,
+  <a href="https://de.linkedin.com/in/midnighter">Yurii Sushko</a>,
+  <a href="https://www.linkedin.com/in/bryant-gipson-33478419/">Bryant Gipson</a><br />
+<strong>A General Purpose Transpiler for Fully Homomorphic Encryption</strong><br />
+<a href="https://arxiv.org/abs/2106.07893">arXiv preprint</a>, 2021
+  (<a href="https://arxiv.org/pdf/2106.07893">PDF</a>,
+  <a href="https://www.youtube.com/watch?v=mOCpKY-81oo">recording of Shruthi and Rob's talk</a>
+  for <a href="https://fhe.org">FHE.org</a>)<br />
+<em>tl;dr: a system to make it easier to write software that operates on
+  encrypted data.</em></li>
+
+<li><a href="https://profiles.bu.edu/Gregory.Wellenius">Gregory A Wellenius</a>,
+  Swapnil Vispute,
+  <a href="https://sites.google.com/site/valeriaespinosahome/">Valeria Espinosa</a>,
+  <a href="https://research.google/people/AlexFabrikant/">Alex Fabrikant</a>,
+  <a href="https://scholar.harvard.edu/ttsai/home">Thomas C Tsai</a>,
+  <a href="https://www.linkedin.com/in/jonathanphennessy/">Jonathan Hennessy</a>,
+  <a href="https://www.linkedin.com/in/brianwilliams5/">Brian Williams</a>,
+  <a href="https://www.linkedin.com/in/krishnagadepalli/">Krishna Gadepalli</a>,
+  <a href="https://www.linkedin.com/in/adamboulanger/">Adam Boulanger</a>,
+  <a href="https://research.google/people/AdamPearce/">Adam Pearce</a>,
+  <a href="https://www.linkedin.com/in/chaitanya-kamath-74111b15/">Chaitanya Kamath</a>,
+  <a href="https://arranschlosberg.com/">Arran Schlosberg</a>,
+  <a href="https://www.linkedin.com/in/catherinebendebury/">Catherine Bendebury</a>,
+  <a href="https://pangea.stanford.edu/people/charlotte-stanton">Charlotte Stanton</a>,
+  <a href="https://www.linkedin.com/in/shailesh-bavadekar-a3aa6a3/">Shailesh Bavadekar</a>,
+  <a href="https://www.linkedin.com/in/christopher-pluntke-baa642b2/">Christopher Pluntke</a>,
+  Damien Desfontaines,
+  <a href="https://www.linkedin.com/in/ben-jacobson-a7716aa1/">Benjamin Jacobson</a>,
+  <a href="https://www.zanarmstrong.com/">Zan Armstrong</a>,
+  <a href="https://www.linkedin.com/in/bryant-gipson-33478419/">Bryant Gipson</a>, <a href="https://research.google/people/RoyceJWilson/">Royce J Wilson</a>,
+  <a href="https://research.google/people/AndrewWiddowson/">Andrew Widdowson</a>,
+  <a href="https://www.linkedin.com/in/katherinechou/">Katherine Chou</a>,
+  <a href="https://www.linkedin.com/in/andrew-oplinger-9b86a1a0/">Andrew Oplinger</a>,
+  <a href="https://www.linkedin.com/in/tomer-shekel-635811a/">Tomer Shekel</a>,
+  <a href="https://www.brown.edu/academics/public-health/about/people/dean/ashish-jha">Ashish K Jha</a>,
+  <a href="https://research.google/people/EvgeniyGabrilovich/">Evgeniy Gabrilovich</a>.
+  <strong>Impacts of social distancing policies on mobility and COVID-19 case growth
+  in the US.</strong><br />
+<a href="https://www.nature.com/ncomms/">Nature Communications</a>,
+  <a href="https://www.nature.com/articles/s41467-021-23404-5">2021</a>
+  (<a href="https://www.nature.com/articles/s41467-021-23404-5">HTML</a>)<br />
+<em>tl;dr: analyzing the efficacy of social distancing measures during the COVID
+  crisis, using anonymized data from Google Location History users.</em></li>
+
+<li>Damien Desfontaines, James Voss, <a href="https://www.linkedin.com/in/bryant-gipson-33478419/">Bryant Gipson</a>, Chinmoy Mandayam<br />
+<strong>Differentially private partition selection</strong><br />
+<a href="https://petsymposium.org/">PETS</a>, <a href="https://petsymposium.org/popets/2022/popets-2022-0017.php">2022</a>
+  (<a href="https://arxiv.org/pdf/2006.03684">PDF</a>,
+  <a href="PDFs/PhD/DifferentiallyPrivatePartitionSelectionPoster.pdf">poster</a>
+  for <a href="https://tpdp.journalprivacyconfidentiality.org/2020/">TPDP 2020</a>)<br />
+<em>tl;dr: an optimal technique to publish differentially private statistics on
+  an unknown domain, when each person contributes to a single group.</em></li>
+
+<li><a href="https://www.linkedin.com/in/samuel-haney-47a16819b">Samuel Haney</a>, Damien Desfontaines, <a href="https://www.linkedin.com/in/luke-k-hartman/">Luke Hartman</a>,
+  <a href="https://www.linkedin.com/in/ruchit-shrestha/">Ruchit Shrestha</a>, <a href="https://cs.colgate.edu/~mhay/">Michael Hay</a><br />
+<strong>Precision-based attacks and interval refining: how to break, then fix,
+  differential privacy on finite computers</strong><br />
+<a href="https://arxiv.org/abs/2207.13793">arXie preprint</a>, 2022
+  (<a href="https://arxiv.org/pdf/2207.13793">PDF</a>, 
+  <a href="https://www.tmlt.io/resources/tiny-bits-matter-precision-based-attacks-on-differential-privacy">blog post</a>,
+  poster <!-- TODO link --> for <a href="https://tpdp.journalprivacyconfidentiality.org/2022/">TPDP 2022</a>)<br />
+<em>tl;dr: we find vulnerabilities in the way open-source differential privacy
+  libraries handle floating-point numbers, and propose a solution.</em></li>
+
+<li><a href="https://www.linkedin.com/in/skyeberghel">Skye Berghel</a>,
+  <a href="https://www.linkedin.com/in/philip-bohannon-88624a2">Philip Bohannon</a>,
+  Damien Desfontaines,
+  <a href="https://www.linkedin.com/in/charlie-estes">Charles Estes</a>,
+  <a href="https://www.linkedin.com/in/samuel-haney-47a16819b">Sam Haney</a>, <a href="https://www.linkedin.com/in/luke-k-hartman/">Luke Hartman</a>, <a href="https://cs.colgate.edu/~mhay/">Michael Hay</a>,
+  <a href="https://users.cs.duke.edu/~ashwin/">Ashwin Machanavajjhala</a>, Tom Magerlein,
+  <a href="https://people.cs.umass.edu/~miklau/">Gerome Miklau</a>,
+  <a href="https://www.linkedin.com/in/amritha-pai">Amritha Pai</a>,
+  <a href="https://www.linkedin.com/in/william-sexton-239b7937">William Sexton</a>,
+  <a href="https://www.linkedin.com/in/ruchit-shrestha/">Ruchit Shrestha</a><br />
+<strong>Tumult Analytics: a robust, easy-to-use, scalable, and expressive framework
+  for differential privacy</strong><br />
+<a href="https://arxiv.org/abs/2212.04133">arXiv preprint</a>, 2022
+  (<a href="https://tmlt.dev/whitepaper">PDF</a>,
+  <a href="https://www.youtube.com/watch?v=9Qgy0lpQxZ8">recording of Michael's talk</a> at
+  <a href="https://www.usenix.org/conference/pepr22">PEPR '22</a>)<br />
+<em>tl;dr: a high-level description of a system to build complex differential
+  privacy programs, without sacrificing safety, usability, or performance.</em></li>
+
+<li><a href="https://sites.google.com/bu.edu/marika">Marika Swanberg</a>,
+  Damien Desfontaines, <a href="https://www.linkedin.com/in/samuel-haney-47a16819b">Samuel Haney</a><br />
+<strong>DP-SIPS: A simpler, more scalable mechanism for differentially private
+  partition selection</strong><br />
+<a href="https://petsymposium.org/">PETS</a>, 2023 <!--TODO link-->
+  (<a href="https://arxiv.org/pdf/2301.01998">PDF</a>)<br />
+<em>tl:dr: a performant and scalable technique for differential privacy on
+  unknown domains, when each person contributes to many groups.</em></li>
+</ul>
+
+<p>I serve as a program committee member for
+  <a href="https://petsymposium.org/">PETS</a> (since 2020),
+  <a href="https://www.usenix.org/conference/pepr22">PEPR</a> (since 2022), and
+  <a href="https://tpdp.journalprivacyconfidentiality.org/2025/">TPDP</a> (since
+  2025); I was also in the program committee of
+  <a href="https://aaai-ppai23.github.io/">PPAI</a> in 2023. If you'd like to
+  invite me to volunteer for another scientific conference or journal, please
+  consult <a href="blog/personal-open-access-policy.html">this blog post</a>
+  first.</p>
+
+<h3>Other publications, talks, interviews, etc. <a id="other"></a></h3>
+
+<ul>
+
+<li>I have a <a href="blog">blog</a>, where I mostly write about anonymization in simple
+  terms. I recommend starting with my
+  <a href="blog/friendly-intro-to-differential-privacy.html">friendly introduction to differential privacy</a>,
+  for which I've gotten enthusiastic feedback from a number of folks.</li>
+
+<li>My <a href="thesis">PhD thesis</a> is available online as a series of Web pages. Its
+  index highlights the sections that don't have too much math in them, in an
+  effort to make parts of it accessible for people who aren't experts.</li>
+
+<li>I used to contribute to Google's differential privacy libraries, parts of
+  which are <a href="https://github.com/google/differential-privacy">open-source</a>. Now,
+  I help maintain <a href="https://github.com/opendp/analytics">Tumult Analytics</a>,
+  an open-source library for differential privacy built by my colleagues and I
+  at <a href="https://www.tmlt.io/">Tumult Labs</a>, and transferred to
+  <a href="https://opendp.org">OpenDP</a> once Tumult Labs got acquired by
+  LinkedIn. Check out our
+  <a href="https://docs.tmlt.dev/analytics/latest/tutorials/first-steps.html">tutorial series</a>!</li>
+
+<li>During the COVID-19 crisis, I helped several efforts to publish anonymized
+  data from Google users to help researchers and public health authorities
+  understand and combat the pandemic. For three of these projects, we published
+  a technical description of the anonymization process:
+  <ul>
+  <li>the <a href="https://www.google.com/covid19/mobility/?hl=fr">Community Mobility Reports</a>
+    (<a href="https://arxiv.org/pdf/2004.04145">PDF</a>), which won the
+    <a href="https://fpf.org/uncategorized/google-covid-19-community-mobility-reports/">Award for Responsible Data Stewardship</a>
+    from the <a href="https://fpf.org/">Future of Privacy Forum</a>,</li>
+  <li>the <a href="https://pair-code.github.io/covid19_symptom_dataset/">Symptom Search Trends</a>
+    (<a href="https://arxiv.org/pdf/2009.01265">PDF</a>),</li>
+  <li>and the <a href="https://google-research.github.io/vaccination-search-insights/">Vaccination Search Insights</a>
+    (<a href="https://arxiv.org/pdf/2107.01179">PDF</a>).</li>
+  </ul>
+</li>
+
+<li><a href="https://www.linkedin.com/in/miguel-guevara-8a5a332a/">Miguel Guevara</a>
+  and I were interviewed by the <a href="https://www.acm.org/">ACM</a> to
+  discuss our efforts around differential privacy at Google. The interview
+  (<a href="https://dl.acm.org/doi/pdf/10.1145/3434571.3439229">PDF</a>) was published in
+  <a href="https://dl.acm.org/toc/queue/2020/18/5">ACM Queue</a> and
+  <a href="https://dl.acm.org/toc/cacm/2021/64/2">Communications of the ACM</a>.</li>
+
+<li>I co-authored a blog post titled
+  <a href="https://differentialprivacy.org/inference-is-not-a-privacy-violation/">Statistical Inference is Not a Privacy Violation</a>
+  with other differential privacy experts. In it, we argue that certain
+  criticisms of differential privacy are based on a misunderstanding of what
+  constitutes a successful privacy attack on aggregated data.</li>
+
+<li>I delivered an invited talk at <a href="https://aaai-ppai22.github.io/">PPAI-22</a> about
+  making differential privacy a standard practice in the industry. The
+  <a href="blog/bottom-up-differential-privacy.html">slides and the transcript</a>
+  of this talk are available on my blog.</li>
+
+<li>I gave a talk about differential privacy and a case study for its use at the
+  <a href="https://www.irs.gov">Internal Revenue Service</a> for the
+  <a href="https://www.members.issa.org/page/PrivacySIG">ISSA Privacy SIG</a>. The original
+  recording is only available to ISSA members, but I published
+  <a href="https://www.tmlt.io/resources/video-sharing-insights-without-leaking-personal-information">another recording of this talk</a>
+  afterwards.</li>
+
+<li><a href="https://www.linkedin.com/in/privacyguru">Debra Farber</a> invited me to be a
+  guest on her
+  <a href="https://shiftingprivacyleft.com/">Shifting Privacy Left podcast</a>. In the
+  <a href="https://shiftingprivacyleft.buzzsprout.com/2059470/12457123-s2e17-noise-in-the-machine-how-to-assess-design-deploy-differential-privacy-with-damien-">interview</a>,
+  I talk about differential privacy, and <a href="https://www.tmlt.io/">Tumult Labs</a>' approach to
+  deploy it to solve real-world use cases.</li>
+
+<li><a href="https://www.linkedin.com/in/katharina-koerner-7311b2105/">Katharina Koerner</a>
+  invited me to participate to an <a href="https://iapp.org/">IAPP</a> panel with
+  <a href="https://www.junebrawner.com/about-me">June Brawner</a> and
+  <a href="https://www.junebrawner.com/about-me">Nigel Smart</a>. Our
+  <a href="https://www.linkedin.com/events/privtechtalks-emergingprivacy-e7043959798031085568/comments/">conversation</a>
+  touches on various privacy-enhancing technologies, how they relate to each
+  other, and where they are headed.</li>
+
+<li><a href="https://de.linkedin.com/in/katharinejarmul">Katharine Jarmul</a> hired me as one of the scientific consultants and
+  editors for her excellent book about privacy-enhancing technologies,
+  <a href="https://www.oreilly.com/library/view/practical-data-privacy/9781098129453/">Practical Data Privacy</a>.</li>
+
+<li>I co-authored a position paper titled
+  <a href="https://arxiv.org/abs/2304.06929">Challenges towards the Next Frontier in Privacy</a>
+  (<a href="https://arxiv.org/pdf/2304.06929">PDF</a>) with many other differential privacy
+  experts. In this paper, we describe the current state of the field, and
+  provide guidance on key future research directions.</li>
+
+<li><a href="https://de.linkedin.com/in/katharinejarmul">Katharine Jarmul</a> interviewed me for her
+  <a href="https://www.youtube.com/@ProbablyPrivate">Provably Private</a> YouTube series;
+  in the <a href="https://www.youtube.com/watch?v=y3lAOoY6qLs">video</a>, I talk about
+  privacy engineering, my own path to privacy and anonymization, and how I
+  expect the field to evolve over time.</li>
+
+</ul>
+
+<h3>Contact <a id="contact"></a></h3>
+
+<p>To get in touch with me, you can send an e-mail to
+  <span class="baddirection">se.niatnofsed@neimad</span> (beware when copying
+  it). I also use WhatsApp and Signal, feel free to ask me for my number if
+  that's your favorite communication method.</p>
+
+<p>I also love to send and receive postcards. If that's also your thing, don't
+hesitate to ask me for my mailing address&nbsp;♥</p>
+
+      </div>
+    </div>
+  </body>
+</html>

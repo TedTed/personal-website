@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Faire marcher un Lenovo X1 Carbon sous Linux - Ted écrit des trucs</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="archives.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blogue/" type="application/rss+xml" rel="alternate" title="Ted écrit des trucs - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Faire marcher un Lenovo X1 Carbon sous Linux - Ted écrit des trucs" />
+  <meta property="twitter:title" content="Faire marcher un Lenovo X1 Carbon sous Linux - Ted écrit des trucs" />
+  <meta name="description" property="og:description" content="Retour d'expérience sur la configuration d'un X1 Carbon de quatrième génération sous Linux." />
+  <meta property="twitter:description" content="Retour d'expérience sur la configuration d'un X1 Carbon de quatrième génération sous Linux." />
+  <meta property="summary" content="Retour d'expérience sur la configuration d'un X1 Carbon de quatrième génération sous Linux." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blogue/x1-carbon.html" />
+  <link rel="prev" href="offlineimap-mbsync.html" />
+  <link rel="next" href="anonymiser-pour-de-vrai.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Aller vers le contenu" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+              ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+              <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious-fr.html"> Présentation <img src="../flag-france.gif" alt=""/></a>
+          <a href="../serious.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-france.gif" alt=""/>
+          <a href="../blog/index.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recettes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="feed.xml">rss</a> —
+            <a href="archives.html">archives</a>
+          </span>
+          <span class="droite">
+            <a href="offlineimap-mbsync.html"
+                 title="Passer d'OfflineIMAP à isync/mbsync">← précédent</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted écrit des trucs</span>
+      </a></h1>
+      Sur des sujets en lien avec la vie privée, ou parfois pas.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./x1-carbon.html">Faire marcher un Lenovo X1 Carbon sous Linux</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2017-04-02T00:00:00+02:00">
+      2017-04-02
+    </time>
+    <small>&mdash; modifié le
+      <time datetime="2017-04-03T00:00:00+02:00">
+        2017-04-03
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><strong>J'ai</strong> récemment acquis un
+<a href="https://en.wikipedia.org/wiki/ThinkPad_X1_Carbon">Lenovo X1 Carbon</a>, de
+quatrième génération. Je suis satisfait du matériel et déçu par son manque de
+compatibilité générale avec Linux. Globalement, tous les problèmes rencontrés
+sont résolubles (et ce billet détaille comment, pour ceux que j'ai eus), mais il
+y plein de choses qui ne fonctionnent pas magiquement du premier coup.</p>
+<h2 id="les-bons-cotes">Les bons côtés</h2>
+<h3 id="materiel">Matériel</h3>
+<p>Les specs sont enthousiasmantes (un SSD, ça change la vie \o/), et le produit
+fini est d'excellente qualité, comme le reste de la ligne ThinkPad.</p>
+<ul>
+<li>Il est très léger pour un 14'' — lenovo.com annonce « Vous vous surprendrez
+    […] à vérifier fréquemment si vous ne l'avez pas oublié ! », je confirme ^^</li>
+<li>Il est solide et ne se pète pas au moindre choc.</li>
+<li>L'écran mat a une résolution splendide, et reste lisible quel que soit
+    l'angle où l'on se trouve.</li>
+<li>Le clavier est confortable, le trackpoint aussi. Je ne peux pas commenter
+    sur le pavé tactile, je ne l'utilise jamais.</li>
+</ul>
+<p>La connectique est évidemment moindre que sur mon laptop précédent (beaucoup
+plus épais), mais est meilleure que nombre d'ultraportables : 3 ports USB, un
+HDMI, un MiniDP, un jack 3.5mm et un truc propriétaire pour mettre un dock.
+Suffisant pour une grande majorité d'utilisations. Pas de prise Ethernet, je
+pensais que ça me manquerait mais en pratique ça va, le Wi-Fi marche bien.</p>
+<h3 id="le-touchpad-et-trackpoint-fonctionnent">Le touchpad et trackpoint fonctionnent</h3>
+<p>Les deux fonctionnent sous Debian Testing sans que j'aie eu besoin de rien
+faire, y compris le mouvement "trackpoint + clic milieu" pour émuler la molette
+de défilement. Désactiver le touchpad se fait
+<a href="http://askubuntu.com/questions/677152/how-to-toggle-xinput-device-prop">très facilement</a>.</p>
+<h2 id="les-moins-bons-cotes">Les moins bons côtés</h2>
+<p>C'était <em>pénible</em> de parvenir à un système qui soit vraiment satisfaisant à
+utiliser au quotidien avec ma distribution favorite (Debian Testing).</p>
+<h3 id="booter-sur-une-cle-usb-etait-complique">Booter sur une clé USB était compliqué</h3>
+<p>J'ai essayé de suivre les
+<a href="https://wiki.debian.org/InstallingDebianOn/Thinkpad/X1%20Carbon%204thGen%20PCIe_SSD/jessie">instructions du wiki Debian</a>
+mais ma clé USB n'était pas reconnue. Après pas mal de galère (j'ai essayé
+toutes les combinaisons possibles d'options dans le BIOS…), j'ai compris
+pourquoi : les 3 ports USB de ma machine sont en USB 3.0, mais son BIOS n'a
+<a href="https://i.imgur.com/fUVoleU.gif">pas les bons drivers</a>… J'étais à deux doigts
+de booter sur Windows pour installer la version suivante de mon BIOS, et puis je
+me suis souvenu qu'on m'a fourni
+<a href="https://support.lenovo.com/ch/en/documents/acc100252">un dock OneLink+</a> avec
+ma machine, et que ce truc a (entre autres) une prise USB 2.0. J'ai pu brancher
+ma clé USB dessus, relier le dock à ma machine, et booter sur la clé \o/</p>
+<p>Sans cette astuce, la solution standard semble être de mettre le BIOS à jour.</p>
+<h3 id="le-dock-onelink-est-tout-pourri">Le dock OneLink+ est tout pourri</h3>
+<p>Bref, mon université m'a fourni le dock OneLink+ avec mon laptop sans me
+demander mon avis, mais il n'est normalement pas compris dans le prix. Je
+déconseille fortement son achat. Il fonctionne très mal avec Linux.</p>
+<p>Ça ne concerne pas vraiment le laptop lui-même, mais comme ça a l'air d'être le
+seul dock prévu pour le X1 Carbon et qu'un dock est un truc raisonnable à avoir
+quand on achète un ultraportable qu'on veut aussi utiliser au travail ou à la
+maison, je compte ça dans les points négatifs de la machine elle-même. Je me
+souviens de trois points problématiques, il y en a peut-être d'autres.</p>
+<h4 id="la-prise-jack-marche-par-intermittence">La prise jack marche par intermittence</h4>
+<p>PulseAudio a bien l'air de le reconnaître (<code>pacmd list-sources</code> renvoie bien une
+section avec "OneLink+" dedans) mais il faut parfois plusieurs essais pour que
+le son parvienne sur des enceintes branchées sur le dock. Et quand il n'y a pas
+de son qui sort, on entend un genre de bruit électronique désagréable.</p>
+<h4 id="les-prises-video-ne-marchent-pas-super-bien">Les prises vidéo ne marchent pas super bien</h4>
+<p><code>xrandr</code> est extrêmement perturbé par le dock, et renvoie des sections qui ne
+correspondent à rien de branché. Trouver comment lui dire d'envoyer de la vidéo
+sur le vieil écran que l'on m'a filé à l'université était pénible.</p>
+<h4 id="la-prise-ethernet-ne-marche-juste-pas">La prise Ethernet ne marche juste pas</h4>
+<p>Les drivers sont pourtant supposés être
+<a href="http://www.asix.com.tw/products.php?op=pItemdetail&amp;PItemID=131;71;112">disponibles</a>…
+J'ai décompressé le bidule, l'ai installé, ai tout bien suivi les instructions,
+mais pas moyen que ça fonctionne (<code>ifconfig</code> ne le détecte désespérément pas).
+Comme on m'a aussi fourni un
+<a href="http://www.linksys.com/us/p/P-USB3GIG/">dongle Ethernet → USB</a>, et que celui-ci
+fonctionne (même quand on le branche dans le OneLink+), j'ai pas cherché
+beaucoup plus loin. Note que le dongle en question n'est pas non plus super
+satisfaisant, cf. la section suivante.</p>
+<h3 id="avalanche-de-messages-derreur-depuis-le-kernel">Avalanche de messages d'erreur depuis le kernel</h3>
+<p>Une fois le système installé, j'ai eu le déplaisir de constater que ma console
+se faisait inonder sous les messages du noyau comme décrit dans
+<a href="https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1626371">ce bug</a>,
+probablement causé par le dongle que j'utilise pour me connecter à Internet
+(pour une raison temporaire et tout aussi stupide). J'ai "résolu" le problème de
+façon temporaire en
+<a href="http://superuser.com/questions/351387/how-to-stop-kernel-messages-from-flooding-my-console">ignorant les messages du noyau</a>.</p>
+<h3 id="pas-de-wi-fi-par-defaut">Pas de Wi-Fi par défaut</h3>
+<p><code>apt-get install firmware-iwlwifi</code> et redémarrer la machine a suffi à ce que ça
+fonctionne.</p>
+<h3 id="xbacklight-ne-fonctionne-pas">xbacklight ne fonctionne pas</h3>
+<p>Les instructions
+<a href="https://wiki.archlinux.org/index.php/backlight#xbacklight">trouvées ici</a>
+(créer un <code>/etc/X11/xorg.conf</code> avec ce qui va bien dedans) ont fonctionné.</p>
+<h3 id="pas-de-son-par-defaut">Pas de son par défaut</h3>
+<p>Il a fallu que je passe à PulseAudio, alors que je m'en étais très bien passé
+jusqu'à maintenant. C'était en fait plus facile que ce à quoi je m'attendais,
+j'ai suivi le premier tutoriel que j'ai trouvé en ligne et ça a marché. Je crois
+me souvenir que <code>sudo apt-get install pulseaudio pavucontrol</code> a suffi.</p>
+<h3 id="pas-de-bluetooth-par-defaut">Pas de Bluetooth par défaut</h3>
+<p>Internet m'a indiqué les bons trucs à installer : <code>sudo apt-get install
+pulseaudio-module-bluetooth bluez-firmware blueman</code>. Ça a eu l'air de marcher
+(on peut voir la liste des périphériques, etc.), mais en fait j'ai pas réussi à
+envoyer du son sur les enceintes Bluetooth que j'utilisais avant de faire <code>pactl
+load-module module-bluetooth-discover</code> et de re-faire l'étape de pairage.</p>
+<h3 id="le-lecteur-dempreintes-digitales-ne-marche-pas">Le lecteur d'empreintes digitales ne marche pas</h3>
+<p>Ça a l'air impossible de le faire fonctionner pour l'instant, et ça n'arrivera
+<a href="https://bugs.freedesktop.org/show_bug.cgi?id=94536">probablement pas dans un futur proche</a>.
+Triste =(</p>
+<h3 id="les-touches-multimedia-doivent-etre-configurees">Les touches multimédia doivent être configurées</h3>
+<p>Mais paraît normal, puisque j'utilise i3 comme gestionnaire de fenêtres. On peut
+trouver les codes des touches avec <code>xev</code>, puis leur faire faire ce qu'on veut
+dans <code>.i3/config</code>, c'est standard. Celle pour le Wi-Fi fonctionne sans avoir
+besoin de configurer quoi que ce soit (une fois le driver installé), et a l'air
+d'avoir le même effet qu'un toggle de rfkill sur l'interface Wi-Fi.</p>
+<p>Parfois, les touches multimédia cessent complètement de fonctionner, et
+n'envoient plus rien de reconnaissable dans <code>xev</code>. Je n'ai pas réussi à trouver
+comment reproduire le bug de façon déterministe, mais il me semble que c'est
+encore un problème avec le dock. Tout débrancher, mettre le système en veille et
+le rallumer suffit généralement à ce que ça revienne.</p>
+<h3 id="la-resolution-de-lecran-est-vraiment-grande">La résolution de l'écran est <em>vraiment</em> grande</h3>
+<p>La majorité des logiciels sont inadaptés à l'écran HiDPI du X1 Carbon : LyX,
+Quod Libet, Firefox, etc., ont leurs textes et menus qui apparaissent
+minuscules. J'ai réglé ça en trois étapes.</p>
+<ul>
+<li>J'ai ajouté <code>xrandr --dpi 120</code> dans mon <code>.xinitrc</code>.</li>
+<li>J'ai changé mes raccourcis pour ouvrir des terminaux pour afficher de
+    plus gros caractères, et une
+    <a href="http://en.wikipedia.org/wiki/Andal%C3%A9_Mono">belle police</a> lisible et
+    compacte.</li>
+<li>Et j'ai installé l'extension Firefox
+    <a href="https://addons.mozilla.org/fr/firefox/addon/autohidpi/">AutoHiDPI</a> pour
+    avoir le DPI de Firefox qui change automatiquement suivant l'écran sur
+    lequel la fenêtre se trouve (parce que mes écrans auxiliaires n'ont pas une
+    telle résolution). Malheureusement, ça ne marche pas si deux fenêtres se
+    trouvent sur deux écrans différents ; je n'ai pas de solution pour ça.</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>Si je devais me choisir une autre machine maintenant, il est probable que je
+regarde si il n'y a pas des laptops avec une meilleure compatibilité (en
+particulier avec des docks qui marchent mieux sous Linux). Mais il est assez
+possible que je prenne malgré tout le même modèle. Les problèmes sont pénibles,
+mais on finit par en venir à bout (et c'est satisfaisant quand ça finit par
+marcher :D) — je n'ai essentiellement plus de souci gênant avec cette machine.
+Et je suis carrément fan du matériel.</p>
+<p>J'espère quand même que les modèles suivants de la ligne ThinkPad marcheront un
+peu mieux.</p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Citez cet article!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>L'entrée BibTeX a été copiée dans votre presse-papiers.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblogue20170402,
+  title = &#123;Faire marcher un Lenovo X1 Carbon sous Linux},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blogue/x1-carbon.html}},
+  note = &#123;Ted écrit des trucs (blog personnel)},
+  year = &#123;2017},
+  month = &#123;04}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="offlineimap-mbsync.html">← précédent</a>
+    </li>
+    <li>
+      <a href="anonymiser-pour-de-vrai.html">suivant →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">haut de page</a></li>
+    <li><a href="index.html">accueil</a></li>
+    <li><a href="archives.html">archives</a></li>
+  </ul>
+</nav>
+
+      <div class="feedback">
+        Tout ce que je raconte ici sont mes opinions personnelles, pas celles de
+        mon employeur.
+        <br>
+        Je suis toujours ravi de recevoir des réactions, critiques, questions,
+        ou autres commentaires sur ce que j'écris. Envoyez-moi ce qui vous
+        chante à <span class="baddirection">se.niatnofsed@neimad</span>.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          par 
+          <a rel="dct:publisher" href="http://desfontain.es/serious-fr.html">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="Je pense que le concept de propriété intellectuelle n'a aucun sens. Le contenu de ce blog est dans le domaine public."/>
+          </a>
+          &mdash;
+          mis en orbite par <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

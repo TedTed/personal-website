@@ -1,0 +1,15 @@
+#container {
+  min-width:17em;
+  max-width:none;
+}
+
+#menuGlobal {
+  min-width:17em;
+  max-width:none;
+  font-size:110%;
+}
+
+
+body {
+  font-size: 80%;
+}

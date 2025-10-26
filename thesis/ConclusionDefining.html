@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="RelatedWorkDefining.html" />
+  <link ref="next" href="DifferentialPrivacyUnderPartialKnowledge.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="RelatedWorkDefining.html">← previous</a></li>
+        <li><a href="DefiningAnonymization.html#ConclusionDefining.html">up</a></li>
+        <li><a href="DifferentialPrivacyUnderPartialKnowledge.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="RelatedWorkDefining.html">LINKPREV</a><a href="DefiningAnonymization.html#ConclusionDefining.html">LINKUP</a><a href="DifferentialPrivacyUnderPartialKnowledge.html">LINKNEXT</a></p></div>
+  <h3 class="sectionHead" id="conclusion-u-ding-"><span class="titlemark">2.3</span>&nbsp;&nbsp;<a id="x26-910002.3"></a>Conclusion  <span class="bbding-10x-x-109">✿</span></h3> <!-- l. 3 --><p class="noindent">
+In this chapter, we first listed four syntactic privacy definitions; each one a different attempt at defining
+anonymization based on properties of the dataset. These definitions demonstrated the various attack
+models that are relevant in different contexts, and the difficulty of finding a satisfying notion of
+anonymity. We then introduced differential privacy, a definition which changes the conceptual
+perspective: rather than seeing anonymization as a property of a database, it considers it as a
+property of the process. Thanks to this view, we can now make strong statements about the
+information that an attacker can get about an individual, bypassing the need for error-prone attack
+modeling. Differential property also comes with useful properties, such as post-processing and
+composition, which makes it easier for researchers and engineers to build mechanisms that satisfy
+it.
+</p><!-- l. 16 --><p class="indent">  Differential privacy itself has been extremely successful, and the intuition behind it inspired
+hundreds of alternative definitions. But this also has created a situation where a newcomer
+to the field of anonymization can have trouble navigating it, understanding how different
+notions relate to each other, and choosing which notion is most appropriate for their use case.
+To solve this issue, we proposed a classification of DP variants and extensions using the
+concept of dimensions. When possible, we compared definitions from the same dimension,
+and we showed that definitions from the different dimensions can be combined to form
+new, meaningful definitions. In theory, it means that even if there were only three possible
+ways to change a dimension (e.g., making it weaker or stronger), this would result in
+<!-- l. 26 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-msup"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">3</span></span></span></span><span class="mjx-sup" style="font-size: 70.7%; vertical-align: 0.59em; padding-left: 0px; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">7</span></span></span></span></span><span class="mjx-mo MathClass-rel MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">=</span></span><span class="mjx-mn MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2187</span></span></span></span></span></span></span> possible
+definitions: the <!-- l. 27 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.298em;">≈</span></span><span class="mjx-mn MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">225</span></span></span></span></span></span></span>
+existing definitions shown in Figure&nbsp;<a href="SystematizingVariantsExtensionsOfDifferentialPrivacy.html#-accumulated-number-of-papers-which-are-introducing-dp-variants-or-extensions-line-and-the-exact-number-of-these-definitions-bar">2.7<!-- tex4ht:ref: fig:timeline  --></a> are only scratching the surface of the space of possible
+notions. Using these dimensions, we unified and simplified the different notions proposed in the
+literature. We highlighted their properties such as composability and whether they satisfy the
+privacy axioms by either collecting the existing results or creating new proofs, and whenever
+possible, we showed their relative relations to one another. We hope that this work will
+make the field of data privacy more organized and easier to navigate, especially for new
+practitioners.
+                                                                                
+                                                                                
+</p>
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="RelatedWorkDefining.html">LINKPREV</a><a href="DefiningAnonymization.html#ConclusionDefining.html">LINKUP</a><a href="DifferentialPrivacyUnderPartialKnowledge.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="RelatedWorkDefining.html">← previous</a></li>
+        <li><a href="DefiningAnonymization.html#ConclusionDefining.html">up</a></li>
+        <li><a href="DifferentialPrivacyUnderPartialKnowledge.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

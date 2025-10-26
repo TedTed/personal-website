@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Research highlights: Privacy attacks on statistical data - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Research highlights: Privacy attacks on statistical data - Ted is writing things" />
+  <meta property="twitter:title" content="Research highlights: Privacy attacks on statistical data - Ted is writing things" />
+  <meta name="description" property="og:description" content="A summary of past and recent work on privacy attacks against statistical data releases." />
+  <meta property="twitter:description" content="A summary of past and recent work on privacy attacks against statistical data releases." />
+  <meta property="summary" content="A summary of past and recent work on privacy attacks against statistical data releases." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/confidence-ranked-reconstruction.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/confidence-ranked-reconstruction.png" />
+  <meta property="twitter:image:alt" content="A diagram illustrating confidence-ranked reconstruction attacks. On the left side, a box labeled "A bunch of statistics". An arrow labeled "Run the reconstruction process many times to obtain different results due to its inherent randomness" goes from this box to a bunch of database icons labeled "Reconstructed data, matching the private data for some rows". An arrow labeled "Count how many times each reconstructed record appears across reconstructions" goes from there to a database icon labeled "Ordered list of reconstructed records, where the most likely to be correct appear first." />
+  <link rel="canonical" href="https://desfontain.es/blog/attacks-on-statistics.html" />
+  <link rel="prev" href="five-hard-lessons.html" />
+  <link rel="next" href="tell-me-what-to-write.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="five-hard-lessons.html">← previous</a>
+ —     <a href="tell-me-what-to-write.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./attacks-on-statistics.html">Research highlights: Privacy attacks on statistical data</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2025-09-10T00:00:00+02:00">
+      2025-09-10
+    </time>
+  </footer>
+  <div>
+    <p><strong>If</strong> you publish many statistics about a sensitive dataset, and these
+statistics are reasonably accurate, then an attacker can <em>reconstruct</em> part of
+the original dataset, using only the statistics. This is the statement of a
+simple but devastating theorem, proven by Irit Dinur and Kobbi Nissim twenty
+years ago in a <a href="https://crypto.stanford.edu/seclab/sem-03-04/psd.pdf">seminal paper</a>.</p>
+<p><center>
+<img alt="A diagram with, on the left, a database icon labeled &quot;Sensitive data about
+individuals&quot;. An arrow labeled &quot;A program generating statistics (possibly
+noisy)&quot; goes from this icon to a box labeled &quot;A bunch of statistics&quot;.
+An arrow labeled &quot;A mathematical process (e.g. solving equation systems)&quot; goes
+from this box to a database icon labeled &quot;Reconstructed data, matching the
+private data for many rows&quot;." src="https://desfontain.es/blog/images/database-reconstruction.svg">
+</center></p>
+<p>This fact, later called the <em>Fundamental Law of Information Recovery</em>, is bad
+news: it means that there is some kind of inherent privacy leakage whenever one
+publishes information about a dataset. It also means that this leakage still
+exists even when information doesn't seem too revealing, like aggregate
+statistics.</p>
+<p>After this work was published, the scientific community started looking for
+better ways to understand this trade-off between statistical utility and privacy
+leakage. <a href="friendly-intro-to-differential-privacy.html">Differential privacy</a> was invented a few years later, and
+everyone moved to this more robust approach to releasing insights from sensitive
+data. This solved the thorny problem of privacy-safe data sharing and
+publication once and for all.</p>
+<p>… just kidding. Instead, people outside of academia largely ignored this line of
+work. It was easy to do so: the fundamental law of information recovery is a
+pretty theoretical attack. Its applicability to real-world data releases was
+unclear, so it didn't seem very urgent to move to provably robust approaches.</p>
+<p>This all changed a few years ago, when the U.S. Census Bureau ran a
+<a href="us-census-reconstruction-attack.html">reconstruction attack</a> on their own data. This attack got a lot of
+attention for multiple reasons.</p>
+<ul>
+<li>It was performed on a real dataset (the data collected by the Census).</li>
+<li>The queries used in the data publication were not chosen by the attacker, but
+  corresponded to a real-world workload (the 2010 Census tabulations).</li>
+<li>The attack was very successful, demonstrating worrying rates of reconstruction
+  and re-identification.</li>
+</ul>
+<p>Nonetheless, the attack was criticized by some researchers. The U.S. Census
+Bureau initially did not provide a lot of technical details, so there were
+misunderstandings about the methods and the results. And there were some
+philosophical objections as well:</p>
+<ul>
+<li>"The demographic data used as input does not seem very sensitive. Is the
+  attacker really learning anything problematic?"</li>
+<li>"Sure, the attacker can reconstruct some of the data. But they have no way of
+  knowing whether each reconstructed record is accurate! It doesn't really feel
+  like a privacy breach if there's still a lot of uncertainty."</li>
+<li>"These attacks only work when a ton of statistics are published from the same
+  data. The majority of real-world data releases are much simpler, so they
+  should be safe."</li>
+</ul>
+<p>Recent work shows that these arguments are, sadly, overly optimistic. Over the
+past few years, multiple papers have made it clear that the privacy risk from
+statistical releases is real and serious. In this blog post, I'll list some of
+these recent developments, with links to the original sources if you want to
+learn more.</p>
+<h1 id="how-sensitive-is-the-information">How sensitive is the information</h1>
+<p>The <a href="us-census-reconstruction-attack.html">attack run by the U.S. Census Bureau</a> took the example of an
+attacker learning someone's declared race and ethnicity. This is the kind of
+information that must be protected according to U.S. law, so the agency saw this
+as a real issue. Some people, however, have argued that such a privacy failure
+did not translate to real-world harm, and that the risk was minimal. This raises
+the question: what other kinds of harm can come out of privacy attacks on
+demographic datasets?</p>
+<p>Two follow-up papers answered that question, and showed that such statistical
+data releases can actually reveal extremely sensitive information.</p>
+<p>In <a href="https://journalprivacyconfidentiality.org/index.php/jpc/article/view/891">The Risk of Linked Census Data to Transgender Youth</a>, Os Keyes and
+Abraham D. Flaxman show that badly-protected statistics can reveal people's
+transgender identity. The idea is scarily simple: reconstruct data from
+successive releases, and re-identify the records of people who declared a
+different gender from one release to the next. In the current political climate,
+it's not hard to imagine how individuals targeted by such an attack could suffer
+severe consequences.</p>
+<p><center>
+<img alt="A diagram with three elements. On the top, a database icon labeled
+&quot;Demographic data for some year&quot;, an arrow going from this icon to a box labeled
+&quot;Demographic statistics&quot;, and an arrow going from this box to a database icon
+labeled &quot;Reconstructed and reidentified data for some year&quot;. At the bottom, the
+same diagram, but &quot;some year&quot; replaced with &quot;a later year&quot;. Between the two
+reconstructed data boxes, a red arrow labeled &quot;Compare successive data releases,
+find who reported a different gender (or
+sex)&quot;." src="https://desfontain.es/blog/images/attack-on-trans-people.svg">
+</center></p>
+<p>Another example is presented in <a href="https://arxiv.org/abs/2407.04776">Quantifying Privacy Risks of Public Statistics
+to Residents of Subsidized Housing</a>, by Ryan Steed, Diana Qing, and
+Zhiwei Steven Wu. The paper shows how public statistics can be attacked to
+reveal which households violate occupancy guidelines in subsidized housing. If a
+working-class family grows to have three children in a single bedroom, or if a
+household is providing temporary accommodation to a family member, they could be
+evicted by their landlord or property manager.</p>
+<p><center>
+<img alt="A screenshot of Figure 1 in the paper mentioned above, outlining the
+experimental approach." src="https://desfontain.es/blog/images/attack-on-household-violations.png" width="80%">
+</center></p>
+<p>In both cases, the privacy risk also leads to a data quality issue: vulnerable
+populations are more likely to provide false information when answering surveys,
+to avoid the very concrete harms that could result from privacy
+breaches.<sup id="fnref:quality"><a class="footnote-ref" href="#fn:quality">1</a></sup></p>
+<h1 id="increasing-the-attackers-confidence">Increasing the attacker's confidence</h1>
+<p>In the <a href="us-census-reconstruction-attack.html">Census attack</a>, the idea was to reconstruct individual records
+with demographic data, then link them to real-world identities. But an attacker
+running such an attack might bump into an issue: how to know whether the
+reconstructed records are accurate? There might be randomness in the process
+generating the statistics, or in the attack itself. So the information learned
+might not be real, which would hardly qualify as a convincing privacy attack!</p>
+<p>Two papers provide compelling counterpoints to this argument.</p>
+<p>The first one is <a href="https://www.pnas.org/doi/10.1073/pnas.2218605120">Confidence-ranked reconstruction of census microdata from
+published statistics</a>, by Travis Dick, Cynthia Dwork, Michael Kearns,
+Terrance Liu, Aaron Roth, Giuseppe Vietri, and Zhiwei Steven Wu. I love the
+conceptual simplicity of their approach. Instead of running <em>one</em> reconstruction
+attack, they suggest running <em>many</em>, and looking at the results. Do certain
+records appear in every single reconstructed dataset? If so, they're much more
+likely to be correct than records that only appear in 10% of them. Generalizing
+this idea gives the attacker a <em>ranked</em> list of reconstructed records: the ones
+on top of the list are very likely to be correct, the ones near the bottom are
+much more uncertain. This allows the attacker to focus on the records that are
+most likely to be accurate in later steps (like re-identification).</p>
+<p><center>
+<img alt="A diagram illustrating confidence-ranked reconstruction attacks. On the left
+side, a box labeled &quot;A bunch of statistics&quot;. An arrow labeled &quot;Run the
+reconstruction process many times to obtain different results due to its
+inherent randomness&quot; goes from this box to a bunch of database icons labeled
+&quot;Reconstructed data, matching the private data for some rows&quot;. An arrow labeled
+&quot;Count how many times each reconstructed record appears across reconstructions&quot;
+goes from there to a database icon labeled &quot;Ordered list of reconstructed
+records, where the most likely to be correct appear
+first&quot;" src="https://desfontain.es/blog/images/confidence-ranked-reconstruction.svg">
+</center></p>
+<p>The second one is the longer description of the Census attack: <a href="https://hdsr.mitpress.mit.edu/pub/ntchx9im/release/1">A Simulated
+Reconstruction and Reidentification Attack on the 2010 U.S. Census</a>,
+by John M. Abowd, Tamara Adams, Robert Ashmead, David Darais, Sourya Dey, Simson
+Garfinkel, Nathan Goldschlag, Michael B. Hawes, Daniel Kifer, Philip Leclerc,
+Ethan Lew, Scott Moore, Rolando A. Rodríguez, Ramy N. Tadros, and Lars Vilhuber.
+The paper does not only consider the percentage of correctly re-identified
+records, but also measures <em>solution variability</em>: how many possible
+reconstructions are there for a given set of statistics? When this solution
+variability is 0, there is only one possible solution, so the accuracy is
+maximal. The authors found more than 97 million records can be reconstructed
+exactly, with 100% certainty — proving once and for all that the privacy risk of
+this data release was not overstated.</p>
+<p><center>
+<img alt="A screenshot of Table 2 in the previously mentioned paper, which is a table
+listing the solution variability by block percentile. A part of the table is
+highlighted to point out that it shows Reconstruction with 100% certainty for
+70% of Census blocks (or 97 million
+people)." src="https://desfontain.es/blog/images/census-solvar.svg" width="80%">
+</center></p>
+<h1 id="attacking-smaller-data-releases">Attacking smaller data releases</h1>
+<p>So, statistical releases with a very large number of tables and aggregates are
+severely at risk of reconstruction and re-identification attacks. What about
+more modest data publications, in which only a smaller number of output
+statistics are made available? Maybe the reconstruction stage will admit a
+much larger number of possible solutions, and the attacker will be unable to
+reconstruct records with high confidence?</p>
+<p>Sadly, this is not the case, as shown in a paper titled <a href="https://arxiv.org/abs/2504.21199">Generate-then-Verify:
+Reconstructing Data from Limited Published Statistics</a>, by Terrance Liu,
+Eileen Xiao, Adam Smith, Pratiksha Thaker, and Zhiwei Steven Wu. In this work,
+the authors design a different kind of attack, working in two stages. In the
+<em>generate</em> stage, the attacker lists possible "claims", which are statements
+like "there is exactly one record with age 70 in this Census block". Then, in
+the <em>verify</em> stage, the attacker uses integer programming to prove that some of
+the claims are true for every possible reconstruction of the dataset. If the
+claim is about a single person, then the attacker successfully singled out a
+specific record in the dataset, with 100% certainty.</p>
+<p><center>
+<img alt="A screenshot of Figure 1 in the paper mentioned above, illustrating the claims
+studied in this work." src="https://desfontain.es/blog/images/generate-then-verify.png" width="80%">
+</center></p>
+<p>Crucially, the attack works even when there are multiple possible reconstructed
+datasets. Previous approaches would never reach 100% certainty in those cases.
+By contrast, this attack succeeds in learning sensitive information about some
+records, and this information is guaranteed to be correct.</p>
+<h1 id="what-should-we-do-then">What should we do, then?</h1>
+<p>Say you're a data steward at an organization that publishes statistical data
+releases, or share aggregate data with third parties. Reading this might have
+helped you realize that these use cases are likely revealing more than you
+intend about the original data. What should you do about it?</p>
+<p>One answer is to assume that the risk is real and severe, and work towards
+mitigating it. The best practice is to use robust privacy-enhancing technology,
+like <a href="friendly-intro-to-differential-privacy.html">differential privacy</a>: this gives you a principled approach to
+quantify and control disclosure risk, in a way that will stand the test of time.
+Think of it like using standardized algorithms to encrypt data: something
+validated by experts as the best option going forward.</p>
+<p>It can also be useful to run <em>privacy audits</em>: get an expert to quantify the
+practical risk of your existing data releases, for example by performing such
+attacks. Doing so will help you get a better idea of how risky your existing use
+cases are, and prioritize mitigation work. Think of it like penetration tests in
+security: you want to know the ways in which your existing practices can fail
+before someone with ill intentions uses it to harm people.</p>
+<p>If you have a use case that could benefit from a privacy audit or a robust
+anonymization strategy, and are looking for an expert to assist you, hit me up!
+My independent consultancy, <a href="https://hiding-nemo.com">Hiding Nemo</a>, provides exactly this kind of
+service. I'd love to hear about your use case and discuss how I could help.</p>
+<hr>
+<p><small>Thanks to Antoine Amarilli, Daniel Kifer, Lars Vilhuber, Ryan Steed, and
+Travis Dick for their helpful comments on previous versions of this
+post.</small></p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:quality">
+<p>This is, by the way, not a theoretical issue: <a href="https://doi.org/10.1007/978-3-319-18917-8">studies</a>
+show that a number of people don't list all their children on census forms
+for fear of reprisal from various institutions.&#160;<a class="footnote-backref" href="#fnref:quality" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20250910,
+  title = &#123;Research highlights: Privacy attacks on statistical data},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/attacks-on-statistics.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2025},
+  month = &#123;09}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="five-hard-lessons.html">← previous</a>
+    </li>
+    <li>
+      <a href="tell-me-what-to-write.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

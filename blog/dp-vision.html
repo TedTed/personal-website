@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Winning at DP VISION — suspiciously easily… - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Winning at DP VISION — suspiciously easily… - Ted is writing things" />
+  <meta property="twitter:title" content="Winning at DP VISION — suspiciously easily… - Ted is writing things" />
+  <meta name="description" property="og:description" content="I crafted a strategy to beat the high score at a game based on differential privacy. It should have been harder to beat, though…" />
+  <meta property="twitter:description" content="I crafted a strategy to beat the high score at a game based on differential privacy. It should have been harder to beat, though…" />
+  <meta property="summary" content="I crafted a strategy to beat the high score at a game based on differential privacy. It should have been harder to beat, though…" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/dp-vision-leaderboard-1.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/dp-vision-leaderboard-1.png" />
+  <meta property="twitter:image:alt" content="A screenshot of DP VISION's leaderboard. The top score is "Damien ✨", with 5 guesses and epsilon=99. Afterwards come Bill Ayeni, Gaurav, and sn, all with 5 guesses, and epsilons of 151, 224, and 253 respectively." />
+  <link rel="canonical" href="https://desfontain.es/blog/dp-vision.html" />
+  <link rel="prev" href="geometric-tricks.html" />
+  <link rel="next" href="privacy-in-ai.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="geometric-tricks.html">← previous</a>
+ —     <a href="privacy-in-ai.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./dp-vision.html">Winning at DP VISION — suspiciously easily…</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2024-10-13T00:00:00+02:00">
+      2024-10-13
+    </time>
+  </footer>
+  <div>
+    <p><strong>The</strong> folks at <a href="https://www.oblivious.com/">Oblivious</a> recently released a few
+<a href="https://www.oblivious.com/games">games</a> that try and convey some of the
+intuition around uncertainty in <a href="friendly-intro-to-differential-privacy.html">differential privacy</a>. In all of them, the
+player has to choose a privacy budget and get some randomized information about
+a secret. The goal is to guess the secret using the smallest possible total
+privacy budget. Neat idea!</p>
+<p>The games are about DP and they have a public leaderboard, so this might as well
+be my own personal catnip: of course I had to go and get the high score. Let's
+take a look at the first one: <a href="https://www.oblivious.com/games/dp-vision">DP VISION</a>.</p>
+<h1 id="the-game">The game</h1>
+<p>Each game has five rounds. In each round, you are presented with three pictures
+that kind of look like each other (let's call them A, B, and C). One of them is
+the "right" one, and your goal is to find out which one it is. To do that, you
+have access to a "noisy" image, composed of tiles selected from one of the three
+pictures using a DP mechanism. With a <span class="math">\(\varepsilon\)</span> value of <span class="math">\(0\)</span>, the tiles are
+selected completely randomly; with a very high <span class="math">\(\varepsilon\)</span>, the tiles all come
+from the right picture. If that was unclear, go <a href="https://www.oblivious.com/games/dp-vision">play a few games</a>, you'll
+get the idea.</p>
+<p>The pictures are 180×160 pixels, split into 18×16 = 288 tiles. Each tile is
+selected using an <a href="choosing-things-privately.html">exponential mechanism</a> with budget <span class="math">\(\varepsilon/288\)</span>,
+where you (the player) selects the <span class="math">\(\varepsilon\)</span>. Assuming they implemented it
+in the optimal way, this is equivalent to <a href="differential-privacy-in-more-detail.html#rr">randomized response</a> with 3
+options: it chooses the correct picture with probability
+<span class="math">\(p_{correct}=\frac{e^{\varepsilon/288}}{(e^{\varepsilon/288}+2)}\)</span>, and each of
+the other two with probability <span class="math">\(p_{wrong}=\frac{1}{(e^{\varepsilon/288}+2)}\)</span>.</p>
+<p>Now, how to win this?</p>
+<h1 id="the-strategy">The strategy</h1>
+<p>The information you get in the tiled image boils down to: how many tiles come
+from each picture? Each choice of tile is biased towards the right picture, so
+the best possible strategy is simple: just pick the picture where most tiles
+come from. What's the probability that this choice is the right one? </p>
+<p>If the correct one is A, the three tiles counts <span class="math">\((n_A,n_B,n_C)\)</span> are distributed
+as a <a href="https://en.wikipedia.org/wiki/Multinomial_distribution">multinomial distribution</a> with <span class="math">\(n=288\)</span> trials and event
+probabilities <span class="math">\((p_{correct},p_{wrong},p_{wrong})\)</span>. If we resolve ties randomly,
+we will win with probability:
+</p>
+<div class="math">$$
+\mathbb{P}\left[n_A&gt;n_B\text{ and }n_A&gt;n_C\right]
++\frac12\mathbb{P}\left[n_A=n_B\text{ and }n_A&gt;n_C\right] \\
+\qquad\qquad+\frac12\mathbb{P}\left[n_A&gt;n_B\text{ and }n_A=n_C\right]
++\frac13\mathbb{P}\left[n_A=n_B=n_C\right].
+$$</div>
+<p>Can we simplify this formula into something easy to compute? I tried (not very
+hard) and failed, and instead wrote some Python code to compute it numerically.
+<button class="toggleCode"></button></p>
+<div style="display: none; border-left: double; padding-left: 10px">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">exp</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">multinomial</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="c1"># Strategy: we pick the option with most samples.</span>
+<span class="c1"># What is the probability of this strategy winning?</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">288</span>
+<span class="k">def</span> <span class="nf">prob_win</span><span class="p">(</span><span class="n">eps</span><span class="p">):</span>
+  <span class="n">p_correct</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">eps</span><span class="o">/</span><span class="n">n</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="n">eps</span><span class="o">/</span><span class="n">n</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span>
+  <span class="n">p_wrong</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="n">eps</span><span class="o">/</span><span class="n">n</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span>
+  <span class="n">dist</span> <span class="o">=</span> <span class="n">multinomial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="p">[</span><span class="n">p_correct</span><span class="p">,</span> <span class="n">p_wrong</span><span class="p">,</span> <span class="n">p_wrong</span><span class="p">])</span>
+  <span class="n">prob</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">a</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+      <span class="n">c</span> <span class="o">=</span> <span class="n">n</span><span class="o">-</span><span class="n">a</span><span class="o">-</span><span class="n">b</span>
+      <span class="k">if</span> <span class="n">a</span><span class="o">&lt;</span><span class="n">b</span> <span class="ow">or</span> <span class="n">a</span><span class="o">&lt;</span><span class="n">c</span><span class="p">:</span>
+        <span class="k">continue</span>
+      <span class="n">mass</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">pmf</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">])</span>
+      <span class="k">if</span> <span class="n">a</span><span class="o">&gt;</span><span class="n">b</span> <span class="ow">and</span> <span class="n">a</span><span class="o">&gt;</span><span class="n">c</span><span class="p">:</span>
+        <span class="n">prob</span> <span class="o">+=</span> <span class="n">mass</span>
+      <span class="k">elif</span> <span class="n">a</span><span class="o">&gt;</span><span class="n">b</span> <span class="ow">or</span> <span class="n">a</span><span class="o">&gt;</span><span class="n">c</span><span class="p">:</span>
+        <span class="n">prob</span> <span class="o">+=</span> <span class="n">mass</span><span class="o">/</span><span class="mi">2</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">prob</span> <span class="o">+=</span> <span class="n">mass</span><span class="o">/</span><span class="mi">3</span>
+  <span class="k">return</span> <span class="n">prob</span>
+
+<span class="n">eps_range</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="o">*</span><span class="mf">1.2</span><span class="o">**</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">40</span><span class="p">)]</span>
+<span class="n">prob_wins</span> <span class="o">=</span> <span class="p">[</span><span class="n">prob_win</span><span class="p">(</span><span class="n">eps</span><span class="p">)</span> <span class="k">for</span> <span class="n">eps</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">eps_range</span><span class="p">)]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">eps_range</span><span class="p">,</span> <span class="n">prob_wins</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;ε&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Single-round winning probability&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+</div>
+<p>This gives us this nice graph. It seems like we need quite a large <span class="math">\(\varepsilon\)</span>
+to get good winning chances!</p>
+<p><center>
+<img alt="Graph showing the probability of winning for varying values of ε. Close to 0,
+the probability is 33%. It gets to 50% at about ε=15, to 75% at about ε=42, to
+90% at about ε=65, and closer to 99% and more for ε=100 to
+ε=120." src="https://desfontain.es/blog/images/dpvision-win-prob-vs-epsilon.png" width="80%">
+</center></p>
+<p>Now, what <span class="math">\(\varepsilon\)</span> should I pick? Well, it depends how many times we're
+willing to try to play before winning. Say I would like at least a 50% chance of
+winning after 10 games: if <span class="math">\(p_{wingame}\)</span> is the probability of winning a game,
+we want <span class="math">\(\left(1-p_{wingame}\right)^{10}=50\%\)</span>, which gives
+<span class="math">\(p_{wingame}=1-\exp\left(\ln(0.5)/10\right)≈7\%\)</span>.</p>
+<p>But to win each game, we have to get the right solution 5 times in a row. So if
+<span class="math">\(p_{winround}\)</span> is the probability of winning a round, we have
+<span class="math">\(p_{wingame}=p_{winround}^5\)</span>. With <span class="math">\(p_{win}^5=7\%\)</span>, this gives
+<span class="math">\(p_{winround}≈59\%\)</span>. Looking at our graph above, this means we need
+<span class="math">\(\varepsilon\approx25\)</span>.</p>
+<h1 id="the-execution">The execution</h1>
+<p>We don't want to painfully count the tiles by hand. So instead, we'll copy/paste
+some JavaScript code into the browser console to download the images, and use a
+little Python script to split the pictures and count the tiles.
+<button class="toggleCode"></button></p>
+<div style="display: none; border-left: double; padding-left: 10px">
+<p>I like how downloading something in JavaScript apparently requires you to create
+a fake element on the page and then call <code>.click()</code> on it. Or maybe there's a
+better way, but this was the top answer on Stack Overflow, so don't blame me.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">download</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">canvas</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">var</span><span class="w"> </span><span class="nx">link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">link</span><span class="p">.</span><span class="nx">download</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">name</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">link</span><span class="p">.</span><span class="nx">href</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">canvas</span><span class="p">.</span><span class="nx">toDataURL</span><span class="p">();</span>
+<span class="w">  </span><span class="nx">link</span><span class="p">.</span><span class="nx">click</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="nx">canvases</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;canvas&quot;</span><span class="p">);</span>
+<span class="nx">download</span><span class="p">(</span><span class="nx">canvases</span><span class="p">[</span><span class="mf">0</span><span class="p">],</span><span class="w"> </span><span class="s2">&quot;noisy.png&quot;</span><span class="p">);</span>
+<span class="nx">download</span><span class="p">(</span><span class="nx">canvases</span><span class="p">[</span><span class="mf">1</span><span class="p">],</span><span class="w"> </span><span class="s2">&quot;a.png&quot;</span><span class="p">);</span>
+<span class="nx">download</span><span class="p">(</span><span class="nx">canvases</span><span class="p">[</span><span class="mf">2</span><span class="p">],</span><span class="w"> </span><span class="s2">&quot;b.png&quot;</span><span class="p">);</span>
+<span class="nx">download</span><span class="p">(</span><span class="nx">canvases</span><span class="p">[</span><span class="mf">3</span><span class="p">],</span><span class="w"> </span><span class="s2">&quot;c.png&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<p>To do the counting, we use <a href="https://python-pillow.org/">Pillow</a>. There, it seems
+like checking whether two pictures are identical should be more elegant than the
+solution below, but eh, this does the job.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageChops</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">folder</span> <span class="o">=</span> <span class="s2">&quot;/path/to/downloads/directory&quot;</span>
+
+<span class="c1"># Splitting each image into tiles</span>
+<span class="k">def</span> <span class="nf">get_tiles</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+  <span class="c1"># Conversion to RGB is necessary to compare PNGs with alpha channels</span>
+  <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">)</span>
+  <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">size</span>
+  <span class="k">return</span> <span class="p">[</span>
+   <span class="n">img</span><span class="o">.</span><span class="n">crop</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="mi">10</span><span class="p">))</span>
+   <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+   <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+  <span class="p">]</span>
+<span class="n">noisy</span> <span class="o">=</span> <span class="n">get_tiles</span><span class="p">(</span><span class="s2">&quot;noisy.png&quot;</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">get_tiles</span><span class="p">(</span><span class="s2">&quot;a.png&quot;</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">get_tiles</span><span class="p">(</span><span class="s2">&quot;b.png&quot;</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">get_tiles</span><span class="p">(</span><span class="s2">&quot;c.png&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">is_identical</span><span class="p">(</span><span class="n">img1</span><span class="p">,</span> <span class="n">img2</span><span class="p">):</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">ImageChops</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">img1</span><span class="p">,</span> <span class="n">img2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="n">diff</span><span class="o">.</span><span class="n">getbbox</span><span class="p">()</span>
+
+<span class="c1"># Comparing tiles, resolving ties arbitrarily</span>
+<span class="n">na</span><span class="p">,</span> <span class="n">nb</span><span class="p">,</span> <span class="n">nc</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">noisy</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">is_identical</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+        <span class="n">na</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">is_identical</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+        <span class="n">nb</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">is_identical</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+        <span class="n">nc</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;a = </span><span class="si">{</span><span class="n">na</span><span class="si">}</span><span class="s2">, b = </span><span class="si">{</span><span class="n">nb</span><span class="si">}</span><span class="s2">, c = </span><span class="si">{</span><span class="n">nc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nb</span><span class="p">,</span> <span class="n">nc</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">m</span> <span class="o">==</span> <span class="n">na</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Winner: A&quot;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">m</span> <span class="o">==</span> <span class="n">nb</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Winner: B&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Winner: C&quot;</span><span class="p">)</span>
+
+<span class="c1"># Removing images, so that the next download will have the right file names</span>
+<span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+<span class="n">remove</span><span class="p">(</span><span class="s2">&quot;noisy.png&quot;</span><span class="p">)</span>
+<span class="n">remove</span><span class="p">(</span><span class="s2">&quot;a.png&quot;</span><span class="p">)</span>
+<span class="n">remove</span><span class="p">(</span><span class="s2">&quot;b.png&quot;</span><span class="p">)</span>
+<span class="n">remove</span><span class="p">(</span><span class="s2">&quot;c.png&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+</div>
+<p>Then, to increase our chances of victory and lower our total <span class="math">\(\varepsilon\)</span>
+budget, we'll cheat a little: we'll choose the first guess at random with
+<span class="math">\(\varepsilon=0\)</span>, and reset the game if we guess wrong. The same strategy could
+be applied for multiple guesses, of course: we could be lucky 5 times in a row,
+and get the best-possible score of <span class="math">\(\varepsilon=0\)</span>. But this would only happen
+with probability <span class="math">\(0.5\%\)</span>, so this would take annoyingly many guesses.</p>
+<p>Instead, let's pick just the first one randomly, use <span class="math">\(\varepsilon=24\)</span> for the
+second and <span class="math">\(\varepsilon=25\)</span> for the last three to aim for a two-digit number,
+and… tadaaa! ✨</p>
+<p><center>
+<img alt="A screenshot of DP VISION's leaderboard. The top score is &quot;Damien ✨&quot;, with 5
+guesses and epsilon=99. Afterwards come Bill Ayeni, Gaurav, and sn, all with 5
+guesses, and epsilons of 151, 224, and 253
+respectively." src="https://desfontain.es/blog/images/dp-vision-leaderboard-1.png" width="80%">
+</center></p>
+<p>First try! We got lucky!</p>
+<p>… or did we?</p>
+<h1 id="the-investigation">The investigation</h1>
+<p>Well, let's try again, this time with a smaller <span class="math">\(\varepsilon\)</span> value, and see
+what happens. Let's go for about half, to get a nice round number.</p>
+<p><center>
+<img alt="The same leaderboard as above, with a new top score attributed &quot;Damien 😎&quot;,
+with 5 guesses and
+epsilon=42." src="https://desfontain.es/blog/images/dp-vision-leaderboard-2.png" width="80%">
+</center></p>
+<p>That took three tries. At that point, I start getting suspicious. With such low
+<span class="math">\(\varepsilon\)</span> values, the chance of winning a game should be below 4%. This
+should have taken a lot more than 3 tries.</p>
+<p>So I decide to do a little experiment. Playing a round with <span class="math">\(\varepsilon=16\)</span>
+should give me about even odds of winning. So I try it 20 times and… win 19 of
+the rounds. That can't be right. Winning 95% of the time should only happen with
+<span class="math">\(\varepsilon\)</span> values between 60 and 80, or maybe 50 if we're lucky.</p>
+<p>At that point, obviously, I figure I must have messed something up. What are
+possible explanations for this?</p>
+<ul>
+<li>My math is wrong. I double-check it and can't find any issue.</li>
+<li>My code is wrong. I triple-check it, rewrite it in a simpler way, but can't
+  find any issue.</li>
+<li>My assumptions about the mechanism are wrong. But if the privacy budget is
+  split in 288 for each round, and each tile is chosen independently of the
+  others, then randomized response is the <em>best</em> possible mechanism. A different
+  mechanism would have a worse privacy-utility trade-off, leading to a worse
+  success rate than expected. But we're seeing the opposite here, so that can't
+  be it.</li>
+<li>The implementation of the game is wrong? The only way to be sure is to ask, so
+  I email the folks at Oblivious to try and figure out what's going on.</li>
+</ul>
+<p>And… vindication \o/ They (very quickly) confirm that there was, in fact, a
+misunderstanding that led to an actual privacy budget consumption that was <em>off
+by a factor of four</em>. This matches our rough estimate from our little experiment
+above! Jack Fitzsimons, CTO at Oblivious, says:</p>
+<blockquote>
+<p>The games were a fun idea to try to share intuition into differential privacy
+with non-technical stakeholders at this year's Eyes-Off Data Summit. When
+Microsoft's Data for Good team spoke about the broadband release using 0.1
+epsilon, we wanted folks even from a legal perspective to have an intuition
+that that is very low.</p>
+<p>Of course these games were made quickly and in ad-hoc JavaScript (in fact the
+answers are technically always in plain sight in your browser console), there
+was a miscommunication to the web developers about switching from the
+Add-One-Replace-One model to the Replace-One only model, leading to a rogue 4
+in the exponent. It has since been patched and the scores corrected
+accordingly.</p>
+<p>I think it's extremely cool that Damien spotted this with a privacy audit.
+Firstly, as it's only a game to build understanding, we likely would not have
+spotted the bug as we moved on with more pressing work. But it also shows the
+power of community in building privacy systems. Cryptography as a whole
+benefits enormously from open source and peer review, and here in a small
+microcosm of differential privacy around some community games we see the same
+occurring.</p>
+<p>Hat's off to Damien! </p>
+</blockquote>
+<h1 id="the-discussion">The discussion</h1>
+<p><em>Games are a great teaching tool.</em> Getting people to understand DP math is hard.
+Our community hasn't historically been doing a great job at it. Even basic
+concepts (e.g. larger <span class="math">\(\varepsilon\)</span> values translating to better utility and
+worse privacy) can feel very abstract. It's hard to convey noise and uncertainty
+in an intuitive way. So I find it really exciting when people come up with new
+ways of approaching the problem, like these games. By making it visual and fun,
+they help people get a more "visceral" feeling of how increasing the
+<span class="math">\(\varepsilon\)</span> lets them learn more information. And the public leaderboard is,
+of course, <a href="https://xkcd.com/356/">nerd-sniping</a> people like me into spending a
+weekend coding a strategy to beat the high score. So I'm grateful that folks are
+experimenting with this idea!</p>
+<p><em>We need more ideas to convey intuition around privacy budgets.</em> To get a good
+intuition around the <em>magnitude</em> of the <span class="math">\(\varepsilon\)</span>, we would probably need
+different game mechanics. DP VISION (and other games) use randomized response, a
+<a href="local-global-differential-privacy.html">local DP mechanism</a> where noise is added to each data point. This leads
+to brutal privacy-utility trade-offs, with very high <span class="math">\(\varepsilon\)</span> values
+compared to mechanisms used in the central model. And the mechanism used in the
+game is extremely "inefficient": to choose between 3 options, we would want to
+run randomized response <em>once</em>, not 288 times. Of course, this would make the
+game a lot less fun and visual! Coming up with a game where people play with
+common central DP mechanisms, like Laplace or Gaussian noise, would be great.</p>
+<p><em>Correctly implementing DP is tricky.</em> Even for simple mechanisms like this one,
+privacy mistakes are easy to introduce and hard to notice. Trying the game a few
+times with very low or very high <span class="math">\(\varepsilon\)</span> values will produce a behavior
+that "looks right": you actually have to do some math and statistical testing to
+figure out that something is wrong. For a longer tangent about building robust
+DP software, here's a <a href="https://www.tmlt.io/resources/a-framework-to-evaluate-the-robustness-of-anonymization-solutions">thing I wrote about this topic</a> recently.</p>
+<p><em>Privacy auditing is not just important, it's fun too.</em> The little experiment we
+did where we interacted with a DP mechanism, observed its behavior, and deduced
+a rough lower bound on its privacy budget? This is a "real world" example of
+<em>privacy auditing</em>, a branch of DP research that tries to find bugs in DP
+implementations empirically, with the same idea (though usually with more
+serious math). There are a lot of <a href="https://scholar.google.com/scholar?q=differential+privacy+auditing">papers</a> about it, and just like in
+this post, many of them end up actually finding vulnerabilities! This was the
+first time I actually did anything like this, and it was super fun — similar to
+how other people have described the joy of reverse-engineering software.</p>
+<h1 id="the-epilogue">The epilogue</h1>
+<p>The privacy bug in the game was (obviously) not in scope for their official bug
+bounty program. But Jack mentioned a possible reward after I pointed out the
+discrepancy, and took my suggestion to send it to a local charity instead:
+that's 200€ going towards the great folks at <a href="https://teni.ie/">TENI</a>. Nice!</p>
+<p>The folks at Oblivious also fixed the bug, and multiplied everyone's score by 4
+on the leaderboard to reflect the actual privacy budget consumption of past
+runs. An excellent opportunity to both check that my original strategy was
+sound, and reclaim a two-digit score.</p>
+<p><center>
+<img alt="The DP VISION's leaderboard. The top score is &quot;Damien 🌈&quot;, with 5 guesses and
+epsilon=98. Afterwards come &quot;Damien 😎&quot;, &quot;Damien ✨&quot;, Bill Ayeni, and Gaurav,
+all with 5 guesses, and epsilons of 168, 396, 604 and 896
+respectively." src="https://desfontain.es/blog/images/dp-vision-leaderboard-3.png" width="80%">
+</center></p>
+<p>And I could only achieve this score after a few unsuccessful attempts, as
+expected!</p>
+<hr>
+<p><small></p>
+<p>Thanks to Jack Fitzsimons for answering my questions in a very timely way, and
+providing feedback on drafts of this post. Also thanks to Jordan Rose for
+lightning-fast typo-finding.</p>
+<p></small></p>
+<script type="text/javascript">
+var defaultButton = ' Show me the code ';
+var buttons = document.getElementsByClassName('toggleCode');
+for (var i = 0; i < buttons.length; i++) {
+  buttons[i].innerHTML = defaultButton;
+  buttons[i].addEventListener('click', function (event) {
+      this.innerHTML = this.innerHTML == defaultButton ? 'Hide the code' : defaultButton;
+      details = this.parentElement.nextElementSibling;
+      details.style.display = details.style.display == 'none' ? 'block' : 'none';
+  });
+}
+</script>
+
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20241013,
+  title = &#123;Winning at DP VISION — suspiciously easily…},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/dp-vision.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2024},
+  month = &#123;10}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="geometric-tricks.html">← previous</a>
+    </li>
+    <li>
+      <a href="privacy-in-ai.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

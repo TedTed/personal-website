@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Can you beat me at WORDPL? - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Can you beat me at WORDPL? - Ted is writing things" />
+  <meta property="twitter:title" content="Can you beat me at WORDPL? - Ted is writing things" />
+  <meta name="description" property="og:description" content="What if Wordle, but with randomized response? Let's learn about Bayesian inference to get on top of the leaderboard, ponder what an optimal strategy might be… and maybe win some chocolate?" />
+  <meta property="twitter:description" content="What if Wordle, but with randomized response? Let's learn about Bayesian inference to get on top of the leaderboard, ponder what an optimal strategy might be… and maybe win some chocolate?" />
+  <meta property="summary" content="What if Wordle, but with randomized response? Let's learn about Bayesian inference to get on top of the leaderboard, ponder what an optimal strategy might be… and maybe win some chocolate?" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/wordpl-leaderboard.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/wordpl-leaderboard.png" />
+  <meta property="twitter:image:alt" content="A screenshot of the WORDPL leaderboard. At the top, "Damien" with a party emoji, with 3 tries and an epsilon of 10. The next scores (all with 3 guesses) are Deven with an epsilon of 12, Bill Ayeni with 14.8, Deven with 18.4, and Bill Ayeni with 19.7." />
+  <link rel="canonical" href="https://desfontain.es/blog/wordpl.html" />
+  <link rel="prev" href="better-empirical-privacy-metrics.html" />
+  <link rel="next" href="hiding-nemo.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="better-empirical-privacy-metrics.html">← previous</a>
+ —     <a href="hiding-nemo.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./wordpl.html">Can you beat me at WORDPL?</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2025-04-22T00:00:00+02:00">
+      2025-04-22
+    </time>
+  </footer>
+  <div>
+    <p>Conveying the intuition behind basic <a href="friendly-intro-to-differential-privacy.html">differential privacy</a> mechanisms using
+games? Yes please! In a previous blog post, we looked at <a href="dp-vision.html">DP VISION</a>: it
+had a fairly simple optimal strategy, and was a great opportunity to do some
+privacy auditing.</p>
+<p>The folks at Oblivious also developed <a href="https://games.oblivious.com/games">two other games</a>. One of them is
+a DP twist on the well-known <a href="https://www.nytimes.com/games/wordle/index.html">Wordle</a>, called <a href="https://games.oblivious.com/games/wordpl">WORDPL</a>. The goal is to guess a
+5-letter word based on successive clues, except the clues are randomized.
+Here's what the game looks like, with just a single round.</p>
+<p><center>
+<img alt="A screenshot of the WORDPL game. There is a single word, &quot;magic&quot;, with the &quot;M&quot; being yellow, the &quot;C&quot; being green, and the other letters being black. At the bottom, one can read the text &quot;4.2 total epsilon spent&quot;; then a slider whose selector is annotated &quot;eps = 42&quot; has the legend &quot;Warning: You'll spend an epsilon of 4.2 but there is a 53.6647% chance you'll get an honest answer&quot;." src="https://desfontain.es/blog/images/wordpl-example.png" width="80%">
+</center></p>
+<p>Here, we chose the word "magic" as our first guess, using a privacy budget of
+<span class="math">\(\varepsilon=4.2\)</span>. The clues we got are suggesting that:</p>
+<ul>
+<li>the letter "m" is part of the secret word, but not in first position;</li>
+<li>the letters "a", "g", and "i" are not part of the secret word;</li>
+<li>the secret word ends in a "c".</li>
+</ul>
+<p>Except that all this information is unreliable: every clue is randomized with a
+<a href="differential-privacy-in-more-detail.html#rr">randomized response</a> mechanism! The budget is split across the five clues,
+there are three possible kinds of clues, so the chance that each clue is correct
+is <span class="math">\(\frac{e^{\varepsilon/5}}{2+e^{\varepsilon/5}}\)</span>. With our <span class="math">\(\varepsilon=4.2\)</span>,
+we'll get an incorrect clue almost half the time. This makes guessing a <em>lot</em>
+harder. <a href="https://games.oblivious.com/games/wordpl">Try it out!</a></p>
+<p>Each round, the privacy budget consumption is added to a total. And the goal is
+to find the correct word with the smallest possible total budget.</p>
+<p>So. How do we get on top of the leaderboard? And can we find an optimal strategy
+like for DP VISION?</p>
+<p>Spoilers: we win this with some ✨ math ✨, and finding an optimal strategy
+seems really hard. So instead of answering that last question, I made it into a
+contest… and I'm hoping <em>you</em> can do better than I did!</p>
+<h1 id="beating-the-high-score">Beating the high score</h1>
+<p>First off, some technical details about the game. There are two word lists,
+which we assume are known, and the <a href="https://github.com/Kinkelin/WordleCompetition/tree/main/data/official">same as the original game</a><sup id="fnref:l"><a class="footnote-ref" href="#fn:l">1</a></sup>.</p>
+<ul>
+<li>One contains the list of <em>valid guesses</em>. These are words that the player is
+  allowed to use.</li>
+<li>One contains the list of <em>possible solutions</em>. This is a <em>smaller</em> list of words
+  that can be chosen by the game as the secret word. (This is to make sure that
+  the solution is likely to be words known to the player, so not too obscure.)</li>
+</ul>
+<p>In Wordle, when you guess the secret word, you win the game instantly. WORDPL
+works the same way, and (contrary to the original version) does not limit your
+number of guesses. This introduces a kind of vulnerability: we could just guess
+every possible word with <span class="math">\(\varepsilon=0\)</span> and we'll eventually find the right one
+at no privacy cost. This is not very fun, so we're not going to do that.
+Instead, we're going to learn about Bayesian inference! Which is much more
+exciting. (I am a lot of fun at parties.)</p>
+<h4 id="applying-bayesian-inference">Applying Bayesian inference</h4>
+<p>The idea is simple. We have a list of possible secret words. We will associate
+each one to a <em>subjective probability</em> of this word being the solution to the
+game. At the beginning of the game, we have absolutely no idea which is the
+right one. So we are going to assign the same probability to every word.</p>
+<p><center>
+<img alt="A bar chart with words on the x-axis (&quot;grimy&quot;, &quot;fried&quot;, &quot;match&quot;, &quot;knead&quot;, and
+the axis ends in dashes, suggesting many more words), and &quot;sensitive
+probability&quot; as the y-axis. All bars have the same
+size." src="https://desfontain.es/blog/images/wordpl-uniform-prior.svg">
+</center></p>
+<p>When we guess a word, we get five clues back: one for each letter. These clues
+may be incorrect, but they are still going in the right direction. Let's take
+the example above, where we guess "magic". The first clue is that "m" is part of
+the word but not in first position. So the words that match this clue are more
+likely to be correct that the ones that don't. We have to update the subjective
+probabilities in a way that looks like this.</p>
+<p><center>
+<img alt="The same bar chart, with additionally the &quot;magic&quot; word from the example above,
+with the yellow &quot;m&quot; being highlighted by a red square. The bar on &quot;grimy&quot; is now
+higher, while the other bars are lower; the &quot;movement&quot; is indicated by arrows,
+and the past height of the bars is shown with dashed
+bars." src="https://desfontain.es/blog/images/wordpl-one-round-posterior.svg">
+</center></p>
+<p>A single word gives us five clues, so we repeat the process for each letter.
+The second clue tells us that the secret word is more likely to not contain the
+letter "a".</p>
+<p><center>
+<img alt="The same bar chart, with the black &quot;a&quot; being highlighted by a red square. The
+bar on &quot;grimy&quot; is even higher, the bar on &quot;fried&quot; is lower (so back to its
+original height), the other two are decreasing
+further." src="https://desfontain.es/blog/images/wordpl-two-rounds-posterior.svg">
+</center></p>
+<p>And so on. Now, <em>how much</em> should we update each probability? This is exactly
+the question that <a href="https://en.wikipedia.org/wiki/Bayesian_inference">Bayesian inference</a> answers. For each possible
+word, Bayes' theorem tells us that:</p>
+<div class="math">$$
+P(word | clue) = \frac{P(clue | word) \cdot P(word)}{P(clue)}.
+$$</div>
+<p>This looks scary, but has a pretty simple explanation.</p>
+<ul>
+<li><span class="math">\(P(word | clue)\)</span> is the updated probability (the <em>posterior</em>) of the word
+  being the secret answer, taking the new clue into account.</li>
+<li><span class="math">\(P(clue | word)\)</span> is the probability of observing the clue, assuming that the
+  word is the secret answer. The randomized response formula tells us that this
+  is <span class="math">\(\frac{e^{\varepsilon/5}}{2+e^{\varepsilon/5}}\)</span> if the clue is consistent
+  with the word, and <span class="math">\(\frac{1}{2+e^{\varepsilon/5}}\)</span> otherwise.</li>
+<li><span class="math">\(P(word)\)</span> is the <em>prior</em> probability: our previous estimate of how likely it
+  was that this word was the answer.</li>
+<li><span class="math">\(P(clue)\)</span> is a constant factor which guarantees that all the updated
+  probabilities sum to 1.</li>
+</ul>
+<p>This gives us the first part of our strategy: we are going to try a few guesses,
+use the Bayesian update rule to figure out the most likely answer, and try that
+answer. The question is: how do we choose which words to guess, and how much
+budget do we use for each?</p>
+<h4 id="choosing-which-words-to-guess">Choosing which words to guess</h4>
+<p>Finding good guesses is what the strategy for the <a href="https://www.nytimes.com/games/wordle/index.html">original Wordle game</a>
+is all about. Luckily for us, other people have already solved this problem:
+there are <a href="https://www.poirrier.ca/notes/wordle-optimal/">known optimal solutions</a>. This suggests a really simple
+approach: just use an <a href="https://jonathanolson.net/wordle-solver/">online solver</a> to guess the first <span class="math">\(k\)</span> words (for
+some arbitrary <span class="math">\(k\)</span>), then pick the highest-probability solution as the next
+guess.</p>
+<p>There is no reason to believe that this is also optimal for the DP version. In
+fact, sometimes, it doesn't work at all: for example, the first two guesses can
+give us incompatible clues. This can't happen in the original game, but can
+happen in WORDPL due to randomization. So if we pick <span class="math">\(k=3\)</span>, sometimes the solver
+won't give us a third suggestion of a guess, because we're in a situation that
+couldn't happen in the original game.</p>
+<p>But this is still a somewhat reasonable approach. These solvers attempt to
+explore the search space as efficiently as possible. Typically, they suggest
+making guesses that are very different from each other, to learn as much
+information as possible in the first few rounds. This high-level goal still
+translates to the randomized setting. Probably.</p>
+<p>OK, what about the choice of privacy budget?</p>
+<h4 id="choosing-the-privacy-budget">Choosing the privacy budget</h4>
+<p>I decided to aim for 3 guesses and a total budget of <span class="math">\(\varepsilon=10\)</span>: it's nice
+and round, and a decent improvement over the previous best score of
+<span class="math">\(\varepsilon=12\)</span>. I gave more budget (<span class="math">\(\varepsilon=6\)</span>) to the first query, in an
+attempt to make the solver go in the right direction to select the next guess.
+Then, I used <span class="math">\(\varepsilon=4\)</span> to the second guess, applied the Bayesian update
+rule, and picked the most probable secret word (with <span class="math">\(\varepsilon=0\)</span>) for the
+final guess.</p>
+<p>This strategy does not have a high chance of success. But it's still pretty
+decent, so after a few dozen tries…</p>
+<p><center>
+<img alt="A screenshot of the WORDPL leaderboard. At the top, &quot;Damien&quot; with a party
+emoji, with 3 tries and an epsilon of 10. The next scores (all with 3 guesses)
+are Deven with an epsilon of 12, Bill Ayeni with 14.8, Deven with 18.4, and Bill
+Ayeni with 19.7." src="https://desfontain.es/blog/images/wordpl-leaderboard.png" width="80%">
+</center></p>
+<p>Hell yeah.</p>
+<p>Now, this is not very principled. And it's clear that chance has a big impact on
+the results: if you've played the original Wordle enough, you probably got lucky
+once and got the right word in 1 or 2 guesses, even though there were plenty of
+other possibilities! If sufficiently many people start playing WORDPL, this will
+certainly happen at some point.</p>
+<h1 id="optimal-strategy-contest">Optimal strategy contest</h1>
+<p>This got me thinking: what if there was a version of the game that evaluates and
+rewards good <em>strategies</em>, as opposed to individual runs? I thought that was a
+fun idea, so I <a href="https://github.com/TedTed/wordpl">built it</a>. And I'm challenging you to submit a strategy
+that beats the (fairly naive) ones I've implemented there.</p>
+<p>Silly strategies, like running a ton of guesses with very low <span class="math">\(\varepsilon\)</span>
+until we find the right one by chance, are not very fun. To prevent this, I
+changed the rules a little: the game has now two phases.</p>
+<ul>
+<li>In the first phase, the player submits guesses and <span class="math">\(\varepsilon\)</span> budgets, and
+  gets back randomized clues. They can submit as many guesses as they want. If
+  they submit the secret answer, the game does not stop! Instead, they get a
+  randomized clue as normally; the real clue being "everything is correct".</li>
+<li>In the second phase, the player submits a final answer, without any budget
+  attached. If this answer is correct, they win; their score is the total budget
+  used in the first phase. If this answer is wrong, their score is <span class="math">\(+\infty\)</span>.</li>
+</ul>
+<p>To evaluate results, I run the strategy on 1001 games, and compute three
+distinct scores: the 5th, 50th, and 95th percentile of the scores. They attempt
+to capture different high-level goals.</p>
+<ul>
+<li>The 5th percentile rewards strategies that aggressively try to get a correct
+  answer on a tight budget, at the cost of failing often. This models a player
+  that tries to have one lucky run and get on top of a public leaderboard, and
+  is willing to play approximately 20 games for that.</li>
+<li>The 50th percentile (or median) rewards strategies that have a solid chance of
+  giving the right answer, though they're still allowed to fail quite a bit.</li>
+<li>The 95th percentile rewards strategies that only submit an answer once they
+  have a high level of certainty that this is the right one.</li>
+</ul>
+<p>I implemented a <a href="https://github.com/TedTed/wordpl/blob/main/strategies/bayesian_wordle.py">simple variant</a> of the strategy outlined above. I'm
+pretty sure someone could do better. And to encourage you to try it, I am hereby
+promising to ship a <strong>chocolate bar from my favorite chocolate shop in Zürich</strong>
+to each player who gets a 5% improvement or better on one of the three scores.</p>
+<p><a href="https://github.com/TedTed/wordpl">Can you do it?</a> 👀</p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:l">
+<p>I don't know if this is actually true, but it's a reasonable assumption.
+I didn't find any indication to the contrary while experimenting.&#160;<a class="footnote-backref" href="#fnref:l" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20250422,
+  title = &#123;Can you beat me at WORDPL?},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/wordpl.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2025},
+  month = &#123;04}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="better-empirical-privacy-metrics.html">← previous</a>
+    </li>
+    <li>
+      <a href="hiding-nemo.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

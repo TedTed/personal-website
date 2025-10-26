@@ -1,0 +1,377 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="IntroductionDPSQL.html" />
+  <link ref="next" href="SystemModelAndDesign.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="IntroductionDPSQL.html">← previous</a></li>
+        <li><a href="BuildingAUsableDifferentiallyPrivateQueryEngine.html#ASimpleExampleHistograms.html">up</a></li>
+        <li><a href="SystemModelAndDesign.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!--l. 1--><div class="crosslinks"><p class="noindent"><a href="IntroductionDPSQL.html">LINKPREV</a><a href="BuildingAUsableDifferentiallyPrivateQueryEngine.html#ASimpleExampleHistograms.html">LINKUP</a><a href="SystemModelAndDesign.html">LINKNEXT</a></p></div>
+  <h4 class="subsectionHead"><span class="titlemark">4.2.2</span>&nbsp;&nbsp;<a id="x52-1690004.2.2"></a>A simple example: histograms <span class="bbding-10x-x-109">✿</span></h4> <!--l. 3--><p class="noindent">
+Before describing the technical details of our system, let us first give an intuition of how it works using
+a simple example: histogram queries. Consider a simple dataset that logs accesses to a given website.
+An analyst wants to know which browser agents are most commonly used among users visiting the
+page. A typical query to do so is presented in&nbsp;Listing&nbsp;4.1.
+<a id="x52-169001r1"></a>
+<a id="x52-169002"></a>
+</p>
+  <!--l. 9--><pre class="listings" id="listing-2"><span class="label"><a id="x52-169003r1"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">SELECT</span></span> 
+<span class="label"><a id="x52-169004r2"></a></span><span class="t1xtt-x-x-109">&nbsp;</span><span class="t1xtt-x-x-109">&nbsp;</span><span style="color:#000000"><span class="t1xtt-x-x-109">browser_agent</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">,</span></span> 
+<span class="label"><a id="x52-169005r3"></a></span><span class="t1xtt-x-x-109">&nbsp;</span><span class="t1xtt-x-x-109">&nbsp;</span><span style="color:#000000"><span class="t1xbtt-x-x-109">COUNT</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">(*)</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xbtt-x-x-109">AS</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">visits</span></span> 
+<span class="label"><a id="x52-169006r4"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">FROM</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">access_logs</span></span> 
+<span class="label"><a id="x52-169007r5"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">GROUP</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xbtt-x-x-109">BY</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">browser_agent</span></span>
+   
+<span class="label"><a id="x52-169008r6"></a></span></pre>
+<figcaption class="caption"><span class="id">Listing&nbsp;4.1: </span><span class="content">&nbsp;Simple histogram query</span></figcaption><!--tex4ht:label?: x52-169008r4.2.2 -->
+<!--l. 17--><p class="indent">  How  would  one  make  this  simple  operation
+<!--l. 17--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span>-differentially
+private? One naive approach is to add Laplace noise of scale
+<!--l. 18--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">∕</span></span><span class="mjx-mi MJXc-space2"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span> to each
+count, as described in Section&nbsp;2.1.6.0. Unfortunately, this solution suffers from several
+shortcomings.
+</p><!--l. 23--><p class="indent">
+<a id="subsubsection*.83"></a>
+</p>
+  <h5 class="subsubsectionHead"><a id="x52-170000"></a>First pitfall: multiple contributions within a partition</h5>
+<!--l. 25--><p class="noindent">It might look like the naive approach correctly hides the existence of individual <span class="t1xi-x-x-109">records </span>from the
+dataset: each record of the access log will only influence one of the returned counts by at most
+<!--l. 27--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span>,
+and it is well known&nbsp;[<a id="x52-170001"></a><a href="bibliography.html#cite.0@dwork2006calibrating">128</a>] that this basic mechanism provides
+<!--l. 29--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span>-DP.
+However, it fails to protect the existence of individual <span class="t1xi-x-x-109">users</span>: the same user could have visited the
+example page many times with a particular browser agent, and therefore could have contributed an
+arbitrarily large number of rows to <span class="obeylines-h"><code class="verb">visits</code></span> for a particular <span class="obeylines-h"><code class="verb">GROUP&nbsp;BY</code></span> partition, violating our
+assumption that the query sensitivity is 1.
+</p><!--l. 35--><p class="indent">  In PINQ and Flex, the differential privacy definition explicitly considers records as the privacy unit.
+Because we instead want to protect the full contribution of users, we need to explicitly include a notion
+                                                                                
+                                                                                
+of a user in our system design. In this work, we do this via the notion of a <span class="t1xi-x-x-109">user identifier</span>, or <span class="t1xi-x-x-109">user</span>
+<span class="t1xi-x-x-109">ID</span>.
+</p><!--l. 41--><p class="indent">  Because Listing&nbsp;4.1 has unbounded sensitivity, adding noise to counts is not enough to enforce
+differential privacy; we need to <span class="t1xi-x-x-109">bound user contribution to each partition</span>. This can be addressed is by
+counting distinct users, which has a user-global sensitivity of 1, instead of counting rows. Although this
+modifies query semantics, we chose this approach to keep the example simple. We present the modified
+query in&nbsp;Listing&nbsp;4.2, which assumes that the column containing user ID information is named
+<span class="obeylines-h"><code class="verb">uid</code></span>.
+<a id="x52-170002r2"></a>
+<a id="x52-170003"></a>
+</p>
+  <!--l. 49--><pre class="listings" id="listing-3"><span class="label"><a id="x52-170004r1"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">SELECT</span></span> 
+<span class="label"><a id="x52-170005r2"></a></span><span class="t1xtt-x-x-109">&nbsp;</span><span class="t1xtt-x-x-109">&nbsp;</span><span style="color:#000000"><span class="t1xtt-x-x-109">browser_agent</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">,</span></span> 
+<span class="label"><a id="x52-170006r3"></a></span><span class="t1xtt-x-x-109">&nbsp;</span><span class="t1xtt-x-x-109">&nbsp;</span><span style="color:#000000"><span class="t1xbtt-x-x-109">COUNT</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">(</span></span><span style="color:#000000"><span class="t1xbtt-x-x-109">DISTINCT</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">uid</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">)</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">+</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">Laplace</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">(1/</span></span><!--l. 52--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span><span style="color:#000000"><span class="t1xtt-x-x-109">)</span></span> 
+<span class="label"><a id="x52-170007r4"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">FROM</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">access_logs</span></span> 
+<span class="label"><a id="x52-170008r5"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">GROUP</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xbtt-x-x-109">BY</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">browser_agent</span></span>
+   
+<span class="label"><a id="x52-170009r6"></a></span></pre>
+<figcaption class="caption"><span class="id">Listing&nbsp;4.2: </span><span class="content">&nbsp;Per-partition contribution bounding</span></figcaption><!--tex4ht:label?: x52-170009r -->
+<!--l. 57--><p class="indent">  In other contexts, it might make more sense to allow a user to contribute more than once to a
+partition. For example, we might want to count up to five visits from each distinct user with
+each distinct browser agent. In this case, we would need to further modify the query to
+allow multiple contributions and increase sensitivity to match the maximum number of
+contributions.
+</p><!--l. 64--><p class="indent">
+<a id="subsubsection*.84"></a>
+</p>
+  <h5 class="subsubsectionHead"><a id="x52-171000"></a>Second pitfall: leaking partitions</h5>
+<!--l. 66--><p class="noindent">Even if we bound the contribution of a user to each partition and adapt noise levels accordingly, the query is
+still not <!--l. 67--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span>-DP.
+Indeed, suppose that the attacker is trying to distinguish between two
+datasets differing in only one record, but this record is a unique browser agent
+<!--l. 69--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mstyle text"><span class="mjx-mrow"><span class="mjx-mtext emph"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">BA</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">u</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">n</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.446em; padding-right: 0.014em;">q</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">u</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">e</span></span></span></span></span></span></span></span></span>: this browser agent
+does not appear in <!--l. 70--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span>,
+but appears once in <!--l. 70--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>.
+Then, irrespective of the value of the noisy counts, the <span class="obeylines-h"><code class="verb">GROUP&nbsp;BY</code></span> partitions themselves
+are enough to distinguish between the two datasets simply by looking at the output:
+<!--l. 73--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mstyle text"><span class="mjx-mrow"><span class="mjx-mtext emph"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">BA</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">u</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">n</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.446em; padding-right: 0.014em;">q</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">u</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">e</span></span></span></span></span></span></span></span></span> will appear in the
+query output for <!--l. 73--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>
+but not for <!--l. 74--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span>.
+</p><!--l. 76--><p class="indent">  A simple solution to this problem was proposed in&nbsp;[<a id="x52-171001"></a><a href="bibliography.html#cite.0@korolova2009releasing">230</a>]: the idea is to drop from
+the results all partitions associated with a noisy count lower than a certain threshold
+<!--l. 78--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em; padding-right: 0.08em;">τ</span></span></span></span></span></span>.
+<!--l. 78--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em; padding-right: 0.08em;">τ</span></span></span></span></span></span>
+is chosen independently of the data, and the resulting process is
+                                                                                
+                                                                                
+<!--l. 79--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>-DP with
+<!--l. 79--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span><span class="mjx-mo MathClass-rel MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.372em;">&gt;</span></span><span class="mjx-mn MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">0</span></span></span></span></span></span>. We call this mechanism
+<!--l. 80--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em; padding-right: 0.08em;">τ</span></span></span></span></span></span><span class="t1xi-x-x-109">-thresholding</span>. With a
+sufficiently high <!--l. 80--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em; padding-right: 0.08em;">τ</span></span></span></span></span></span>, the output
+rows with partitions present in <!--l. 81--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>
+but not <!--l. 81--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span>
+(and vice-versa) will be dropped with high probability, making the partitions
+indistinguishable to an attacker. A longer discussion on the relation between
+<!--l. 83--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span>,
+<!--l. 83--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span></span></span></span></span> and
+<!--l. 83--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em; padding-right: 0.08em;">τ</span></span></span></span></span></span> can be
+found in Section&nbsp;4.2.3.0. This approach is represented in SQL in&nbsp;Listing&nbsp;4.3.
+<a id="x52-171002r3"></a>
+<a id="x52-171003"></a>
+</p>
+  <!--l. 87--><pre class="listings" id="listing-4"><span class="label"><a id="x52-171004r1"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">SELECT</span></span> 
+<span class="label"><a id="x52-171005r2"></a></span><span class="t1xtt-x-x-109">&nbsp;</span><span class="t1xtt-x-x-109">&nbsp;</span><span style="color:#000000"><span class="t1xtt-x-x-109">browser_agent</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">,</span></span> 
+<span class="label"><a id="x52-171006r3"></a></span><span class="t1xtt-x-x-109">&nbsp;</span><span class="t1xtt-x-x-109">&nbsp;</span><span style="color:#000000"><span class="t1xbtt-x-x-109">COUNT</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">(</span></span><span style="color:#000000"><span class="t1xbtt-x-x-109">DISTINCT</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">uid</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">)</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">+</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">Laplace</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">(1/</span></span><!--l. 90--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span><span style="color:#000000"><span class="t1xtt-x-x-109">)</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xbtt-x-x-109">AS</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">c</span></span> 
+<span class="label"><a id="x52-171007r4"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">FROM</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">access_logs</span></span> 
+<span class="label"><a id="x52-171008r5"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">GROUP</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xbtt-x-x-109">BY</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">browser_agent</span></span> 
+<span class="label"><a id="x52-171009r6"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">HAVING</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">c</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">&gt;=</span></span><span style="color:#000000"> </span><!--l. 93--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em; padding-right: 0.08em;">τ</span></span></span></span></span></span>
+   
+<span class="label"><a id="x52-171010r7"></a></span></pre>
+<figcaption class="caption"><span class="id">Listing&nbsp;4.3: </span><span class="content">&nbsp;GROUP BY filtering</span></figcaption><!--tex4ht:label?: x52-171010r -->
+<!--l. 96--><p class="indent">  PINQ and Flex handle this issue by requiring the analyst to enumerate all partitions
+to use in a <span class="obeylines-h"><code class="verb">GROUP&nbsp;BY</code></span> operation, and return noisy counts for only and all such
+partitions<span class="footnote-mark"><a href="#fn1x5" id="fn1x5-bk"><sup class="textsuperscript">1</sup></a></span><a id="x52-171011f1"></a>. This
+enforces <!--l. 100--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span>-DP
+but impairs usability: the range of possible values is often large (potentially the set of all strings) and
+difficult to enumerate, especially if the analyst cannot look at the raw data.
+</p><!--l. 104--><p class="indent">  Some data synthesis algorithms have been proposed to release
+<!--l. 104--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span>-DP
+histograms over an unbounded set of partitions&nbsp;[<a id="x52-171014"></a><a href="bibliography.html#cite.0@mcsherrydatasynthesis">275</a>], but those seem to be limited to datasets subject
+to hierarchical decomposition. Our approach is simpler and more generic, at some cost in the privacy
+guarantee.
+</p><!--l. 110--><p class="indent">
+<a id="subsubsection*.85"></a>
+</p>
+  <h5 class="subsubsectionHead"><a id="x52-172000"></a>Third pitfall: contributions to multiple partitions</h5>
+<!--l. 112--><p class="noindent">Finally, we must consider the possibility of a user contributing to multiple partitions in
+our query. Imagine a user visiting the example page with many different browsers, each
+with a different browser agent. Such a user could potentially contribute a value of 1 to each
+partition’s count, changing the sensitivity of the query to be the number of partitions, which is
+unbounded!
+</p><!--l. 118--><p class="indent">  Because both PINQ and Flex consider records as the privacy unit, this is not an issue for their privacy
+models. So long as they are only used on datasets where that requirement holds true, and where the
+                                                                                
+                                                                                
+sensitivity and stability impact of joins (and related operations) are carefully considered, they will
+provide adequate DP guarantees. However as shown in&nbsp;[<a id="x52-172001"></a><a href="bibliography.html#cite.0@ubernotdp">276</a>], these conditions are not always
+true.
+</p><!--l. 125--><p class="indent">  Instead of adding strict requirements on the nature of the underlying dataset and on how joins are used, we
+introduce a novel mechanism for <span class="t1xi-x-x-109">bounding user contribution across partitions</span>. Concretely, we first choose a number
+<!--l. 128--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">κ</span></span></span></span></span></span>, and for each user, we randomly
+keep the contributions to <!--l. 128--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">κ</span></span></span></span></span></span>
+partitions for this user, dropping contributions to other partitions. This operation allows us to
+bound the global sensitivity of the aggregation: each user can then influence at most unique
+<!--l. 131--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">κ</span></span></span></span></span></span>
+counts, and we can adapt the noise level added to each count, by using Laplace noise of scale
+<!--l. 132--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">κ</span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">∕</span></span><span class="mjx-mi MJXc-space2"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span>.
+</p><!--l. 134--><p class="indent">  The final version of our query is shown in&nbsp;Listing&nbsp;4.4. It uses a non-standard
+variant of the SQL <span class="obeylines-h"><code class="verb">TABLESAMPLE</code></span> operator, which supports partitioning and reservoir
+sampling, to represent the mechanism we introduced. This final version satisfies
+<!--l. 137--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>-differential
+privacy for well-chosen parameters.
+<a id="x52-172002r4"></a>
+<a id="x52-172003"></a>
+</p>
+  <!--l. 140--><pre class="listings" id="listing-5"><span class="label"><a id="x52-172004r1"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">SELECT</span></span> 
+<span class="label"><a id="x52-172005r2"></a></span><span class="t1xtt-x-x-109">&nbsp;</span><span class="t1xtt-x-x-109">&nbsp;</span><span style="color:#000000"><span class="t1xtt-x-x-109">browser_agent</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">,</span></span> 
+<span class="label"><a id="x52-172006r3"></a></span><span class="t1xtt-x-x-109">&nbsp;</span><span class="t1xtt-x-x-109">&nbsp;</span><span style="color:#000000"><span class="t1xbtt-x-x-109">COUNT</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">(</span></span><span style="color:#000000"><span class="t1xbtt-x-x-109">DISTINCT</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">uid</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">)</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">+</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">Laplace</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">(</span></span><!--l. 143--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">κ</span></span></span></span></span></span><span style="color:#000000"><span class="t1xtt-x-x-109">/</span></span><!--l. 143--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span><span style="color:#000000"><span class="t1xtt-x-x-109">)</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xbtt-x-x-109">AS</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">c</span></span> 
+<span class="label"><a id="x52-172007r4"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">FROM</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">(</span></span> 
+<span class="label"><a id="x52-172008r5"></a></span><span class="t1xtt-x-x-109">&nbsp;</span><span class="t1xtt-x-x-109">&nbsp;</span><span style="color:#000000"><span class="t1xbtt-x-x-109">SELECT</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">browser_agent</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">,</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">uid</span></span> 
+<span class="label"><a id="x52-172009r6"></a></span><span class="t1xtt-x-x-109">&nbsp;</span><span class="t1xtt-x-x-109">&nbsp;</span><span style="color:#000000"><span class="t1xbtt-x-x-109">FROM</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">access_logs</span></span> 
+<span class="label"><a id="x52-172010r7"></a></span><span class="t1xtt-x-x-109">&nbsp;</span><span class="t1xtt-x-x-109">&nbsp;</span><span style="color:#000000"><span class="t1xbtt-x-x-109">GROUP</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xbtt-x-x-109">BY</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">browser_agent</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">,</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">uid</span></span> 
+<span class="label"><a id="x52-172011r8"></a></span><span style="color:#000000"><span class="t1xtt-x-x-109">)</span></span> 
+<span class="label"><a id="x52-172012r9"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">TABLESAMPLE</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xbtt-x-x-109">RESERVOIR</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">(</span></span><!--l. 149--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">κ</span></span></span></span></span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xbtt-x-x-109">ROWS</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xbtt-x-x-109">PARTITION</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xbtt-x-x-109">BY</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">uid</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">)</span></span> 
+<span class="label"><a id="x52-172013r10"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">GROUP</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xbtt-x-x-109">BY</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">browser_agent</span></span> 
+<span class="label"><a id="x52-172014r11"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">HAVING</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">c</span></span><span style="color:#000000"> </span><span style="color:#000000"><span class="t1xtt-x-x-109">&gt;=</span></span><span style="color:#000000"> </span><!--l. 151--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em; padding-right: 0.08em;">τ</span></span></span></span></span></span>
+   
+<span class="label"><a id="x52-172015r12"></a></span></pre>
+<figcaption class="caption"><span class="id">Listing&nbsp;4.4: </span><span class="content">&nbsp;An <!--l. 152--><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>-DP
+query</span></figcaption><!--tex4ht:label?: x52-172015r -->
+<!--l. 154--><p class="indent">  In the remainder of this section, we formalize this approach, and adapt it to a larger set of operations.
+In particular, we extend it to arbitrary aggregations with bounded sensitivity, and we explain how to
+make this model compatible with joins.
+                                                                                
+                                                                                
+</p>
+  <div class="footnotes"><a id="x52-171012x1"></a>
+     <!--l. 100--><p class="indent">    <span class="footnote-mark"><a href="#fn1x5-bk" id="fn1x5"><sup class="textsuperscript">1</sup></a></span><span class="t1xr-x-x-90">The open-source implementation of Flex</span><span class="t1xr-x-x-90">&nbsp;[</span><a id="x52-171013"></a><a href="bibliography.html#cite.0@flexgithub"><span class="t1xr-x-x-90">208</span></a><span class="t1xr-x-x-90">], however, does not appear to implement this requirement.</span></p>        </div>
+<!--l. 2--><div class="crosslinks"><p class="noindent"><a href="IntroductionDPSQL.html">LINKPREV</a><a href="BuildingAUsableDifferentiallyPrivateQueryEngine.html#ASimpleExampleHistograms.html">LINKUP</a><a href="SystemModelAndDesign.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="IntroductionDPSQL.html">← previous</a></li>
+        <li><a href="BuildingAUsableDifferentiallyPrivateQueryEngine.html#ASimpleExampleHistograms.html">up</a></li>
+        <li><a href="SystemModelAndDesign.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

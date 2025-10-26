@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="MitigationStrategies.html" />
+  <link ref="next" href="FromTheoryToPractice.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="MitigationStrategies.html">← previous</a></li>
+        <li><a href="DifferentialPrivacyUnderPartialKnowledge.html#ConclusionPartial.html">up</a></li>
+        <li><a href="FromTheoryToPractice.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="MitigationStrategies.html">LINKPREV</a><a href="DifferentialPrivacyUnderPartialKnowledge.html#ConclusionPartial.html">LINKUP</a><a href="FromTheoryToPractice.html">LINKNEXT</a></p></div>
+  <h3 class="sectionHead" id="conclusion-u-ding-1"><span class="titlemark">3.4</span>&nbsp;&nbsp;<a id="x42-1290003.4"></a>Conclusion <span class="bbding-10x-x-109">✿</span></h3> <!-- l. 3 --><p class="noindent">
+It is natural to want to model attackers with only partial background knowledge, and to take this
+uncertainty into account when quantifying the privacy properties of a given mechanism. Certainly, in an
+ideal world where privacy would be the only concern, this would not be necessary: it is safer to always
+assume the most powerful adversary. However, we do not live in such a world. In practice, stakeholders
+frequently complain about the utility or complexity cost of differential privacy, and question whether its
+use is really necessary to reach a reasonable level of protection. Surely, aggregating data over
+many people is enough to prevent realistic adversaries from getting information about single
+individuals?
+</p><!-- l. 14 --><p class="indent">  Ignoring those complaints, or dismissing them as entirely misguided, is an inadequate answer.
+Real-world adversaries do <span class="t1xi-x-x-109">not </span>have full background knowledge, and as such, it is worthwhile to
+improve our formal understanding of the guarantees provided by this uncertainty. This chapter provided
+three complementary insights about this setting.
+</p><!-- l. 20 --><p class="indent">  The first insight is that modeling an attacker with partial background knowledge is more
+complicated and hazardous than it initially appears. As we showed in Section&nbsp;3.1.2, correctly
+modelling such adversaries requires to carefully consider the influence of data correlations, and
+cleanly delineate the attacker’s partial knowledge from the information that we are trying to
+protect. Furthermore, as we showed in Section&nbsp;3.1.3, an attacker who only passively knows
+part of the data is a priori weaker than an attacker who can influence the data, so practical
+applications must also consider this dichotomy—a subtlety that does not exist for classical
+differential privacy. On the positive side, our work provides a solid theoretical basis for
+reasoning about partial knowledge in a formal, correct way; we hope that this can be of use to
+researchers and practitioners trying to quantify the privacy of given mechanisms under this
+assumptions.
+</p><!-- l. 34 --><p class="indent">  The second insight is that some of these intuitions about the inherent safety of certain
+mechanisms under partial knowledge are correct. Results from Section&nbsp;3.2.1 show that aggregating
+data across many users <span class="t1xi-x-x-109">does </span>preserve privacy under reasonable assumptions. Our results
+focus on counting, but they could easily be extended to other aggregations. Indeed, the core
+insight from the proof of Theorem&nbsp;3 comes from drawing a link between our setting and
+amplification by shuffling. In essence, uncertainty about individual records can be expressed with
+<!-- l. 41 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>-indistinguishability,
+and symmetric aggregation is at least as good as random shuffling to boost privacy guarantees. This
+suggests that additional results and links could be drawn, and that both settings could be combined to
+obtain finer privacy analyses with reasonable attacker assumptions.
+</p><!-- l. 47 --><p class="indent">  We also showed in Section&nbsp;3.2.2 that thresholding does preserve privacy against passive attackers by
+providing a natural and intuitive example of the distinction between passive and active attackers with partial
+knowledge. Formalizing this intuition also allows us to understand under which conditions simple
+                                                                                
+                                                                                
+<!-- l. 51 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+mechanisms preserve privacy against an attacker with partial knowledge. This last result depends on
+a number of assumptions, most of which can be linked to a corresponding weakness of
+<!-- l. 53 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity:
+if one of these assumptions does not hold, then one can find an example of when
+<!-- l. 55 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+fails to protect individual privacy. This shows one of the weaknesses of differential privacy under partial
+knowledge: it is difficult to obtain <span class="t1xi-x-x-109">robust </span>results that do not depend on brittle assumptions about the
+exact nature of the attacker’s uncertainty.
+</p><!-- l. 60 --><p class="indent">  Finally, in Section&nbsp;3.2.4, we looked at composition properties for differential privacy with partial
+knowledge. By contrast to differential privacy in its original form, sequential composition does not
+hold in general. However, we found that quantifying the amount of correlation between
+the results of two queries can be used to compose privacy guarantees, and that yet again,
+<!-- l. 65 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>-indistinguishability
+is a natural formalism to do so. We also raised the interesting question of combining guarantees from
+partial knowledge and noise addition; a question that we largely leave open.
+</p><!-- l. 69 --><p class="indent">  The third insight, from Section&nbsp;3.3, is that modeling an attacker with partial knowledge can be used
+to obtain strong <span class="t1xi-x-x-109">negative </span>results: some practical problems are inherently impossible to solve in a
+privacy-preserving way, even if we assume an attacker with complete uncertainty over the input data. Our
+main result on cardinality estimation is an important first step in this direction, and it suggests a wide range
+of open follow-up questions. Can we extend it to cardinality estimators that only preserve the <span class="t1xi-x-x-109">precision</span>
+of the <!-- l. 76 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">estimate</span></span></span></span></span></span></span></span>
+operator when merging them, but not necessarily the full distribution of sketches? Can we find a finer
+trade-off between privacy and accuracy, allowing e.g.&nbsp;a small error to be incurred by each merging
+operation in exchange for better privacy guarantees? Are there other similar problems that cannot be
+solved in a privacy-preserving way without giving up strong aggregation properties, e.g.&nbsp;sketching
+algorithms used for quantiles estimation?
+                                                                                
+                                                                                
+</p>
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="MitigationStrategies.html">LINKPREV</a><a href="DifferentialPrivacyUnderPartialKnowledge.html#ConclusionPartial.html">LINKUP</a><a href="FromTheoryToPractice.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="MitigationStrategies.html">← previous</a></li>
+        <li><a href="DifferentialPrivacyUnderPartialKnowledge.html#ConclusionPartial.html">up</a></li>
+        <li><a href="FromTheoryToPractice.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

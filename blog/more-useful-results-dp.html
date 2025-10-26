@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Getting more useful results with differential privacy - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Getting more useful results with differential privacy - Ted is writing things" />
+  <meta property="twitter:title" content="Getting more useful results with differential privacy - Ted is writing things" />
+  <meta name="description" property="og:description" content="A few generic pieces of advice on how to get better utility out of your differentially private aggregations." />
+  <meta property="twitter:description" content="A few generic pieces of advice on how to get better utility out of your differentially private aggregations." />
+  <meta property="summary" content="A few generic pieces of advice on how to get better utility out of your differentially private aggregations." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/more-useful-results-dp.html" />
+  <link rel="prev" href="us-census-reconstruction-attack.html" />
+  <link rel="next" href="noisy-data.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="us-census-reconstruction-attack.html">← previous</a>
+ —     <a href="noisy-data.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./more-useful-results-dp.html">Getting more useful results with differential privacy</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2021-06-16T00:00:00+02:00">
+      2021-06-16
+    </time>
+    <small>&mdash; updated
+      <time datetime="2021-07-14T00:00:00+02:00">
+        2021-07-14
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p>This post was co-written by Daniel Simmons-Marengo and myself.
+</small></p>
+<hr>
+<p><span class='lettrine'>S</span><strong>o</strong> you decided to use differential privacy
+(DP) to publish or share some statistical data. You ran your first <a href="https://github.com/google/differential-privacy/tree/main/privacy-on-beam">pipeline</a> or
+<a href="https://github.com/google/differential-privacy/tree/main/examples/zetasql">query</a><sup id="fnref:osstools"><a class="footnote-ref" href="#fn:osstools">1</a></sup>, all excited, but then… You're getting useless
+results. Maybe all your data seems to have disappeared. Or the statistics look
+very unreliable: the noise completely drowns out the useful signal. Don't lose
+hope! This situation is common the first time people try to use differential
+privacy. And chances are that you can fix it with a few simple changes.</p>
+<p>In this post, we'll cover five basic strategies to improve the utility of your
+anonymized data. These are far from the only tricks you can use, but they're a
+good place to start. And none of them requires you to sacrifice any privacy
+guarantees.</p>
+<h1 id="aggregate-as-much-data-as-coarsely-as-possible">Aggregate as much data, as coarsely, as possible</h1>
+<p>DP algorithms produce better results when run over more data. Remember: the
+noise they introduce is proportional to the contribution of a single person. It
+doesn't depend on the size of the input data. So, the more people you have in a
+statistic, the smaller the <em>relative</em> noise will be. Individual contributions
+will "vanish into the crowd", and so will the added uncertainty.</p>
+<p>Increasing the total amount of input data will improve utility, but you may not
+be able to get more data. Luckily, there are other ways to take advantage of
+this property. What matters is the amount of data that contributes to each
+<em>statistic</em> you produce. In other words, the finer you slice and dice your data,
+the worse your utility will be. If you can, slice the data into coarser
+partitions. For example, calculate weekly statistics rather than daily
+statistics. Or aggregate your data per-country rather than per-city. You get the
+idea.</p>
+<p><center>
+<img alt="Visual aid showing the data represented as a square cut into four big pieces
+on the left, and the same square cut into sixteen pieces on the right, with an
+arrow going from left to right between both
+diagrams." src="https://desfontain.es/blog/images/aggregate-more-coarsely.svg">
+</center></p>
+<p>Another common trick is to slice by fewer dimensions at the same time. Suppose
+that your query calculates the number of visitors by country and language. Do
+you need the combination of both dimensions?  Many combinations of country and
+language are rare, and will only have a few visitors. Instead, calculating them
+separately might work better: you will get more users in each statistic, so the
+overall impact of the noise might be lower.</p>
+<h1 id="minimize-the-number-of-aggregations">Minimize the number of aggregations</h1>
+<p>DP bounds the total amount you can learn about any individual from a series of
+data releases. Every statistic you calculate reveals <em>some</em> information about
+individuals in the data. To bound the global privacy cost of a data release, you
+have to set a <a href="differential-privacy-in-practice.html#multiple-statistics"><em>privacy budget</em></a>. This is the total <span class="math">\(\varepsilon\)</span> and
+<span class="math">\(\delta\)</span> cost of your set of calculations.</p>
+<p>Each statistic spends part of this privacy budget. So if you have a fixed
+privacy budget, and you want to calculate more statistics, each one must reveal
+less. That means more noise must be added to it. Limiting how much noise is
+needed to protect many statistics is an active area of research. The scientific
+literature is full of clever tricks to that end. But the best solution is often
+the simplest one: calculate fewer statistics.</p>
+<p><center>
+<img alt="Visual aid showing many round circles representing aggregations, and an arrow
+pointing to the right with fewer
+circles." src="https://desfontain.es/blog/images/minimize-the-number-of-aggregations.svg">
+</center></p>
+<p>OK, this is a bit abstract. How can you decrease the number of statistics you
+calculate, in practice? Here are some common strategies.</p>
+<ul>
+<li>Remove metrics. For example, if you're calculating both the number of page
+  views and the number of unique visitors… Could you, instead, use only one of
+  the two?</li>
+<li>Remove dimensions. Do you need to calculate the number of visitors per country
+  <em>and</em> per language? Or would only one of the two get you the information you
+  need?</li>
+<li>Remove time periods. Do you need to calculate the number of unique
+  visitors in the past day, week, month and year? Or would one or two of these
+  statistics be enough?</li>
+<li>Remove "sliding windows". What's a sliding window? Suppose that every day, you
+  calculate e.g. the number of visits in the past week. In that case, each data
+  point will count towards seven separate statistics… Would calculating that
+  metric only once a week do the trick, instead?</li>
+</ul>
+<p><center>
+<img alt="Visual aid showing fourteen successive days, with many arrows on the top
+covering all possible one-week periods within these fourteen days. An arrow
+points to the right, where there are only two arrows for two successive
+weeks." src="https://desfontain.es/blog/images/remove-sliding-windows.svg">
+</center></p>
+<h1 id="split-the-privacy-budget-unevenly">Split the privacy budget unevenly</h1>
+<p>This trick is related to the previous one. Suppose that you reduced the number
+of aggregations, but you still have several. The idea is to split your total
+privacy budget <em>unevenly</em> between them. Say your total privacy budget is
+<span class="math">\(\varepsilon=1\)</span> and you have five statistics. You don't have to allocate
+<span class="math">\(\varepsilon=0.2\)</span> to each of them! You could instead use <span class="math">\(\varepsilon=0.8\)</span> for
+one statistic, and <span class="math">\(\varepsilon=0.05\)</span> for all others. </p>
+<p>Splitting the privacy budget unevenly is useful in two common situations.</p>
+<ol>
+<li>You care much more about the accuracy of some statistics than others. In that
+   case, you might want to allocate a bigger portion of the privacy budget to
+   the most important ones.</li>
+<li>Some of your statistics are more fine-grained than others. For example,
+   suppose that you calculate both daily and weekly statistics. On average,
+   weekly statistics will have 7 times more data than daily statistics: you
+   could use a budget that is 7 times smaller for them. In doing so, the
+   relative impact of the noise will be about the same for both.</li>
+</ol>
+<p><center>
+<img alt="Visual aid showing one ε represented as a rectangle split in four equal parts
+labeled ε₁, ε₂, ε₃ and ε₄ on the left, and an arrow pointing right to the same
+rectangle split in four parts, with the same labels but very different
+sizes." src="https://desfontain.es/blog/images/split-the-privacy-budget-unevenly.svg">
+</center></p>
+<h1 id="set-aggressive-contribution-bounds">Set aggressive contribution bounds</h1>
+<p>Most DP algorithms bound each individual's contribution to each statistic.
+For example, if you're counting the number of visits per web page, you need to
+bound:</p>
+<ul>
+<li>the number of different pages each individual can contribute to;</li>
+<li>and the number of times each individual can visit each page.</li>
+</ul>
+<p>How should you pick these bounds? It’s tempting to use generous bounds that will
+cover any conceivable input. But this is usually bad for utility: the magnitude
+of the added noise grows with the bounds. There is a tradeoff between two
+sources of error:</p>
+<ul>
+<li>larger bounds will lose less data, but require more noise;</li>
+<li>smaller bounds might lose more data, but require less noise.</li>
+</ul>
+<p>Often, reducing the level of noise on your whole dataset is worth truncating a
+few outliers. The best cut-off depends on the distribution of your dataset: the
+95th percentile might work well for one dataset, while another might do better
+with the 98th. In most use cases though, you’ll reach optimal utility when part
+of your dataset exceeds the bounds.</p>
+<p>Note that some systems don't make you specify these bounds. Instead, they can be
+automatically calculated by an auxiliary DP algorithm<sup id="fnref:approxbounds"><a class="footnote-ref" href="#fn:approxbounds">2</a></sup>. But this
+operation uses some part of the privacy budget! In that case, if you specify the
+bounds by hand instead, you can save that part of the budget, and get less noisy
+results.</p>
+<p><center>
+<img alt="Visual aid showing two histograms of contribution size per user, with an arrow
+pointing from the left to the right histogram. A horizontal line representing
+the contribution bound splits the histogram in two parts, the top part (which
+represents the part of the contribution that is dropped) is of a paler color.
+The bound is high on the left and lower on the
+right." src="https://desfontain.es/blog/images/lower-contribution-bounds.svg">
+</center></p>
+<h1 id="use-public-partitions">Use public partitions</h1>
+<p>Most DP pipelines produce many statistics, grouped by <em>partitions</em>. Partitions
+are like the buckets in a histogram: in the example where we count the number of
+visits per web page, each page is a partition. By default, pipelines only
+release statistics for <em>some</em> partitions in the dataset. Typically, the
+partitions with most people in them are kept, and the ones with few users are
+dropped. This process can reveal information about individuals: it must be done
+in a DP way<sup id="fnref:ps"><a class="footnote-ref" href="#fn:ps">3</a></sup>. Like before, we need to use part of the privacy budget for
+this, and add extra noise to the statistics to compensate.</p>
+<p>You can skip this step by listing all the partitions you want to appear in your
+output <em>before</em> you run the query. If you do so using non-private data, it is no
+longer necessary to choose partitions in a DP manner. This allows you to save
+budget, and return more partitions.</p>
+<p>There is a downside: all partitions that you specified will appear in the
+output, even if they have little or no data in the dataset. In that case, they
+can be extremely noisy. Still, if you can list the partitions you want in
+advance, this is often an excellent technique. You can see how it works in
+practice in e.g. the <a href="https://codelabs.developers.google.com/codelabs/privacy-on-beam#4">Privacy on Beam codelab</a>. Note that you're
+not allowed to look at the private data to build your list of public partitions!</p>
+<p><center>
+<img alt="Visual aid showing two histograms of number of people per partitions, with an
+arrow pointing from the left to the right histogram. A horizontal line labeled
+&quot;threshold&quot; splits the left histogram in two: the partitions below the threshold
+are paler, to represent them being removed from the output. The right histogram
+has no threshold, however additional partitions are added to the output, to
+represent the public partitions that are not present in the data but are still
+present in the output." src="https://desfontain.es/blog/images/use-public-partitions.svg">
+</center></p>
+<h1 id="more-clever-ideas">More clever ideas</h1>
+<p>There are a myriad other techniques out there to squeeze more utility out of DP pipelines. Most of them are more complex than the ones listed in this post. Some might be the topic of future blog posts! In the meantime, here are three other, more generic suggestions.</p>
+<ul>
+<li>You can try looking up your problem in your search engine of choice, and add
+  "differential privacy". This will often dig up relevant literature. Unless
+  you're lucky, you won't find a readily available implementation. But you might
+  get valuable ideas or insights!</li>
+<li>You can send a friendly message to one of the communities out there working on
+  DP tooling. Between <a href="https://groups.google.com/g/dp-open-source-users">Google</a>, <a href="https://www.openmined.org/">OpenMined</a>, or <a href="https://opendp.org/">OpenDP</a>, someone might be happy
+  to help! (And try to convince you to use their tooling :D)</li>
+<li>You can also try to think about how sensitive your problem is to individual
+  changes in the data. If a single person changes their data, will you come to
+  different decisions or results? If yes, your use case might be fundamentally
+  incompatible with DP, and no clever trick will fix that.</li>
+</ul>
+<hr>
+<p>Want to keep learning more about differential privacy? Head over to the <a href="friendly-intro-to-differential-privacy.html">table
+of contents</a> of this blog post series to see its other articles.</p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:osstools">
+<p>You did not roll your own tooling, right? Doing so is generally
+  unwise; implementing DP correctly is much more tricky that you'd expect. There
+  are some excellent open-source tools out there that you should use instead.
+  Like <a href="https://github.com/google/differential-privacy">these libraries</a> that my
+  team at Google published!&#160;<a class="footnote-backref" href="#fnref:osstools" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:approxbounds">
+<p>Section 5.1.1 of <a href="https://arxiv.org/pdf/1909.01917.pdf">our paper</a> describes such an
+  algorithm, implemented e.g. <a href="https://github.com/google/differential-privacy/blob/main/cc/algorithms/approx-bounds.h">here</a>.&#160;<a class="footnote-backref" href="#fnref:approxbounds" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:ps">
+<p>This operation is described in a <a href="almost-differential-privacy.html">previous blog post</a>, and is
+  also the topic of a <a href="https://arxiv.org/abs/2006.03684">paper I co-authored</a>.&#160;<a class="footnote-backref" href="#fnref:ps" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20210616,
+  title = &#123;Getting more useful results with differential privacy},
+  author = &#123;Desfontaines, Damien and Simmons-Marengo, Daniel},
+  howpublished = {\\url{https://desfontain.es/blog/more-useful-results-dp.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2021},
+  month = &#123;06}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="us-census-reconstruction-attack.html">← previous</a>
+    </li>
+    <li>
+      <a href="noisy-data.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

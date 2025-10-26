@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Biometrics: authentication or identification? - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Biometrics: authentication or identification? - Ted is writing things" />
+  <meta property="twitter:title" content="Biometrics: authentication or identification? - Ted is writing things" />
+  <meta name="description" property="og:description" content="Know the difference. It probably won't save your life, but it can certainly avoid you saying nonsensical things on the Internet." />
+  <meta property="twitter:description" content="Know the difference. It probably won't save your life, but it can certainly avoid you saying nonsensical things on the Internet." />
+  <meta property="summary" content="Know the difference. It probably won't save your life, but it can certainly avoid you saying nonsensical things on the Internet." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/authentication-vs-identification.html" />
+  <link rel="prev" href="k-anonymity.html" />
+  <link rel="next" href="twitter-tear-gas.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="k-anonymity.html">← previous</a>
+ —     <a href="twitter-tear-gas.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./authentication-vs-identification.html">Biometrics: authentication or identification?</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2017-09-27T00:00:00+02:00">
+      2017-09-27
+    </time>
+  </footer>
+  <div>
+    <p><strong>Earlier this month</strong>, there was lots of chatter online about the new iPhone's
+FaceID feature: it allows you to unlock your device just by looking at it.
+Behind the scenes are some hardware and algorithms which create a 3D map of your
+face, and determine whether you're the phone's rightful owner.</p>
+<p>Many people seemed to not understand the difference between <em>authentication</em> and
+<em>identification</em>. Both authentication and identification can use biometric data,
+like facial recognition. Nonetheless, these use cases are fundamentally
+different. I'll try to explain why — I hope this can enlighten the debate around
+features like this a little bit.</p>
+<h1 id="authentication">Authentication</h1>
+<p>Authentication is what you do when you log in to some Internet service, or when
+you unlock your phone. First, you <em>announce your identity</em> to the authentication
+system (e.g. a log-in page or lock screen). Then, you try to <em>prove</em> to the
+system that you're indeed who you pretend to be. For an Internet service,
+identity can mean your e-mail address. For a phone, it's more implicit: you're
+trying to prove you're the owner of the phone.</p>
+<p>The attack model is the following: some evil person <em>pretends to be you</em>, and
+tries to prove it to the authentication system to get access to your data. This
+attacker can be of various types:</p>
+<ul>
+<li>an abusive partner who wants to look into your phone,</li>
+<li>a scammer who wants to steal your identity,</li>
+<li>a spy who wants to penetrate a company's network…</li>
+</ul>
+<p>Fundamentally, authentication protects against <em>unauthorized access to data</em>.</p>
+<h1 id="identification">Identification</h1>
+<p>Identification is trying to figure out <em>who someone is</em> based on some
+characteristics they have, or data they produced. It's what the police does when
+running a fingerprint against a database of suspects. It's what privacy
+researchers do when they try to show that a data release has not been <a href="k-anonymity.html">properly
+anonymized</a>.</p>
+<p>The attack model here is that somebody tries to <em>find your identity</em>. To
+succeed, an attacker needs to have a <em>list of suspects</em>, and enough information
+to <em>distinguish</em> who you are among all possibilities.</p>
+<h1 id="good-authentication-vector-vs-good-identification-vector">Good authentication vector vs. good identification vector</h1>
+<p>From these different attack models, a first distinction emerges.</p>
+<ul>
+<li>If a piece of data is <em>secret</em>, it will work well as an authentication vector.
+  Passwords, codes embedded in security keys, or one-time SMS codes, are classic
+  examples.</li>
+<li>If a piece of data is <em>public</em>, or at least known to the attacker, it can work
+  as an identification vector. Names, dates of birth or phone numbers are good
+  candidates.</li>
+</ul>
+<p>A second distinction is on the <em>amount</em> of information present in the data.</p>
+<ul>
+<li>To authenticate someone, you don't always need lots of info. For example, a
+  4-digit PIN code is enough to get a decent security on a phone, provided only
+  a few retries are allowed.</li>
+<li>To identify someone, you need more than this. Even if you somehow get your
+  hands on a database which contains everyone's PIN code, each one would
+  correspond to many people. A PIN code alone wouldn't be enough: you need some
+  context or more data to reliably identify someone. <br><br></li>
+</ul>
+<h1 id="biometrics-for-authentication">Biometrics for authentication</h1>
+<p>Biometrics seem to be blurring the line. Fingerprints are not exactly secret,
+right? Your face is probably also all over social media. So how come they are
+more and more used as authentication methods?</p>
+<p>It turns out that the <em>secretness</em> of authentication data is not a required
+property. All we need is <em>unforgeability</em>: an attacker must not be able to
+impersonate you. If a secret is well-protected, it's difficult to falsify: the
+attacker can't imitate what they don't know. But biometric info can be quite
+unforgeable, even if it's not technically secret. It's easy to find what
+someone's face or fingerprint looks like, but it's hard to create a fake version
+of it.</p>
+<p>Some folks have written excellent articles on the difficulty of bypassing
+biometric authentication. So, instead of diving into the details, I'll simply
+recommend <a href="https://www.troyhunt.com/face-id-touch-id-pins-no-id-and-pragmatic-security/">this excellent
+post</a>
+from Troy Hunt's blog.</p>
+<!-- -->
+
+<h1 id="biometrics-for-identification">Biometrics for identification</h1>
+<p>Information being <em>public</em> doesn't mean that there exists a central database
+containing everyone's data. This is especially true for biometric info. Most
+attackers don't have access to global fingerprint or facial recognition
+databases (yet)… But when they do, it definitely raises serious privacy
+concerns. </p>
+<p>Classic identification attacks focus on finding the person behind a pseudonym or
+identifier. Identifiers can be phone numbers, e-mail addresses… Over time, you
+can change pseudonyms and identifiers<sup id="fnref:changed"><a class="footnote-ref" href="#fn:changed">1</a></sup>. You can also maintain separate
+identities, for example when you use a different email address for services you
+don't trust.</p>
+<p>Biometric identification doesn't have these nice properties. You can't change
+your face or your fingerprints! And you can't use a different right thumb with
+border agents of different countries, either.</p>
+<p>Furthermore, you also have less <em>control</em> over your biometric information. You
+can decide not to interact with a given online service if you don't trust it.
+But if you're living a "normal" life in a Western city, your face will most
+certainly be caught and recorded by many surveillance cameras.</p>
+<p>Creating a facial recognition database is becoming simpler and cheaper. In
+Russia, pro-Putin activists identified anti-government protestors using pictures
+gathered from social media<sup id="fnref:findface"><a class="footnote-ref" href="#fn:findface">2</a></sup>. "Researchers" are creating algorithms to
+detect sexual orientation<sup id="fnref:orientation"><a class="footnote-ref" href="#fn:orientation">3</a></sup> or gender identity<sup id="fnref:gender"><a class="footnote-ref" href="#fn:gender">4</a></sup>. They used
+data from dating apps or video sharing services, and didn't ask anyone for
+consent.</p>
+<p>Using biometric data for identification is not inherently problematic. For
+example, it helps catching violent criminals. Yet, the privacy concerns are most
+definitely justified.</p>
+<h1 id="are-those-really-distinct-problems">Are those really distinct problems?</h1>
+<p>So, biometric identification is creepy, but biometric authentication isn't
+always problematic. But wait. If people build biometric authentication systems…
+How do they recognize someone's face or fingerprint if they don't store it
+somewhere? Didn't the engineers behind FaceID had to build a biometric database?
+Couldn't evil people use this for identification? </p>
+<p>Not necessarily. For many of those tools, it is a specific design goal to <em>not</em>
+make biometric identification easier. This is achieved through a series of risk
+mitigation mechanisms<sup id="fnref:faceid"><a class="footnote-ref" href="#fn:faceid">5</a></sup>:</p>
+<ul>
+<li>The biometric data exists only on the user's phone, not in a central place.
+  The phone vendor doesn't need to unlock your phone! So it doesn't need this
+  information. The database doesn't exist in the first place.</li>
+<li>The data lives in a specific piece of hardware called "Secure Enclave". This
+  chip encrypts and stores secrets <em>independently</em> of other parts of the phone.
+  Even if a hacker takes control of your phone, or a thief steals it, they can't
+  read the biometric data stored on it. Building a biometric database from
+  hacked iPhones is near-impossible.</li>
+<li>Pictures taken during authentication are immediately discarded. Only the
+  pictures used for <em>enrollment</em> (when you set up FaceID) are stored. This way,
+  you know what is stored on your phone. This way, the chip doesn't store
+  pictures that you wouldn't want stored there.</li>
+</ul>
+<p>In addition, some fingerprint systems store only <em>partial</em> information on their
+users. Remember how a 4-digit PIN was enough for certain authentication systems?
+Similarly, partial biometric data can be enough to be a good authentication
+vector. So even if data leaks, the exact info might not be enough to uniquely
+identify someone.</p>
+<p>Authentication is a <em>different problem</em> than identification. Thus, a system
+designed for the former can also mitigate risk against the latter.</p>
+<p>Does this mean we shouldn't worry about biometric authentication systems? Ha!
+No.</p>
+<h4 id="point-of-failure-1-the-tech">Point of failure 1: the tech</h4>
+<p>I'm quite confident that Apple's new FaceID system is reasonably secure.
+Zero-days vulnerabilities for iOS are worth
+<a href="https://www.zerodium.com/program.html">millions</a>. That's a good sign that Apple
+has a strong security team who know what they're doing.</p>
+<p>But there should be a <em>lot</em> of healthy skepticism when anyone introduces a new
+system like this. Data breaches happen all the time. If a biometric
+authentication system is badly designed, the potential consequences are
+catastrophic.</p>
+<h4 id="point-of-failure-2-the-people">Point of failure 2: the people</h4>
+<p>Did I convince you that authentication and identification are not the same
+thing? Excellent. Will most people understand the distinction? I'm not exactly
+optimistic =(</p>
+<p>FaceID will probably make people more comfortable with facial recognition
+itself. And if the technology gets normalized, this will lead to more
+problematic uses being more easily accepted.</p>
+<p>This week, I heard about future plans for the London public transportation
+system. They are considering <a href="https://www.wired.co.uk/article/train-station-face-recognition-gateless-gate-technology">facial recognition</a> as a replacement for
+magnetic cards containing tickets. Have your face recognized when you enter and
+leave the subway, get charged later. This is an <em>identification</em> system. The
+privacy implications are vastly different, and the consequences of security
+incidents could be catastrophic.</p>
+<p>Will people understand the difference?</p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:changed">
+<p>Are you thinking "wait a second, I can't change my social security
+number…"? Excellent point! This is one of the many reasons why SSNs make such
+terrible identifiers.&#160;<a class="footnote-backref" href="#fnref:changed" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:findface">
+<p>Here's a scary
+  <a href="https://www.theguardian.com/technology/2016/may/17/findface-face-recognition-app-end-public-anonymity-vkontakte">article</a>
+  about this thing. Their success rate was pretty terrible, but this didn't stop
+  them. And the tech is getting better fast.&#160;<a class="footnote-backref" href="#fnref:findface" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:orientation">
+<p>Here's an
+  <a href="http://mashable.com/2017/09/11/artificial-intelligence-ai-lgbtq-gay-straight/">article</a>
+  that does a good job at explaining why this is terrible science (and ethics).&#160;<a class="footnote-backref" href="#fnref:orientation" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:gender">
+<p>Example <a href="https://www.theverge.com/2017/8/22/16180080/transgender-youtubers-ai-facial-recognition-dataset">press
+  coverage</a>.
+  I think I've seen good criticism of it at the time but I can't find it
+  anymore =(&#160;<a class="footnote-backref" href="#fnref:gender" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:faceid">
+<p>From Apple's <a href="https://images.apple.com/business/docs/FaceID_Security_Guide.pdf">FaceID Security
+  Guide</a>
+  (PDF).&#160;<a class="footnote-backref" href="#fnref:faceid" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20170927,
+  title = &#123;Biometrics: authentication or identification?},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/authentication-vs-identification.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2017},
+  month = &#123;09}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="k-anonymity.html">← previous</a>
+    </li>
+    <li>
+      <a href="twitter-tear-gas.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

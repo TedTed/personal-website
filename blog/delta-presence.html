@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>δ-presence, for when being in the dataset is sensitive - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="δ-presence, for when being in the dataset is sensitive - Ted is writing things" />
+  <meta property="twitter:title" content="δ-presence, for when being in the dataset is sensitive - Ted is writing things" />
+  <meta name="description" property="og:description" content="δ-presence is a privacy notion which captures a different attack model than what we've previously seen. Let's understand why yet another definition is necessary, and what the solution looks like!" />
+  <meta property="twitter:description" content="δ-presence is a privacy notion which captures a different attack model than what we've previously seen. Let's understand why yet another definition is necessary, and what the solution looks like!" />
+  <meta property="summary" content="δ-presence is a privacy notion which captures a different attack model than what we've previously seen. Let's understand why yet another definition is necessary, and what the solution looks like!" />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/delta-presence.html" />
+  <link rel="prev" href="l-diversity.html" />
+  <link rel="next" href="differential-privacy-awesomeness.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="l-diversity.html">← previous</a>
+ —     <a href="differential-privacy-awesomeness.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./delta-presence.html">δ-presence, for when being in the dataset is sensitive</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2018-04-26T00:00:00+02:00">
+      2018-04-26
+    </time>
+  </footer>
+  <div>
+    <p><strong>Remember</strong> <a href="k-map.html"><span class="math">\(k\)</span>-map</a>? We used this definition when the attacker
+didn't know who was in the dataset. Let's go back to this setting, with a
+slightly different scenario. You're no longer a doctor studying human sexual
+behavior. You're still a doctor, but this time, you're specialized in treating a
+particular chronic disease. Instead of running a survey, you're running a
+clinical trial for a new drug to treat this disease. Similarly, you want to
+share the data with other people.</p>
+<p>At first glance, these two settings look similar — but there is a crucial
+difference. Which information is sensitive, exactly? For the survey, the
+<em>answers</em> of each participant are sensitive, as they reveal intimate details.
+But for the clinical study, <em>being</em> in the dataset is the sensitive information.
+If someone figures out that you've taken part in the study, they learn that you
+suffer from this disease.</p>
+<p>So, what does it change in practice? Suppose that your dataset contains the
+following records:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">12</td>
+</tr>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">13</td>
+</tr>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">13</td>
+</tr>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">16</td>
+</tr>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">43</td>
+</tr>
+</tbody>
+</table>
+<p>You do a little research on who lives in ZIP code 85535. You learn that in this
+ZIP code: </p>
+<ul>
+<li><strong>5</strong> people have ages between 10 and 19;</li>
+<li><strong>5</strong> people have ages between 20 and 29;</li>
+<li><strong>10</strong> people have ages between 30 and 39;</li>
+<li><strong>10</strong> people have ages between 40 and 49;</li>
+<li>and <strong>20</strong> people are 50 or older.</li>
+</ul>
+<p>Transforming this part of your dataset to have it satisfy <span class="math">\(5\)</span>-map is easy:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">10-19</td>
+</tr>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">10-19</td>
+</tr>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">10-19</td>
+</tr>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">10-19</td>
+</tr>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">10-19</td>
+</tr>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">40-49</td>
+</tr>
+</tbody>
+</table>
+<p>… But what has gone wrong there?</p>
+<p>An attacker, using only public data, knows that there are 5 people aged between
+10 and 19 in ZIP code 85535. Then, by looking at your de-identified dataset, the
+attacker can figure out that <em>all of them are part of your data</em>. Thus, they all
+have this specific disease. The attacker learned something sensitive about
+individuals, without re-identifying any record. Just like in the example of
+<a href="l-diversity.html"><span class="math">\(l\)</span>-diversity</a>!</p>
+<p>We need yet another definition. Introducing… <span class="math">\(\delta\)</span>-presence!</p>
+<h1 id="definition">Definition</h1>
+<p>Remember what we counted for our previous privacy definitions? For each
+combination of quasi-identifier attributes:</p>
+<ul>
+<li>for <a href="k-anonymity.html"><span class="math">\(k\)</span>-anonymity</a>, we counted the number of records <em>in
+  the dataset</em>;</li>
+<li>and for <a href="k-map.html"><span class="math">\(k\)</span>-map</a>, we counted the number of records <em>in the larger
+  population</em>.</li>
+</ul>
+<p>What went wrong in our leading example? For certain attributes, these numbers
+were <em>equal</em>. To detect this, we now compute the <em>ratio</em> between those two
+numbers. Then, the <span class="math">\(\delta\)</span> in <span class="math">\(\delta\)</span>-presence is the <em>largest</em> ratio across
+the dataset.</p>
+<p>Consider the dataset above. The ratio for the records (85535, 10-19) is <span class="math">\(5/5=1\)</span>,
+and the ratio for the records (85535, 40-49) is <span class="math">\(1/10=0.1\)</span>. Thus, since we
+defined <span class="math">\(\delta\)</span> as the greatest ratio, we have <span class="math">\(\delta=1\)</span>. Since the <span class="math">\(k\)</span> of
+<span class="math">\(k\)</span>-map is always larger than the <span class="math">\(k\)</span> of <span class="math">\(k\)</span>-anonymity, this is the maximum
+possible value of <span class="math">\(\delta\)</span>. Saying that a dataset satisfies <span class="math">\(1\)</span>-presence gives
+zero guarantees.</p>
+<p>Whether <span class="math">\(\delta=1\)</span> is not the only interesting thing. We also want this value to
+be <em>small</em>. The lower, the better. Consider what it means if <span class="math">\(\delta=0.95\)</span>. The
+attacker might learn that their target has a 95% chance of being in the dataset.
+It's not quite a 100% certainty, but it still can be problematic. For example,
+it might be more than enough for an insurance company to deny you coverage…</p>
+<p>How do we get to a lower <span class="math">\(\delta\)</span> in our previous example? One solution would be
+to generalize the age further:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">10-39</td>
+</tr>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">10-39</td>
+</tr>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">10-39</td>
+</tr>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">10-39</td>
+</tr>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">10-39</td>
+</tr>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">40-49</td>
+</tr>
+</tbody>
+</table>
+<p>Then, the ratio for the records (85535, 10-39) becomes <span class="math">\(5/(5+5+10)=0.25\)</span>. The
+ratio for record (85535, 40-49) is still <span class="math">\(0.1\)</span>, so <span class="math">\(\delta=0.25\)</span>. (Assuming that
+no other record in the dataset has ZIP code 85535, and all other records have a
+smaller ratio).</p>
+<p><span class="math">\(\delta\)</span>-presence was first proposed by Nergiz et al. in a <a href="https://desfontain.es/PDFs/PhD/HidingThePresenceOfIndividualsFromSharedDatabases.pdf">2007 paper<sup>
+(pdf)</sup></a>. In this paper, the definition is a bit different. The
+authors compute not only the largest ratio, but also the <em>smallest</em> one. The
+<span class="math">\(\delta\)</span> parameter hides two parameters
+<span class="math">\(\left(\delta_{\text{min}},\delta_{\text{max}}\right)\)</span>. This was done to protect
+against the symmetric attack: hiding that someone is <em>not</em> in the dataset. I
+never encountered a situation where this is a real concern, so I simplified it a
+bit for this post.</p>
+<h1 id="delta-presence-in-practice"><span class="math">\(\delta\)</span>-presence in practice</h1>
+<p><span class="math">\(\delta\)</span>-presence is computed from the ratios between quantities used in
+<span class="math">\(k\)</span>-anonymity and <span class="math">\(k\)</span>-map. While <span class="math">\(k\)</span>-anonymity is very easy to compute, <span class="math">\(k\)</span>-map
+is <a href="k-map.html#and-now-some-practice">much harder</a>. As such, <span class="math">\(\delta\)</span>-presence has very similar practical
+characteristics than <span class="math">\(k\)</span>-map. Since you don't typically have access to the full
+larger dataset, you can't compute <span class="math">\(\delta\)</span> exactly. You can use a pessimistic
+approximation if your data is a <a href="k-map.html#exception-1-secret-sample">sample</a> of a larger dataset that you
+own. You can also do the work of estimating <span class="math">\(\delta\)</span>-presence <a href="k-map.html#exception-3-using-humans">by hand</a>.</p>
+<p>What about statistical approximations? Nergiz et al. proposed an interesting
+method in a <a href="https://desfontain.es/PDFs/PhD/DeltaPresenceWithoutCompleteWorldKnowledge.pdf">followup paper<sup> (pdf)</sup></a>. Unfortunately, two of
+its requirements make it hardly usable in practical scenarios.</p>
+<ul>
+<li>First, to run the algorithm, you need to "describe your beliefs about the
+  world" (in a statistical sense). Unless you're a statistician, this is not
+  something you can really do.</li>
+<li>Second, computing the algorithm exactly is very expensive. The authors propose
+  a lot of approximations to make it tractable… But then, using them makes the
+  results even more uncertain.</li>
+</ul>
+<p>Finally, if you still want to use this algorithm, you would also likely have to
+implement it yourself. I don't know of any available software that does it for
+you.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>Like <span class="math">\(k\)</span>-map, in theory, it often makes sense to use <span class="math">\(\delta\)</span>-presence. It's a
+pity that both definitions are so difficult to use in practice! Having simpler
+(and more usable) approximation algorithms would be great… Which is why I have
+done some research work in that direction. And the results of this work will be
+the topic of a future post! =)</p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20180426,
+  title = &#123;δ-presence, for when being in the dataset is sensitive},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/delta-presence.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2018},
+  month = &#123;04}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="l-diversity.html">← previous</a>
+    </li>
+    <li>
+      <a href="differential-privacy-awesomeness.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

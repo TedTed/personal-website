@@ -1,0 +1,510 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="FromSyntacticToSemanticPrivacy.html" />
+  <link ref="next" href="kmap.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="FromSyntacticToSemanticPrivacy.html">← previous</a></li>
+        <li><a href="FromSyntacticToSemanticPrivacy.html#kanonymity.html">up</a></li>
+        <li><a href="kmap.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="FromSyntacticToSemanticPrivacy.html">LINKPREV</a><a href="FromSyntacticToSemanticPrivacy.html#kanonymity.html">LINKUP</a><a href="kmap.html">LINKNEXT</a></p></div>
+  <h4 class="subsectionHead" id="kanonymity-u-ding-"><span class="titlemark">2.1.1</span>&nbsp;&nbsp;<a id="x9-180002.1.1"></a><!-- l. 1 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity&nbsp;<span class="bbding-10x-x-109">✿</span></h4> <!-- l. 3 --><p class="noindent">
+In 1997, the Group Insurance Commission (GIC), a Massachusetts health insurance organization,
+compiled and published a database of hospital visits by state employees&nbsp;[<a id="x9-18001"></a><a href="bibliography.html#cite.0@sweeney2015only">355</a>]. The dataset was then
+shared widely with researchers, to encourage scientific research. Of course, there were privacy
+considerations with publishing people’s health records: “in accordance with the best de-identification
+practice of the time”, all directly identifying information was removed: name, phone number, full
+address, social security number, etc.
+</p><!-- l. 12 --><p class="indent">  As you can probably expect, this story does not end well. Some demographic information was left in
+the database, to allow researchers to run statistical analyses: ZIP code, date of birth, and gender were all
+part of the data. William Weld, then governor of Massachusetts, “assured the public that GIC had
+protected patient privacy”. Latanya Sweeney, then a PhD student at MIT, did a back-of-the-envelope
+calculation, and started suspecting that this apparently innocuous information could be, in fact, very
+identifying. To prove her point, she decided to try and reidentify Weld’s records from the “anonymized”
+database&nbsp;[<a id="x9-18002"></a><a href="bibliography.html#cite.0@anderson2009anonymized">14</a>].
+</p><!-- l. 22 --><p class="indent">  With just $20, Sweeney bought the public voter records from Massachusetts, which had both full
+identifiers (names, addresses) and demographic data (ZIP code and date of birth), and contained the
+governor’s information. Only one record in the hospital dataset matched the governor’s demographic
+data, and thus, Sweeney was able to know which prescriptions and visits in the data were his. She sent
+                                                                                
+                                                                                
+him that information by mail, showing theatrically that their anonymization process was not as solid as
+it should have been.
+</p><!-- l. 30 --><p class="indent">  Several factors made this attack possible.
+</p><!-- l. 33 --><p class="indent">
+     </p><dl class="enumerate-enumitem"><dt class="enumerate-enumitem">
+   1. </dt><dd class="enumerate-enumitem">The hospital data contained demographic information that could be used to distinguish
+     between different records.
+     </dd><dt class="enumerate-enumitem">
+   2. </dt><dd class="enumerate-enumitem">A secondary database was available to figure out the demographic information about the
+     target.
+     </dd><dt class="enumerate-enumitem">
+   3. </dt><dd class="enumerate-enumitem">The target was in both datasets.
+     </dd><dt class="enumerate-enumitem">
+   4. </dt><dd class="enumerate-enumitem">And the demographic information of the target (ZIP code, date of birth, and gender) was
+     unique within both datasets: only one record had the demographic values of the governor.</dd></dl>
+<!-- l. 43 --><p class="indent">  At first glance, all factors appear to be necessary for the attack to work. So, which ones can we afford
+to remove, while making sure that the data can be used for data analysis tasks? Let us go through all
+options.
+</p><!-- l. 48 --><p class="indent">
+     </p><dl class="enumerate-enumitem"><dt class="enumerate-enumitem">
+   1. </dt><dd class="enumerate-enumitem">We  could  remove  all  demographic  information  from  the  data,  or  even  all  information
+     that might be linked to a person using auxiliary sources. Unfortunately, this would also
+     severely hinder the utility of the data: correlations based on age, gender, and geographic
+     info are very useful to researchers!
+     </dd><dt class="enumerate-enumitem">
+   2. </dt><dd class="enumerate-enumitem">Society  probably  should  do  something  about  the  existence  of  public  (or  commercially
+     available)  data  sources  that  can  be  used  in  reidentification  attacks.  For  example,
+     regulations might outlaw the publication or sale of such datasets, making them harder to
+     come by. However, this is a complex issue, on which individual data owners have little
+     power.
+     </dd><dt class="enumerate-enumitem">
+   3. </dt><dd class="enumerate-enumitem">Again, there is not much we can do about this aspect. We have no way to modify the
+     secondary (public) dataset. We could decrease the probability that a random target is in
+     our dataset by sub-sampling it, but all people in the sample would still be at risk.
+     </dd><dt class="enumerate-enumitem">
+   4. </dt><dd class="enumerate-enumitem">The  uniqueness  of  the  governor’s  demographic  information  is  a  central  aspect  of  the
+     reidentification  attack.  Maybe,  rather  than  suppressing  all  demographic  values—which
+     would render the data useless—we could find a less drastic of making those less unique.</dd></dl>
+                                                                                
+                                                                                
+<!-- l. 68 --><p class="indent">  This last suggestion is the fundamental intuition behind
+<!-- l. 68 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span><span class="t1xi-x-x-109">-anonymity</span>: everyone must be
+hidden in a crowd of at most <!-- l. 69 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>
+people. More precisely, each each combination of demographic values must map to at least
+<!-- l. 70 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>
+different people. Of course, demographic information is not the only type of data that can be used
+in such an attack. Any personal information that the attacker knows about an individual
+can be used. Thus, the first step is to define a list of <span class="t1xi-x-x-109">quasi-identifiers</span>: database columns
+that we assume the attacker knows. To that end, we model the space of possible records as
+<!-- l. 76 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.249em;">T</span></span></span></span><span class="mjx-mo MathClass-rel MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">=</span></span><span class="mjx-msub MJXc-space3"><span class="mjx-base" style="margin-right: -0.002em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.225em; padding-right: 0.002em;">Q</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.298em;">×</span></span><span class="mjx-mo MathClass-rel MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.004em; padding-bottom: 0.298em;">⋯</span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.298em;">×</span></span><span class="mjx-msub MJXc-space2"><span class="mjx-base" style="margin-right: -0.002em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.225em; padding-right: 0.002em;">Q</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">a</span></span></span></span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.298em;">×</span></span><span class="mjx-msub MJXc-space2"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.298em;">×</span></span><span class="mjx-mo MathClass-rel MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.004em; padding-bottom: 0.298em;">⋯</span></span><span class="mjx-msub MJXc-space1"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.219em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">b</span></span></span></span></span></span></span></span></span></span>: each
+<!-- l. 77 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.002em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.225em; padding-right: 0.002em;">Q</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span></span></span></span></span></span></span></span> is a quasi-identifier
+(e.g.&nbsp;age or ZIP code), while <!-- l. 77 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span></span></span></span></span></span></span></span>
+columns are assumed to be unknown by the attacker.
+</p>
+  <div class="newtheorem">
+<!-- l. 80 --><p class="noindent"><span class="head">
+<a id="x9-18011r1"></a>
+<span class="t1xb-x-x-109">Definition 1 </span>(<!-- l. 80 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity[<a id="x9-18012"></a><a href="bibliography.html#cite.0@samarati2001protecting">337</a><a id="x9-18013"></a>, <a href="bibliography.html#cite.0@sweeney2002kanonymity">354</a>])<span class="t1xb-x-x-109">.</span>
+</span> <span class="t1xi-x-x-109">Assume </span><!-- l. 81 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.249em;">T</span></span></span></span><span class="mjx-mo MathClass-rel MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">=</span></span><span class="mjx-msub MJXc-space3"><span class="mjx-base" style="margin-right: -0.002em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.225em; padding-right: 0.002em;">Q</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.298em;">×</span></span><span class="mjx-mo MathClass-rel MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.004em; padding-bottom: 0.298em;">⋯</span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.298em;">×</span></span><span class="mjx-msub MJXc-space2"><span class="mjx-base" style="margin-right: -0.002em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.225em; padding-right: 0.002em;">Q</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">a</span></span></span></span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.298em;">×</span></span><span class="mjx-msub MJXc-space2"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.298em;">×</span></span><span class="mjx-mo MathClass-rel MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.004em; padding-bottom: 0.298em;">⋯</span></span><span class="mjx-msub MJXc-space1"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.219em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">b</span></span></span></span></span></span></span></span></span></span><span class="t1xi-x-x-109">.
+A database </span><!-- l. 82 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span></span></span>
+<span class="t1xi-x-x-109">is </span><!-- l. 82 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span><span class="t1xi-x-x-109">-anonymous
+if for every possible combination of quasi-identifier values </span><!-- l. 84 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.014em;"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.446em; padding-right: 0.014em;">q</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mo MJXc-space1"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.372em;">…</span></span><span class="mjx-mo MathClass-punc MJXc-space1"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-msub MJXc-space1"><span class="mjx-base" style="margin-right: -0.014em;"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.446em; padding-right: 0.014em;">q</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">a</span></span></span></span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span><span class="mjx-mo MathClass-rel MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.372em;">∈</span></span><span class="mjx-msub MJXc-space3"><span class="mjx-base" style="margin-right: -0.002em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.225em; padding-right: 0.002em;">Q</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.298em;">×</span></span><span class="mjx-mo MathClass-rel MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.004em; padding-bottom: 0.298em;">⋯</span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.298em;">×</span></span><span class="mjx-msub MJXc-space2"><span class="mjx-base" style="margin-right: -0.002em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.225em; padding-right: 0.002em;">Q</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">a</span></span></span></span></span></span></span></span></span></span><span class="t1xi-x-x-109">,
+this combination is present in at least </span><!-- l. 85 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>
+<span class="t1xi-x-x-109">records in the dataset, or in none.</span>
+</p>
+  </div>
+<!-- l. 86 --><p class="indent">
+</p><!-- l. 88 --><p class="indent">  For example, assuming that ZIP code and age are both quasi-identifiers, the dataset in Table&nbsp;<a href="#-a-anonymous-dataset">2.1<!-- tex4ht:ref: tab:2-anon  --></a> is
+<!-- l. 89 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span>-anonymous,
+while the dataset in Table&nbsp;<a href="#-a-dataset-that-is-not-anonymous-zip-code-is-unique">2.2<!-- tex4ht:ref: tab:not-2-anon  --></a> is not.
+                                                                                
+                                                                                
+</p><!-- l. 92 --><p class="indent">  </p><figure class="float" id="-a-anonymous-dataset">
+                                                                                
+                                                                                
+<div class="tabular">
+ <table class="tabular" id="TBL-6"><colgroup id="TBL-6-1g"><col id="TBL-6-1"><col id="TBL-6-2"></colgroup><tbody><tr id="TBL-6-1-" style="vertical-align:baseline;"><td class="td11" id="TBL-6-1-1" style="text-align:center; white-space:nowrap;"> ZIP code  </td><td class="td11" id="TBL-6-1-2" style="text-align:center; white-space:nowrap;"> age  </td>
+</tr><tr id="TBL-6-2-" style="vertical-align:baseline;"><td class="td11" id="TBL-6-2-1" style="text-align:center; white-space:nowrap;">   4217      </td><td class="td11" id="TBL-6-2-2" style="text-align:center; white-space:nowrap;"> 34   </td></tr><tr id="TBL-6-3-" style="vertical-align:baseline;"><td class="td11" id="TBL-6-3-1" style="text-align:center; white-space:nowrap;"> 4217 </td><td class="td11" id="TBL-6-3-2" style="text-align:center; white-space:nowrap;"> 34</td>
+</tr><tr id="TBL-6-4-" style="vertical-align:baseline;"><td class="td11" id="TBL-6-4-1" style="text-align:center; white-space:nowrap;">   1742      </td><td class="td11" id="TBL-6-4-2" style="text-align:center; white-space:nowrap;"> 77   </td>
+</tr><tr id="TBL-6-5-" style="vertical-align:baseline;"><td class="td11" id="TBL-6-5-1" style="text-align:center; white-space:nowrap;">   1742      </td><td class="td11" id="TBL-6-5-2" style="text-align:center; white-space:nowrap;"> 77   </td>
+</tr><tr id="TBL-6-6-" style="vertical-align:baseline;"><td class="td11" id="TBL-6-6-1" style="text-align:center; white-space:nowrap;">   4217      </td><td class="td11" id="TBL-6-6-2" style="text-align:center; white-space:nowrap;"> 34   </td>
+</tr></tbody></table>                                                                   </div>
+<a id="x9-18014r1"></a>
+<figcaption class="caption"><span class="id"> <span class="t1xsc-">T<span class="small-caps">able</span></span><span class="t1xsc-">&nbsp;2.1:&nbsp;</span></span><span class="content"><span class="t1xr-">A </span><!-- l. 104 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span><span class="t1xr-">-anonymous
+          dataset.</span>                                                                </span></figcaption><!-- tex4ht:label?: x9-18014r1  -->
+                                                                                
+                                                                                
+  </figure>
+                                                                                
+                                                                                
+<!-- l. 107 --><p class="indent">  </p><figure class="float" id="-a-dataset-that-is-not-anonymous-zip-code-is-unique">
+                                                                                
+                                                                                
+<div class="tabular">
+ <table class="tabular" id="TBL-7"><colgroup id="TBL-7-1g"><col id="TBL-7-1"><col id="TBL-7-2"></colgroup><tbody><tr id="TBL-7-1-" style="vertical-align:baseline;"><td class="td11" id="TBL-7-1-1" style="text-align:center; white-space:nowrap;"> ZIP code  </td><td class="td11" id="TBL-7-1-2" style="text-align:center; white-space:nowrap;"> age  </td>
+</tr><tr id="TBL-7-2-" style="vertical-align:baseline;"><td class="td11" id="TBL-7-2-1" style="text-align:center; white-space:nowrap;">   4217      </td><td class="td11" id="TBL-7-2-2" style="text-align:center; white-space:nowrap;"> 34   </td>
+</tr><tr id="TBL-7-3-" style="vertical-align:baseline;"><td class="td11" id="TBL-7-3-1" style="text-align:center; white-space:nowrap;">   1742      </td><td class="td11" id="TBL-7-3-2" style="text-align:center; white-space:nowrap;"> 77   </td>
+</tr><tr id="TBL-7-4-" style="vertical-align:baseline;"><td class="td11" id="TBL-7-4-1" style="text-align:center; white-space:nowrap;">   174<span class="t1xb-x-x-109">3      </span></td><td class="td11" id="TBL-7-4-2" style="text-align:center; white-space:nowrap;"> 77   </td>
+</tr><tr id="TBL-7-5-" style="vertical-align:baseline;"><td class="td11" id="TBL-7-5-1" style="text-align:center; white-space:nowrap;">   4217      </td><td class="td11" id="TBL-7-5-2" style="text-align:center; white-space:nowrap;"> 34   </td>
+</tr></tbody></table>                                                                   </div>
+<a id="x9-18015r2"></a>
+<figcaption class="caption"><span class="id"> <span class="t1xsc-">T<span class="small-caps">able</span></span><span class="t1xsc-">&nbsp;2.2:&nbsp;</span></span><span class="content"><span class="t1xr-">A dataset that is not </span><!-- l. 118 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span><span class="t1xr-">-anonymous:
+          ZIP code 1743 is unique.</span>                                                  </span></figcaption><!-- tex4ht:label?: x9-18015r2  -->
+                                                                                
+                                                                                
+  </figure>
+<!-- l. 121 --><p class="indent">  Note that we need every <span class="t1xi-x-x-109">combination </span>of values to appear at least
+<!-- l. 121 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>
+Thus, even if each individual value of each column appears
+<!-- l. 122 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span> times in the dataset of
+Table&nbsp;<a href="#-a-dataset-that-is-not-anonymous-all-combinations-of-zip-code-and-age-are-unique">2.3<!-- tex4ht:ref: tab:not-2-anon-either  --></a>, it is not <!-- l. 123 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span>-anonymous
+either.
+                                                                                
+                                                                                
+</p><!-- l. 125 --><p class="indent">  </p><figure class="float" id="-a-dataset-that-is-not-anonymous-all-combinations-of-zip-code-and-age-are-unique">
+                                                                                
+                                                                                
+<div class="tabular">
+ <table class="tabular" id="TBL-8"><colgroup id="TBL-8-1g"><col id="TBL-8-1"><col id="TBL-8-2"></colgroup><tbody><tr id="TBL-8-1-" style="vertical-align:baseline;"><td class="td11" id="TBL-8-1-1" style="text-align:center; white-space:nowrap;"> ZIP code  </td><td class="td11" id="TBL-8-1-2" style="text-align:center; white-space:nowrap;"> age  </td>
+</tr><tr id="TBL-8-2-" style="vertical-align:baseline;"><td class="td11" id="TBL-8-2-1" style="text-align:center; white-space:nowrap;">   4217      </td><td class="td11" id="TBL-8-2-2" style="text-align:center; white-space:nowrap;"> 34   </td>
+</tr><tr id="TBL-8-3-" style="vertical-align:baseline;"><td class="td11" id="TBL-8-3-1" style="text-align:center; white-space:nowrap;">   1742      </td><td class="td11" id="TBL-8-3-2" style="text-align:center; white-space:nowrap;"> 34   </td>
+</tr><tr id="TBL-8-4-" style="vertical-align:baseline;"><td class="td11" id="TBL-8-4-1" style="text-align:center; white-space:nowrap;">   4217      </td><td class="td11" id="TBL-8-4-2" style="text-align:center; white-space:nowrap;"> 77   </td>
+</tr><tr id="TBL-8-5-" style="vertical-align:baseline;"><td class="td11" id="TBL-8-5-1" style="text-align:center; white-space:nowrap;">   1742      </td><td class="td11" id="TBL-8-5-2" style="text-align:center; white-space:nowrap;"> 77   </td>
+</tr></tbody></table>                                                                   </div>
+<a id="x9-18016r3"></a>
+<figcaption class="caption"><span class="id"> <span class="t1xsc-">T<span class="small-caps">able</span></span><span class="t1xsc-">&nbsp;2.3:&nbsp;</span></span><span class="content"><span class="t1xr-">A dataset that is not </span><!-- l. 137 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span><span class="t1xr-">-anonymous:
+          all combinations of ZIP code and age are unique.</span>                                </span></figcaption><!-- tex4ht:label?: x9-18016r3  -->
+                                                                                
+                                                                                
+  </figure>
+<!-- l. 140 --><p class="indent">  The  intuition  is  that  when  a  dataset  is
+<!-- l. 140 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymous for a
+sufficiently large <!-- l. 141 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>,
+the last requirement for a successful reidentification attack is broken. An attacker might find out the demographic
+information of their target using a secondary database, but then this demographic information will be linked
+to <!-- l. 143 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span> different
+individuals, so it will be impossible to know which one is their info. The privacy guarantee gets stronger with
+increasing <!-- l. 145 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span> values:
+the larger <!-- l. 145 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>,
+the bigger the crowd in which each individual is “hidden”.
+  <a id="subsubsection*.1"></a>
+</p>
+  <h5 class="subsubsectionHead" id="policy-questions-raised-by-kanonymity"><a id="x9-19000"></a>Policy questions raised by <!-- l. 148 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity</h5>
+<!-- l. 150 --><p class="noindent">Using this definition in practice requires answering a number of questions. First, what types of data
+are reidentifying? How should one decide which columns in a dataset are assumed to be
+known by the attacker, and should be classified as quasi-identifiers? As we mentioned, ZIP
+codes, age, or gender are all good candidates for reidentification attacks: they are public or
+easily findable information that is also often found in sensitive datasets, especially medical
+ones.
+</p><!-- l. 158 --><p class="indent">  In general however, there is no universal criterion for what constitutes of quasi-identifier. This choice
+depends on the attack model. Timestamps, medical conditions, physical characteristics, behavioral
+information can all be considered potentially reidentifying in some cases. In other cases, it can seem
+reasonable to assume that someone trying to attack a dataset would not have easy access to these
+values.
+</p><!-- l. 165 --><p class="indent">  The second question is about the choice of <!-- l. 165 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>.
+Which value is appropriate? Again, it is difficult to say. In the healthcare world, when
+medical data is shared with a small number of people (typically for research purposes),
+<!-- l. 167 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span> is often chosen
+between <!-- l. 168 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">5</span></span></span></span></span></span>
+and <!-- l. 168 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">15</span></span></span></span></span></span></span>&nbsp;[<a id="x9-19001"></a><a href="bibliography.html#cite.0@el2008protecting">137</a>].
+To the best of our knowledge, there is no official law or regulation which suggests a specific value.
+Some universities, companies or other organizations have official guidelines, but the vast majority do
+not.
+</p><!-- l. 173 --><p class="indent">  This choice is difficult to make. To pick a principled value for
+<!-- l. 173 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>, we would need
+to understand what is the link between the parameter value, and the risk of a privacy incident happening. But
+if <!-- l. 175 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+is relatively easy to understand, estimating this risk quantitatively is not straightforward. It
+is difficult to measure how much more “privacy protection” is offered by larger values of
+<!-- l. 178 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>.
+Furthermore, the level of risk depends on many additional parameters: how valuable the
+                                                                                
+                                                                                
+data is, how bad would a privacy incident be, how many people have access to the data,
+etc.
+</p><!-- l. 182 --><p class="indent">
+<a id="subsubsection*.2"></a>
+</p>
+  <h5 class="subsubsectionHead" id="kanonymity-in-practice"><a id="x9-20000"></a><!-- l. 182 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+in practice</h5>
+<!-- l. 184 --><p class="noindent">To use <!-- l. 184 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+in practice, one has to decide how to modify the initial dataset to create a
+<!-- l. 185 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymous
+version of it. Two basic techniques are typically used as building blocks for more complex algorithms:
+<span class="t1xi-x-x-109">generalization </span>and <span class="t1xi-x-x-109">suppression</span>&nbsp;[<a id="x9-20001"></a><a href="bibliography.html#cite.0@lefevre2005incognito">246</a><a id="x9-20002"></a><a id="x9-20003"></a>, <a href="bibliography.html#cite.0@lefevre2006mondrian">247</a>, <a href="bibliography.html#cite.0@samarati1998protecting">338</a><a id="x9-20004"></a>, <a href="bibliography.html#cite.0@sweeney2002achieving">353</a>].
+</p><!-- l. 190 --><p class="indent">  <span class="t1xi-x-x-109">Generalization </span>is the process of making a quasi-identifier value less precise, so that records with
+different values are transformed (or <span class="t1xi-x-x-109">generalized</span>) into records that share the same values. Consider the
+records in Table&nbsp;<a href="#-a-dataset-prior-to-generalization">2.4<!-- tex4ht:ref: tab:not-yet-generalized  --></a>.
+                                                                                
+                                                                                
+</p><!-- l. 195 --><p class="indent">  </p><figure class="float" id="-a-dataset-prior-to-generalization">
+                                                                                
+                                                                                
+<div class="tabular">
+ <table class="tabular" id="TBL-9"><colgroup id="TBL-9-1g"><col id="TBL-9-1"><col id="TBL-9-2"></colgroup><tbody><tr id="TBL-9-1-" style="vertical-align:baseline;"><td class="td11" id="TBL-9-1-1" style="text-align:center; white-space:nowrap;"> ZIP code  </td><td class="td11" id="TBL-9-1-2" style="text-align:center; white-space:nowrap;"> age  </td>
+</tr><tr id="TBL-9-2-" style="vertical-align:baseline;"><td class="td11" id="TBL-9-2-1" style="text-align:center; white-space:nowrap;">   4217      </td><td class="td11" id="TBL-9-2-2" style="text-align:center; white-space:nowrap;"> 34   </td>
+</tr><tr id="TBL-9-3-" style="vertical-align:baseline;"><td class="td11" id="TBL-9-3-1" style="text-align:center; white-space:nowrap;">   4217      </td><td class="td11" id="TBL-9-3-2" style="text-align:center; white-space:nowrap;"> 39   </td>
+</tr><tr id="TBL-9-4-" style="vertical-align:baseline;"><td class="td11" id="TBL-9-4-1" style="text-align:center; white-space:nowrap;">   1742      </td><td class="td11" id="TBL-9-4-2" style="text-align:center; white-space:nowrap;"> 75   </td>
+</tr><tr id="TBL-9-5-" style="vertical-align:baseline;"><td class="td11" id="TBL-9-5-1" style="text-align:center; white-space:nowrap;">   1691      </td><td class="td11" id="TBL-9-5-2" style="text-align:center; white-space:nowrap;"> 77   </td>
+</tr></tbody></table>                                                                   </div>
+<a id="x9-20005r4"></a>
+<figcaption class="caption"><span class="id"> <span class="t1xsc-">T<span class="small-caps">able</span></span><span class="t1xsc-">&nbsp;2.4:&nbsp;</span></span><span class="content"><span class="t1xr-">A dataset prior to generalization</span>                                             </span></figcaption><!-- tex4ht:label?: x9-20005r4  -->
+                                                                                
+                                                                                
+  </figure>
+<!-- l. 209 --><p class="indent">  The numerical values of these records can be transformed into <span class="t1xi-x-x-109">numerical ranges</span>, so that the resulting table
+verifies <!-- l. 210 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span>-anonymity.
+This is demonstrated in Table&nbsp;<a href="#-dataset-from-tableref-tabnotyetgeneralized-after-generalization">2.5<!-- tex4ht:ref: tab:generalized  --></a>.
+                                                                                
+                                                                                
+</p><!-- l. 213 --><p class="indent">  </p><figure class="float" id="-dataset-from-tableref-tabnotyetgeneralized-after-generalization">
+                                                                                
+                                                                                
+<div class="tabular">
+ <table class="tabular" id="TBL-10"><colgroup id="TBL-10-1g"><col id="TBL-10-1"><col id="TBL-10-2"></colgroup><tbody><tr id="TBL-10-1-" style="vertical-align:baseline;"><td class="td11" id="TBL-10-1-1" style="text-align:center; white-space:nowrap;">  ZIP code   </td><td class="td11" id="TBL-10-1-2" style="text-align:center; white-space:nowrap;">  age    </td>
+</tr><tr id="TBL-10-2-" style="vertical-align:baseline;"><td class="td11" id="TBL-10-2-1" style="text-align:center; white-space:nowrap;">   4217       </td><td class="td11" id="TBL-10-2-2" style="text-align:center; white-space:nowrap;"> 30–39  </td>
+</tr><tr id="TBL-10-3-" style="vertical-align:baseline;"><td class="td11" id="TBL-10-3-1" style="text-align:center; white-space:nowrap;">   4217       </td><td class="td11" id="TBL-10-3-2" style="text-align:center; white-space:nowrap;"> 30–39  </td>
+</tr><tr id="TBL-10-4-" style="vertical-align:baseline;"><td class="td11" id="TBL-10-4-1" style="text-align:center; white-space:nowrap;"> 1000–1999  </td><td class="td11" id="TBL-10-4-2" style="text-align:center; white-space:nowrap;"> 75–79  </td>
+</tr><tr id="TBL-10-5-" style="vertical-align:baseline;"><td class="td11" id="TBL-10-5-1" style="text-align:center; white-space:nowrap;"> 1000–1999  </td><td class="td11" id="TBL-10-5-2" style="text-align:center; white-space:nowrap;"> 75–79  </td>
+</tr></tbody></table>                                                                  </div>
+<a id="x9-20006r5"></a>
+<figcaption class="caption"><span class="id"> <span class="t1xsc-">T<span class="small-caps">able</span></span><span class="t1xsc-">&nbsp;2.5:&nbsp;</span></span><span class="content"><span class="t1xr-">Dataset from Table&nbsp;</span><a href="#-a-dataset-prior-to-generalization"><span class="t1xr-">2.4</span><!-- tex4ht:ref: tab:not-yet-generalized  --></a><span class="t1xr-">, after generalization</span>                                    </span></figcaption><!-- tex4ht:label?: x9-20006r5  -->
+                                                                                
+                                                                                
+  </figure>
+<!-- l. 227 --><p class="indent">  Generalization makes data more imprecise to satisfy privacy requirements, but still allow useful data
+analysis to be done. In our example, changing precise ages into age ranges might be enough to analyze
+whether a disease affects younger or older people disproportionately.
+</p><!-- l. 232 --><p class="indent">  Transforming a numerical value into a range is one of the most typical ways of performing
+generalization. Other ways include removing a value entirely (e.g. transforming a gender value into
+“gender unknown”), or using a generalization hierarchy (e.g.&nbsp;transforming an ICD-10 diagnosis code
+into a truncated code, or into the corresponding block&nbsp;[<a id="x9-20007"></a><a href="bibliography.html#cite.0@icd10">204</a>]).
+</p><!-- l. 238 --><p class="indent">  In the previous example, our records had relatively “close” demographic values, which
+allowed generalization to keep reasonably accurate information while still ensuring
+<!-- l. 240 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span>-anonymity.
+What if an additional record was added to Table&nbsp;<a href="#-a-dataset-prior-to-generalization">2.4<!-- tex4ht:ref: tab:not-yet-generalized  --></a>, with ZIP code 9755 and age 13? The other four
+records can be grouped in two pairs as above, but that new record is an outlier. Grouping it with one of
+the pairs above would mean having very large ranges of values (age between 10 and 39, or ZIP code
+being completely removed), which would significantly reduce the utility of the resulting
+data.
+</p><!-- l. 247 --><p class="indent">  <span class="t1xi-x-x-109">Suppression </span>can be used in this case: we could simply remove such outlier values, and only use generalization
+on records that can be. Using both generalization and suppression on this example could lead to the same
+<!-- l. 250 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span>-anonymous
+table as before, on Table&nbsp;<a href="#-dataset-from-tableref-tabnotyetgeneralized-after-generalization">2.5<!-- tex4ht:ref: tab:generalized  --></a>. When suppression is used, there are usually strictly
+less records in the transformed table than in the original. On large datasets,
+allowing a small percentage of suppressed records typically allows the result to be
+<!-- l. 253 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymous
+without requiring too much generalization.
+</p><!-- l. 256 --><p class="indent">  How to use generalization and suppression to reach
+<!-- l. 256 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity,
+while maximizing the utility of the output data? Finding the <span class="t1xi-x-x-109">optimal </span>strategy is NP-hard for many
+reasonable definitions of optimality&nbsp;[<a id="x9-20008"></a><a href="bibliography.html#cite.0@meyerson2004complexity">282</a>], but a large number of approximation algorithms have been
+proposed in the literature&nbsp;[<a id="x9-20009"></a><a href="bibliography.html#cite.0@gkoulalas2014publishing">168</a>], and implemented as open-source software&nbsp;[<a id="x9-20010"></a><a href="bibliography.html#cite.0@arx">20</a><a id="x9-20011"></a>, <a href="bibliography.html#cite.0@sdcmicro">339</a><a id="x9-20012"></a>, <a href="bibliography.html#cite.0@secreta">363</a><a id="x9-20013"></a>,
+<a href="bibliography.html#cite.0@utd">371</a>].
+  <a id="subsubsection*.3"></a>
+</p>
+  <h5 class="subsubsectionHead" id="limits-of-kanonymity"><a id="x9-21000"></a>Limits of <!-- l. 263 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity</h5>
+<!-- l. 265 --><p class="noindent"><!-- l. 265 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity is
+simple to understand, and it seems natural to assume that reidentification attacks are well mitigated when a dataset is
+made <!-- l. 267 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymous.
+However, it only mitigates this particular kind of attack, and is difficult to use in some contexts. We present
+three such limitations, each of which is a major motivation for alternative definitions we introduce next:
+<!-- l. 270 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-map,
+<!-- l. 270 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">l</span></span></span></span></span></span>-diversity, and
+<!-- l. 270 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span></span></span></span></span>-presence.
+</p><!-- l. 272 --><p class="indent">  First, <!-- l. 272 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+                                                                                
+                                                                                
+is difficult to use for smaller datasets, such as ones with 100 records or less. For many of these datasets,
+especially in the context of a healthcare study, the attacker might not know that their target is in the
+dataset in the first place. As such, the “search space” for reidentification is larger than the dataset: if a
+single user has certain characteristics in the dataset, but many more people share these characteristics
+outside of the dataset, the attack might still fail.
+</p><!-- l. 280 --><p class="indent">  Second, we implicitly assumed that the attacker only wanted to select a target, and link a specific
+record with this target. In Sweeney’s original attack, the privacy risk came from the additional sensitive
+data that was obtained after reidentification: medical records associated with the target. If a
+quasi-identifier combination is always associated with the same sensitive value in a dataset, then the
+attacker can learn this value even without reidentifying the record.
+</p><!-- l. 288 --><p class="indent">  Third, for some datasets, being in the dataset constitutes sensitive information in the first place: for
+example, everyone participating in a clinical trial for a specific drug might share the same sensitive
+diagnostic.
+</p><!-- l. 292 --><p class="indent">  <!-- l. 292 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+falls short of modeling the three scenarios above. We elaborate on these issues in the following three
+sections: each section introduces a definition that attempts to solve one of these issues.
+<!-- l. 294 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+has more problems than those listed above, we come back to these when introducing differential
+privacy.
+                                                                                
+                                                                                
+</p>
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="FromSyntacticToSemanticPrivacy.html">LINKPREV</a><a href="FromSyntacticToSemanticPrivacy.html#kanonymity.html">LINKUP</a><a href="kmap.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="FromSyntacticToSemanticPrivacy.html">← previous</a></li>
+        <li><a href="FromSyntacticToSemanticPrivacy.html#kanonymity.html">up</a></li>
+        <li><a href="kmap.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

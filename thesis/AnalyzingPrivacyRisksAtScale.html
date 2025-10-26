@@ -1,0 +1,239 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="FromTheoryToPractice.html" />
+  <link ref="next" href="IntroductionRiskAnalysis.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="FromTheoryToPractice.html">← previous</a></li>
+        <li><a href="FromTheoryToPractice.html#AnalyzingPrivacyRisksAtScale.html">up</a></li>
+        <li><a href="IntroductionRiskAnalysis.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="FromTheoryToPractice.html">LINKPREV</a><a href="FromTheoryToPractice.html#AnalyzingPrivacyRisksAtScale.html">LINKUP</a><a href="IntroductionRiskAnalysis.html">LINKNEXT</a></p></div>
+  <h3 class="sectionHead" id="analyzing-privacy-risks-at-scale-u-ding-"><span class="titlemark">4.1</span>&nbsp;&nbsp;<a id="x44-1310004.1"></a>Analyzing privacy risks at scale <span class="bbding-10x-x-109">✿</span></h3> <!-- l. 2 --><p class="noindent"><a id="khll"></a> </p> <!-- l. 4 --><p class="indent">
+We saw in Section&nbsp;2.1.6 that differential privacy is a property of the mechanism, not of its output.
+This core insight makes this definition ill-suited for an important class of problems encountered in
+practice: <span class="t1xi-x-x-109">risk analysis</span>. Differential privacy can give strong guarantees about the reidentifiability (or lack
+thereof) of some data, <span class="t1xi-x-x-109">assuming the algorithm that output this data was specifically built to be
+differentially private</span>. What happens when that is not the case, when the data we are interested in has
+already been generated? Is there a way to quantify, or at least estimate, the reidentifiability
+risk?
+</p><!-- l. 13 --><p class="indent">  This problem is of significant practical relevance. Large companies often have many different
+datasets, whose number and size grows organically with the company and over time. This raises a
+number of policy concerns: who should have access to what data, how long should it be retained, etc.
+This is one of the roles of privacy engineers: they must take inventory of existing data and make such
+policy decisions. Unfortunately, the need for comprehensive and consistent data governance
+                                                                                
+                                                                                
+practices is often not understood until a certain amount of organic growth has taken place, and
+manual efforts alone are costly and unlikely to succeed: manual reviews requiring expert
+judgement do not scale. Privacy engineers need a way of quantifying the risk associated with
+datasets, to help them prioritize which datasets to look at first, and assist them in policy
+efforts.
+</p><!-- l. 26 --><p class="indent">  Reidentifiability risk, which we mentioned above, is one such risk. Another one is <span class="t1xi-x-x-109">joinability</span>: is there
+an obvious way to join two datasets that are not supposed to be joined and link the information of the
+same individual across their different identities? In this section, we present a possible approach to
+tackling these problems, and analyzing datasets to detect high reidentifiability or joinability risks.
+Ironically, this approach is based on a novel sketching algorithm, <span class="t1xi-x-x-109">KHyperLogLog </span>(KHLL),
+and relies on the same cardinality estimators that we have shown in Section&nbsp;3.3 not to be
+private.
+</p><!-- l. 35 --><p class="indent">  Precisely quantifying these risks based only on the analysis of existing datasets (without knowledge
+of how they have been generated) is impossible in general: our methods are therefore <span class="t1xi-x-x-109">heuristics</span>. They
+are meant to serve as prioritization and detection tools, to assist engineers in the difficult task of
+building and operationalizing a data governance program.
+</p><!-- l. 1 --><p class="noindent">
+</p>
+
+
+
+
+                                                                                
+                                                                                
+  <div class="footnotes"></div> <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="FromTheoryToPractice.html">LINKPREV</a><a href="FromTheoryToPractice.html#AnalyzingPrivacyRisksAtScale.html">LINKUP</a><a href="IntroductionRiskAnalysis.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="FromTheoryToPractice.html">← previous</a></li>
+        <li><a href="FromTheoryToPractice.html#AnalyzingPrivacyRisksAtScale.html">up</a></li>
+        <li><a href="IntroductionRiskAnalysis.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

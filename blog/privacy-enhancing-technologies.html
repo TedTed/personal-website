@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Mapping privacy-enhancing technologies to your use cases - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Mapping privacy-enhancing technologies to your use cases - Ted is writing things" />
+  <meta property="twitter:title" content="Mapping privacy-enhancing technologies to your use cases - Ted is writing things" />
+  <meta name="description" property="og:description" content="A guide listing common privacy-enhancing technologies, and delineating between which problem each one solves." />
+  <meta property="twitter:description" content="A guide listing common privacy-enhancing technologies, and delineating between which problem each one solves." />
+  <meta property="summary" content="A guide listing common privacy-enhancing technologies, and delineating between which problem each one solves." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/pets-diagram.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/pets-diagram.png" />
+  <meta property="twitter:image:alt" content="A diagram describing multiple data operations, and the associated privacy-enhancing technologies." />
+  <link rel="canonical" href="https://www.tmlt.io/resources/what-anonymization-techniques-can-you-trust" />
+  <link rel="prev" href="trustworthy-anonymization.html" />
+  <link rel="next" href="choosing-things-privately.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="trustworthy-anonymization.html">← previous</a>
+ —     <a href="choosing-things-privately.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./privacy-enhancing-technologies.html">Mapping privacy-enhancing technologies to your use cases</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2023-05-04T00:00:00+02:00">
+      2023-05-04
+    </time>
+    <small>&mdash; updated
+      <time datetime="2023-09-23T00:00:00+02:00">
+        2023-09-23
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p>&nbsp;This article was first published on the <a href="https://www.tmlt.io/resources/mapping-privacy-enhancing-technologies-to-your-use-cases">Tumult Labs blog</a>; its
+copyright is owned by Tumult Labs.</p>
+<p></small></p>
+<hr>
+<p>Say you're working on a new project involving sensitive data — for example,
+adding a new feature to a healthcare app. This feature is bringing new privacy
+concerns that you're trying to grapple with. Maybe your lawyers aren’t feeling
+great about the compliance story of the app you're building. Maybe you want to
+make strong statements to users of the feature, about how you will handle their
+data. Maybe you’re afraid that sensitive user data might leak in unexpected
+ways. You’ve been hearing about advances in privacy technologies, and you
+wonder: should I look into one of those to see if it could solve my problem?</p>
+<p>You've come to the right place. In this blog post, we'll walk you through a few
+key data handling use cases, each involving significant privacy challenges.
+We'll then map various privacy-enhancing technologies (PETs) to those use cases.
+Spoiler alert, the overall map of use cases and PETs will look like this:</p>
+<p><center>
+<img alt="A diagram describing multiple data operations, and the associated
+privacy-enhancing technologies. First, multiple people have arrows pointing to a
+database, this is labeled &quot;Collecting data privately: secure aggregation, local
+differential privacy&quot;. Multiple databases have arrows pointing towards the same
+place, this is labeled &quot;Joining data privately: multi-party computation,
+confidential computing&quot;. These arrows are pointing towards a graphical
+representation of a computation, this is labeled &quot;Computing on data privately:
+homomorphic encryption, confidential computing&quot;. Finally, an arrow goes from
+this visual computation towards a stylized graph; this is labeled &quot;Sharing data
+privately: differential privacy&quot;." src="https://desfontain.es/blog/images/pets-diagram.png">
+</center></p>
+<p>To better understand these challenges, we will make the adversarial model
+explicit as we discuss each use case. This means answering two questions:</p>
+<ul>
+<li>Who has access to the raw, privacy-sensitive data?</li>
+<li>Who are we protecting against; who must not be able to access the raw data?</li>
+</ul>
+<p>In each diagram, we will label the entities with access to the data with a ✅,
+and the adversaries with a ❌.</p>
+<p>Let’s go through each of these categories of use cases one by one.</p>
+<h1 id="collecting-data-privately">Collecting data privately</h1>
+<p>For this use case, your goal is to <em>collect</em> data from individual users of your
+app. For example, let's say that you want to measure some metric related to
+health information among your user base. But there's a catch: you don’t want to
+collect personal data. Instead, you want to be able to tell your users: "I am
+not collecting data about you — I am only learning information about large
+groups of users."</p>
+<p><center>
+<img alt="A diagram representing private data collection. Four smiley faces representing
+users are on the left, and each has an arrow pointing to a database icon on the
+right. Green check marks are next to each smiley face, and a &quot;forbidden&quot; sign is
+next to the database icon. The diagram is labeled &quot;Collecting data privately:
+secure aggregation, local differential
+privacy&quot;" src="https://desfontain.es/blog/images/collecting-data-privately.png">
+</center></p>
+<p>The adversarial model is as follows.</p>
+<ul>
+<li>Only individual users have access to their own raw data.</li>
+<li>You — the organization collecting the data — must not be able to see
+  individual data points.</li>
+</ul>
+<p>Note that in the diagram above, each user has access to their own data, but
+presumably not the data from other users.</p>
+<p>Can you still learn something about aggregate user behavior in this context?
+Perhaps surprisingly, the answer is yes! There are two main privacy technologies
+that can address this use case.</p>
+<ul>
+<li><em>Secure aggregation</em><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> consists in hiding each individual value using
+  cryptographic techniques. These encrypted data points are then combined to
+  compute the aggregate result.</li>
+<li><em><a href="local-global-differential-privacy.html">Local differential privacy</a></em> consists in adding random noise to
+  each individual data point. This noise hides the data of each person… but
+  combining many data points can still reveal larger trends.</li>
+</ul>
+<p>Both technologies can work together, and complement each other well. Local
+differential privacy provides formal guarantees on the output, at the heavy cost
+in accuracy. But combining it with secure aggregation can avoid most of this
+accuracy cost, and boost utility while preserving strong guarantees.</p>
+<p><em>Federated learning</em> is a common use case for these techniques. With this
+machine learning technique, model training happens on each user’s device. This
+can be better for privacy than sending the raw data to a central server… but
+model upgrades from each user can still leak sensitive information! Using secure
+aggregation and/or local differential privacy mitigates this risk.</p>
+<h1 id="computing-on-data-privately">Computing on data privately</h1>
+<p>For this use case, your goal is to have a partner <em>run computations</em> on your
+sensitive data, but hide the data from this partner. For example, in our
+healthcare app story, let’s say you collected some sensitive data through the
+app. A partner company has built a prediction model that you want to use on this
+data. You want them to run their model on your data, but you don’t want them to
+be able to access your data directly.</p>
+<p><center>
+<img alt="A diagram representing private data computation. A database icon is on the
+left, and an arrow goes from it to an icon representing a computation, on the
+right. A green check mark is under the database icon, and a &quot;forbidden&quot; sign is
+below the computation sign. The diagram is labeled &quot;Computing on data privately:
+homomorphix encryption, confidential
+computing&quot;." src="https://desfontain.es/blog/images/computing-on-data-privately.png">
+</center></p>
+<p>The adversarial model is as follows.</p>
+<ul>
+<li>You – the institution collecting the data – have access to the sensitive data.</li>
+<li>The organization performing the computation must not be able to access this data.</li>
+</ul>
+<p>Two main technologies address this use case.</p>
+<ul>
+<li><em>Homomorphic encryption</em> consists in encrypting the data before performing the
+  computation. The organization must adapt its computation to work on encrypted
+  data. Then, they send you back the result in encrypted form, and you can
+  decrypt it to see the result.</li>
+<li><em>Confidential computing</em><sup id="fnref2:2"><a class="footnote-ref" href="#fn:2">2</a></sup> is a hardware-based approach to encrypt data
+  while in-use. It can be combined with remote attestation: this technique
+  allows you to verify that only the code that you have approved is running on
+  your data.</li>
+</ul>
+<p>The guarantee offered by homomorphic encryption is stronger: you do not need to
+trust that the hardware is correctly secured. However, these stronger guarantees
+come at a cost: homomorphic encryption often has a very large performance
+overhead.</p>
+<h1 id="joining-data-privately">Joining data privately</h1>
+<p>For this use case, your goal is to <em>combine</em> your data with the data from other
+organizations. For example, in our healthcare app, you might want to count how
+many of your users also use another app, made by a different company. Or you
+want to measure correlations between metrics in both apps. But like before, you
+don’t want anybody else accessing your data directly. And you don’t want to see
+the data from the other organizations, either!</p>
+<p><center>
+<img alt="A diagram representing private data joins. Three database icons are on the
+left, the first one being larger than others. Arrows point from each database
+icon to a &quot;computation&quot; icon. A green check mark is under the first bigger
+database icon; forbidden signs are below the other two databases, and the
+computation icon. The diagram is labeled &quot;Joining data privately: multi-party
+computation, confidential
+computing&quot;." src="https://desfontain.es/blog/images/joining-data-privately.png">
+</center></p>
+<p>The adversarial model is as follows.</p>
+<ul>
+<li>You have access to your sensitive data (and only yours).</li>
+<li>Other organizations must not be able to access it. The platform running the
+  computation (if any) must also not be able to access it.</li>
+</ul>
+<p>What about the output of the computation — who can access it? It depends. In
+some cases, all participating organizations can access the results. In others,
+only some organizations can see them.</p>
+<p>There are two main technologies that address this use case.</p>
+<ul>
+<li><em>Secure multi-party computation</em> consists in each participant first encrypting
+  their own data. Then, participants use a cryptographic protocol to compute the
+  metric of interest.</li>
+<li><em>Confidential computing</em><sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup> uses hardware modules to encrypt data while in-use.
+  Like before, it works best when combined with remote attestation: then, every
+  participant can verify that only approved code is running on their data.</li>
+</ul>
+<p>Note that these techniques are sometimes not enough to protect the original
+data: the result of the computation can in itself leak something sensitive about
+the data! And this is the perfect transition for our next use case…</p>
+<h1 id="sharing-data-privately">Sharing data privately</h1>
+<p>Finally, for this use case, your goal is to analyze your data, and share some
+insights about it. Here, sharing can mean very different things.</p>
+<ul>
+<li><em>Internal sharing</em>: employees from another department of your organization
+  might want to use your app metrics to inform the design of a different
+  product. However, sharing personal data would require explicit consent in your
+  privacy policy: your compliance story requires that you correctly anonymize
+  metrics, even for internal use.</li>
+<li><em>External sharing</em>: researchers from a partner university might want to use
+  data from your app for a scientific study. Your goal is to share insights with
+  them, without allowing them to see individual information.</li>
+<li><em>Publication</em>: you might want to show some aggregated metrics in the app
+  itself as part of a feature. In this case, all users of your app can see these
+  metrics: it’s critical that they don't inadvertently reveal private
+  information. </li>
+</ul>
+<p>Removing identifiers is, of course, <a href="trustworthy-anonymization.html">not enough to mitigate privacy
+risk</a>. How do you enable such use cases without revealing individual
+information?</p>
+<p><center>
+<img alt="A diagram representing differentially private sharing. A database icon is on
+the left, an arrow points to a stylized bar chart and line chart. A green check
+mark is below the database icon, a &quot;forbidden&quot; sign is below the chart icon. The
+diagram is labeled &quot;Sharing data privately: differential
+privacy&quot;." src="https://desfontain.es/blog/images/joining-data-privately.png">
+</center></p>
+<p>The adversarial model is as follows.</p>
+<ul>
+<li>You have access to the sensitive raw data.</li>
+<li>People who can see the shared data cannot use it to learn information about
+  individuals.</li>
+</ul>
+<p>There is one main technology that addresses this use case. If you're reading
+this <a href="friendly-intro-to-differential-privacy.html">blog post series</a>, you certainly know what it is: differential
+privacy<sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>. It adds statistical noise to aggregated information and provides
+strong privacy guarantees. You can use differential privacy for different kinds
+of data releases:</p>
+<ul>
+<li>statistics or other aggregated analyses on the original dataset;</li>
+<li>machine learning models trained on the sensitive data;</li>
+<li>or synthetic data, which has the same format as the original data.</li>
+</ul>
+<p>This is what me and my colleagues at <a href="https://tmlt.io">Tumult Labs</a> are focusing on,
+building <a href="https://tmlt.dev">open-source software</a> and providing solutions to tailored to
+our customer's needs. <a href="http://tmlt.io/connect">Reach out</a> if that sounds like something you
+could use!</p>
+<h1 id="final-comments">Final comments</h1>
+<p>Handling sensitive data comes with many challenges. In this blog post, I've
+listed a few major use cases, and the privacy technologies that address them. I
+omitted some other privacy-enhancing technologies, for two distinct reasons.</p>
+<ul>
+<li>Some approaches for the use cases we’ve seen do not provide any robust privacy
+  guarantee. For example, some providers address the "joining data privately"
+  use case without provable guarantees: instead, they simply present themselves
+  as trusted third-parties. The situation is similar for the "sharing data
+  privately" use case: some providers focus on ad hoc anonymization techniques.
+  These do not make it possible to formally quantify privacy risk, and often
+  <a href="trustworthy-anonymization.html">fail in practice</a>.</li>
+<li>Some technologies address more niche or infrequent use cases. For example,
+  <em>zero-knowledge proofs</em> are mainly useful in cryptocurrency/blockchain
+  applications. <em>Private information retrieval</em> can make a database accessible
+  to clients, without being able to learn which part of the data these clients
+  are querying. And there are others: privacy technology is a big space, with
+  constant innovation.</li>
+</ul>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:1">
+<p>Sometimes called <em>federated analytics</em>.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>The term "confidential computing" has several synonyms and related
+concepts.</p>
+<ul>
+<li><em>Trusted execution environments</em> refer to the hardware modules used in
+  confidential computing.</li>
+<li><em>Trusted computing</em> uses the same kind of hardware modules as confidential
+  computing. But in trusted computing, the context is different: end users,
+  rather than organizations, are running the hardware module on their
+  devices. Digital rights management is a common use case for this setting.</li>
+<li><em>Data cleanrooms</em> is a more generic term for confidential computing: it
+  also includes more ad hoc solutions that do not use trusted hardware
+  modules.</li>
+</ul>
+<p><a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>Which, here, is used as a shortcut for <a href="local-global-differential-privacy.html"><em>central differential
+privacy</em></a>. This isn't the most explicit, but is often done in
+practice.&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20230504,
+  title = &#123;Mapping privacy-enhancing technologies to your use cases},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/privacy-enhancing-technologies.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2023},
+  month = &#123;05}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="trustworthy-anonymization.html">← previous</a>
+    </li>
+    <li>
+      <a href="choosing-things-privately.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>The privacy loss random variable - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="The privacy loss random variable - Ted is writing things" />
+  <meta property="twitter:title" content="The privacy loss random variable - Ted is writing things" />
+  <meta name="description" property="og:description" content="What does \(\delta\) really mean in \((\varepsilon,\delta)\)-differential privacy? Let's explain this using a central concept: the privacy loss random variable. if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) { var align = "center", indent = "0em", linebreak = "false"; if (false) { align = (screen.width" />
+  <meta property="twitter:description" content="What does \(\delta\) really mean in \((\varepsilon,\delta)\)-differential privacy? Let's explain this using a central concept: the privacy loss random variable. if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) { var align = "center", indent = "0em", linebreak = "false"; if (false) { align = (screen.width" />
+  <meta property="summary" content="What does \(\delta\) really mean in \((\varepsilon,\delta)\)-differential privacy? Let's explain this using a central concept: the privacy loss random variable. if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) { var align = "center", indent = "0em", linebreak = "false"; if (false) { align = (screen.width" />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/privacy-loss-random-variable.html" />
+  <link rel="prev" href="differential-privacy-reading-list.html" />
+  <link rel="next" href="gaussian-noise.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="differential-privacy-reading-list.html">← previous</a>
+ —     <a href="gaussian-noise.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./privacy-loss-random-variable.html">The privacy loss random variable</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2020-03-06T00:00:00+01:00">
+      2020-03-06
+    </time>
+    <small>&mdash; updated
+      <time datetime="2022-07-23T00:00:00+02:00">
+        2022-07-23
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p></small></p>
+<hr>
+<p><span class='lettrine'>R</span><strong>emember</strong> the notion of « <a href="almost-differential-privacy.html">almost</a> »
+differential privacy? We changed the <a href="differential-privacy-in-more-detail.html">original</a> definition to add a new
+parameter, <span class="math">\(\delta\)</span>. We said that <span class="math">\(\delta\)</span> was « the probability that something
+goes wrong ». This was a bit of a shortcut: this nice and easy intuition is
+sometimes not exactly accurate. In this post, I'll do two things. I'll introduce
+a crucial concept in differential privacy: the « privacy loss random variable ».
+Then, I'll use it to explain what <span class="math">\(\delta\)</span> <em>really</em> means.</p>
+<p>Friendly heads-up: this post has slightly more math than the rest of this
+series. But don't worry! I made it as nice and visual as I could, with graphs
+instead of equations. All the equations are in a proof hidden by default.</p>
+<h1 id="the-privacy-loss-random-variable">The privacy loss random variable</h1>
+<p>Recall the setting of the definition of <span class="math">\(\varepsilon\)</span>-DP (short for differential
+privacy). The attacker tries to distinguish between two databases <span class="math">\(D_1\)</span> and
+<span class="math">\(D_2\)</span>, that differ by only one record. If a mechanism <span class="math">\(A\)</span> is <span class="math">\(\varepsilon\)</span>-DP,
+then <span class="math">\(A\left(D_1\right)\)</span> and <span class="math">\(A\left(D_2\right)\)</span> will return output <span class="math">\(O\)</span> with
+similar probability:</p>
+<div class="math">$$
+\mathbb{P}[A(D_1)=O] \le e^\varepsilon\cdot\mathbb{P}[A(D_2)=O].
+$$</div>
+<p>The equality also goes in the other direction, but the relation between <span class="math">\(D_1\)</span>
+and <span class="math">\(D_2\)</span> is symmetrical, so we only use this one inequality, to simplify.</p>
+<p>We said before that the <span class="math">\(\varepsilon\)</span> in <span class="math">\(\varepsilon\)</span>-DP was the <em><a href="differential-privacy-awesomeness.html#quantify">maximal
+knowledge gain</a></em> of the attacker. We defined this knowledge gain in <a href="differential-privacy-in-more-detail.html#quantifying">Bayesian
+terms</a>, where the attacker is trying to guess if the real database <span class="math">\(D\)</span> is <span class="math">\(D_1\)</span>
+and <span class="math">\(D_2\)</span>. We saw that <span class="math">\(\varepsilon\)</span> bounds the evolution of betting odds. For
+each <span class="math">\(O\)</span>, we had:</p>
+<div class="math">$$
+\frac{\mathbb{P}\left[D=D_1\mid A(D)=O\right]}{\mathbb{P}\left[D=D_2\mid A(D)=O\right]} \le
+e^\varepsilon\cdot\frac{\mathbb{P}\left[D=D_1\right]}{\mathbb{P}\left[D=D_2\right]}
+$$</div>
+<p>What if we don't just want to bound this quantity, but calculate it for a given
+output <span class="math">\(O\)</span>? Let us define:</p>
+<div class="math">$$
+\mathcal{L}_{D_1,D_2}(O)
+= \ln\frac{
+    \frac{\mathbb{P}\left[D=D_1\mid A(D)=O\right]}{\mathbb{P}\left[D=D_2\mid A(D)=O\right]}
+  }{
+    \frac{\mathbb{P}\left[D=D_1\right]}{\mathbb{P}\left[D=D_2\right]}.
+}
+$$</div>
+<p>This formula looks scary, but the intuition behind it is pretty simple. The
+denominator corresponds to the <em>initial</em> betting odds for <span class="math">\(D_1\)</span> vs. <span class="math">\(D_2\)</span>. How
+likely is one option vs. the other, before looking at the result of the
+mechanism. In Bayesian terms, this is called the "prior". Meanwhile, the
+numerator of the fraction is the betting odds <em>afterwards</em> — the "posterior".
+Differential privacy guarantees that <span class="math">\(\mathcal{L}_{D_1,D_2}(O)\le\varepsilon\)</span>
+for all <span class="math">\(O\)</span>.</p>
+<p><a href="https://arbital.com/p/bayes_rule/?l=1zq">Bayes' rule</a> allows us to reformulate
+this quantity:</p>
+<div class="math">$$
+\mathcal{L}_{D_1,D_2}(O)
+=
+\ln\left(\frac{\mathbb{P}\left[A(D_1)=O\right]}{\mathbb{P}\left[A(D_2)=O\right]}\right).
+$$</div>
+<p>This is called the <em>privacy loss random variable</em> (PLRV for short).
+<strong>Intuitively, the PLRV is the « actual <span class="math">\(\varepsilon\)</span> value » for a specific
+output <span class="math">\(O\)</span>.</strong> Why is it a random variable? Because typically, we consider
+<span class="math">\(\mathcal{L}_{D_1,D_2}(O)\)</span> when <span class="math">\(O\)</span> varies according to <span class="math">\(A(D_1)\)</span>, which we
+assume is the "real" database.</p>
+<p>OK, this is very abstract. We need a concrete example.</p>
+<h1 id="a-concrete-example">A concrete example</h1>
+<p>Suppose that we're counting the number of people with blue eyes in the dataset.
+We make this diferentially private by adding <a href="differential-privacy-in-practice.html">Laplace noise</a> of scale
+<span class="math">\(1/\ln(3)\)</span>, to get <span class="math">\(\varepsilon=\ln(3)\)</span>. The attacker hesitates between two
+possible datasets: one with <span class="math">\(1000\)</span> blue-eyed people, the other with <span class="math">\(1001\)</span>. The
+<em>real</em> number is <span class="math">\(1000\)</span>, but the attacker doesn't know that. The two
+distributions look like this:</p>
+<p><center>
+<img alt="Graph showing two Laplace distributions with scale 1/ln(3), centered on 1000 and 1001" src="https://desfontain.es/blog/images/two-laplace-ln-3.svg">
+</center> </p>
+<p>Let's consider three possible outputs of the mechanism, given the "real"
+database is <span class="math">\(D_1\)</span>. We represent them below as <span class="math">\(O_1\)</span>, <span class="math">\(O_2\)</span>, and <span class="math">\(O_3\)</span>.</p>
+<p><center>
+<img alt="Graph showing the previous Laplace distributions, with three points O1, O2 and O3 marked respectively at x=999, x=1000.5 and x=1003" src="https://desfontain.es/blog/images/two-laplace-ln-3-three-points.svg">
+</center> </p>
+<p>Say the attacker is very uncertain: initially, they give equal probabilities to
+<span class="math">\(D_1\)</span> and <span class="math">\(D_2\)</span>. What are they going to think once we give them the output of
+the mechanism?</p>
+<ul>
+<li>If we return <span class="math">\(O_1\)</span>, the attacker is starting to suspect that the real database
+  is <span class="math">\(D_1\)</span>. There's a larger chance to get that output if <span class="math">\(D=D_1\)</span> than if
+  <span class="math">\(D=D_2\)</span>. How much larger? Exactly 3 times larger: the attacker's knowledge is
+  tripled.</li>
+<li>If we return <span class="math">\(O_2\)</span>, the attacker is like: ¯\_(ツ)_/¯. This is not giving
+  them much information. This output could have come from <span class="math">\(D_1\)</span>, but it could
+  just as well have come from <span class="math">\(D_2\)</span>. The attacker's knowledge doesn't change.</li>
+<li>If we return <span class="math">\(O_3\)</span>, the attacker is getting <em>tricked</em> with wrong information.
+  They will think it's more likely that the real database is <span class="math">\(D_2\)</span>. Their
+  "knowledge" is divided by 3.</li>
+</ul>
+<p>Let's look at all possible events <span class="math">\(O=A(D_1)\)</span>, and <em>order</em> them. We'll put the
+ones that help the attacker most first, and look at the value of
+<span class="math">\(\mathcal{L}_{D_1,D_2}(O)\)</span>. Let's call this <span class="math">\(\mathcal{L}\)</span>, for short, and plot
+it.</p>
+<p><center>
+<img alt="Graph showing the PLRV for the Laplace distribution depending on the output" src="https://desfontain.es/blog/images/plrv-laplace.svg">
+</center> </p>
+<p>This is why Laplace noise is so nice: look at this neat horizontal line. Oh my
+god. It even has a straight diagonal. It never goes above
+<span class="math">\(\varepsilon\approx1.1\)</span>: a beautiful visual proof that Laplace noise gives
+<span class="math">\(\varepsilon\)</span>-DP.</p>
+<p>Let's change the graph above to more accurately represent that <span class="math">\(\mathcal{L}\)</span> is
+a <em>random variable</em>. On the <span class="math">\(x\)</span>-axis, we represent all events according to their
+probability. We're also more interested in <span class="math">\(\exp(\mathcal{L})\)</span>, so let's plot
+that instead of <span class="math">\(\mathcal{L}\)</span>.</p>
+<p><center>
+<img alt="Graph showing the exponential of the PLRV for the Laplace distribution, where the x-axis represents the probability space" src="https://desfontain.es/blog/images/exp-plrv-laplace.svg">
+</center> </p>
+<p>Now, what if you were using some other type of noise? Say, from a <a href="https://en.wikipedia.org/wiki/Normal_distribution">normal
+distribution</a>? It would make data analysts happier: Laplace noise is weird to
+them, it never shows up in the real world. Normal distributions, by contrast,
+are familiar and friendly. A lot of natural data distributions can be modeled
+with them.</p>
+<p>In the context of differential privacy, the normal distribution is called
+« Gaussian noise ». Let's try to add Gaussian noise, of variance
+<span class="math">\(\sigma^2=3\)</span>:</p>
+<p><center>
+<img alt="Graph showing two normal distributions with variance 2, centered on 1000 and 1001" src="https://desfontain.es/blog/images/gaussian-2.svg">
+</center> </p>
+<p>OK, looks reasonable, now let's see what <span class="math">\(e^\mathcal{L}\)</span> looks like:</p>
+<p><center>
+<img alt="Graph showing the exponential of the PLRV for the normal distribution, where the x-axis represents the probability space" src="https://desfontain.es/blog/images/exp-plrv-gaussian.svg">
+</center> </p>
+<p>Ew. Look at this line going up to infinity on the left side. Gross. We can't
+just draw a line at <span class="math">\(e^\varepsilon\)</span> and say "everything is underneath". What do
+we do, then? We <a href="almost-differential-privacy.html">cheat</a>, and use a <span class="math">\(\delta\)</span>.</p>
+<h1 id="delta-and-the-plrv"><span class="math">\(\delta\)</span> and the PLRV</h1>
+<p>In a <a href="almost-differential-privacy.html">previous article</a>, we said that the <span class="math">\(\delta\)</span> in
+<span class="math">\((\varepsilon,\delta)\)</span>-DP is the probability that something terrible happens.
+What does that mean in the context of Gaussian noise? First, we pick an
+arbitrary <span class="math">\(\varepsilon\)</span>, say, <span class="math">\(\varepsilon=\ln(3)\)</span>. Then, we look at how likely
+it for <span class="math">\(e^\mathcal{L}\)</span> to be above the <span class="math">\(e^\varepsilon=3\)</span> line. It's easy to do:
+the <span class="math">\(x\)</span>-axis is the probability space, so we can simply measure the width of the
+bad events.</p>
+<p><center>
+<img alt="Same graph, but with δ marked at x=0.05, where the curve is approximately equal to 3" src="https://desfontain.es/blog/images/exp-plrv-gaussian-delta.svg">
+</center> </p>
+<p>This simple intuition is correct: this mechanism is <span class="math">\((\ln(3),\delta_1)\)</span>-DP, with
+<span class="math">\(\delta_1\approx0.054\)</span>. But it misses an important subtlety. Let's zoom in on
+the part where things go wrong, and consider two possible outputs.</p>
+<p><center>
+<img alt="Same graph, zoomed on the &quot;bad events&quot; part before 0.05, with two points O1 and O2 marked respectively at x=0.045 and x=0.002" src="https://desfontain.es/blog/images/exp-plrv-gaussian-two-bad-events.svg">
+</center> </p>
+<p>Returning <span class="math">\(O_1\)</span> is not great: <span class="math">\(e^\mathcal{L}&gt;e^\varepsilon\)</span>. But it's not
+<em>terrible</em>: the privacy loss is only a tiny bit larger than we'd hope. Returning
+<span class="math">\(O_2\)</span>, however, is scary news: <span class="math">\(e^\mathcal{L}\)</span> is huge. Intuitively, <span class="math">\(O_2\)</span> leaks
+much more information than <span class="math">\(O_1\)</span>.</p>
+<p>With our way of quantifying <span class="math">\(\delta\)</span>, we don't account for this. We only measure
+the <span class="math">\(x\)</span>-axis. What we count is <em>whether</em> <span class="math">\(e^\mathcal{L}\)</span> is above the line, not
+<em>how much</em> it's above the line. For each bad event of probability <span class="math">\(p\)</span>, we're
+adding <span class="math">\(p\times1\)</span> to the <span class="math">\(\delta\)</span>. A finer approach is to <em>weigh</em> the bad events
+by "how bad they are". We want to give a "weight" of <span class="math">\(\approx1\)</span> to the very bad
+events, and a weight of <span class="math">\(\approx0\)</span> to the "not too bad" ones.</p>
+<p>To do this, we transform a bit the curve above by doing two things. First, we
+take the <em>inverse</em> of the curve: very bad events are now close to <span class="math">\(0\)</span> instead of
+very large. Second, we <em>normalize</em> the curve by taking the ratio
+<span class="math">\(e^\varepsilon/e^\mathcal{L}\)</span>. This way, events that are "not too bad" are close
+to <span class="math">\(1\)</span>.</p>
+<p><center>
+<img alt="Plotting exp(ε)/exp(PLRV) and highlighting the area under 1" src="https://desfontain.es/blog/images/exp-plrv-gaussian-inversed.svg">
+</center> </p>
+<p>This allows us to consider the <em>area</em> between the curve and the <span class="math">\(y=1\)</span> line. When
+<span class="math">\(\mathcal{L}\)</span> is very large, the inverse is close to <span class="math">\(0\)</span>, so the distance to <span class="math">\(1\)</span>
+is almost 1. And when <span class="math">\(\mathcal{L}\)</span> is close to <span class="math">\(\varepsilon\)</span>, the ratio is one,
+and the distance is almost 0. <em>Very bad</em> events count more than <em>sort of bad</em>
+events.</p>
+<p>This is the tighter, exact characterization of <span class="math">\(\delta\)</span>. In
+<span class="math">\((\varepsilon,\delta)\)</span>-DP, the <span class="math">\(\delta\)</span> is the area highlighted above. It is the
+mass of all possible bad events, <em>weighted</em> by how likely they are and how bad
+they are. This tells us that the mechanism is <span class="math">\((\ln(3),\delta_2)\)</span>-DP with
+<span class="math">\(\delta_2\approx0.011\)</span>, a much better characterization than before.</p>
+<p>The typical definition of <span class="math">\((\varepsilon,\delta)\)</span>-DP doesn't use this complicated
+formulation. A mechanism <span class="math">\(A\)</span> is <span class="math">\((\varepsilon,\delta)\)</span>-DP if for any neighboring
+<span class="math">\(D_1\)</span> and <span class="math">\(D_2\)</span>, and any set <span class="math">\(S\)</span> of possible outputs:</p>
+<div class="math">$$
+\mathbb{P}[A(D_1)\in S] \le e^\varepsilon\cdot\mathbb{P}[A(D_2)\in S]+\delta.
+$$</div>
+<p>This definition is equivalent to the previous characterization. If you want to
+see the proof of that, click here: <button id="toggleProof"></button></p>
+<div id="proof" style="display: none; border-left: double; padding-left: 10px">
+<p>Fix a mechanism <span class="math">\(A\)</span> and a <span class="math">\(\varepsilon\ge0\)</span>. There is a <span class="math">\(\delta\)</span> such that <span class="math">\(A\)</span>
+is <span class="math">\((\varepsilon,\delta)\)</span>-DP: with <span class="math">\(\delta=1\)</span>, that's trivial and meaningless.
+The interesting question is: what is the <em>smallest</em> possible <span class="math">\(\delta\)</span> such that
+<span class="math">\(A\)</span> is <span class="math">\((\varepsilon,\delta)\)</span>-DP? For each possible set of outputs <span class="math">\(S\)</span>, we can
+compute:</p>
+<p>
+<div class="math">$$
+\delta_S = \mathbb{P}[A(D_1)\in S] - e^\varepsilon\cdot\mathbb{P}[A(D_2)\in S]
+$$</div>
+</p>
+<p>The definition is satisfied iff <span class="math">\(\delta_S\le\delta\)</span> for all <span class="math">\(S\)</span>. So we have:</p>
+<p>
+<div class="math">$$
+\delta = \max_{S} \left(\mathbb{P}[A(D_1)\in S] - e^\varepsilon\cdot\mathbb{P}[A(D_2)\in S]\right).
+$$</div>
+</p>
+<p>It is easy to notice that you only care about the outputs <span class="math">\(O\)</span> such that:</p>
+<p>
+<div class="math">$$
+\mathbb{P}[A(D_1)=O] &gt; e^\varepsilon\cdot\mathbb{P}[A(D_2)=O].
+$$</div>
+</p>
+<p>All other outputs would make <span class="math">\(\delta_\max\)</span> <em>smaller</em>, not larger. So the set <span class="math">\(S\)</span>
+that maximizes the quantity above is:</p>
+<p>
+<div class="math">$$
+S_\max = \left\{O \mid \mathbb{P}[A(D_1)=O] &gt; e^\varepsilon\cdot\mathbb{P}[A(D_2)=O]\right\}.
+$$</div>
+</p>
+<p>We can convert this to:</p>
+<p>
+<div class="math">$$
+\begin{align}
+\delta
+&amp; = \mathbb{P}[A(D_1)\in S_\max] - e^\varepsilon\cdot\mathbb{P}[A(D_2)\in S_\max] \\
+&amp; = \sum_{O\in S_\max} \left(\mathbb{P}[A(D_1)=O] - e^\varepsilon\cdot\mathbb{P}[A(D_2)=O]\right) \\
+&amp; = \sum_{O\in S_\max} \mathbb{P}[A(D_1)=O] \left(1 - \frac{e^\varepsilon}{e^{\mathcal{L}_{D_1,D_2}(O)}}\right).
+\end{align}
+$$</div>
+</p>
+<p>Now, instead of summing only <span class="math">\(O\in S_\max\)</span>, we could sum all possible <span class="math">\(O\)</span>, and
+nullify the ones that aren't in <span class="math">\(S_\max\)</span>.</p>
+<p>
+<div class="math">$$
+\delta
+ =  \sum_{O} \mathbb{P}[A(D_1)=O] \max\left(0, 1 - \frac{e^\varepsilon}{e^{\mathcal{L}_{D_1,D_2}(O)}}\right).
+$$</div>
+</p>
+<p>Now, this is an expected value:</p>
+<p>
+<div class="math">$$
+\delta
+ =  \mathbb{E}_{O\sim A(D_1)} \left[ \max\left(0, 1 - \frac{e^\varepsilon}{e^{\mathcal{L}_{D_1,D_2}(O)}}\right)\right]
+$$</div>
+</p>
+<p style="text-indent: 0em">and this formula corresponds exactly to
+the area between the curve above and <span class="math">\(1\)</span>.</p>
+</div>
+<h1 id="what-about-infinity-values">What about infinity values?</h1>
+<p>Using Gaussian noise, all possible values of <span class="math">\(\mathcal{L}\)</span> are <em>finite</em>. But for
+some mechanisms <span class="math">\(A\)</span>, there are outputs <span class="math">\(O\)</span> such that <span class="math">\(\mathbb{P}[A(D_1)=O]&gt;0\)</span>,
+but <span class="math">\(\mathbb{P}[A(D_2)=O]=0\)</span>. In that case, <span class="math">\(\mathcal{L}(O)=\infty\)</span>. This kind
+of output is called a <em>distinguishing event</em>. If we return a distinguishing
+event, the attacker immediately finds out that <span class="math">\(D\)</span> is <span class="math">\(D_1\)</span> and not <span class="math">\(D_2\)</span>. This
+is the case for the "thresholding" example we looked at <a href="almost-differential-privacy.html">previously</a>.</p>
+<p>Our interpretation of <span class="math">\(\delta\)</span> captures this nicely. Since we inverted the
+curve, if <span class="math">\(\mathcal{L}=\infty\)</span>, we simply have <span class="math">\(e^\varepsilon/e^\mathcal{L}=0\)</span>.
+The distance to <span class="math">\(1\)</span> is exactly <span class="math">\(1\)</span>, so we count these events with maximal
+weight. The graph looks like this:</p>
+<p><center>
+<img alt="Plotting exp(ε)/exp(PLRV) and highlighting the area under 1 when that function is 0 below 0.006 and 1 everywhere else" src="https://desfontain.es/blog/images/exp-plrv-distinguishing.svg">
+</center> </p>
+<p>In that case, <span class="math">\(\delta_1=\delta_2\)</span>: all "bad" events are worst-case events. For
+such a mechanism, the two characterizations of <span class="math">\(\delta\)</span> are the same.</p>
+<h1 id="final-note">Final note</h1>
+<p>You might be wondering: why use Gaussian noise at all if it requires <span class="math">\(\delta&gt;0\)</span>?</p>
+<p>This is an excellent question. I'm glad you asked it, because it is exactly the
+topic of the <a href="gaussian-noise.html">next blog post</a> in this series. Or you can, as always,
+select another article to read next in the <a href="friendly-intro-to-differential-privacy.html">table of contents</a>!</p>
+<hr>
+<p><small>
+Thanks to <a href="http://www0.cs.ucl.ac.uk/staff/s.meiser/">Sebastian Meiser</a>, who
+wrote the <a href="https://eprint.iacr.org/2018/277.pdf">reference paper</a> about the
+subtleties with <span class="math">\(\delta\)</span>. It makes for excellent reading if you want to dig a
+bit deeper into this. Thanks also to Antoine Amarilli for proofreading this
+blog post, and to Anthony Caruso and Ivan Habernal for detecting mistakes in
+earlier version.
+</small></p>
+<script type="text/javascript">
+var button = document.getElementById('toggleProof');
+var defaultButton = 'Show me the proof';
+button.innerHTML = defaultButton
+button.addEventListener('click', function (event) {
+    button.innerHTML = button.innerHTML == defaultButton ? 'Hide the proof' : defaultButton;
+    proof = document.getElementById('proof');
+    proof.style.display = proof.style.display == 'none' ? 'block' : 'none';
+});
+</script>
+
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20200306,
+  title = &#123;The privacy loss random variable},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/privacy-loss-random-variable.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2020},
+  month = &#123;03}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="differential-privacy-reading-list.html">← previous</a>
+    </li>
+    <li>
+      <a href="gaussian-noise.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

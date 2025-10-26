@@ -1,0 +1,407 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="DefinitionsAndSystemDesign.html" />
+  <link ref="next" href="ExperimentalValidation.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="DefinitionsAndSystemDesign.html">← previous</a></li>
+        <li><a href="AnalyzingPrivacyRisksAtScale.html#EstimatingReidentifiabilityAndJoinabilityUsingKHLL.html">up</a></li>
+        <li><a href="ExperimentalValidation.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="DefinitionsAndSystemDesign.html">LINKPREV</a><a href="AnalyzingPrivacyRisksAtScale.html#EstimatingReidentifiabilityAndJoinabilityUsingKHLL.html">LINKUP</a><a href="ExperimentalValidation.html">LINKNEXT</a></p></div>
+  <h4 class="subsectionHead" id="estimating-reidentifiability-and-joinability-using-khll-u-ding-"><span class="titlemark">4.1.3</span>&nbsp;&nbsp;<a id="x47-1500004.1.3"></a>Estimating reidentifiability and joinability using KHLL <span class="bbding-10x-x-109">✿</span></h4> <!-- l. 3 --><p class="noindent">
+In this section, we explain how to use KHLL, presented in Section&nbsp;4.1.2.0, to estimate reidentifiability
+and joinability, as defined in Section&nbsp;4.1.2.0.
+</p><!-- l. 8 --><p class="indent">
+<a id="subsubsection*.73"></a>
+</p>
+  <h5 class="subsubsectionHead" id="reidentifiability"><a id="x47-151000"></a>Reidentifiability</h5>
+<!-- l. 10 --><p class="noindent">From a KHLL sketch of <!-- l. 10 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mstyle MJXc-space1"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.225em; padding-right: 0.137em;">I</span></span></span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>,
+one can estimate both the cardinality of the column and the number of unique IDs associated with
+individual column values i.e., the uniqueness distribution. The latter allows us to efficiently estimate the
+proportion of column values that are reidentifying as well as statistics such as the min, max, and median
+uniqueness.
+</p>
+<!-- l. 16 --><p class="noindent"><span class="likeparagraphHead" id="evaluating-the-tradeoff-between-data-loss-and-reidentifiability"><a id="x47-152000"></a>Evaluating the trade-off between data loss and reidentifiability</span>
+</p><!-- l. 18 --><p class="indent">  One can plot the uniqueness distribution to visualize the percentage of column values or IDs meeting some
+<!-- l. 19 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+thresholds. Figure&nbsp;4.2 is an example histogram of how many column values are associated with each number
+of unique IDs. Tweaked slightly, Figure&nbsp;4.3 plots the cumulative percentage of values not meeting varying
+<!-- l. 22 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+thresholds. A “more anonymous” dataset exhibits the curve on the left as most of the column values are
+expected to be associated with a large number of IDs. Conversely, a highly reidentifying dataset will
+exhibit the curve on the right.
+</p><!-- l. 27 --><p class="indent">  The cumulative distribution is particularly useful as it estimates how much data will be lost when applying
+a <!-- l. 28 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+threshold. This allows one to determine a threshold that preserves some data utility while
+ensuring a reasonable privacy protection, especially when other risk mitigation measures
+are in place such as access control, audit trails, limited data lifetime or noising of released
+statistics. We can see that for the left curve, one can choose a high threshold with low data loss,
+while on the right even a moderate threshold will result in dropping a large portion of the
+dataset.
+                                                                                
+                                                                                
+</p><!-- l. 36 --><p class="indent">  Given the efficiency of KHLL analysis, one could set up periodic analyses to assure that the uniqueness
+distribution does not change over time, to monitor, for example, that no more than X% of values should have less
+than <!-- l. 39 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity.
+</p><!-- l. 41 --><p class="indent">  In addition to analyzing the uniqueness distribution of individual columns, KHLL can be used to
+analyze any combinations of columns, including a complete row. This can be done, for example, by
+simply concatenating the values of multiple columns, and treating the combination as a new column.
+The reidentifiability risk will grow as the number of dimensions increases. For example with movie
+recommendations, the combination of movie name, rating and date of recommendation can be highly
+unique&nbsp;[<a id="x47-152001"></a><a href="bibliography.html#cite.0@narayanan2008robust">294</a>].
+</p>
+<!-- l. 49 --><p class="noindent"><span class="likeparagraphHead" id="limitations-and-mitigations"><a id="x47-153000"></a>Limitations and mitigations</span>
+</p><!-- l. 51 --><p class="indent">  Using a KHLL sketching algorithm with <!-- l. 51 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em; padding-right: 0.04em;">K</span></span><span class="mjx-mo MathClass-rel MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">=</span></span><span class="mjx-mn MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2048</span></span></span></span></span></span></span>
+and 512 HLL buckets would give us an estimated error rate of 2% for the value cardinality and about
+4% error rate for ID cardinalities. A higher error rate of ID cardinality estimates is tolerable given that
+we are more concerned about column values that associate with low number of IDs. In
+those cases, the algorithm will use HLL++ in sparse representation mode, which gives good
+estimates with minimal errors. Note that the trade-off between accuracy and efficiency is
+configurable.
+</p><!-- l. 59 --><p class="indent">  Meanwhile, as a KHLL sketch effectively maintains
+<!-- l. 59 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em; padding-right: 0.04em;">K</span></span></span></span></span></span>
+uniform random samples of column values, the estimated distribution does come with sampling bias.
+Specifically, it is possible that the estimated distribution may miss some outlier column values that
+associate with a large or small number of IDs. One mitigation is to run multiple analyses using different
+hash functions (with random seeds) to reduce the chance of outliers being consistently left out of the
+analysis.
+</p><!-- l. 68 --><p class="indent">
+<a id="subsubsection*.74"></a>
+</p>
+  <h5 class="subsubsectionHead" id="joinability"><a id="x47-154000"></a>Joinability</h5>
+  <figure class="figure"> 
+
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+<!-- l. 72 --><p class="noindent" id="-example-illustration-of-joinability-between-personally-identifiable-information-pii-and-pseudonymous-ids-with-raw-user-agent-ua-strings-being-the-join-key"><img alt="PII-1PII-2PII-3UA-1UA-2UA-3ID-1ID-2ID-3UA-1UA-2UA-3IdentifieddaPseudonymo⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅............tuas data " src="index27x.svg">
+<a id="x47-154001r4"></a>
+</p>
+<figcaption class="caption"><span class="id"> <span class="t1xsc-">F<span class="small-caps">igure</span></span><span class="t1xsc-">&nbsp;4.4:&nbsp;</span></span><span class="content"><span class="t1xr-">Example illustration of joinability between Personally Identifiable Information (PII) and
+           pseudonymous IDs, with raw User Agent (UA) strings being the join key.</span>             </span></figcaption><!-- tex4ht:label?: x47-154001r4  -->
+                                                                                
+                                                                                
+  </figure>
+<!-- l. 172 --><p class="indent">  Estimating the joinability of two datasets through a pair of columns say
+<!-- l. 173 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span> and
+<!-- l. 173 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>
+from their KHLL sketches is also straightforward. Recall that containment of
+<!-- l. 174 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span> in
+<!-- l. 174 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span> is given by
+<!-- l. 175 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span><span class="mjx-mrow"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.298em; padding-bottom: 0.372em;">∩</span></span><span class="mjx-msub MJXc-space2"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">∕</span></span><span class="mjx-mrow MJXc-space2"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span><span class="mjx-mrow"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span></span></span></span></span></span></span>. To compute this, we need
+only the cardinality of <!-- l. 176 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span>
+and <!-- l. 176 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>,
+plus the cardinality of their intersection.
+</p><!-- l. 179 --><p class="indent">  Using the inclusion-exclusion principle, we estimate
+<!-- l. 180 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span><span class="mjx-mrow"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.298em; padding-bottom: 0.372em;">∩</span></span><span class="mjx-msub MJXc-space2"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span></span><span class="mjx-mo MathClass-rel MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">=</span></span><span class="mjx-mrow MJXc-space3"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span><span class="mjx-mrow"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.298em; padding-bottom: 0.446em;">+</span></span><span class="mjx-mrow MJXc-space2"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span><span class="mjx-mrow"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.298em; padding-bottom: 0.446em;">−</span></span><span class="mjx-mrow MJXc-space2"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span><span class="mjx-mrow"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.298em; padding-bottom: 0.372em;">∪</span></span><span class="mjx-msub MJXc-space2"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span></span></span></span></span></span></span>. The union
+of <!-- l. 181 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span> and
+<!-- l. 181 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span> can be easily estimated by
+merging the KHLL sketch of <!-- l. 182 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span>
+and that of <!-- l. 182 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>. An
+alternative approach for computing the set intersection is by identifying the hash values that exist in both the KHLL
+sketches of <!-- l. 184 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span> and
+<!-- l. 184 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span> and computing the
+minmax of the <!-- l. 185 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em; padding-right: 0.04em;">K</span></span></span></span></span></span>
+smallest hashes on both sides. This would allow us to quantify the error rate of individual set
+intersections directly, but the error rate will vary as the minmax of the hashes will vary for different
+pairs of columns. We prefer the simpler inclusion-exclusion-based approach.
+</p><!-- l. 190 --><p class="indent">  In addition to determining the joinability of columns, KHLL sketches can provide insights into the
+potential joinability of identities in two datasets. For example, pseudonymous IDs in one dataset could
+be reidentified if the dataset is joinable with another dataset containing Personally Identifiable
+Information (PII), and if the join keys are associated with one pseudonymous ID and PII respectively
+(see Figure&nbsp;4.4).
+</p><!-- l. 197 --><p class="indent">  Specifically, given a pair of sketches of two columns
+<!-- l. 197 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span> and
+<!-- l. 198 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span> in datasets
+<!-- l. 198 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span> and
+<!-- l. 198 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>
+respectively, we could estimate: </p>
+     <ul class="itemize1">
+     <li class="itemize">whether <!-- l. 200 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span>
+     is highly contained in <!-- l. 200 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>
+     or vice-vers;
+     </li>
+     <li class="itemize">whether <!-- l. 201 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span>
+     uniquely identifies <!-- l. 201 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.137em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.225em; padding-right: 0.137em;">I</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span>
+     in <!-- l. 201 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span>;
+     </li>
+     <li class="itemize">whether <!-- l. 202 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>
+     uniquely identifies <!-- l. 202 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.137em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.225em; padding-right: 0.137em;">I</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>
+     in <!-- l. 202 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>.</li></ul>
+<!-- l. 205 --><p class="indent">  KHLL allows us to estimate all the above conditions. Specifically, the first level of
+KHLL which is essentially a KMV sketch can be used to estimate the cardinality of
+<!-- l. 207 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span> and
+<!-- l. 207 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.153em;"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>, the
+cardinality of the intersection, and thus containment. Meanwhile, the second level of KHLL, consisting
+of HLL sketches, gives the uniqueness distribution and thus the ratio of uniquely identifying values
+easily.
+</p>
+<!-- l. 212 --><p class="noindent"><span class="likeparagraphHead" id="practical-considerations-for-joinability-analysis"><a id="x47-155000"></a>Practical considerations for joinability analysis</span>
+</p>
+  <figure class="figure"> 
+
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+<!-- l. 216 --><p class="noindent" id="-twostep-approach-of-reidentifiability-and-joinability-analysis-i-distributed-scanners-read-various-datasets-to-produce-a-khll-sketch-for-every-c-i-tuple-ii-various-stats-including-pairwise-containment-of-datasets-are-computed-offline-based-on-the-sketches-rather-than-by-comparing-the-raw-datasets"><img alt="UAfieldID............UAfieldID............IDotherfi......Skefi...SketchAnalysketchReieltceezeddshldsesenstaifillability &amp; joinability
+alongofflinweith IDsestimates  " src="index28x.svg">
+<a id="x47-155001r5"></a>
+</p>
+<figcaption class="caption"><span class="id"> <span class="t1xsc-">F<span class="small-caps">igure</span></span><span class="t1xsc-">&nbsp;4.5:&nbsp;</span></span><span class="content"><span class="t1xr-">Two-step   approach   of   reidentifiability   and   joinability   analysis:   (i)   distributed
+           scanners     read     various     datasets     to     produce     a     KHLL     sketch     for     every</span>
+           <!-- l. 363 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.153em;">C</span></span></span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.298em;">×</span></span><span class="mjx-mstyle MJXc-space2"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.225em; padding-right: 0.137em;">I</span></span></span></span></span></span></span></span></span>
+           <span class="t1xr-">tuple, (ii) various stats (including pairwise containment of datasets) are computed offline
+           based on the sketches (rather than by comparing the raw datasets).</span>                  </span></figcaption><!-- tex4ht:label?: x47-155001r5  -->
+                                                                                
+                                                                                
+  </figure>
+<!-- l. 366 --><p class="indent">  Estimating the joinability of large datasets is a hard problem. Naively estimating the pairwise
+joinability of datasets involves a quadratic number of full-table scans. The number of scans needed can
+increase quickly, especially for large datasets with many data columns.
+</p><!-- l. 371 --><p class="indent">  However, as shown in Figure&nbsp;4.5, KHLL allows us to estimate joinability from the sketches alone.
+This is a huge saving: it allows us to scan each dataset only once, and then pairwise compare the
+sketches rather than original datasets.
+</p><!-- l. 376 --><p class="indent">  The sketching process can be agnostic to the underlying data when the schema of the datasets are
+well defined. For example when using protocol buffer messages&nbsp;[<a id="x47-155002"></a><a href="bibliography.html#cite.0@protobuf">323</a>] we can analyze new datasets
+without any need to configure information about columns, especially when the semantic types of data
+columns are properly annotated&nbsp;[<a id="x47-155003"></a><a href="bibliography.html#cite.0@protobuf-options">341</a>].
+</p><!-- l. 382 --><p class="indent">  The sketching process can also be distributed. The respective data owners do not need to grant a
+central service access to the raw data, but simply to agree on the sketching method and to upload the
+sketches to a central repository. The sketches containing the hash values of potentially sensitive data
+including user IDs should still be treated with care such as by limiting the access and ensuring a short
+lifetime.
+</p>
+<!-- l. 389 --><p class="noindent"><span class="likeparagraphHead" id="limitations-and-mitigations1"><a id="x47-156000"></a>Limitations and mitigations</span>
+</p><!-- l. 391 --><p class="indent">  Using sketches for joinability analysis comes with some risks, both of reporting columns are
+potential join keys even though they do not present an actual risk of joinability, and of missing potential
+join keys.
+</p><!-- l. 395 --><p class="indent">  First, note that the containment metric is agnostic to the semantics of the underlying data.
+Specifically, containment (or Jaccard) does not distinguish between columns that use a similar range of
+values but are semantically different. As an example, we could falsely determine <span class="t1xtt-x-x-109">port_number </span>and
+<span class="t1xtt-x-x-109">seconds_till_midnight </span>columns to be joinable since they both have an extensive overlap in the integer
+range of <!-- l. 400 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">[</span></span><span class="mjx-mrow"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">0</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mn MJXc-space1"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">86400</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>:
+this can induce <span class="t1xi-x-x-109">false positives</span>. The rate of false positives can be mitigated by requiring a large
+cardinality threshold on the potential join keys.
+</p><!-- l. 404 --><p class="indent">  Second, <span class="t1xi-x-x-109">false negatives </span>are also possible, and can arise for multiple reasons. For example, the
+containment metric will fail to detect similar columns that have been encoded differently (e.g., base64
+versus raw string) or have undergone some slight transformations (e.g., a microsecond timestamp
+versus the coarsened millisecond version). This is a hard problem in practice. The system could
+potentially support some common transformations or encodings when the semantic type of a data
+column is known, but there is no way to handle all possibilities.
+</p><!-- l. 413 --><p class="indent">  The containment metric can also be unreliable when set sizes are highly skewed. When the expected
+error rate of a set is larger than the cardinality of a much smaller set, the estimate for the set intersection
+computed using the inclusion- exclusion principle will be unreliable. One could potentially complement
+the containment metric with some other similarity scores like the similarity between the frequency
+distribution of the potential join keys.
+</p><!-- l. 420 --><p class="indent">  Importantly, while KHLL can evaluate the pairwise joinability of datasets based on individual
+columns, estimating the joinability of datasets through arbitrary combinations of columns remains
+practically infeasible given that intractable number of potential column combinations. One could
+                                                                                
+                                                                                
+however systematically approach this by testing the joinability between combinations of high-risk
+columns, for example, involving only those that have high uniqueness.
+</p><!-- l. 427 --><p class="indent">  Finally, pairwise joinability analysis does not readily detect multi-hop joinability. For example, when a dataset
+<!-- l. 428 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span> is joinable
+with dataset <!-- l. 428 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>,
+and <!-- l. 429 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span> is joinable
+with dataset <!-- l. 429 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">3</span></span></span></span></span></span></span></span></span>
+through two different pairs of join keys, we will not detect that
+<!-- l. 430 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span> is joinable
+to <!-- l. 430 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">3</span></span></span></span></span></span></span></span></span>.
+Such multi-hop joinability analysis could be similarly estimated using clustering and graph traversal
+algorithms such as label propagation&nbsp;[<a id="x47-156001"></a><a href="bibliography.html#cite.0@zhu2002learning">412</a>].
+                                                                                
+                                                                                
+</p>
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="DefinitionsAndSystemDesign.html">LINKPREV</a><a href="AnalyzingPrivacyRisksAtScale.html#EstimatingReidentifiabilityAndJoinabilityUsingKHLL.html">LINKUP</a><a href="ExperimentalValidation.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="DefinitionsAndSystemDesign.html">← previous</a></li>
+        <li><a href="AnalyzingPrivacyRisksAtScale.html#EstimatingReidentifiabilityAndJoinabilityUsingKHLL.html">up</a></li>
+        <li><a href="ExperimentalValidation.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

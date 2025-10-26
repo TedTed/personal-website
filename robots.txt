@@ -1,0 +1,12 @@
+User-agent: *
+Disallow: /aimprimer/
+Disallow: /analytics/
+Disallow: /Avatar/
+Disallow: /Films/
+Disallow: /MrRobot/
+Disallow: /RecettesBeta/
+Disallow: /JdR/
+Disallow: /PDFs/
+Disallow: /ceg/
+Disallow: /BlackMirror/
+Disallow: /ds9/

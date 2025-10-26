@@ -1,0 +1,285 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="OtherPossibleResearchDirections.html" />
+  <link ref="next" href="bibliography.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="OtherPossibleResearchDirections.html">← previous</a></li>
+        <li><a href="index.html#Conclusion.html">up</a></li>
+        <li><a href="bibliography.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="OtherPossibleResearchDirections.html">LINKPREV</a><a href="index.html#Conclusion.html">LINKUP</a><a href="bibliography.html">LINKNEXT</a></p></div>
+  <h2 class="chapterHead" id="conclusion-u-ding-2"><span class="titlemark">5</span>&nbsp;&nbsp;<a id="x63-2240005"></a>Conclusion <span class="bbding-10x-x-109">✿</span></h2>                                                               <div class="flushright"> <!-- l. 3 --><p class="noindent"> </p> <!-- l. 6 --><p class="noindent">
+<span class="t1xss-x-x-95">From the ground, we stand. From
+our ships, we live. By the stars,
+we hope.</span><br>
+
+ <span class="t1xsssl-x-x-95">(Becky Chambers, </span><span class="t1xss-x-x-95">Records of a
+             Spaceborn Few</span><span class="t1xsssl-x-x-95">)</span>
+</p>
+</div>
+<!-- l. 9 --><p class="noindent">Trying to lower the cost of anonymization, in 2020, can sometimes feel like a pointless academic
+endeavor. Is data privacy really worth focusing on, when climate change is quickly making our planet
+unlivable&nbsp;[<a id="x63-224001"></a><a href="bibliography.html#cite.0@nasaclimatechange">362</a>]? Only a global pandemic has seemed able to temporarily slow down the global
+warming process&nbsp;[<a id="x63-224002"></a><a href="bibliography.html#cite.0@le2020temporary">239</a>], while existing plans to tackle this enormous challenge seem both inefficient
+and doomed to failure&nbsp;[<a id="x63-224003"></a><a href="bibliography.html#cite.0@leahy2019most">240</a>]. Not only do we appear to be unable to mitigate this looming threat, but
+we also seem woefully unprepared to handle its consequences. Migration crises will likely intensify
+over the next few decades, and nations all over the world are already showing their systematic inability
+to handle them with any shred of humanity or kindness&nbsp;[<a id="x63-224004"></a><a href="bibliography.html#cite.0@grant2020if">175</a><a id="x63-224005"></a>, <a href="bibliography.html#cite.0@kingsley2020taking">229</a><a id="x63-224006"></a>, <a href="bibliography.html#cite.0@serwer2019crime">343</a>]. We urgently need
+to build more just societies, that acknowledge their white supremacist past, and uphold
+fundamental human rights for everyone, including marginalized communities. Instead, world
+superpowers are quickly descending into fascism&nbsp;[<a id="x63-224007"></a><a href="bibliography.html#cite.0@weinstein2020fascism">386</a>], building technological infrastructure that
+empowers belligerent authoritarianism&nbsp;[<a id="x63-224008"></a><a href="bibliography.html#cite.0@poulson2020reports">319</a><a id="x63-224009"></a>, <a href="bibliography.html#cite.0@waldman2018palantir">377</a>], and getting away with committing cultural
+genocide&nbsp;[<a id="x63-224010"></a><a href="bibliography.html#cite.0@zenz2019thoroughly">403</a>].
+</p><!-- l. 29 --><p class="indent">  Fighting off these potentially catastrophic shifts is critical to upholding every value we hold
+dear. But preventing our societies from succumbing to apocalyptic threats is only half the
+battle: we also need to actively build a fairer, kinder, more sustainable world. Systemic
+challenges require systemic solutions: we need to change incentives and structures so that people
+and organizations naturally tend towards doing the right thing for all the stakeholders they
+impact.
+</p><!-- l. 37 --><p class="indent">  The development of privacy-preserving technologies can play a positive role in pushing some of
+those incentives in the right direction. As an example, encrypting Web traffic at scale is globally
+beneficial, and efforts that make secure protocols easier to use and deploy are making it that
+comparatively harder for organizations to resist calls to migrate to safer practices. Similarly we envision
+a world where there are fewer and fewer reasons for sharing or publishing data in an unsafe, identifiable
+manner, which puts individuals at risk. Such a shift would primarily benefit those who, today, pay the
+highest price when their personal information is leaked: marginalized groups targeted by
+online harassment, victims of domestic abuse, or political dissidents under authoritarian
+regimes.
+</p><!-- l. 49 --><p class="indent">  Nonetheless, it is worth examining the implicit power dynamics at play in differential privacy,
+especially in its central form discussed throughout this thesis, as almost all the techniques we
+                                                                                
+                                                                                
+introduced, developed, or improved upon, assume that a central organization collects and stores raw
+data from individuals. Once all this personal and sensitive information has been collected, this central
+organization the one responsible for anonymizing it and then sharing or publishing it in a safe manner.
+This is a vertical model of differential privacy: it presupposes a high level of trust that the individual
+must put in the central organization, to take great care of their data and not abuse it. This trust might be
+completely misguided, as many recent high-profile data leaks or questionable uses of data tend to
+suggest. Further, this relationship is often not as consensual as it first seems: for instance,
+can you really choose not to participate to a service that all your friends use to organize
+social events? Finally, even organizations with good intent are subject to applicable laws and
+regulations, some of which can compel them to share the data from their users with authoritarian
+governments.
+</p><!-- l. 66 --><p class="indent">  This model will likely never disappear entirely: retailers need to know who their customers are and
+where to ship their packages, hospitals need to have information about the patients they treat,
+government organizations like the US Census have a mandate to collect demographic data from their
+residents and use it to make decisions that impact their democratic system. Further, as we mentioned in
+the introduction of this thesis, and as exemplified by use cases like the Community Mobility Reports or
+the Search Trends symptoms dataset, such data publications can have a significantly positive
+social impact. Thus, we argue that improving incentives for such use cases is still worth
+doing.
+</p><!-- l. 76 --><p class="indent">  However, these implicit power dynamics, which indirectly cause massive systemic problems, suggest
+that lowering the cost of central differential privacy is not enough. To minimize the negative societal
+impact from data hoarding, we need to incentivize organizations not to collect sensitive data in the first
+place. This suggests investing in alternative models, like local or distributed differential privacy. In
+these models, a central aggregator can learn useful information about global trends, but does
+not have access to the raw data: they cannot abuse it, leak it inadvertently, or provide it to
+governments.
+</p><!-- l. 85 --><p class="indent">  Randomized response was a first example of such a system, but a number of very promising
+advances have been made in that direction in the past few years. Trusted shufflers or secure aggregation
+techniques can provide strong guarantees and high utility with a minimal level of trust. Just like any
+other privacy-enhancing technology, making them both useful and usable will be paramount to their
+success, and will unlock their positive impact globally.
+</p><!-- l. 92 --><p class="indent">  We predict that rolling out these protocols at scale will raise very similar issues to the ones discussed
+in this thesis about central differential privacy: improving usability will be difficult but paramount,
+unexpected vulnerabilities will have to be identified and fixed, tricky operational challenges will
+appear and will need to be tackled. Collaborations across the industry, governments, nonprofit
+organizations and academics will be necessary for such a project to be successful. It will be
+difficult, frustrating, tiring, fascinating, and exhilarating—anything worth doing usually
+is.
+                                                                                
+                                                                                
+</p><!-- l. 11 --><p class="indent">  <a id="bibliography"></a>
+                                                                                
+                                                                                
+</p>
+  <!-- l. 88 --><div class="crosslinks"><p class="noindent"><a href="OtherPossibleResearchDirections.html">LINKPREV</a><a href="index.html#Conclusion.html">LINKUP</a><a href="bibliography.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="OtherPossibleResearchDirections.html">← previous</a></li>
+        <li><a href="index.html#Conclusion.html">up</a></li>
+        <li><a href="bibliography.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

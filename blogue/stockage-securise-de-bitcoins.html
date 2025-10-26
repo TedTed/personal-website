@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Stocker des Bitcoin de façon sûre - Ted écrit des trucs</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="archives.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blogue/" type="application/rss+xml" rel="alternate" title="Ted écrit des trucs - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Stocker des Bitcoin de façon sûre - Ted écrit des trucs" />
+  <meta property="twitter:title" content="Stocker des Bitcoin de façon sûre - Ted écrit des trucs" />
+  <meta name="description" property="og:description" content="Le système que j'ai adopté pour stocker des Bitcoin en minimsant les risques." />
+  <meta property="twitter:description" content="Le système que j'ai adopté pour stocker des Bitcoin en minimsant les risques." />
+  <meta property="summary" content="Le système que j'ai adopté pour stocker des Bitcoin en minimsant les risques." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blogue/stockage-securise-de-bitcoins.html" />
+  <link rel="prev" href="telephone.html" />
+  <link rel="next" href="renouveler-certificat-ssl-postfix.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Aller vers le contenu" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+              ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+              <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious-fr.html"> Présentation <img src="../flag-france.gif" alt=""/></a>
+          <a href="../serious.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-france.gif" alt=""/>
+          <a href="../blog/index.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recettes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="feed.xml">rss</a> —
+            <a href="archives.html">archives</a>
+          </span>
+          <span class="droite">
+            <a href="offlineimap-mbsync.html"
+                 title="Passer d'OfflineIMAP à isync/mbsync">← précédent</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted écrit des trucs</span>
+      </a></h1>
+      Sur des sujets en lien avec la vie privée, ou parfois pas.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./stockage-securise-de-bitcoins.html">Stocker des Bitcoin de façon sûre</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2014-09-09T00:00:00+02:00">
+      2014-09-09
+    </time>
+    <small>&mdash; modifié le
+      <time datetime="2014-09-10T00:00:00+02:00">
+        2014-09-10
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><strong>J'ai</strong> eu la chance d'entendre parler de Bitcoin assez tôt, et de m'y
+intéresser assez pour être rapidement enthousiasmé par les possibilités et (à
+mon humble avis) le potentiel disruptif de cette technologie. En conséquence,
+j'ai acheté quelques Bitcoin à l'époque où ils ne valaient pas encore
+grand-chose, et au fil des mois, je me suis rendu compte que vu leur valeur, il
+faudrait peut-être que je les stocke (au moins en partie) de façon un peu
+sécurisée. Je me suis renseigné et ce billet décrit la solution que j'ai
+choisie, qui est assez peu commune pour que ça vaille la peine que je la
+détaille en français, et assez élégante pour que je puisse l'exposer
+publiquement sans avoir peur que l'on se serve de ces informations contre moi.</p>
+<p>Note : si vous ne connaissez pas bien le fonctionnement des Bitcoin, la seule
+chose qu'il est nécessaire de savoir pour comprendre cet article est la
+chose suivante. Les Bitcoin (qui ont de la valeur monétaire, donc que l'on
+veut protéger contre les incendies et les pirates, et transmettre à nos
+proches en cas d'accident) sont stockés sur des <em>adresses</em>, et pour pouvoir les
+utiliser, il faut en avoir la <em>clé privée</em>. Stocker des Bitcoin se résume
+donc à stocker une clé privée, qui est essentiellement une chaîne de
+caractères — ou, parce que c'est plus pratique, un QR code :</p>
+<p><center><img alt="QR code" src="https://i.imgur.com/C8JRQRu.png"></center></p>
+<p>(pas la peine de vous embêter, il n'y a 
+<a href="https://blockchain.info/address/16XuZa7G1M2KXN8GKqeBQL7txG9yXoHdLX">rien dessus</a>).</p>
+<h1 id="le-probleme">Le problème</h1>
+<p>Je voulais que mon système réponde à trois critères essentiels :</p>
+<ul>
+<li>être <em>résistant aux attaques extérieures</em> — par « attaques »,
+    j'entends aussi bien un piratage d'un ou plusieurs de mes appareils qu'un
+    possible vol de mes affaires ;</li>
+<li>être <em>sûr</em>, c'est-à-dire que je veux minimiser les risques que je perde
+    l'accès à mes Bitcoin — par exemple, en cas d'oubli de mot de passe, de mort
+    d'un disque dur ou d'un autre type d'accident compromettant
+    l'intégrité de mes données ;</li>
+<li>et être <em>résilient</em>, c'est-à-dire que si je meurs, je veux être sûr que
+    quelqu'un de confiance puisse y avoir accès.</li>
+</ul>
+<p>Malgré ce que peuvent dire d'un ton emphatique les évangélistes du
+monde du Bitcoin, c'est très loin d'être évident de trouver une solution qui
+satisfasse tous ces critères d'un coup. La solution classique se base sur un
+mot de passe complexe et un chiffrement de portefeuille (en général avec
+<a href="https://bitcoinpaperwallet.com/bip38-password-encrypted-wallets/">BIP-38</a>),
+mais je trouve que ça a un inconvénient assez majeur : si le mot de passe est
+assez complexe pour qu'il ne soit pas devinable par un attaquant, il
+faut soit le noter quelque part, soit devoir le retenir. </p>
+<p>Dans le premier cas, on prend le risque de se faire voler le papier en
+question, ou bien qu'il soit détruit dans un accident — et si on l'écrit sur
+plusieurs papiers, on diminue le second risque en augmentant le premier. Ou
+alors, on fait appel à quelqu'un dont c'est le métier de garder des
+documents précieux (dans un testament chez le notaire ou dans le coffre d'une
+banque), mais ça tue un peu le principe d'une monnaie décentralisée que
+l'on peut utiliser sans intermédiaire.</p>
+<p>Dans le second cas, il faut avoir une confiance absolue en ses propres capacités
+de mémorisation, ce qui me semble un peu trop optimiste (un accident qui fait
+subir un choc au mauvais endroit du cerveau est vite arrivé), et ça ne
+satisfait pas mon troisième critère.</p>
+<p>La solution naturelle est de séparer l'information « clé privée chiffrée »
+avec « mot de passe de la clé ». Mettre le QR code de la clé chiffrée à
+plusieurs endroits sûrs, et retenir le mot de passe, en faisant aussi une
+sauvegarde du mot de passe dans (au moins) un endroit sûr, <em>différent de
+l'endroit où a mis la clé chiffrée</em> (évidemment). En se débrouillant pour
+qu'en cas d'accident, nos proches puissent avoir accès à ces deux
+informations.</p>
+<p>Une politique classique en termes de sauvegardes considère que pour être sûr de
+ne pas perdre une donnée, il faut en avoir trois copies à trois endroits
+différents, sur au moins deux supports distincts. Dans notre situation où l'on
+a deux informations qui ne doivent pas se « toucher », il faut donc <em>six</em> lieux
+de stockage entièrement séparés si on veut avoir une sécurité correcte. Aucun,
+bien sûr, ne doit être connecté à Internet : on veut avoir la certitude que si
+une donnée est compromise, on s'en rendra compte et on pourra prendre les
+mesures qui s'imposent. Du coup, ça fonctionne et c'est théoriquement
+solide, mais c'est pas très pratique à mettre en place.</p>
+<h1 id="la-solution">La solution</h1>
+<p>Si on veut avoir une solution plus simple à mettre en place, il ne faut donc
+pas séparer l'information « clé privée chiffrée » et « mot de passe » :
+autrement dit, ne pas utiliser de mot de passe. Mais si l'on fait ça et que
+l'on met la clé privée dans un unique endroit, ça n'est ni résistant aux
+attaques ni sûr. Donc, on va séparer la clé privée en plusieurs
+<em>morceaux</em>, de telle sorte à ce que chaque morceau pris à part ne soit pas
+suffisant pour reconstituer l'information complète.</p>
+<p>Un peu comme un puzzle… Sauf que pas vraiment. Un puzzle a une caractéristique
+pénible : si l'on perd une pièce, on ne peut pas reconstituer le puzzle entier.
+Et en plus, la connaissance d'une pièce donne une information non négligeable
+sur le puzzle final : plus on dispose de pièces, plus c'est facile de
+« deviner » (comprendre : bruteforcer) celle(s) qui manque(nt). Mais
+ça tombe bien, le monde merveilleux de la cryptographie a une solution toute
+prête à ce problème, et ça s'appelle SSSS, comme 
+<a href="https://fr.wikipedia.org/wiki/Partage_de_cl%C3%A9_secr%C3%A8te_de_Shamir">Shamir's Secret Sharing Scheme</a>. </p>
+<p>Avec ce système, on peut choisir deux entiers <code>t</code> et <code>n</code> (où <code>t≤n</code>), une clé
+secrète, et obtenir <code>n</code> morceaux de la clé qui vérifient deux propriétés
+sympa :</p>
+<ul>
+<li>si on dispose de <code>t</code> morceaux différents (n'importe lesquels), on
+    peut reconstituer la clé secrète ;</li>
+<li>et si on dispose de strictement moins de <code>t</code> morceaux, alors on a <em>aucune</em>
+    information supplémentaire sur la clé (le problème « trouver la
+    clé » est aussi difficile que si on n'a aucun morceau).</li>
+</ul>
+<p>Une fois qu'on a nos morceaux, on les met à des endroits différents, et si
+<code>1&lt;t&lt;n</code>, on obtient toutes les propriétés voulues : en cas de perte ou de vol
+d'un des morceaux, rien n'est compromis (puisqu'il faut au moins 2 morceaux
+pour avoir accès aux données) et on a peut retrouver l'information de
+départ (puisque l'on dispose toujours de <code>n-1</code> morceaux, et <code>t≤(n-1)</code>).</p>
+<p>En fait, si <code>2&lt;t&lt;(n-1)</code>, on peut même se faire voler ou perdre <em>deux</em>
+morceaux sans que ça soit problématique. Et en fonction du niveau de
+sécurité que l'on désire, on peut adapter le nombre de morceaux. <code>t=2</code>
+et <code>n=3</code> est la solution « minimale », qui permet d'avoir une sécurité
+raisonnable (le cas de figure « on se fait voler ou on perd 2 morceaux à la
+fois » est extrêmement peu probable si ils sont dans des endroits
+différents) et beaucoup plus plus simple à mettre en place et à maintenir que
+la solution précédente. Si l'on veut plus de sécurité face aux attaques venant
+de gens malicieux, il faut augmenter <code>t</code> et <code>n</code> en même temps ; et si
+l'on veut plus de résilience face à l'éventualité d'une perte de données, il
+faut augmenter <code>n</code> tout seul.</p>
+<h1 id="mise-en-pratique">Mise en pratique</h1>
+<p>La première chose à faire est de choisir <code>t</code> et <code>n</code>, ce qui dépend du nombre
+d'endroits de stockage dont on dispose. Pour <code>t=2</code> et <code>n=3</code>, il suffira de
+confier deux morceaux à deux personnes de confiance, et en garder un avec
+soi. Ou bien, une seule personne de confiance, et deux endroits sûrs que
+l'on a à notre disposition. Dans la suite, on va supposer que <code>t=2</code> et <code>n=3</code>,
+c'est facile d'adapter à la solution choisie.</p>
+<p>Ensuite, il faut créer notre clé privée. On va faire ça sur un ordinateur
+<em>déconnecté d'Internet</em>, <em>depuis un Live-CD</em> et qui dispose d'une imprimante.
+Tout ce qui suit la génération de la clé privée doit être fait depuis une
+machine complètement déconnectée du réseau, pour éviter qu'un virus ne puisse
+envoyer à un attaquant les informations générées. De la même façon, si le modèle
+de l'imprimante est récent et qu'elle est connectée à Internet, il faut
+débrancher sa connexion (voire la réinitialiser avant et après aux paramètres
+d'usine, si on a pas confiance).</p>
+<p>Prenez donc le Live-CD de votre choix (par exemple, 
+<a href="https://www.debian.org/CD/live/index.fr.html">Debian Live</a>) et démarrez dessus.
+On va avoir besoin de quelques paquets :</p>
+<div class="highlight"><pre><span></span><code><span class="n">apt</span><span class="o">-</span><span class="n">get</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">ssss</span><span class="w"> </span><span class="n">qrencode</span><span class="w"> </span><span class="n">zbar</span><span class="o">-</span><span class="n">tools</span>
+</code></pre></div>
+
+<p>ainsi que d'un logiciel de manipulation d'images (si il n'y en a pas de fourni
+sur le Live CD, téléchargez votre préféré). Puis, ouvrez le navigateur du live
+CD, allez sur
+<a href="https://www.offlineaddress.com/?n=1">offlineaddress.com</a>, et débranchez votre
+câble Ethernet (et désactivez votre carte wifi, si besoin) pour être sûr de ne
+plus être connecté. Générez une adresse en utilisant la page du site. Mettez
+l'adresse de gauche (la chaîne de caractères qui commence par un <code>1</code>) dans un
+fichier (disons, <code>~/publique</code>), et celle de droite (qui commence par un <code>5</code>)
+dans un autre fichier (<code>~/privee</code>, par exemple).</p>
+<p>On commence par couper les morceaux :</p>
+<div class="highlight"><pre><span></span><code>cat privee | ssss-split -t 2 -n 3
+</code></pre></div>
+
+<p>ce qui imprime trois lignes commençant par <code>1</code>, <code>2</code> et <code>3</code>, nos morceaux de clés
+qu'on évoquait plus haut. Copiez-les quelque part (par exemple, dans trois
+fichiers <code>morceau1</code>, <code>morceau2</code> et <code>morceau3</code>). Faites-en des QR codes :</p>
+<div class="highlight"><pre><span></span><code>cat morceau1 | qrencode -o &quot;morceau1.png&quot; 
+cat morceau2 | qrencode -o &quot;morceau2.png&quot; 
+cat morceau3 | qrencode -o &quot;morceau3.png&quot;
+</code></pre></div>
+
+<p>et vérifiez qu'ils fonctionnent bien : en en prenant deux au hasard, vous devez
+être capable de retrouver la clé privée.</p>
+<div class="highlight"><pre><span></span><code>zbarimg --raw morceau1.png | tr -s &#39;\n&#39; &gt; partie1 
+zbarimg --raw morceau3.png | tr -s &#39;\n&#39; &gt; partie3 
+cat partie1 partie3 | ssss-combine -t 2
+</code></pre></div>
+
+<p>Ensuite, avec votre logiciel de manipulation d'images, faites une jolie image
+contenant les QR codes (et les morceaux en format brut, au cas où on en aurait
+besoin en situation d'urgence sans avoir accès à un appareil permettant de les
+lire), imprimez-la et coupez-la en trois morceaux, que vous pouvez ensuite
+protéger et stocker. Imprimez aussi la clé publique, pour savoir à quelle
+adresse envoyer les Bitcoin que vous voulez stocker de cette façon.</p>
+<p>Il ne reste plus qu'à distribuer les différents morceaux à des gens ou des
+endroits de confiance, et à indiquer sur votre testament quels sont les endroits
+en question. Le critère de choix principal est « si quelque chose arrive à un
+des morceaux, il faut qu'on puisse en être averti rapidement ».
+C'est pourquoi utiliser du <em>papier</em> est important : un disque dur ou une clé
+USB qui meurt au fond d'un tiroir, ça ne prévient personne et ça ne fait pas de
+bruit.</p>
+<h1 id="derniers-details">Derniers détails</h1>
+<p>On pourrait améliorer certains points. Utiliser le client Bitcoin officiel
+au lieu d'un service comme offlineaddress.com est vraisemblablement
+une bonne idée, par exemple (mais c'est plus compliqué). Par ailleurs, si on
+est vraiment paranoïaque, on peut faire en sorte que la machine utilisée
+n'ait jamais été connectée à Internet, pas même <em>avant</em> la génération de
+l'adresse : un virus pourrait parvenir à truquer le processus… Mais j'ai beau me
+creuser la tête, je ne vois pas trop (vu comment on génère l'adresse)
+comment une telle attaque serait possible, et préparer tous les paquets à
+l'avance est un peu pénible.</p>
+<p>Au niveau de la confidentialité, si les morceaux de clé secrètes doivent
+bien sûr rester secrète, on peut avoir envie que la clé publique le soit
+aussi. Ça ajoute des complications. On pourrait par exemple utiliser
+plusieurs adresses (en faisant trois groupes de morceaux), et stocker les
+adresses publiques en différents endroits, pour faire en sorte que quelqu'un qui
+en découvre une n'ait qu'une idée partielle de la quantité de Bitcoin stockés…</p>
+<p>Au cas où ça soit utile de le préciser : je ne suis pas responsable de ce
+que vous faites avec ces instructions ; et je ne garantis pas leur sécurité
+absolue. No warranty for any of this, to the extent permitted by applicable
+law, etc.</p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Citez cet article!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>L'entrée BibTeX a été copiée dans votre presse-papiers.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblogue20140909,
+  title = &#123;Stocker des Bitcoin de façon sûre},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blogue/stockage-securise-de-bitcoins.html}},
+  note = &#123;Ted écrit des trucs (blog personnel)},
+  year = &#123;2014},
+  month = &#123;09}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="telephone.html">← précédent</a>
+    </li>
+    <li>
+      <a href="renouveler-certificat-ssl-postfix.html">suivant →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">haut de page</a></li>
+    <li><a href="index.html">accueil</a></li>
+    <li><a href="archives.html">archives</a></li>
+  </ul>
+</nav>
+
+      <div class="feedback">
+        Tout ce que je raconte ici sont mes opinions personnelles, pas celles de
+        mon employeur.
+        <br>
+        Je suis toujours ravi de recevoir des réactions, critiques, questions,
+        ou autres commentaires sur ce que j'écris. Envoyez-moi ce qui vous
+        chante à <span class="baddirection">se.niatnofsed@neimad</span>.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          par 
+          <a rel="dct:publisher" href="http://desfontain.es/serious-fr.html">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="Je pense que le concept de propriété intellectuelle n'a aucun sens. Le contenu de ce blog est dans le domaine public."/>
+          </a>
+          &mdash;
+          mis en orbite par <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

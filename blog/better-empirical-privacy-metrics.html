@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>The search for better empirical privacy metrics - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="The search for better empirical privacy metrics - Ted is writing things" />
+  <meta property="twitter:title" content="The search for better empirical privacy metrics - Ted is writing things" />
+  <meta name="description" property="og:description" content="A few generic pieces of advice on how to get better utility out of your differentially private aggregations." />
+  <meta property="twitter:description" content="A few generic pieces of advice on how to get better utility out of your differentially private aggregations." />
+  <meta property="summary" content="A few generic pieces of advice on how to get better utility out of your differentially private aggregations." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/one-run-privacy-auditing.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/one-run-privacy-auditing.png" />
+  <meta property="twitter:image:alt" content="A diagram that starts with two database icons: "input data" and "canaries". Two arrows labeled "split" that go from the "canaries" box to two database icons labeled "Included canaries" and "Excluded canaries". Two arrows labeled "merge" go from "Input data" and "Included canaries" to a "synthetic data generator under test" box, an arrow starts there and goes to a "Synthetic data" database icon, and an arrow goes from this to a box labeled "Simulated adversary - guesses which canaries are included"; there is also an arrow from the canaries box to this adversary box. Finally, an arrow goes from the adversary box to an "Attack success score" box." />
+  <link rel="canonical" href="https://desfontain.es/blog/better-empirical-privacy-metrics.html" />
+  <link rel="prev" href="differential-privacy-glossary.html" />
+  <link rel="next" href="wordpl.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="differential-privacy-glossary.html">← previous</a>
+ —     <a href="wordpl.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./better-empirical-privacy-metrics.html">The search for better empirical privacy metrics</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2025-04-07T00:00:00+02:00">
+      2025-04-07
+    </time>
+  </footer>
+  <div>
+    <p><small>
+This post is co-authored by Samuel Haney, David Pujol, and myself. Samuel and
+David did most of the research presented here.
+</small></p>
+<hr>
+<p><span class='lettrine'>H</span><strong>ow</strong> to determine whether a synthetic data
+generation method is safe enough to use? This is an important question: despite
+being advertised as technology that inherently protects privacy, synthetic data
+generation can often reveal a <a href="https://arxiv.org/abs/2011.07018">lot of personal information</a>. There
+are two major approaches to evaluating this risk.</p>
+<ul>
+<li><strong>Formal privacy approaches</strong>, like <a href="friendly-intro-to-differential-privacy.html">differential privacy</a> (DP),
+  provide a mathematical guarantee about the maximum level of risk.  </li>
+<li><strong>Empirical privacy metrics</strong> attempt to estimate the level of risk in the
+  synthetic data, by simulating practical attacks or using heuristics.</li>
+</ul>
+<p>Both are sensible approaches, and in principle, they can complement each other
+well. A wide variety of algorithms already exists to obtain synthetic data with
+provable privacy guarantees. However, on the empirical side, the situation is
+more problematic: existing privacy metrics have a
+<a href="bad-ugly-good-maybe.html">long list of serious flaws</a>.</p>
+<p>To address this problem, we set out to develop empirical privacy metrics that
+would avoid existing issues. In this blog post, we give an overview of what we
+learned so far, and preliminary thoughts on what we believe are the most
+promising approaches.</p>
+<h4 id="what-does-a-good-metric-look-like">What does a good metric look like?</h4>
+<p>We believe that a good measure of empirical privacy risk should satisfy the
+following high-level requirements.</p>
+<ul>
+<li><strong>Interpretability.</strong> It should correspond to a meaningful notion of privacy
+  risk: the score should provide an understanding of the success of a
+  well-defined attack, with clear adversarial assumptions.  </li>
+<li><strong>Robustness.</strong> It should be difficult to "game": a good metric should not
+  assume a fixed-strategy adversary, but be generic enough that they can capture
+  a variety of different possible attacks.  </li>
+<li><strong>Specificity.</strong> It should be able to quantify the privacy risk for various
+  classes of participants, including average case as well as specific
+  sub-populations, or outliers.  </li>
+<li><strong>Controllable uncertainty.</strong> Any inherent uncertainty it might have should be
+  quantifiable, and it should be possible for users to reduce this uncertainty
+  to acceptable levels.  </li>
+<li><strong>Comparability to formal privacy measures.</strong> It should be complemented by an
+  analytical upper bound on privacy risk, and it should be possible to convert
+  the metric to have the same unit as this upper bound.  </li>
+<li><strong>Performance.</strong> It should be able to be computed in a reasonable time using
+  realistic computational resources.</li>
+</ul>
+<p>In short, a good metric should simulate a privacy attack with clear goals and
+assumptions, and measure its success in a rigorous way.</p>
+<h4 id="a-promising-approach-privacy-auditing">A promising approach: privacy auditing</h4>
+<p>The above desiderata are aligned with an area of research called <strong>privacy
+auditing</strong>, which measures an adversary's ability to perform privacy attacks. A
+simple way to perform this measurement is as follows.</p>
+<ol>
+<li>Choose two input datasets that differ in a single record.  </li>
+<li>Randomly select one of these inputs, and generate synthetic data based on it.  </li>
+<li>Model an adversary who has access to the synthetic data and must make a guess
+   on which of the two input datasets was used.  </li>
+<li>Repeat steps 1-3 many times to obtain a reliable estimate of the adversary's
+   success rate.</li>
+</ol>
+<p><center>
+<img alt="A diagram with an &quot;target record&quot; block, with an arrow labeled &quot;randomly
+decide whether to include&quot; going to a database icon labeled &quot;input data&quot;. An
+arrow then goes to a &quot;synthetic data generator under test&quot;, an arrow starts
+there and goes to a &quot;Synthetic data&quot; database icon, and an arrow goes from this
+to a box labeled &quot;Simulated adversary - guesses whether the target record was
+included&quot;; there is also an arrow from the target record to this adversary box.
+The whole thing is annotated &quot;Repeat many times (with different records)&quot;, and
+an arrow points from this annotation to an &quot;Attack success score&quot;
+box." src="https://desfontain.es/blog/images/many-run-privacy-auditing.svg">
+</center></p>
+<p>If the mechanism is differentially private, one can show that the success rate
+cannot be above a certain score (which depends on the <a href="differential-privacy-glossary.html#epsilon"><span class="math">\(\varepsilon\)</span>
+value</a>). So the two approaches complement each other: DP tells us "the risk
+is at most this", and privacy auditing tells us "the risk is at least this".</p>
+<p>Using this framework to create empirical privacy metrics is promising, and
+satisfies many of our desiderata.</p>
+<ul>
+<li><em>Interpretability</em>. The metric quantifies the success rate of a well-defined
+  membership inference attack. We can model different attack models by changing
+  which information is available to the adversary (more on this later).  </li>
+<li><em>Robustness</em>. The framework can be used regardless of <em>how</em> the adversary
+  makes their guess. They can use a variety of different attacks to distinguish
+  between the two input datasets, and we can compute the risk score based on
+  which attack performs best.  </li>
+<li><em>Specificity</em>. The adversary is running a membership inference attack on the
+  record that differs between the two input datasets. If this record is sampled
+  from the underlying distribution, the score corresponds to average-case risk.
+  If this record is sampled from a specific sub-population instead, or chosen to
+  be an outlier, we can estimate the risk for these populations.  </li>
+<li><em>Controllable uncertainty</em>. By repeating the experiment multiple times, we can
+  compute precise confidence intervals around the adversary's success rate.
+  Running more experiments decreases the uncertainty.</li>
+<li><em>Comparability to formal privacy measures.</em> The success rate directly
+  translates into a lower bound on the <span class="math">\(\varepsilon\)</span> value.</li>
+</ul>
+<p>The one shortcoming of this approach is <em>performance</em>: to compute a single
+experiment, we need to run the entire synthetic data generation algorithm! This
+makes it impractical to generate many experiments, even though this is needed to
+get accurate risk estimates. Luckily, recent research has developed a clever
+solution to this problem.</p>
+<h4 id="making-privacy-auditing-more-efficient">Making privacy auditing more efficient</h4>
+<p><a href="https://arxiv.org/abs/2305.08846">Privacy Auditing with One (1) Training Run</a> is a paper by Thomas Steinke,
+Milad Nasr, and Matthew Jagielski, which received an
+<a href="https://blog.neurips.cc/2023/12/11/announcing-the-neurips-2023-paper-awards/">Outstanding Paper award</a> at NeurIPS 2023. It introduces a key insight:
+rather than running many experiments that each target a single record, we can
+run <em>one</em> experiment, and target <em>many</em> records simultaneously. This is
+accomplished using a set of fake records called <em>canaries</em>, and randomly
+including some of them in the input dataset. The attacker must then determine
+which canaries were included, using the synthetic data.</p>
+<p><center>
+<img alt="A diagram that starts with two database icons: &quot;input data&quot; and &quot;canaries&quot;.
+Two arrows labeled &quot;split&quot; that go from the &quot;canaries&quot; box to two database icons
+labeled &quot;Included canaries&quot; and &quot;Excluded canaries&quot;. Two arrows labeled &quot;merge&quot;
+go from &quot;Input data&quot; and &quot;Included canaries&quot; to a &quot;synthetic data generator
+under test&quot; box, an arrow starts there and goes to a &quot;Synthetic data&quot; database
+icon, and an arrow goes from this to a box labeled &quot;Simulated adversary -
+guesses which canaries are included&quot;; there is also an arrow from the canaries
+box to this adversary box. Finally, an arrow goes from the adversary box to an
+&quot;Attack success score&quot; box." src="https://desfontain.es/blog/images/one-run-privacy-auditing.svg">
+</center></p>
+<p>The authors show that both experiments are essentially equivalent. This method
+was developed in the context of membership inference attacks for machine
+learning models, but the exact same idea can be used for synthetic data. We
+believe that this is fundamentally the right approach to measuring empirical
+privacy risk.</p>
+<p>Using this framework is not enough to build empirical privacy metrics for
+synthetic data: we also need to <em>instantiate</em> this framework. More precisely, we
+need to answer the following questions.</p>
+<ul>
+<li>How are the canaries chosen?  </li>
+<li>What knowledge does the adversary have about the underlying distribution?  </li>
+<li>Which attack(s) does the adversary use to determine their guess?</li>
+</ul>
+<p>The answers turn out to have a major impact on whether empirical metrics can do
+a good job at detecting privacy violations.</p>
+<h4 id="how-to-choose-the-canaries">How to choose the canaries?</h4>
+<p>The choice of canaries determine which records we are targeting for the privacy
+evaluation. There are three distinct options.</p>
+<ul>
+<li><em>Measure average-case risk</em>. The simplest option is to pick the canaries from
+  the same distribution as the input data. For example, we can put aside a
+  random subset of the input to use as canaries. In this case, we are estimating
+  the average-case privacy risk across the entire population.  </li>
+<li><em>Measure risk for specific subpopulations</em>. A slightly more complex option is
+  to pick canaries from a subset of the data, for example from demographic
+  minorities. This measures privacy risk for people who are part of this
+  subpopulation. If the subpopulation has unique characteristics or rarer
+  attribute values, this typically leads to higher attack success.  </li>
+<li><em>Measure risk for worst-case targets</em>. A third option is to choose the
+  canaries adaptively, depending on the input dataset and the choice algorithm,
+  to try and maximize the success of the attack. This requires significantly
+  more effort, but gets closer to the high-level privacy goal of protecting even
+  the most vulnerable records in the population.</li>
+</ul>
+<p>We found that attacks are <em>much</em> more successful in the third model. Here are
+two examples.</p>
+<ul>
+<li>If the input dataset is very homogeneous, then outlier data points with many
+  unique attributes are <a href="https://arxiv.org/abs/2306.10308">very susceptible</a> to attacks based on e.g.
+  nearest-neighbor distances.</li>
+<li>Some synthetic data generation algorithms determine possible values of the
+  output data using the values that appear in the input dataset, sometimes in a
+  randomized way. Knowing the details of this process allows an attacker to
+  craft well-chosen canaries whose presence will be observable in the output
+  dataset by observing which attribute values occur.</li>
+</ul>
+<h4 id="what-does-the-adversary-know-about-the-underlying-distribution">What does the adversary know about the underlying distribution?</h4>
+<p>The adversary's goal is to distinguish between synthetic data generated using
+data from an underlying distribution, and synthetic data generated from a
+<em>specific</em> dataset containing their target. The more information they have about
+the underlying distribution, the better they can discriminate between both. For
+example, if the adversary can sample synthetic datasets using the underlying
+distribution as input, they can use powerful supervised learning techniques as
+part of their attack. Those typically perform much better than simpler methods.</p>
+<p>In practice, priors on the underlying distribution may be obtained using past
+releases for similar datasets: this often happens when the use case requires
+generating synthetic data regularly. Adversaries can also get distributional
+information from the mechanism itself, or even from the output of naive privacy
+metrics.</p>
+<h4 id="which-attack-does-the-adversary-use">Which attack does the adversary use?</h4>
+<p>Regardless of the choice of canaries and auxiliary knowledge, the adversary has
+many options to choose from to decide how to compute their guess: distance-based
+approaches (of which there are many variants), ML classifiers, kernel density
+estimation, shadow modeling attacks, and so on.</p>
+<p>Unsurprisingly, even all things being equal, the choice of the attack method has
+a major impact on attack success. Through experimentation, we learned a few
+high-level lessons.</p>
+<ul>
+<li>Shadow modeling attacks perform particularly well. Those require the attacker
+  to be able to generate multiple synthetic datasets from the underlying
+  distribution, and also require more computational power.  </li>
+<li>Attacks generally come with parameters; tuning these parameters is often
+  crucial to boost the attack success. Information about the input dataset and
+  the algorithm used can make this tuning step much more effective.  </li>
+<li>The success rate can be increased by allowing the adversary to provide a
+  <em>confidence level</em> along with each guess, and only considering high-confidence
+  guesses. This is another way to measure privacy risk for the most vulnerable
+  records.</li>
+<li>Generally, no single attack methodology achieves best performance across all
+  algorithms and input distributions. Even for very simple methods like
+  distance-based classification, some distance functions lead to high attack
+  success against some algorithms and not others, and vice-versa.</li>
+</ul>
+<h4 id="additional-considerations">Additional considerations</h4>
+<p>There are a number of other aspects that can be changed when modeling or
+evaluating privacy attacks on synthetic data generation. Here are a few
+examples, which we have not tested ourselves.</p>
+<ul>
+<li>Some synthetic data generation products offer the ability to generate new data
+  points <em>conditionally</em> on the value of some attributes. This increases the
+  attack surface in ways that create <a href="https://arxiv.org/abs/2312.05114">additional vulnerabilities</a>,
+  and should presumably be taken into account in empirical privacy measures.  </li>
+<li>Some attacks from the literature assume that the internals of the synthetic
+  data generator (for example, model weights) are known to the attacker. This
+  opens the door for additional attacks, which we have not tested.  </li>
+<li>Throughout this work, we assumed that the adversary cannot modify the input
+  data. This excludes data poisoning attacks, which can be of practical
+  relevance in some scenarios, and could lead to higher attack success.</li>
+<li>We focused on membership inference attacks, but it is straightforward to adapt
+  the framework to run attribute inference attacks instead. We expect that doing
+  so would lead to similar conclusions, though we have not yet experimented with
+  this. </li>
+</ul>
+<h4 id="takeaways">Takeaways</h4>
+<p>Our research so far has made it clear to us that <strong>building good empirical
+privacy metrics is a very hard task</strong>! There are many technical details that
+make a huge difference in the final score, so a score of “low privacy risk” is
+hard to interpret — does it suggest that the algorithm is safe, or is the
+measurement just performing poorly?</p>
+<p>Our experiments so far suggest that <strong>off-the-shelf metrics do a terrible job at
+estimating risk</strong>. For every single dataset and algorithm combination that we
+tried, we were able to run successful attacks under our framework, even in the
+(very frequent) case where existing metrics from open-source packages, when used
+with default options, would classify the generator as “safe”. This problem is
+distinct from the numerous <a href="bad-ugly-good-maybe.html">conceptual flaws</a> of these metrics:
+adopting a more principled framework is a good first step, but details matter.</p>
+<p>Finally, the fact that attack performance varies so much across synthesis
+mechanisms has two unfortunate consequences. First, to be sufficiently generic,
+a good empirical privacy metric needs to run <em>many</em> attacks, not just one.
+Second, manual auditing is still very likely to outperform even a well-designed
+metric that runs a whole suite of attacks. This underscores the need to use
+these metrics responsibly: <strong>they provide information about minimum level of
+risk, and do not on their own provide robust guarantees</strong>. To robustly limit
+privacy risk, formal approaches like <a href="friendly-intro-to-differential-privacy.html">differential privacy</a> are still
+an essential part of the solution.</p>
+<hr>
+<p><small></p>
+<h4 id="addendum-what-if-you-cant-inject-canaries-into-the-input-data">Addendum: What if you can't inject canaries into the input data?</h4>
+<p>The one-run privacy auditing procedure we outlined above requires the ability to
+control the input dataset. This is not always a realistic requirement: in
+real-world use cases, the synthetic data generation pipeline may already exist,
+and infrastructure changes may be impractical. In this case, the best we can do
+is run a <em>retrospective</em> attack, using the synthetic data that has already been
+generated. Can we still adapt our privacy auditing framework to this setting?</p>
+<p>This turns out to be possible, assuming one additional condition: there must
+exist a <em>holdout</em> dataset, with the same distribution as the input dataset, but
+which is not used by the synthetic data generation method. The existence of such
+a dataset is fairly common in practice: most machine learning pipelines randomly
+split the available input data into a training set and a test set; the test set
+can be used as holdout data. Then, we use the following insight: rather than
+injecting canaries in the input data, we obtain the set of “canaries”
+retrospectively, by randomly sampling from both the training set and the test
+set. </p>
+<p><center>
+<img alt="A diagram that starts with two database icons: &quot;input data&quot; and &quot;holdout data&quot;.
+One arrow labeled &quot;sample&quot; goes from &quot;input data&quot; to &quot;included canaries&quot;; one
+arrow also labeled &quot;sample&quot; goes from &quot;excluded canaries&quot;. Two arrows labeled
+&quot;merge&quot; go from included/excluded canary to a &quot;canary&quot; database icon, another
+arrows goes from that to &quot;Simulated adversary - guesses which canaries are
+included&quot;. Input data has an arrow that goes to &quot;Synthetic data generator under
+test&quot;, an arrow goes from that to &quot;synthetic data&quot;, an arrow goes from that to
+the adversary box. Finally, an arrow goes from the adversary box to an &quot;Attack
+success score&quot; box." src="https://desfontain.es/blog/images/retrospective-privacy-auditing.svg">
+</center></p>
+<p>This model restricts what options are available to measure risk: in particular,
+it becomes more complicated to measure risk for sub-populations (we can use
+conditional sampling, but we are limited by what data is available), and we can
+no longer choose canaries adaptively. In our experience, this leads to fairly
+severe limitations on what attacks can be modeled, and how generic these privacy
+metrics can be. The main way we could obtain successful attacks in this model
+was with attacks exploiting specific behavior of the synthetic data generation
+method under test.</p>
+<p></small></p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20250407,
+  title = &#123;The search for better empirical privacy metrics},
+  author = &#123;Desfontaines, Damien and Haney, Samuel and Pujol, David},
+  howpublished = {\\url{https://desfontain.es/blog/better-empirical-privacy-metrics.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2025},
+  month = &#123;04}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="differential-privacy-glossary.html">← previous</a>
+    </li>
+    <li>
+      <a href="wordpl.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

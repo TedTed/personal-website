@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Five hard lessons learned by privacy engineers - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Five hard lessons learned by privacy engineers - Ted is writing things" />
+  <meta property="twitter:title" content="Five hard lessons learned by privacy engineers - Ted is writing things" />
+  <meta name="description" property="og:description" content="Turns out, AI isn't that special." />
+  <meta property="twitter:description" content="Turns out, AI isn't that special." />
+  <meta property="summary" content="Turns out, AI isn't that special." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/five-hard-lessons.html" />
+  <link rel="prev" href="bfdi-consultation-ai.html" />
+  <link rel="next" href="attacks-on-statistics.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="bfdi-consultation-ai.html">← previous</a>
+ —     <a href="attacks-on-statistics.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./five-hard-lessons.html">Five hard lessons learned by privacy engineers</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2025-08-25T00:00:00+02:00">
+      2025-08-25
+    </time>
+  </footer>
+  <div>
+    <p><strong>In</strong> a previous blog post about <a href="privacy-in-ai.html">privacy in AI</a>, I listed five hard truths
+that privacy experts know about such systems. Writing this was a bit
+frustrating: I spent the entire time wanting to yell « this isn't actually
+specific to AI! » at my screen. Yelling at a screen isn't a productive use of
+time, so here's a follow-up blog post instead. It generalizes the five facts
+about privacy in AI into five hard truths that privacy experts know… about any
+real-world software system, really.</p>
+<p>Just like the hard truths about privacy in AI, those lessons are well-known by
+experts, and junior folks will learn them quickly by experience, and/or when
+hearing stories from their senior peers. Yet, they can be unexpected and
+surprising to people who don't focus on privacy.</p>
+<h1 id="1-by-default-processes-leak-information">1. By default, processes leak information</h1>
+<p>A process taking in personal data will often leak some of this data. This
+happens in two main ways.</p>
+<ul>
+<li>The <em>output</em> of the process will contain more personal data than you expect.
+  Pictures will have identifying metadata, statistics will be more revealing as
+  you think, synthetic data generation actually leaks private data, etc.</li>
+<li>The <em>execution</em> of the process will produce information via side channels (for
+  example, logs, transfers to third-parties, execution traces), and this
+  information might contain personal data.</li>
+</ul>
+<p>Both kinds of data leakage can go unnoticed for a long time. To catch them and
+limit their frequency and impact, you need <a href="privacy-engineer.html">privacy engineers</a>: people who
+can understand what privacy goals your organizations need to reach, and help you
+reach those goals by reviewing and improving technical designs.</p>
+<h1 id="2-this-actually-matters-in-practice">2. This actually matters in practice</h1>
+<p>Inadvertent data leakage is not just a theoretical problem. It causes real harm
+to real people, and can have serious business impact.</p>
+<p>A particularly salient example of inadvertent data leakage is Grindr's closeness
+feature. Grindr is a dating app mostly used by gay men. When you open it, it
+shows you a list of profiles, and how far each is from your current location.
+On its own, this distance is not enough to geo-locate you… but of course, all
+you need are a few data points to <a href="https://www.businessinsider.com/exploit-reveals-location-of-grindr-users-2014-8">precisely triangulate</a> someone. Which
+<a href="https://www.reddit.com/r/LegalAdviceUK/comments/tjaw0f/person_triangulated_my_position_using_grindr_and/">actually</a> <a href="https://www.reddit.com/r/lgbt/comments/oirt1y/someone_triangulated_my_exact_location_on_grindr/">happens</a> in practice.</p>
+<p>When a badly-designed product harms the privacy of its users, this can have
+serious consequences for the business. Consider <a href="https://en.wikipedia.org/wiki/Google_Buzz">Google Buzz</a>, an early
+and short-lived attempt at building a social network. Weak privacy settings
+created overwhelmingly negative press coverage at launch. Follow-up lawsuits
+saddled Google with a <a href="https://en.wikipedia.org/wiki/United_States_v._Google_Inc.#2011_FTC_administrative_order">consent decree</a> whose total compliance cost over
+the years likely reaches billions of dollars.</p>
+<p>Perhaps the most tangible-yet-overlooked kind of concrete harm of consumer
+technology is domestic abuse. For example, any product that includes some kind
+of automatic sharing of location or activity is sure to be noticed by abusive
+people who want to track their partner without knowledge or consent. It takes
+careful system design and thoughtful UX choices to mitigate this kind of threat.</p>
+<h1 id="3-adversaries-are-smarter-than-you">3. Adversaries are smarter than you</h1>
+<p>Security and privacy both suffer from the same plague: the temptation to
+consider a system safe because one can't think of a way to attack it. But
+nefarious people have a lot of advantages: they are more numerous, more diverse,
+and more motivated than defenders inside your organization. And they have a lot
+more time, too: privacy review typically happens once per launch, but attackers
+have all the lifetime of your product to attack it.</p>
+<p>This translates to a common situation where privacy failures come as a surprise
+to the people who built the software. They once felt very confident that they
+had thought of every possible scenario! But once they're proven wrong, hindsight
+bias kicks in: the vulnerability seems retrospectively obvious. So the wrong
+lesson is learned, as people think that next time, they would be able to
+anticipate the "obvious" issue and make the system safer.</p>
+<p>Instead, experienced folks know that attackers are always going to find
+unexpected ways to exploit systems, and plan accordingly. They will design
+systems with defense in depth so that individual mitigations can fail without
+leading to a critical failure. They will bring in diverse teams of privacy
+experts to help them think creatively about what can go wrong. And they will use
+provably robust privacy technology when appropriate. Which neatly brings us to
+our next point!</p>
+<h1 id="4-robust-protections-exist-but-there-is-no-silver-bullet">4. Robust protections exist, but there is no silver bullet</h1>
+<p>In the data protection community, we love privacy-enhancing technology, and not
+just because it combines two of our favorite interests (math and protecting
+people's data). It's because our jobs are usually full of hard-to-quantify
+uncertainty and risk, which forces to do a lot of judgment calls. It's very hard
+to anticipate what attackers might do next, so we have to rely on experience and
+intuition to evaluate what is good enough… which typically doesn't leave us with
+a great deal of confidence. And it's very difficult to give to executives the
+hard numbers or the confident statements that they would like from us.</p>
+<p>By contrast, <a href="privacy-enhancing-technologies.html">robust privacy-enhancing technologies</a> give us precise,
+solid statements. They say things like: anyone who gets access to the data at
+this stage of the process cannot learn more than this amount of information.
+This is mathematically proven and quantified. A breath of fresh air in a field
+so full of blurry trade-offs! When a potential privacy risk can be addressed by
+robust privacy-enhancing tech, it's often a very promising solution. Typical use
+cases are things like: sharing insights about sensitive data while controlling
+re-identification risk, jointly computing statistics with an untrusted partner,
+training a machine learning model in an anonymous way…</p>
+<p>But there is no silver bullet: at best, you remove specific kinds of privacy
+risk, under precise assumptions. Sometimes, this can make a big difference! But
+at a minimum, you still need to do a holistic privacy review of your system, and
+make sure that all your assumptions hold. And there are many other privacy risks
+that cannot be solved with technology: harassment and other abuse vectors,
+confusing UX design, problematic retention practices, insider risk, and so on.
+So you should use robust privacy-enhancing technology as a solution to specific
+problems, not treat it as a magic silver bullet.</p>
+<blockquote>
+<p>Side-note: if you're wondering whether privacy tech is right for you, or are
+looking for help in deploying it, I can help! My independent consultancy,
+<a href="https://hiding-nemo.com">Hiding Nemo</a>, focuses on helping organizations do more with data with
+respect and compliance built-in, using privacy-enhancing technology. Don't
+hesitate to reach out!</p>
+</blockquote>
+<h1 id="5-everything-is-harder-at-scale">5. Everything is harder at scale</h1>
+<p>Privacy law (and also, common courtesy) mandates that if a user asks you to
+delete their data, you should actually do that. If you're running a small
+service that relies on a single database, this is pretty easy. But if you're a
+sprawling multinational corporation, split across dozens of business units in
+different countries, each with their own IT systems… this can be close to
+impossible. Scale can turn a conceptually simple requirement into a fractally
+complex problem.</p>
+<p>Most privacy risks have the same characteristic: they get a lot harder to
+mitigate with complexity and scale. Growth is often the main goal of a business,
+so it's hard to push back against scaling up a system. Instead, privacy
+engineers often try to reduce complexity: building a centralized data catalog,
+consolidating infrastructure, designing simpler systems with clear properties,
+and so on. This has a lot of other benefits, like security, reliability, or
+engineering velocity: well-run organizations will continuously invest in such
+efforts.</p>
+<p>The cost of scale is not limited to engineering problems. Say that you have a
+feature that only gets used once a year on average, and unclear UX design leads
+0.01% of your users to misunderstand how it works. With a popular enough
+service — say, with 100 million users — the failure mode will happen to dozens
+of people, <em>every day</em>.</p>
+<h1 id="bonus-hard-lesson-honesty-is-not-the-norm">Bonus hard lesson: Honesty is… not the norm</h1>
+<p>I ended the <a href="privacy-in-ai.html">privacy in AI blog post</a> by pointing out that AI vendors are
+not being <a href="privacy-in-ai.html#dishonest">particularly honest</a> about the privacy properties of the
+models they train. Sadly, this is not specific to AI either. </p>
+<p>Privacy looks simple from a distance — just be respectful with my data! — but
+the details can get very complicated. Does "letting advertising partners access
+a real-time bidding API" count as "selling people's data"? Does "removing emails
+and phone numbers" constitute anonymization? What fits under the "legitimate
+interest" umbrella in GDPR? When is consent "freely given"?</p>
+<p>There are a lot of gray areas, and sometimes the principled answer to these
+questions isn't very convenient for the business. So PR departments routinely
+use that ambiguity to put out statements that sound good, but don't actually
+mean anything concrete and hide less-than-ideal data practices. It's infuriating
+to privacy experts: it's dishonest of course, but it also makes it harder to do
+the right thing! People have learned to not believe anything companies say about
+privacy. So when companies actually try to do the right thing, it's difficult to
+communicate about it and gain trust in the process.</p>
+<p>This forces privacy professionals to find other arguments to push for changes
+inside their organizations. Getting a robust compliance story, mitigating
+reputational risk, unlocking business opportunities, improving velocity with
+good data hygiene… A major part of the job is to find ways of achieving good
+privacy outcomes without relying on the good will of the business.</p>
+<hr>
+<p><small>Thanks to Curtis Mitchell for the helpful feedback on an earlier version
+of this blog post.</small></p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20250825,
+  title = &#123;Five hard lessons learned by privacy engineers},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/five-hard-lessons.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2025},
+  month = &#123;08}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="bfdi-consultation-ai.html">← previous</a>
+    </li>
+    <li>
+      <a href="attacks-on-statistics.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Avoir une bonne configuration SSL avec nginx - Ted écrit des trucs</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="archives.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blogue/" type="application/rss+xml" rel="alternate" title="Ted écrit des trucs - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Avoir une bonne configuration SSL avec nginx - Ted écrit des trucs" />
+  <meta property="twitter:title" content="Avoir une bonne configuration SSL avec nginx - Ted écrit des trucs" />
+  <meta name="description" property="og:description" content="Petit guide pour améliorer sa note de SSL Labs avec nginx." />
+  <meta property="twitter:description" content="Petit guide pour améliorer sa note de SSL Labs avec nginx." />
+  <meta property="summary" content="Petit guide pour améliorer sa note de SSL Labs avec nginx." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blogue/bonne-configuration-ssl-nginx.html" />
+  <link rel="prev" href="renouveler-certificat-ssl-postfix.html" />
+  <link rel="next" href="proposition-indemontrable.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Aller vers le contenu" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+              ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+              <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious-fr.html"> Présentation <img src="../flag-france.gif" alt=""/></a>
+          <a href="../serious.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-france.gif" alt=""/>
+          <a href="../blog/index.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recettes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="feed.xml">rss</a> —
+            <a href="archives.html">archives</a>
+          </span>
+          <span class="droite">
+            <a href="offlineimap-mbsync.html"
+                 title="Passer d'OfflineIMAP à isync/mbsync">← précédent</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted écrit des trucs</span>
+      </a></h1>
+      Sur des sujets en lien avec la vie privée, ou parfois pas.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./bonne-configuration-ssl-nginx.html">Avoir une bonne configuration SSL avec nginx</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2015-01-16T00:00:00+01:00">
+      2015-01-16
+    </time>
+    <small>&mdash; modifié le
+      <time datetime="2015-02-24T00:00:00+01:00">
+        2015-02-24
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p>Aujourd'hui, j'ai découvert le <a href="https://www.ssllabs.com/ssltest/">testeur de configuration SSL de
+Quarlys</a>, qui vérifie automatiquement si un
+serveur donné est vulnérable à des failles classiques, ou a des problèmes de
+configuration. C'est intéressant de passer le site de sa banque, ou d'un autre
+site supposé sérieux et critique, au travers de cette moulinette — ma banque
+suisse obtient un B ; ma banque française un gros F bien rouge et bien
+déprimant.</p>
+<p>Évidemment, vu que j'utilise SSL sur ce site (vous pouvez vérifier que
+<a href="https://desfontain.es">https://desfontain.es</a> fonctionne bien), j'ai voulu
+savoir la note que j'obtenais à ce test. Deux minutes plus tard, j'ai pu lire
+« C: This server is vulnerable to the POODLE attack. If possible, disable SSL 3
+to mitigate. Grade capped to C. ».</p>
+<p>Fichtre. Allons donc joyeusement désactiver SSL 3, puisqu'il est troué, et
+n'autorisons que TLS. Ça se fait de la façon suivante. Il faut ouvrir le fichier
+contenant les règles de nginx (<code>/etc/nginx/sites-enabled/default</code> dans mon cas),
+et y ajouter une ligne entre la paire d'accolades commençant par <code>server {</code>,
+après les lignes qui parlent déjà de SSL (<code>listen 443 default ssl</code> &amp; cie):</p>
+<div class="highlight"><pre><span></span><code>ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+</code></pre></div>
+
+<p>On redémarre nginx (en root, bien sûr):</p>
+<div class="highlight"><pre><span></span><code>service nginx restart
+</code></pre></div>
+
+<p>on repasse le test, et ce coup-ci, « A-: The server does not support Forward
+Secrecy with the reference browsers. Grade capped to A-. ». Hmmm. A-, c'est pas
+mal, mais c'est quand même significativement moins bien que A.</p>
+<p>Surtout que la Forward Secrecy, c'est un concept plutôt cool qui permet d'avoir
+la garantie de sécurité suivante : si un attaquant récupère l'échange chiffré
+entre le client et le serveur ; et que plus tard il obtient la clé privée du
+serveur, il ne peut pas déchiffrer l'échange passé. C'est magique. Je ne sais
+pas comment ça marche. Mais ça crache du feu, et le fait que ça ne marche pas
+avec tous les navigateurs possibles est perturbant.</p>
+<p>La raison est décrite par <a href="https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html">ce
+billet</a> (en
+anglais) : les paramètres que nginx choisit par défaut pour le protocole sont
+ceux d'OpenSSL. Or, OpenSSL utilise par défaut une clé de 1024 bits ; tandis que
+le certificat qu'on utilise fait 2048 bits. Du coup, c'est pas compatible, et
+les clients vont utiliser un protocole moins cool qui n'a pas la propriété qu'on
+veut. On va donc générer des meilleurs paramètres à la main :</p>
+<div class="highlight"><pre><span></span><code>cd /etc/ssl/certs
+openssl dhparam -out dhparam.pem 4096
+</code></pre></div>
+
+<p>et dire à nginx de les utiliser en ajoutant ça au même endroit que tout à
+l'heure:</p>
+<div class="highlight"><pre><span></span><code>ssl_dhparam /etc/ssl/certs/dhparam.pem;
+</code></pre></div>
+
+<p>et pouf, Forward Secrecy, ça c'est fait. Re-testons allègrement notre serveur
+après redémarrage de nginx… Ooooh, un joli « A » ! Joie, bonheur et allégresse.</p>
+<p>Le billet que j'ai mis en lien
+<a href="https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html]">un petit peu au-dessus</a>
+a quelques sections supplémentaires. Par exemple, le petit bout suivant :</p>
+<div class="highlight"><pre><span></span><code>ssl_stapling on;
+ssl_stapling_verify on;
+resolver 8.8.4.4 8.8.8.8 valid=300s;
+resolver_timeout 10s;
+</code></pre></div>
+
+<p>active le « OCSP Stapling », une technologie permettant de mettre en cache dans
+le serveur la réponse de l'autorité du certification quand le client demande une
+preuve d'identification. C'est un peu comme si on était dans un pays étranger où
+à chaque fois qu'on rencontre un policier, il demande qu'on lui montre le tampon
+du pays sur notre passeport. Comme y'a beaucoup de policiers, au bout d'un
+moment, on en a un peu marre, surtout que le document est au fin fond de notre
+sac et que du coup, ça nous fait perdre du temps à chaque fois. La solution
+naturelle, c'est de s'agrafer une photocopie du tampon sur le manteau, comme ça
+le policier peut juste jeter un coup d'œil et être convaincu, et on perd moins
+de temps.</p>
+<p>(Je sais. Cette analogie n'est pas parfaite. Mais elle est absurde, donc vous
+allez la retenir. Et de toute façon, vous avez probablement compris que vous
+pouviez tout aussi bien copier-coller tous les bouts de configuration de cet
+article dans votre configuration nginx sans vous poser tellement de questions,
+donc vous allez arrêter de m'embêter.)</p>
+<p>Enfin, on peut ajouter quelques <a href="https://www.owasp.org/index.php/List_of_useful_HTTP_headers">chouettes headers
+HTTP</a> aux réponses
+qu'on envoie aux clients, pour améliorer encore notre configuration. La ligne
+suivante :</p>
+<div class="highlight"><pre><span></span><code>add_header Strict-Transport-Security max-age=63072000;
+</code></pre></div>
+
+<p>active le « HSTS » (HTTP Strict Transport Security), ce qui dit aux navigateurs
+qui vont sur notre site en utilisant la version HTTP non sécurisée par défaut
+« hey, y'a une version sécurisée, utilisez-la :D », et si ils ne sont pas trop
+stupides (<em>erm</em> Internet Explorer 6 <em>erm</em>), ils le font.</p>
+<p>Remarque (merci à elarnon) : un inconvénient de HSTS, c'est que si jamais HTTPS
+ne marche pas pour une raison ou pour une autre (on a oublié de renouveler son
+certificat, le serveur OCSP ne répond plus, quelqu'un est en train d'essayer de
+faire un man-in-the-middle…), la version HTTP du site ne sera plus disponible.
+Ça n'est donc pas très adapté aux sites dont la disponibilité est capitale, mais
+qui ne gèrent pas de données critiques qui ne supporteraient pas d'être envoyés
+en clair. Bon, en vrai, si on fait attention à ne pas que son certificat expire,
+ça ne devrait pas poser de problème majeur.</p>
+<p>Ce header-ci :</p>
+<div class="highlight"><pre><span></span><code>add_header X-Frame-Options DENY;
+</code></pre></div>
+
+<p>permet d'interdire que le contenu de mon site soit réutilisé tel quel dans une
+balise <code>&lt;frame&gt;</code>, <code>&lt;iframe&gt;</code> ou <code>&lt;object&gt;</code>, ce qui permet de se protéger contre
+les attaques par <a href="https://fr.wikipedia.org/wiki/D%C3%A9tournement_de_clic">détournement de
+clic</a>. Je… ne sais pas
+dans quel contexte une telle attaque pourrait avoir du sens sur mon brave petit
+site perso. Mais ça ne coûte pas très cher. Même remarque à propos de ce dernier
+header :</p>
+<div class="highlight"><pre><span></span><code>add_header X-Content-Type-Options nosniff;
+</code></pre></div>
+
+<p>qui permet d'éviter que des navigateurs essaient de deviner le type d'un fichier
+qu'on leur envoie en regardant son contenu, plutôt que le type de ses headers.
+Pourquoi ça a du sens de faire ça avec mon contenu, je n'en ai pas la moindre
+espèce d'idée, parce que (pour autant que je sache) je documente bien le type de
+mes fichiers avant de les envoyer sur mon serveur, mais oh well.</p>
+<p>Je vous ai probablement perdu. Ou vous lisez ces lignes après avoir parcouru les
+deux tiers de cet article sans le lire. Je ne vous en veux pas. Passez une bonne
+journée ! =D</p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Citez cet article!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>L'entrée BibTeX a été copiée dans votre presse-papiers.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblogue20150116,
+  title = &#123;Avoir une bonne configuration SSL avec nginx},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blogue/bonne-configuration-ssl-nginx.html}},
+  note = &#123;Ted écrit des trucs (blog personnel)},
+  year = &#123;2015},
+  month = &#123;01}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="renouveler-certificat-ssl-postfix.html">← précédent</a>
+    </li>
+    <li>
+      <a href="proposition-indemontrable.html">suivant →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">haut de page</a></li>
+    <li><a href="index.html">accueil</a></li>
+    <li><a href="archives.html">archives</a></li>
+  </ul>
+</nav>
+
+      <div class="feedback">
+        Tout ce que je raconte ici sont mes opinions personnelles, pas celles de
+        mon employeur.
+        <br>
+        Je suis toujours ravi de recevoir des réactions, critiques, questions,
+        ou autres commentaires sur ce que j'écris. Envoyez-moi ce qui vous
+        chante à <span class="baddirection">se.niatnofsed@neimad</span>.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          par 
+          <a rel="dct:publisher" href="http://desfontain.es/serious-fr.html">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="Je pense que le concept de propriété intellectuelle n'a aucun sens. Le contenu de ce blog est dans le domaine public."/>
+          </a>
+          &mdash;
+          mis en orbite par <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

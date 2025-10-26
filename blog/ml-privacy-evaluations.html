@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Paper highlight: Evaluations of Machine Learning Privacy Defenses are Misleading - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Paper highlight: Evaluations of Machine Learning Privacy Defenses are Misleading - Ted is writing things" />
+  <meta property="twitter:title" content="Paper highlight: Evaluations of Machine Learning Privacy Defenses are Misleading - Ted is writing things" />
+  <meta name="description" property="og:description" content="A quick look at a new paper poking at empirical privacy metrics for ML models." />
+  <meta property="twitter:description" content="A quick look at a new paper poking at empirical privacy metrics for ML models." />
+  <meta property="summary" content="A quick look at a new paper poking at empirical privacy metrics for ML models." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/ml-privacy-evaluation.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/ml-privacy-evaluation.png" />
+  <meta property="twitter:image:alt" content="Figure 1 from the linked paper. This is a bar chart that compares the success of privacy attacks (y-axis, "TPR@0.1%FPR") for multiple methods (x-axis). Each bar is separated in two, the bottom part is labeled "Original" and the top part "Ours". It shows that there is an order-of-magnitude higher privacy leakage than the original evaluations estimated, and that DP-SGD provides better privacy at similar utility than ad hoc defenses." />
+  <link rel="canonical" href="https://desfontain.es/blog/ml-privacy-evaluations.html" />
+  <link rel="prev" href="five-stages.html" />
+  <link rel="next" href="converters-differential-privacy.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="five-stages.html">← previous</a>
+ —     <a href="converters-differential-privacy.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./ml-privacy-evaluations.html">Paper highlight: Evaluations of Machine Learning Privacy Defenses are Misleading</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2024-05-07T00:00:00+02:00">
+      2024-05-07
+    </time>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>H</span>ere's an idea: why don't I use this blog to
+highlight cool privacy papers with interesting insights? Let's try this out.
+We'll see if it becomes a more regular thing.
+</small></p>
+<hr>
+<p><span class='lettrine'>M</span><strong>achine</strong> learning models tend to <a href="https://bair.berkeley.edu/blog/2019/08/13/memorization/">memorize</a>
+their training data. That's a problem if they're trained on sensitive
+information, and then pushed to production: <strong>someone could interact with them
+and retrieve exact, sensitive data points</strong>.</p>
+<p>Researchers have come up with a bunch of ways to mitigate this problem. These
+defenses fall in two categories.</p>
+<ul>
+<li>Some techniques provide <a href="/dp-blog">differential privacy</a> guarantees, like
+  <a href="https://medium.com/pytorch/differential-privacy-series-part-1-dp-sgd-algorithm-explained-12512c3959a3">DP-SGD</a>.</li>
+<li>Other approaches are more ad hoc. We can't mathematically prove that they
+  protect against all attacks, but maybe we can show that they work well enough
+  in practice.</li>
+</ul>
+<p>In both cases, it makes sense to <em>empirically</em> evaluate how good these defenses
+are in practice. For the ad hoc mitigations, it's the only way to get an idea of
+how well they work. For the DP methods, it can complement the mathematical
+guarantees, especially if the privacy budget parameters are very large. So, many
+papers introducting defenses dutifully run some attacks on their models, and
+report success rates. These numbers typically look pretty good, which allows the
+authors to say that their new mitigation is solid.</p>
+<p>That all sounds great, until someone starts taking a closer look at how these
+evaluations actually work. That's exactly what <a href="https://www.michaelaerni.com/">Michael Aerni</a>, <a href="https://zj-jayzhang.github.io/">Jie
+Zhang</a>, and <a href="https://floriantramer.com/">Florian Tramèr</a> did in a <a href="https://arxiv.org/abs/2404.17399">new paper</a>, titled
+« Evaluations of Machine Learning Privacy Defenses are Misleading ».</p>
+<p>You can probably guess where this is going: they found that <strong>these empirical
+privacy evaluations are actually pretty terrible</strong>. They identify three main
+problems with existing work.</p>
+<ol>
+<li><strong>Average-case privacy.</strong> Empirical privacy metrics are defined in a way that
+   measures <em>average</em> risk across the dataset, instead of <em>worst-case</em> risk. So
+   if the approach does a terrible job at protecting outliers data points, you
+   can't see that in the metric. That's not great: everyone deserves privacy
+   protection, not just typical data points!</li>
+<li><strong>Weak attacks.</strong> Many evaluations only try very simple attacks. They don't
+   use state-of-the-art techniques, and they don't adjust them depending on the
+   mitigation. That's not great: real-world attackers are definitely going to do
+   both!</li>
+<li><strong>Bad baselines.</strong> A lot of evaluations use DP-SGD as a baseline, but they do
+   so in a way that seems set up to make it fail. First, they don't incorporate
+   state-of-the-art improvements to DP-SGD that improve utility. Second, they
+   select privacy parameters that lead to very bad accuracy. That's not great:
+   it makes newly proposed defenses compare more favorably for no good reason!</li>
+</ol>
+<p>To fix all that, the authors introduce better privacy metrics, stronger attacks,
+and more reasonable baselines. They implement all that, and re-run a bunch of
+experiments from previous papers introducing new defenses. The findings are
+summarized in the following chart.</p>
+<p><center>
+<img alt="Figure 1 from the linked paper. This is a bar chart that compares the success
+of privacy attacks (y-axis, &quot;TPR@0.1%FPR&quot;) for multiple methods (x-axis). Each
+bar is separated in two, the bottom part is labeled &quot;Original&quot; and the top part
+&quot;Ours&quot;. It shows that there is an order-of-magnitude higher privacy leakage than
+the original evaluations estimated, and that DP-SGD provides better privacy at
+similar utility than ad hoc defenses." src="https://desfontain.es/blog/images/ml-privacy-evaluation.png">
+</center> </p>
+<p>On the x-axis, a bunch of defenses; on the y-axis, a measure of attack success.
+In dark blue are the original numbers, in light blue are the new results. Two
+things are immediately apparent:</p>
+<ol>
+<li>Making attacks better lead to better success rates. This is unsurprising, but
+   the <em>magnitude</em> of these improvements is kind of amazing : between 7x and 53x
+   better! That says a lot about how <em>brittle</em> these attack scores are. <strong>You
+   probably don't want to rely exclusively on empirical risk metrics</strong> for
+   real-world use cases. When real people's privacy is at stake, someone finding
+   a way to multiply your empirical risk by a factor of 50 overnight would be
+   seriously bad news.</li>
+<li>The DP-SGD baseline, once improved to match the accuracy of other approaches, 
+   provides the best empirical risk mitigation. This somewhat surprising,
+   since the privacy parameters used are <em>extremely</em> loose — an <span class="math">\(\varepsilon\)</span> of
+   <span class="math">\(10^8\)</span> is completely meaningless from a <a href="differential-privacy-in-more-detail.html">mathematical standpoint</a>.
+   This suggests that <strong>DP techniques might still be worth using even if you
+   don't care about formal guarantees</strong>, only about empirical risk. Super large
+   <span class="math">\(\varepsilon\)</span> values are somehow still much better than infinite ones, it
+   seems.</li>
+</ol>
+<p>I'll add one personal comment to these two takeaways. It's maybe a little too
+spicy to be published in a scientific paper without hard data, but this is a
+blog post, and who's going to stop me?</p>
+<p>This research shows a lot about <em>incentives</em> at play in privacy research based
+on empirical metrics. I don't think the authors of the ad hoc defenses set out
+to do meaningless evaluations, and recommend unsafe practices. But <strong>none of
+them had a structural incentive to do better</strong>. Coming up with better attacks is
+more work, and the only possible outcome is that the proposed defenses become
+less convincing and harder to publish. Same for optimizing baselines, or coming
+up with stricter risk metrics. To make things worse, when you genuinely think
+that your defense is reasonable, it's really hard to switch to an adversarial
+mindset and try to break what you just created! <em>Nothing</em> pushes researchers
+towards better risk quantification<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. So in a way, it's not very surprising
+that this leads to widespread underestimation of actual risk.</p>
+<p>So, incentives are broken in academic research around these empirical privacy
+scores. Now, could the same broken incentives also affect other areas? Say,
+<em>commercial vendors</em> of privacy technology who rely on the same empirical
+metrics to claim that their products are safe and GDPR-compliant? I'll leave
+that as an exercise to the reader.</p>
+<p>To come back to the <a href="https://arxiv.org/abs/2404.17399">paper</a>, here's a little more praise to make you want to
+read it. The empirical privacy metric makes a lot more sense than most I've seen
+heard of so far. The attack methodology is both elegant and clever. The "name
+and shame" counterexample is worth keeping in mind if you design new privacy
+scores. The examples of the most vulnerable data points give a clear picture of
+what existing defenses fail to protect. Convinced yet?<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup> Go <a href="https://arxiv.org/abs/2404.17399">read it</a>!</p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:1">
+<p>And I can't help but note that by contrast, using differential privacy
+keeps you honest: you have to quantify the privacy loss of everything.
+You're computing a worst-case bounds, and you can't cheat. Barring errors in
+proofs — which are easier to catch at review time than, say, subpar
+implementation of baselines — the number you get is the best you can do. And
+doing more work can only make your results <em>stronger</em>.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>No? Then read the paper just for the spicy fun facts. Here's my favorite:
+some papers used synthetic data as a defense, and, I kid you not, « argue
+privacy by visually comparing the synthetic data to the training data ». I
+couldn't come up with this if I was aiming for satire.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20240507,
+  title = &#123;Paper highlight: Evaluations of Machine Learning Privacy Defenses are Misleading},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/ml-privacy-evaluations.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2024},
+  month = &#123;05}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="five-stages.html">← previous</a>
+    </li>
+    <li>
+      <a href="converters-differential-privacy.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

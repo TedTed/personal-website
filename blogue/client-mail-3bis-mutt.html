@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Gérer ses mails en local : étape 3 bis, du rab' de mutt :D - Ted écrit des trucs</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="archives.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blogue/" type="application/rss+xml" rel="alternate" title="Ted écrit des trucs - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Gérer ses mails en local : étape 3 bis, du rab' de mutt :D - Ted écrit des trucs" />
+  <meta property="twitter:title" content="Gérer ses mails en local : étape 3 bis, du rab' de mutt :D - Ted écrit des trucs" />
+  <meta name="description" property="og:description" content="On trie, lit, et rédige des mails en local avec mutt." />
+  <meta property="twitter:description" content="On trie, lit, et rédige des mails en local avec mutt." />
+  <meta property="summary" content="On trie, lit, et rédige des mails en local avec mutt." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blogue/client-mail-3bis-mutt.html" />
+  <link rel="prev" href="client-mail-3-mutt.html" />
+  <link rel="next" href="client-mail-2-msmtp.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Aller vers le contenu" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+              ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+              <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious-fr.html"> Présentation <img src="../flag-france.gif" alt=""/></a>
+          <a href="../serious.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-france.gif" alt=""/>
+          <a href="../blog/index.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recettes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="feed.xml">rss</a> —
+            <a href="archives.html">archives</a>
+          </span>
+          <span class="droite">
+            <a href="offlineimap-mbsync.html"
+                 title="Passer d'OfflineIMAP à isync/mbsync">← précédent</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted écrit des trucs</span>
+      </a></h1>
+      Sur des sujets en lien avec la vie privée, ou parfois pas.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./client-mail-3bis-mutt.html">Gérer ses mails en local : étape 3 bis, du rab' de mutt :D</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2014-04-08T00:00:00+02:00">
+      2014-04-08
+    </time>
+    <small>&mdash; modifié le
+      <time datetime="2015-04-27T00:00:00+02:00">
+        2015-04-27
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><span class='notlettrine'>C</span>e billet fait partie d'une série d'articles
+présentant la façon dont je gère mes mails en local. Si vous êtes arrivés là
+sans lire l'introduction, c'est probablement une bonne idée de commencer par le
+début.</p>
+<ul>
+<li>Étape 0 : <a href="client-mail-0-introduction.html">Introduction</a></li>
+<li>Étape 1 : <a href="client-mail-1-offlineimap.html">Synchronisation IMAP avec
+  OfflineIMAP</a> </li>
+<li>Étape 2 : <a href="client-mail-2-msmtp.html">Envoi d'e-mails avec msmtp et msmtpq</a></li>
+<li>Étape 3 : <a href="client-mail-3-mutt.html">Configuration de mutt</a></li>
+<li>Étape 3 bis : Dose supplémentaire de mutt ← vous êtes ici !</li>
+<li>Étape 4 : <a href="client-mail-4-gpg.html">Chiffrement et signature avec PGP</a></li>
+</ul>
+<hr>
+<p><span class='lettrine'>D</span><strong>onc</strong>, au cas où je ne vous ai pas convaincu
+que mutt c'était le Bien™, que l'article précédent vous a laissé perplexes et
+que vous êtes en train de vous dire que c'est quand même beaucoup de travail
+pour avoir quelque chose de vraiment chouette à utiliser, je vais faire un
+second essai pour vous convaincre. Entre autres, je vais essayer de vous
+convaincre qu'on peut ajouter des fonctionnalités vraiment avancées et
+personnalisées si on a envie, tout comme on peut émuler à peu près n'importe
+quel avantage d'un client mail grand public.</p>
+<h1 id="quelques-macros-pour-commencer">Quelques macros pour commencer</h1>
+<p>Quand j'ai commencé à recevoir un nombre de mails par jour qui se comptait en
+dizaines et non plus en unités, il s'est vite posé le problème des mails
+importants qui se font enterrer sous des piles de messages qui le sont moins. Je
+me suis donc mis à utiliser la fonction « flag » (<code>F</code> comme raccourci, pour
+faire apparaître un message en surbrillance si on a un jeu de couleurs adapté)
+pour marquer tous les mails auxquels je devais répondre, ou qui contenaient
+quelque chose dont je devais m'occuper. Malheureusement, ça ne suffisait pas,
+une fois que le message en question était trop loin dans ma liste de mails pour
+apparaître, j'oubliais son existence.</p>
+<p>J'ai trouvé une solution qui me convient en utilisant des macros qui listent les
+messages susceptibles d'être importants, et n'affichent que ceux-là. J'utilise
+des raccourcis commençant par une virgule, parce que c'est la touche qui fait
+office de <code>&lt;Leader&gt;</code> dans ma configuration de vim, du coup j'ai l'habitude de la
+combiner avec d'autres. Donc, les messages dont je suis susceptible de devoir
+m'occuper sont les messages marqués comme importants, ceux que je n'ai pas
+encore lus, ainsi que les récents auxquels je n'ai pas répondu alors qu'ils me
+sont adressés personnellement. Ça donne :</p>
+<div class="highlight"><pre><span></span><code>macro index ,r &quot;l((~N|~O|~F)!~D!~P)|(~d&lt;1w!~Q)\n&quot;
+</code></pre></div>
+
+<p>ceux qui sont <em>systématiquement</em> dignes d'intérêt sont les messages non lus, ou
+ceux explicitement notés comme importants (avec la fonction de flag) :</p>
+<div class="highlight"><pre><span></span><code>macro index ,i &quot;l((~N|~O|~F)!~D!~P)\n&quot;
+</code></pre></div>
+
+<p>et on a besoin d'un raccourci facile pour revenir à la vue normale, où l'on voit
+tous les mails :</p>
+<div class="highlight"><pre><span></span><code>macro index ,, &quot;l~A\n&quot;
+</code></pre></div>
+
+<p>ce qui fait que cette astuce n'est pas juste un bout de config' dont je ne me
+sers pas, c'est qu'en fait, j'exécute la commande <code>,r</code> (qui montre les messages
+potentiellement intéressants) à chaque fois que j'ouvre un dossier dans mutt :</p>
+<div class="highlight"><pre><span></span><code>folder-hook . push &#39;,r=*&#39;
+</code></pre></div>
+
+<p>et cette vue-là contient (en pratique) toujours les mails marqués comme
+importants, parce qu'elle cache tous les mails auxquels j'ai répondu ou ceux
+dont je ne suis pas le destinataire.</p>
+<h1 id="gerer-les-pieces-jointes-et-les-mails-en-html">Gérer les pièces jointes et les mails en HTML</h1>
+<p>Dans un client mail graphique, on peut en général naviguer dans un menu pour
+indiquer au programme avec quoi on veut ouvrir les pièces jointes. Dans mutt,
+cette configuration se fait via le fichier indiqué dans la variable
+<code>maicap_path</code> du <code>.muttrc</code>. Dans le mien, il y a :</p>
+<div class="highlight"><pre><span></span><code>set mailcap_path = ~/.mutt/mailcap
+</code></pre></div>
+
+<p>et dans le fichier en question, on met une ligne par type de fichier. Par
+exemple, dans le mien, on trouve :</p>
+<div class="highlight"><pre><span></span><code>application/pdf; chromium %s
+image/*; feh %s
+</code></pre></div>
+
+<p>pour dire d'ouvrir les PDFs avec <a href="http://www.chromium.org/Home">Chromium</a> (oui,
+c'est ce que j'utilise comme lecteur PDF, faute de mieux), et les fichiers de
+type « image » (jpg, png, etc.) avec <a href="http://feh.finalrewind.org/">feh</a>.</p>
+<p>Le fichier mailcap sert aussi à indiquer comment on veut lire les mails en HTML.
+Ces atrocités ne devraient pas exister et les auteurs des clients mails qui en
+envoient par défaut devraient mourir par le feu, mais dans la vraie vie, les
+mails en HTML existent, on les reçoit et il faut bien en faire quelque chose.
+J'utilisais une solution sale à base de <a href="http://w3m.sourceforge.net/">w3m</a> à une
+époque, et puis <a href="http://a3nm.net/">a3nm</a> m'a soufflé la solution tout aussi
+crade mais un peu plus efficace suivante :</p>
+<div class="highlight"><pre><span></span><code>text/html; ~/.bin/mutt_bgrun firefox %s &gt; /dev/null 2&gt; /dev/null; nametemplate=%s.html
+text/html; iconv -f %{charset} %s | elinks -dump %{charset} -dump -dump-color-mode 1 -dump-width 76 /dev/stdin 2&gt;/dev/null | sed &#39;s/ * $//&#39; | sed &#39;s/   //&#39; ; copiousoutput
+</code></pre></div>
+
+<p>elle utilise links par défaut pour afficher le corps du message (ce qui donne en
+général un résultat, heu, pas très beau, mais si le contenu n'est pas trop
+bourré de CSS affreux, ça reste lisible, et ça permet d'afficher rapidement les
+liens présents dedans). Si ça ne suffit pas, alors je tape <code>v</code> pour ouvrir la
+liste des fichiers constituant le mail, et si je sélectionne celui en <code>.html</code>,
+c'est Firefox qui me l'ouvre dans un nouvel onglet. C'est assez sale parce qu'il
+faut un script supplémentaire (<a href="mutt_bgrun">disponible ici</a>, ce n'est pas moi
+qui l'ai écrit) et que l'appel à ELinks est prévue pour fonctionner avec une
+taille de fenêtre fixe (ici, 76 caractères de large).</p>
+<p>Le contenu complet de mon fichier <code>mailcap</code> est disponible <a href="mailcap">par ici</a>.</p>
+<h1 id="un-script-pour-les-etourdis-dans-mon-genre">Un script pour les étourdis dans mon genre</h1>
+<p>Ça va paraître absurde, mais une des choses qui m'a le plus manqué quand je suis
+passé de l'interface Web de GMail à mutt, c'est la fonctionnalité (ou peut-être
+est-ce une extension, je ne me souviens plus) « afficher un message de
+confirmation lorsqu'on essaie d'envoyer un message dont le contenu a l'air de
+sous-entendre qu'il faudrait qu'il y ait une pièce jointe, mais qu'il n'y en a
+pas ». Parce que les mails suivis immédiatement d'un second mail « Oups, j'ai
+oublié la pièce jointe, la voilà », ça ne fait pas très sérieux (surtout quand
+on oublie la pièce jointe dans le second mail (ne riez pas)).</p>
+<p>Mais, magie des possibilités infinies de configuration de mutt, il suffit de
+faire un script qui fait ça. J'en ai trouvé un sur le wiki de mutt, que je me
+souviens d'avoir modifié à plusieurs reprises mais je ne me souviens plus
+pourquoi exactement. La version que j'utilise est disponible <a href="verifyattachment">par
+là</a>, et l'idée est de remplacer l'appel à msmtpq de la
+variable <code>sendmail</code> du <code>.muttrc</code> par un appel à ce script. Si on l'appelle avec
+des paramètres, il appellera msmtpq avec les mêmes paramètres, donc ça marche
+bien (et ça m'a évité d'être ridicule un nombre de fois ridiculeusement élevé).
+Il nécessite zenity pour afficher le message de confirmation.</p>
+<h1 id="t-prot-pour-economiser-de-la-place-sur-lecran">t-prot, pour économiser de la place sur l'écran</h1>
+<p>Je n'ai rien contre les gens qui répondent aux mails en coupant le message
+original en morceaux, et en répondant entre les morceaux : lorsque le mail
+concerne plusieurs points distincts, c'est plutôt pratique et je fais moi-même
+comme ça de temps en temps. Le problème, c'est que les informations moins utiles
+(les anciens messages auxquels on répond, qui portent le joli nom de TOFU)
+peuvent parfois prendre une place démesurée sur l'écran, si on ne prend pas la
+peine de couper le passage cité et qu'il y a plusieurs réponses imbriquées. Sur
+certaines mailing-lists, c'est un vrai problème, parce que six pages successives
+pour un message où il n'y a qu'une vingtaine de lignes ajoutées par rapport aux
+messages précédents, c'est pas du tout pratique.</p>
+<p>Et donc sans surprise, des gens ont écrit un script qui résout le problème, et
+qui tronque le TOFU pour faciliter la lecture du nouveau contenu. Ça s'appelle
+t-prot, c'est disponible <a href="http://www.escape.de/~tolot/mutt/">par ici</a> et
+l'installation consiste juste à le mettre quelque part dans son <code>$PATH</code> en le
+rendant exécutable. Puis, dans le .muttrc, il faut ajouter quelques lignes pour
+l'invoquer automatiquement… </p>
+<div class="highlight"><pre><span></span><code>set display_filter=&#39;t-prot -cemt --pgp-move-vrf --pgp-short --bigq=10,4 -Mmutt -S -s -w&#39;
+</code></pre></div>
+
+<p>… quelques macros pour s'en servir aisément (ici, 0 pour voir le message
+original, et 1 pour réactiver le tronquage du TOFU)…</p>
+<div class="highlight"><pre><span></span><code><span class="nt">macro</span><span class="w"> </span><span class="nt">generic</span><span class="w"> </span><span class="nt">0</span><span class="w"> </span><span class="s2">&quot;:unset display_filter\n&quot;</span><span class="w"> </span><span class="s2">&quot;Turn TOFU protection off&quot;</span>
+<span class="nt">macro</span><span class="w"> </span><span class="nt">generic</span><span class="w"> </span><span class="nt">1</span><span class="w"> </span><span class="s2">&quot;:set display_filter=&#39;t-prot -cemt --bigq=10,4 -M=mutt -S -s -w&#39;\n&quot;</span><span class="w"> </span><span class="s2">&quot;Turn TOFU protection on&quot;</span>
+<span class="nt">macro</span><span class="w"> </span><span class="nt">pager</span><span class="w"> </span><span class="nt">0</span><span class="w"> </span><span class="s2">&quot;:unset display_filter; exec exit\n:exec display-message\n&quot;</span><span class="w"> </span><span class="s2">&quot;Turn TOFU protection off&quot;</span>
+<span class="nt">macro</span><span class="w"> </span><span class="nt">pager</span><span class="w"> </span><span class="nt">1</span><span class="w"> </span><span class="s2">&quot;:set display_filter=&#39;t-prot -cemt --bigq=10,4 -M=mutt -S -s -w&#39;; exec exit\n:exec display-message\n&quot;</span><span class="w"> </span><span class="s2">&quot;Turn TOFU protection on&quot;</span>
+</code></pre></div>
+
+<p>… et un peu de couleurs pour qu'on voie quand t-prot a fait disparaître quelque
+chose :</p>
+<div class="highlight"><pre><span></span><code>color body      brightmagenta   black   &quot;^\\[---.*&quot;
+color body      green           black   &quot;^#v[-+]&quot;
+</code></pre></div>
+
+<p>si vous êtes inscrits sur des listes de diffusion, ce truc tout bête a le
+potentiel de vous changer la vie :-)</p>
+<h1 id="indexation-efficace-avec-notmuch">Indexation efficace avec notmuch</h1>
+<p>Une des choses qui a probablement fait le succès de GMail, c'est son outil de
+recherche de messages : rapide, efficace et facile à utiliser. Mutt a aussi un
+système de recherche utilisant des expressions régulières, et qui est donc très
+puissant et permet de faire des requêtes qui correspondent exactement à ce qu'on
+recherche. Le problème, c'est que lorsqu'on commence à vouloir rechercher un
+terme présent dans le corps d'un message parmi une boîte mail en contenant
+plusieurs milliers… Ça prend un temps linéaire en la taille de la boîte et donc
+c'est un peu long.</p>
+<p>Mais joie, bonheur et allégresse : il existe un indexeur,
+<a href="http://notmuchmail.org/">Notmuch</a>, qui permet de rendre le traitement de ce
+type de requête instantanée. Ça prend un peu de place sur le disque dur (j'ai
+4 Go de mails, et les bases de données de notmuch nécessitent 700 Mo), mais vu
+le prix du Go de nos jours, c'est vraiment pas un problème. Donc, pour installer
+cette petite merveille, on passe par les paquets :</p>
+<div class="highlight"><pre><span></span><code>aptitude install notmuch
+</code></pre></div>
+
+<p>et on a un peu de configuration à faire une fois que c'est fait, mais il n'y a
+même pas besoin de modifier le moindre fichier de configuration. Il suffit en
+effet de lancer la commande :</p>
+<div class="highlight"><pre><span></span><code>notmuch setup
+</code></pre></div>
+
+<p>et de répondre gentiment aux questions permettant au programme de savoir quels
+sont les mails qui viennent de nous, où ils se trouvent sur le système, etc.</p>
+<p>Une fois que c'est fait, on rajoute quelques macros dans mutt pour utiliser la
+recherche par notmuch de la façon la plus naturelle possible :</p>
+<div class="highlight"><pre><span></span><code><span class="n">macro</span><span class="w"> </span><span class="k">index</span><span class="w"> </span><span class="n">S</span><span class="w"> </span><span class="ss">&quot;&lt;enter-command&gt;unset wait_key&lt;enter&gt;&lt;shell-escape&gt;notmuch-mutt --prompt search&lt;enter&gt;&lt;change-folder-readonly&gt;~/.cache/notmuch/mutt/results&lt;enter&gt;&quot;</span><span class="w"> </span><span class="ss">&quot;search mail (using notmuch)&quot;</span>
+<span class="n">macro</span><span class="w"> </span><span class="k">index</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="ss">&quot;&lt;enter-command&gt;unset wait_key&lt;enter&gt;&lt;shell-escape&gt;read -p &#39;notmuch query: &#39; x; echo \$x &gt;~/.cache/mutt_terms&lt;enter&gt;&lt;limit&gt;~i \&quot;</span><span class="err">\`</span><span class="n">notmuch</span><span class="w"> </span><span class="k">search</span><span class="w"> </span><span class="c1">--output=messages \$(cat ~/.cache/mutt_terms) | head -n 600 | perl -le &#39;@a=&lt;&gt;;chomp@a;s/\^id:// for@a;$,=\&quot;|\&quot;;print@a&#39;\`\&quot;&lt;enter&gt;&quot; &quot;show only messages matching a notmuch pattern&quot;</span>
+</code></pre></div>
+
+<p>ici, les touches S et L (respectivement « Search » et « Limit ») fonctionnent de
+la même façon que leurs homologues en minuscules par défaut dans mutt, sauf
+qu'ils utilisent le moteur de notmuch pour faire leur recherche. C'est aussi
+simple que ça !</p>
+<p>On me signale dans l'oreillette que notmuch permet de faire des choses encore
+plus cool que ça, par exemple de l'<a href="http://notmuchmail.org/initial_tagging/">étiquetage de
+messages</a>, mais n'ayant jamais testé
+cette fonctionnalité, je ne peux pas vous en dire grand-chose.</p>
+<h1 id="conclusion-provisoire">Conclusion provisoire</h1>
+<p>Bon, cette fois, je ne crois pas avoir oublié grand-chose (mis à part
+l'utilisation intensive de PGP qui mérite un article à part). Il faudrait
+peut-être que je mentionne le réglage <code>sendmail_wait</code> de mutt, qui est un
+compromis relativement important entre le temps d'attente nécessaire pour mettre
+un mail envoyé dans la file de msmtpq, et le temps que je me laisse pour
+répondre « non » au script qui vérifie si je n'ai pas oublié une pièce jointe,
+mais du coup, je ne sais pas trop dans quelle section en parler. Je verrai ça
+plus tard.</p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Citez cet article!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>L'entrée BibTeX a été copiée dans votre presse-papiers.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblogue20140408,
+  title = &#123;Gérer ses mails en local : étape 3 bis, du rab' de mutt :D},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blogue/client-mail-3bis-mutt.html}},
+  note = &#123;Ted écrit des trucs (blog personnel)},
+  year = &#123;2014},
+  month = &#123;04}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="client-mail-3-mutt.html">← précédent</a>
+    </li>
+    <li>
+      <a href="client-mail-2-msmtp.html">suivant →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">haut de page</a></li>
+    <li><a href="index.html">accueil</a></li>
+    <li><a href="archives.html">archives</a></li>
+  </ul>
+</nav>
+
+      <div class="feedback">
+        Tout ce que je raconte ici sont mes opinions personnelles, pas celles de
+        mon employeur.
+        <br>
+        Je suis toujours ravi de recevoir des réactions, critiques, questions,
+        ou autres commentaires sur ce que j'écris. Envoyez-moi ce qui vous
+        chante à <span class="baddirection">se.niatnofsed@neimad</span>.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          par 
+          <a rel="dct:publisher" href="http://desfontain.es/serious-fr.html">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="Je pense que le concept de propriété intellectuelle n'a aucun sens. Le contenu de ce blog est dans le domaine public."/>
+          </a>
+          &mdash;
+          mis en orbite par <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

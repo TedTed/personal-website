@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Paper highlights: Utility-boosting geometric tricks - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Paper highlights: Utility-boosting geometric tricks - Ted is writing things" />
+  <meta property="twitter:title" content="Paper highlights: Utility-boosting geometric tricks - Ted is writing things" />
+  <meta name="description" property="og:description" content="A quick look at three papers who use neat tricks to boost the utility of simple DP operations." />
+  <meta property="twitter:description" content="A quick look at three papers who use neat tricks to boost the utility of simple DP operations." />
+  <meta property="summary" content="A quick look at three papers who use neat tricks to boost the utility of simple DP operations." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/curious-free-lunch.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/curious-free-lunch.png" />
+  <meta property="twitter:image:alt" content="A graph showing three points (x,0), with x between 0 and R, being transformed to the points (x,R-X) to go on the line going from (0,R) to (R,0), itself labeled "L1 = R"." />
+  <link rel="canonical" href="https://desfontain.es/blog/geometric-tricks.html" />
+  <link rel="prev" href="large-epsilons.html" />
+  <link rel="next" href="dp-vision.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="large-epsilons.html">← previous</a>
+ —     <a href="dp-vision.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./geometric-tricks.html">Paper highlights: Utility-boosting geometric tricks</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2024-09-29T00:00:00+02:00">
+      2024-09-29
+    </time>
+    <small>&mdash; updated
+      <time datetime="2025-03-20T00:00:00+01:00">
+        2025-03-20
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p>Theoretical differential privacy papers are wildly impressive to me. They go
+« we managed to shave off a <span class="math">\(\log\)</span> factor asymptotically for this operation »
+and it's a thousand lines of super complex algorithms and heavy math analysis. I
+could not in a million years come up with this stuff. I'm glad other people do.</p>
+<p>But I have a real soft spot for papers who find simple ways to do simple things
+better. « Hey look, here's a small geometric idea whose entire intuition fits in
+a single figure. It doubles the utility of a basic operation for free. » What?!
+How did nobody notice this stuff so far? It's impressive in a completely
+different way. Like a simple, yet baffling magic trick.</p>
+<p>This blog post is about two such magic tricks, introduced in three papers.</p>
+<h1 id="mean-estimation-in-the-add-remove-model-of-differential-privacy">Mean estimation in the add-remove model of differential privacy</h1>
+<p>A <a href="https://arxiv.org/abs/2312.06658">paper</a> by Alex Kulesza, Ananda Theertha
+Suresh, and Yuyan Wang.</p>
+<p>Say you want to compute the average of numbers <span class="math">\(x_i\)</span> between 0 and 1, protecting
+the addition or removal of a single number. The traditional method is to split
+your privacy budget in <span class="math">\(2\)</span>, add Laplace noise of scale <span class="math">\(2/\varepsilon\)</span> to both
+the sum and the count of numbers, then divide the noisy sum by the noisy count.
+Tried-and-true. Can't beat it. People thought they could and they were
+wrong<sup id="fnref:wrong"><a class="footnote-ref" href="#fn:wrong">1</a></sup>.</p>
+<p>Except wait, of course you can beat it. Most DP libraries have done it for
+years. Instead of computing the sum of the <span class="math">\(x_i\)</span>, they compute the sum of
+<span class="math">\(x_i-0.5\)</span>: then, adding or removing a record changes the sum by at most 0.5,
+instead of 1. So they can add less noise for free. Neat.</p>
+<p>Let's interpret this idea geometrically. We're adding noise to two things: the
+sum and the count. We can see this as adding noise to a two-dimensional vector
+instead: the sum is on the <span class="math">\(x\)</span>-axis, the count on the <span class="math">\(y\)</span>-axis. What's the
+sensitivity of this vector?</p>
+<ul>
+<li>If we add one record <span class="math">\(x_i\)</span>, it adds <span class="math">\(x_i\)</span> (so between 0 and 1) to the <span class="math">\(x\)</span>-axis
+  (the sum), and it adds 1 to the <span class="math">\(y\)</span>-axis (the count).</li>
+<li>If we remove one record <span class="math">\(x_i\)</span>, it adds <span class="math">\(-x_i\)</span> to the <span class="math">\(x\)</span>-axis (so between -1
+  and 0), and <span class="math">\(-1\)</span> to the <span class="math">\(y\)</span>-axis. </li>
+</ul>
+<p>These possibilities are represented by the thick black lines in the diagram
+below. The largest dotted square, in red, represents the noise we're adding with
+the most naive mechanism. It covers the sensitivity lines entirely, which is why
+the algorithm is DP. (Ignore the yellow/blue stuff for now.)</p>
+<p><center>
+<img alt="The middle part of Figure 1 in the paper above. It's a graph with a thick line
+between (0,1) and (1,1), another between (-1,-1) and (0,-1), and a red
+dotted-line square with extremities (2,0), (0,2), (-2,0), and
+(0,-2)." src="https://desfontain.es/blog/images/mean-add-remove-1.png" width="50%">
+</center></p>
+<p>Now, our sensitivity-halving trick from before can be seen as twisting the
+sensitivity lines along the <span class="math">\(x\)</span>-axis so they end up on top of each other. And
+this twisting ("linear transformation" if you want to be fancy) allows us to add
+less noise along this axis. The result is represented in the diagram below. (Note
+that it also halves the scale of the <span class="math">\(y\)</span>-axis for symmetry, but this has no
+utility impact.)</p>
+<p><center>
+<img alt="The right part of Figure 1 in the same paper. The graph has a thick line
+between (-0.5,0.5) and (0.5,0.5), another between (-0.5,-0.5) and (0.5,-0.5),
+and a yellow dotted-line square with extremities (1,0), (0,1), (-1,0), and
+(0,-1)." src="https://desfontain.es/blog/images/mean-add-remove-2.png" width="50%">
+</center></p>
+<p>The yellow bounding box represents the unit noise. It covers our sensitivity
+lines, so our algorithm is DP, and it's smaller than the red box from earlier,
+so the accuracy is better. Can we improve it even more?</p>
+<p>Look at the point in the middle of the top line, at (0,0.5). Its sensitivity is
+0.5, so some of it is "wasted"! To prevent that, we can rotate our lines by 45°,
+and stretch them a little, and cover the entire possible area whose <span class="math">\(L_1\)</span>
+sensitivity is 1. Converting this from the geometric intuition into formulas is
+left as an exercise for the reader<sup id="fnref:exercise"><a class="footnote-ref" href="#fn:exercise">2</a></sup>.</p>
+<p><center>
+<img alt="The left part of Figure 1 in the same paper. The graph has a thick line
+between (0,1) and (1,0), another between (0,-1) and
+(-1,0)." src="https://desfontain.es/blog/images/mean-add-remove-3.png" width="50%">
+</center></p>
+<p>This looks optimal. Is it actually optimal? The authors prove that it is… up to
+a factor of 2. Clearly they were not happy with this, because the paper keeps
+going. The sensitivity tweaking is optimal, but it turns out that the <em>noise
+distribution</em> is not: the authors come up with a better (if somewhat involved)
+noise distribution, which achieves optimality.</p>
+<h1 id="private-means-and-the-curious-incident-of-the-free-lunch">Private Means and the Curious Incident of the Free Lunch</h1>
+<p>By Jack Fitzsimons, James Honaker, Michael Shoemate, and Vikrant Singhal. Here's
+a <a href="https://arxiv.org/abs/2408.10438">link</a>. Great title, by the way.</p>
+<p>This is a different interpretation of the same idea. Say you want to compute the
+DP mean of a bunch of numbers between 0 and 1, and one of your numbers is 0.1.
+When computing the sum, hiding this number behind Laplace noise of
+<span class="math">\(1/\varepsilon\)</span> is, in a way, "wasting" a sensitivity of 0.9. To avoid this
+waste, you could compute not just the sum of the <span class="math">\(x_i\)</span>, but also the sum of
+<span class="math">\(1-x_i\)</span> as well. A point will contribute <span class="math">\(x_i\)</span> to one sum and <span class="math">\(1-x_i\)</span> to the
+other, so the total sensitivity of both queries together is <em>still 1</em>! So you
+can add Laplace noise of scale <span class="math">\(1/\varepsilon\)</span> to both. You get two queries for
+the price of one.</p>
+<p>Visually, you're projecting each of your numbers on the line between (0,1) and
+(1,0). It looks like this (in the figure below, <span class="math">\(R=1\)</span>).</p>
+<p><center>
+<img alt="Figure 1 from the paper linked above. A graph showing three points (x,0), with x between 0 and R, being transformed to the points (x,R-X) to go on the line going from (0,R) to (R,0), itself labeled &quot;L1 = R&quot;." src="https://desfontain.es/blog/images/curious-free-lunch.png" width="50%">
+</center></p>
+<p>Crucially, if you have a noisy estimate of <em>both</em> the sum of <span class="math">\(x_i\)</span> and the sum
+of <span class="math">\(1-x_i\)</span>, then you can sum both, and get an estimate of the sum of <span class="math">\(1\)</span>… Which
+is just a noisy count! So to compute your mean, you can use <em>all</em> your budget
+for the two sums, and get the count for free. Same math than the previous paper,
+different interpretation ✨</p>
+<p>Oh, and you might have noticed that there's also a circle in the figure above.
+That's because the idea also works with the <a href="gaussian-noise.html">Gaussian mechanism</a>: the
+straight line is contained within the unit circle, so the transformation also
+guarantees that the <span class="math">\(L_2\)</span>-sensitivity is below 1. However, when using Gaussian
+noise, you often want to use DP variants like like <a href="renyi-dp-zero-concentrated-dp.html">zero-concentrated DP</a>,
+and add noise to <em>many</em> statistics at once. Can you do better in that case? What
+a smooth transition to the final paper in this small series.</p>
+<h1 id="better-gaussian-mechanism-using-correlated-noise">Better Gaussian Mechanism using Correlated Noise</h1>
+<p>By Christian Janos Lebeda; here's a <a href="https://arxiv.org/pdf/2408.06853">link</a>.</p>
+<p>Using Gaussian noise is especially useful when a single person can contribute to
+multiple statistics. So here, we're interested in multiple sum queries, where
+each person contributes a number between 0 and 1 to each query. And because
+2-dimensional math is a lot easier to visualize, we're going to pretend that
+there are only two queries.</p>
+<p>In the add-remove model, what are the possible values of the sensitivity? Either
+we add an element, in which case both the <span class="math">\(x\)</span>-axis and the <span class="math">\(y\)</span>-axis increase by
+at most 1. Or we remove one, in which case both axes decrease by at most one.
+It's impossible for one query to increase and the other to decrease. Just like
+before, we can represent this on a graph.</p>
+<p><center>
+<img alt="A graph with two greyed out unit squares from (0,0) to (1,1), and from (0,0)
+to (-1,-1). A blue unit circle covers both
+squares." src="https://desfontain.es/blog/images/correlated-noise-1.png" width="50%">
+</center></p>
+<p>The blue circle represents the Gaussian noise added to the sum. Look at all that
+wasted space on the top left and bottom right. Very inefficient. What we would
+really like to do is make the noise fit snuggly with each square, like this.</p>
+<p><center>
+<img alt="The same graph as before, except there is only the unit square from (0,0) to
+(1,1), and an orange circle covers just this
+square." src="https://desfontain.es/blog/images/correlated-noise-2.png" width="50%">
+</center></p>
+<p>Here, we've added noise centered on (0.5,0.5). This works well to cover one
+square, but we have to cover both. So the key insight is to <em>also add noise
+along the <span class="math">\(y=x\)</span> line</em>, in yellow in the diagram above. This second noise
+component is correlated: we add positive noise to one query if we <em>also</em> add
+positive noise to the other.</p>
+<p>Summing both noise distributions, we end up with a noise shape that looks like
+this.</p>
+<p><center>
+<img alt="A graph with two greyed out unit squares from (0,0) to (1,1), and from (-1,-1)
+to (0,0). They are surrounded by an green oval that goes from (-1,-1) to (1,1),
+and covers both squares, but it significantly smaller on the other diagonal that
+the unit circle from earlier." src="https://desfontain.es/blog/images/correlated-noise-3.png" width="50%">
+</center></p>
+<p>And of course, the same idea applies to more than two queries. The more queries
+you have, the more you benefit from using this technique, which can save you up
+to a factor of 2 in the noise scale. As a bonus, the author proves that this
+noise distribution has <em>exactly the same privacy loss</em> as our Gaussian
+mechanism, which is neat.</p>
+<p>A variant on this setting is when you have lots of queries, but each user
+contributes to a smaller number of queries: for example, if you do a histogram
+of words used on a search engine, each user will contribute to many words, but
+much fewer than the total number of words. It turns out that the idea of using
+elliptic noise, with a component centered on the (1,1,…,1) vector, still works!
+This is proved in <a href="https://arxiv.org/abs/2309.15790">this other paper</a>; the math
+is more complex and much harder to explain geometrically, but the fundamental
+insight is the same.</p>
+<p>All papers listed in this blog post also have extensions to related problems,
+and additional results. Go read them if you want to learn more!</p>
+<hr>
+<p><small>
+Editing note: the first two sections of this blog post were heavily modified
+after Amit Keinan pointed out a mistake in an earlier version of the Fitzsimmons
+et al. paper, which I didn't notice and reproduced in this blog post: the
+technique works for means in the add-remove model, but not in the change-one
+model. Thanks Amit for letting me know about it!</p>
+<p>I'm also grateful to Alex Kulesza and Michael Shoemate for their helpful
+comments on earlier versions of this post.
+</small></p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:wrong">
+<p>A bit of a rabbit hole, but if you want to see an example of how easy
+it can be to get DP wrong even for basic mechanisms, Ctrl+F "Algorithm 2.3"
+on <a href="https://desfontain.es/thesis/RobustnessAndTesting.html#fn2x5-bk">this page</a>
+and read until the footnote.&#160;<a class="footnote-backref" href="#fnref:wrong" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:exercise">
+<p>Just kidding. You add Laplace noise of scale <span class="math">\(1/\varepsilon\)</span> to the
+sum of <span class="math">\(x_i\)</span> (call this <span class="math">\(A\)</span>) and the sum of <span class="math">\(1-x_i\)</span> (call this <span class="math">\(B\)</span>), then
+return <span class="math">\(A/(A+B)\)</span>.&#160;<a class="footnote-backref" href="#fnref:exercise" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20240929,
+  title = &#123;Paper highlights: Utility-boosting geometric tricks},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/geometric-tricks.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2024},
+  month = &#123;09}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="large-epsilons.html">← previous</a>
+    </li>
+    <li>
+      <a href="dp-vision.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

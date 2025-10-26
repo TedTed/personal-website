@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Gérer ses mails en local : étape 2, envoi d'e-mails avec msmtp et msmtpq. - Ted écrit des trucs</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="archives.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blogue/" type="application/rss+xml" rel="alternate" title="Ted écrit des trucs - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Gérer ses mails en local : étape 2, envoi d'e-mails avec msmtp et msmtpq. - Ted écrit des trucs" />
+  <meta property="twitter:title" content="Gérer ses mails en local : étape 2, envoi d'e-mails avec msmtp et msmtpq. - Ted écrit des trucs" />
+  <meta name="description" property="og:description" content="Comment envoyer des mails depuis son client local avec msmtp." />
+  <meta property="twitter:description" content="Comment envoyer des mails depuis son client local avec msmtp." />
+  <meta property="summary" content="Comment envoyer des mails depuis son client local avec msmtp." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blogue/client-mail-2-msmtp.html" />
+  <link rel="prev" href="client-mail-3bis-mutt.html" />
+  <link rel="next" href="client-mail-1-offlineimap.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Aller vers le contenu" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+              ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+              <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious-fr.html"> Présentation <img src="../flag-france.gif" alt=""/></a>
+          <a href="../serious.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-france.gif" alt=""/>
+          <a href="../blog/index.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recettes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="feed.xml">rss</a> —
+            <a href="archives.html">archives</a>
+          </span>
+          <span class="droite">
+            <a href="offlineimap-mbsync.html"
+                 title="Passer d'OfflineIMAP à isync/mbsync">← précédent</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted écrit des trucs</span>
+      </a></h1>
+      Sur des sujets en lien avec la vie privée, ou parfois pas.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./client-mail-2-msmtp.html">Gérer ses mails en local : étape 2, envoi d'e-mails avec msmtp et msmtpq.</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2014-04-08T00:00:00+02:00">
+      2014-04-08
+    </time>
+    <small>&mdash; modifié le
+      <time datetime="2014-05-27T00:00:00+02:00">
+        2014-05-27
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><span class='notlettrine'>C</span>e billet fait partie d'une série d'articles
+présentant la façon dont je gère mes mails en local. Si vous êtes arrivés là
+sans lire l'introduction, c'est probablement une bonne idée de commencer par le
+début.</p>
+<ul>
+<li>Étape 0 : <a href="client-mail-0-introduction.html">Introduction</a></li>
+<li>Étape 1 : <a href="client-mail-1-offlineimap.html">Synchronisation IMAP avec
+  OfflineIMAP</a></li>
+<li>Étape 2 : Envoi d'e-mails avec msmtp et msmtpq ← vous êtes ici !</li>
+<li>Étape 3 : <a href="client-mail-3-mutt.html">Configuration de mutt</a></li>
+<li>Étape 3 bis : <a href="client-mail-3bis-mutt.html">Dose supplémentaire de mutt</a></li>
+<li>Étape 4 : <a href="client-mail-4-gpg.html">Chiffrement et signature avec PGP</a></li>
+</ul>
+<hr>
+<p><span class='lettrine'>D</span><strong>onc</strong>, maintenant qu'on est arrivés à récupérer
+nos e-mails, on aimerait bien en envoyer. Mutt, le client mail, ne sait pas
+faire ça - ou pour être précis, depuis la dernière version, il sait faire ça,
+mais l'implémentation est récente et ne permet pas de faire une file d'attente
+de messages à envoyer lorsqu'on est hors ligne (on y reviendra). J'utilise donc
+msmtp qui fait bien son travail, qui est simple à configurer et qui vient avec
+une solution de queuing.</p>
+<h1 id="configuration-de-base">Configuration de base</h1>
+<p>Sans surprise, on installe msmtp :</p>
+<div class="highlight"><pre><span></span><code>aptitude install msmtp
+</code></pre></div>
+
+<p>et on ouvre le fichier <code>~/.msmtprc</code> pour modifier la configuration.</p>
+<p>Tout en haut du fichier, on trouve la configuration qui dit qu'on veut utiliser
+ssl (toujours pour ne pas envoyer son mot de passe en clair), qui précise qu'on
+veut avoir la méthode d'authentification la plus sûre disponible, qui choisit le
+fichier dans lequel msmtp va écrire des logs, et qui désactive les autres
+méthodes d'enregistrement de logs.</p>
+<div class="highlight"><pre><span></span><code>defaults
+tls on
+tls_starttls on
+auth on
+logfile /.msmtp.log
+syslog off
+</code></pre></div>
+
+<p>Puis, pour chaque compte SMTP auquel on veut se connecter, on ajoute un bloc de
+configuration qui ressemble à ça :</p>
+<div class="highlight"><pre><span></span><code><span class="n">account</span><span class="w"> </span><span class="n">dam</span>
+<span class="k">host</span><span class="w"> </span><span class="n">smtp</span><span class="p">.</span><span class="n">desfontain</span><span class="p">.</span><span class="n">es</span>
+<span class="n">port</span><span class="w"> </span><span class="mi">465</span>
+<span class="k">user</span><span class="w"> </span><span class="n">damien</span>
+<span class="n">password</span><span class="w"> </span><span class="n">gungjbhyqunirorraorggre</span>
+<span class="k">from</span><span class="w"> </span><span class="n">damien</span><span class="nv">@desfontai</span><span class="p">.</span><span class="n">nes</span>
+<span class="n">tls_trust_file</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ssl</span><span class="o">/</span><span class="n">certs</span><span class="o">/</span><span class="n">ca</span><span class="o">-</span><span class="n">certificates</span><span class="p">.</span><span class="n">crt</span>
+</code></pre></div>
+
+<p>en remplaçant <code>smtp.desfontain.es</code> et <code>465</code> par l'adresse de votre serveur SMTP
+et le port sur lequel il écoute (encore une fois, c'est trouvable <a href="http://www.commentcamarche.net/faq/893-parametres-de-serveurs-pop-imap-et-smtp-des-principaux-fai">par
+ici</a>
+pour les principaux fournisseurs de mails), <code>damien</code> par ce qu'il y a à gauche
+du @ dans votre adresse mail, et en changeant le mot de passe et l'adresse mail.
+À partir de là, pour envoyer un mail écrit dans un fichier <code>f</code>, la commande à
+exécuter sera <code>msmtp -a dam &lt; f</code> pour utiliser le bloc de configuration qui
+commence par <code>account dam</code>. Ne le faites pas, il faudrait que vous écriviez les
+headers à la main et ça serait un peu pénible =)</p>
+<p>On peut rajouter autant de blocs de ce type que l'on veut dans le <code>.msmtprc</code>,
+pour pouvoir appeller msmtp avec différents arguments (et ainsi pouvoir se
+connecter à différents serveurs SMTP, ou au même serveur avec plusieurs comptes
+différents). Ah oui, dernière chose importante : le fichier <code>.msmtprc</code> doit
+avoir des permissions fixes pour que msmtp accepte de le lire, donc vous
+aurez peut-être besoin de lancer un <code>chmod 600 ~/.msmtprc</code> pour que ça
+fonctionne.</p>
+<h1 id="faire-du-queuing-avec-msmtpq">Faire du queuing avec msmtpq</h1>
+<p>Donc, on a un système d'envoi de mails qui fonctionne. Maintenant, si on veut
+répondre à un mail alors qu'on n'est pas connecté à Internet (dans un train, un
+avion, une salle de cours au wifi pourri de Paris 7…), la seule solution est de
+rédiger le mail, de l'enregistrer en brouillon dans le client mail, et de penser
+à l'envoyer plus tard lorsqu'on sera connecté. C'est pénible et ça a l'air
+automatisable… Ce qui me fait une excellente introduction pour msmtpq, un script
+qui permet de mettre tous les mails envoyés dans un dossier (qui agit comme une
+<em>queue</em>, ou <em>file d'attente</em> en bon français), et de les envoyer sur Internet
+dès que c'est possible.</p>
+<p>Si vous avez installé msmtp par votre gestionnaire de paquets, vous avez déjà
+msmtpq qui traîne sur votre machine à un endroit obscur :
+<code>/usr/share/doc/msmtp/examples/msmtpq</code>. On va donc se connecter en root,
+mettre le script dans un endroit accessible pour l'utilisateur et changer
+trois lignes pour le configurer correctement.</p>
+<div class="highlight"><pre><span></span><code>su -
+cd /usr/share/doc/msmtp/examples/msmtpq
+cp msmtp* /usr/local/bin/
+chmod +x /usr/local/bin/msmtpq /usr/local/bin/msmtp-queue
+</code></pre></div>
+
+<p>On ouvre le fichier /usr/local/bin/msmtpq, toujours en root, avec son
+éditeur préféré, et il y a deux lignes à modifier : celle qui commence par
+<code>Q=</code> et celle qui commence par <code>LOG=</code>. Dans les deux cas, il faut remplacer la
+valeur par défaut par (respectivement) le dossier dans lequel on a envie de
+stocker les mails de la file d'attente, et le fichier dans lequel on veut
+logger l'activité de msmtpq. Par exemple, chez moi :</p>
+<div class="highlight"><pre><span></span><code>Q=~/.msmtp.queue
+LOG=~/.msmtp.queue.log
+</code></pre></div>
+
+<p>il faut créer le dossier et le fichier en question et leur donner les bonnes
+permissions, en utilisateur normal cette fois-ci :</p>
+<div class="highlight"><pre><span></span><code>mkdir ~/.msmtp.queue
+chmod 700 ~/.msmtp.queue
+chmod 600 .msmtp.log
+</code></pre></div>
+
+<p>et c'est tout ! Les derniers bouts de config' nécessaires pour utiliser
+msmtpq en pratique concernent mutt, donc on y reviendra.</p>
+<h1 id="automatisation-du-processus">Automatisation du processus</h1>
+<p>De la même façon que pour OfflineIMAP, on a envie de faire
+régulièrement des appels à msmtpq pour lui dire « si la file d'attente n'est
+pas vide, réessaie d'envoyer les mails qu'il y a dedans ». Ça se fait à la main
+avec la commande <code>msmtp-queue -r</code>, donc la ligne à rajouter dans le fichier
+qui s'ouvre en tapant <code>crontab -e</code> est :</p>
+<div class="highlight"><pre><span></span><code>*/2 <span class="gs">* *</span> * * /usr/local/bin/msmtp-queue -r &gt; /dev/null 2&gt; /dev/null
+</code></pre></div>
+
+<p>et voilà le travail.</p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Citez cet article!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>L'entrée BibTeX a été copiée dans votre presse-papiers.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblogue20140408,
+  title = &#123;Gérer ses mails en local : étape 2, envoi d'e-mails avec msmtp et msmtpq.},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blogue/client-mail-2-msmtp.html}},
+  note = &#123;Ted écrit des trucs (blog personnel)},
+  year = &#123;2014},
+  month = &#123;04}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="client-mail-3bis-mutt.html">← précédent</a>
+    </li>
+    <li>
+      <a href="client-mail-1-offlineimap.html">suivant →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">haut de page</a></li>
+    <li><a href="index.html">accueil</a></li>
+    <li><a href="archives.html">archives</a></li>
+  </ul>
+</nav>
+
+      <div class="feedback">
+        Tout ce que je raconte ici sont mes opinions personnelles, pas celles de
+        mon employeur.
+        <br>
+        Je suis toujours ravi de recevoir des réactions, critiques, questions,
+        ou autres commentaires sur ce que j'écris. Envoyez-moi ce qui vous
+        chante à <span class="baddirection">se.niatnofsed@neimad</span>.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          par 
+          <a rel="dct:publisher" href="http://desfontain.es/serious-fr.html">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="Je pense que le concept de propriété intellectuelle n'a aucun sens. Le contenu de ce blog est dans le domaine public."/>
+          </a>
+          &mdash;
+          mis en orbite par <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

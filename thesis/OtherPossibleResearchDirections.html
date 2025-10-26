@@ -1,0 +1,272 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="OperationalAspectsOfAnonymization.html" />
+  <link ref="next" href="Conclusion.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="OperationalAspectsOfAnonymization.html">← previous</a></li>
+        <li><a href="FurtherImprovementsAndOpenQuestions.html#OtherPossibleResearchDirections.html">up</a></li>
+        <li><a href="Conclusion.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="OperationalAspectsOfAnonymization.html">LINKPREV</a><a href="FurtherImprovementsAndOpenQuestions.html#OtherPossibleResearchDirections.html">LINKUP</a><a href="Conclusion.html">LINKNEXT</a></p></div>
+  <h4 class="subsectionHead" id="other-possible-research-directions-u-ding-"><span class="titlemark">4.3.5</span>&nbsp;&nbsp;<a id="x62-2230004.3.5"></a>Other possible research directions <span class="bbding-10x-x-109">✿</span></h4> <!-- l. 3 --><p class="noindent">
+The discussion throughout Section&nbsp;4.3 makes it obvious that we are only at the very beginning of the
+path towards building usable, general-purpose, and robust differential privacy tooling and infrastructure.
+We introduced many open problems, most of which were about adding additional features, or
+improving the utility of specific primitives. But this work also suggests a number of larger open
+questions and possible research directions.
+</p><!-- l. 10 --><p class="indent">  For example, on the utility side, it might be possible to compensate the data loss due to contribution
+bounding and thresholding: we are dropping records according to a simple probability distribution, so it
+might be feasible to automatically correct for this sampling and rescale the results in a private way to
+limit the bias introduced. Optimizing the algorithms used for specific sets of queries, or caching some
+results to allow people to re-run queries for free, are also natural options. Results on amplification by
+sampling might also be used in query frameworks like ours to obtain better privacy/accuracy
+trade-offs.
+</p><!-- l. 19 --><p class="indent">  More generally, we believe that future work on DP should consider that realistic data typically
+includes multiple contributions from a single user. Taking this into account is not easy: in particular,
+one of the main obstacles is that <span class="t1xi-x-x-109">asymptotic </span>results are then likely much more difficult to derive. If
+every user can contribute multiple records, what is the distribution of the number of records per user?
+Depending on this distribution, different algorithms may have very different behaviors and
+privacy/accuracy trade-offs. Comparisons with the state-of-the-art will necessarily be less
+straightforward, and will involve more experimental validation. Considering this question while
+designing differentially private algorithms is, however, of utmost importance: many real-world
+datasets simply do not satisfy the assumption that the input dataset only has a single record per
+user.
+</p><!-- l. 32 --><p class="indent">  This remark about experimental validation underscores the importance of a crucial and
+largely unexplored area of differential privacy research: benchmarking. Nowadays, scientific
+papers often provide comparisons with prior work on ad hoc datasets or on synthetic data.
+The evaluation we presented in Section&nbsp;4.2.4 is no exception. TPC-H was designed as a
+general-purpose performance benchmark for database systems&nbsp;[<a id="x62-223001"></a><a href="bibliography.html#cite.0@council2008tpc">87</a>]; its queries are not
+representative of the type of queries that are typical in situations where applying differential
+privacy makes sense. There are a few benchmarks today that focus on differential privacy, but
+they only consider specific problems like one- and two-dimensional histograms&nbsp;[<a id="x62-223002"></a><a href="bibliography.html#cite.0@hay2016principled">189</a><a id="x62-223003"></a>, <a href="bibliography.html#cite.0@hay2016exploring">190</a>],
+and they do not consider multiple contributions by the same user. We argue that a good
+benchmark for general-purpose differentially private query engines should have several important
+characteristics.
+</p>
+                                                                                
+                                                                                
+     <ul class="itemize1">
+     <li class="itemize">The datasets used must be publicly available.
+     </li>
+     <li class="itemize">The  data  and  the  queries  run  must  be  representative  of  real-world  use  cases  for
+     differentially private query engines, including aggregations besides histograms.
+     </li>
+     <li class="itemize">The  datasets  and  queries  used  must  be  large  enough  to  mirror  practical  scalability
+     requirements.
+     </li>
+     <li class="itemize">The system under test must provide user-level differential privacy, even when a single user
+     can contribute multiple records.</li></ul>
+<!-- l. 58 --><p class="indent">  Building a benchmarking system that satisfies these requirements will not be easy: one of the
+challenges is that differential privacy is typically applied on <span class="t1xi-x-x-109">sensitive </span>data, which is typically not public.
+Besides the requirements listed above, defining a set of good scoring metrics is also going to be highly
+non-trivial. However, we believe that such a benchmark could encourage valuable research, making it a
+promising and worthwhile research direction.
+</p><!-- l. 65 --><p class="indent">  We made a number of statements about improving <span class="t1xi-x-x-109">usability</span>, but we have been defining this concept
+very loosely, and our remarks where purely based on practical experience with helping engineers and
+data analysts use differential privacy. This anecdotal evidence, however, hardly constitutes scientific
+evidence that one method is better than another from a usability perspective. To get a better
+understanding of what helps people use differential privacy in practice, systematic qualitative and
+quantitative user research is certainly needed.
+</p><!-- l. 74 --><p class="indent">  Finally, we hope that the discussion on operational challenges can serve as a starting point for honest
+and genuine discussions around best operational practices within the community of anonymization
+practitioners. However, reaching consensus on these questions will take more than technical expertise:
+questions like “how to explain anonymization best practices to non-experts” cannot be answered by a
+clever mathematical formula, and a multidisciplinary approach is needed. Academic work can
+strengthen our understanding of the link between parameter choice and attack success, or take an
+experimental approach to find out which policies produce the best outcomes, but an open and
+transparent discussion across the industry is also needed to define anonymization good practices.
+Perhaps standard bodies, or open-source collaborations, could be good places to host such
+discussions?
+                                                                                
+                                                                                
+</p>
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="OperationalAspectsOfAnonymization.html">LINKPREV</a><a href="FurtherImprovementsAndOpenQuestions.html#OtherPossibleResearchDirections.html">LINKUP</a><a href="Conclusion.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="OperationalAspectsOfAnonymization.html">← previous</a></li>
+        <li><a href="FurtherImprovementsAndOpenQuestions.html#OtherPossibleResearchDirections.html">up</a></li>
+        <li><a href="Conclusion.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

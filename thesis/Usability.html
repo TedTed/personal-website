@@ -1,0 +1,358 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="Accuracy.html" />
+  <link ref="next" href="RobustnessAndTesting.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="Accuracy.html">← previous</a></li>
+        <li><a href="BuildingAUsableDifferentiallyPrivateQueryEngine.html#Usability.html">up</a></li>
+        <li><a href="RobustnessAndTesting.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="Accuracy.html">LINKPREV</a><a href="BuildingAUsableDifferentiallyPrivateQueryEngine.html#Usability.html">LINKUP</a><a href="RobustnessAndTesting.html">LINKNEXT</a></p></div>
+  <h4 class="subsectionHead" id="usability-u-ding-"><span class="titlemark">4.2.5</span>&nbsp;&nbsp;<a id="x55-1880004.2.5"></a>Usability <span class="bbding-10x-x-109">✿</span></h4> <!-- l. 3 --><p class="noindent">
+Designing a differentially private query engine for non-expert use requires a number of considerations
+beside the design and implementation of the system described in the previous section. In this section,
+we focus on <span class="t1xi-x-x-109">usability</span>: what makes such a system difficult to use by analysts, and how can we mitigate
+these concerns.
+</p><!-- l. 10 --><p class="indent">
+<a id="subsubsection*.96"></a>
+</p>
+  <h5 class="subsubsectionHead" id="automatic-bounds-determination"><a id="x55-189000"></a>Automatic bounds determination</h5>
+<!-- l. 12 --><p class="noindent">One major difference between standard SQL queries and queries using our differentially private
+aggregation operator is the presence of bounds: e.g., when using <span class="obeylines-h"><code class="verb">ANON_SUM</code></span>, an analyst
+must specify the lower and upper bound for each sum input. This differs from standard
+workflows, and more importantly, it requires prior knowledge of the data that an analyst might not
+have.
+</p><!-- l. 18 --><p class="indent">  To remove this hurdle, we designed an aggregation function which can be sequentially composed with our previously
+introduced <!-- l. 19 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span>-DP
+functions to automatically compute bounds that minimize accuracy loss. Call this function
+<span class="obeylines-h"><code class="verb">APPROX_BOUNDS(col)</code></span>.
+</p><!-- l. 23 --><p class="indent">  Without  contribution  bounds,  the  domain  of  an
+<!-- l. 23 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span>-DP function in
+our model spans <!-- l. 24 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-ams-R" style="padding-top: 0.446em; padding-bottom: 0.298em;">R</span></span></span></span></span></span>.
+Finding differentially private extrema over such a range is difficult. Fortunately, we can leverage
+two observations. First, inputs to this function are represented on a machine using finite
+precision; typically 64-bit integers or floating point numbers. Second, bounds do not need to be
+close to the real extrema: clipping a small fraction of data will usually not have a large
+influence on the aggregated results, and might even have a positive influence by removing
+outliers.
+</p><!-- l. 32 --><p class="indent">  Consider an <span class="obeylines-h"><code class="verb">ANON_SUM</code></span> operation operating on 64-bit unsigned integers where bounds are not
+provided. We divide the privacy budget in two: the first half to be used to infer approximate bounds
+using <span class="obeylines-h"><code class="verb">APPROX_BOUNDS(col)</code></span>; the second half to be used to calculate the noisy sum as usual. We must
+spend privacy budget to choose bounds in a data-dependent way.
+</p><!-- l. 38 --><p class="indent">  In the <span class="obeylines-h"><code class="verb">APPROX_BOUNDS(col)</code></span> function, we instantiate a 64-bin logarithmic histogram of base 2, and, for each
+input <!-- l. 39 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span></span></span></span></span>, increment the
+                                                                                
+                                                                                
+<!-- l. 40 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo MathClass-open"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">⌈</span></span><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mtext qopname"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.519em;">log</span></span><span class="mjx-mo"><span class="mjx-char"></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.377em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span><span class="mjx-mo MathClass-close"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">⌉</span></span></span></span></span></span></span>th bin. If we have a total
+budget of <!-- l. 40 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span> for this operation,
+we add Laplace noise of scale <!-- l. 41 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">∕</span></span><span class="mjx-mi MJXc-space2"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span></span>
+to the count in each bin, as is standard for differentially private histograms. Then, to find the approximate
+maximum of the input values, we select the most significant bin whose count exceeds some threshold
+<!-- l. 44 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em; padding-right: 0.04em;">K</span></span></span></span></span></span>.
+This threshold depends on two parameters: the number of histogram bins
+<!-- l. 45 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">B</span></span></span></span></span></span>, and the probability
+of a false positive <!-- l. 45 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.446em;">p</span></span></span></span></span></span>
+of an empty bin exceeding the threshold.
+</p><!-- l. 48 --><p class="indent">  The probability that a given bin produces a count above
+<!-- l. 48 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">x</span></span></span></span></span></span> if its true count
+is zero is <!-- l. 49 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mfrac"><span class="mjx-box MJXc-stacked" style="width: 0.495em; padding: 0px 0.12em;"><span class="mjx-numerator" style="font-size: 70.7%; width: 0.7em; top: -1.372em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span><span class="mjx-denominator" style="font-size: 70.7%; width: 0.7em; bottom: -0.665em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span><span style="border-bottom: 1.3px solid; top: -0.296em; width: 0.495em;" class="mjx-line"></span></span><span style="height: 1.441em; vertical-align: -0.47em;" class="mjx-vsize"></span></span><span class="mjx-msup"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">e</span></span></span></span><span class="mjx-sup" style="font-size: 70.7%; vertical-align: 0.513em; padding-left: 0px; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mo MathClass-bin"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.298em; padding-bottom: 0.446em;">−</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">xε</span></span></span></span></span></span></span></span></span></span>.
+Suppose we are looking for the most significant bin with a count greater than
+<!-- l. 50 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em; padding-right: 0.04em;">K</span></span></span></span></span></span>. In the
+<span class="obeylines-h"><code class="verb">APPROX_BOUNDS(col)</code></span> function, we iterate through the histogram bins, from most to least significant, until we find
+one exceeding <!-- l. 52 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.372em; padding-bottom: 0.298em;">t</span></span></span></span></span></span>.
+In the worst case, the desired bin is the <span class="t1xi-x-x-109">least </span>significant bin. This means
+<!-- l. 53 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">B</span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.298em; padding-bottom: 0.446em;">−</span></span><span class="mjx-mn MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span> bins with exact counts
+of <!-- l. 53 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">0</span></span></span></span></span></span> must not have noisy
+counts exceeding <!-- l. 54 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em; padding-right: 0.04em;">K</span></span></span></span></span></span>.
+Thus, the probability that there was not a false positive in this worst case is: </p><table class="equation-star"><tbody><tr><td>
+<!-- l. 56 --><span class="mjpage mjpage__block"><span class="mjx-chtml MJXc-display" style="text-align: center;"><span class="mjx-math equation" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.446em;">p</span></span><span class="mjx-mo MathClass-rel MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">=</span></span><span class="mjx-msup MJXc-space3"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mo MathClass-open"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.298em; padding-bottom: 0.446em;">−</span></span><span class="mjx-mfrac MJXc-space2"><span class="mjx-box MJXc-stacked" style="width: 2.181em; padding: 0px 0.12em;"><span class="mjx-numerator" style="width: 2.181em; top: -1.54em;"><span class="mjx-mrow"><span class="mjx-msup"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">e</span></span></span></span><span class="mjx-sup" style="font-size: 70.7%; vertical-align: 0.513em; padding-left: 0px; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mo MathClass-bin"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.298em; padding-bottom: 0.446em;">−</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">Kε</span></span></span></span></span></span></span><span class="mjx-denominator" style="width: 2.181em; bottom: -0.756em;"><span class="mjx-mrow"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span><span style="border-bottom: 1.3px solid; top: -0.296em; width: 2.181em;" class="mjx-line"></span></span><span style="height: 2.296em; vertical-align: -0.756em;" class="mjx-vsize"></span></span><span class="mjx-mo MathClass-close"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span><span class="mjx-sup" style="font-size: 70.7%; vertical-align: 1.792em; padding-left: 0px; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">B</span></span><span class="mjx-mo MathClass-bin"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.298em; padding-bottom: 0.446em;">−</span></span><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.372em;">.</span></span></span></span></span></span></span></td></tr></tbody></table>
+<!-- l. 59 --><p class="indent">  Solving for <!-- l. 59 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em; padding-right: 0.04em;">K</span></span></span></span></span></span>,
+we obtain: </p><table class="equation-star"><tbody><tr><td>
+                                                                                
+                                                                                
+<!-- l. 60 --><span class="mjpage mjpage__block"><span class="mjx-chtml MJXc-display" style="text-align: center;"><span class="mjx-math equation" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em; padding-right: 0.04em;">K</span></span><span class="mjx-mo MathClass-rel MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">=</span></span><span class="mjx-mo MathClass-bin MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.298em; padding-bottom: 0.446em;">−</span></span><span class="mjx-mfrac"><span class="mjx-box MJXc-stacked" style="width: 0.7em; padding: 0px 0.12em;"><span class="mjx-numerator" style="width: 0.7em; top: -1.368em;"><span class="mjx-mrow"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span><span class="mjx-denominator" style="width: 0.7em; bottom: -0.733em;"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span><span style="border-bottom: 1.3px solid; top: -0.296em; width: 0.7em;" class="mjx-line"></span></span><span style="height: 2.1em; vertical-align: -0.733em;" class="mjx-vsize"></span></span><span class="mjx-mtext qopname"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">ln</span></span><span class="mjx-mo"><span class="mjx-char"></span></span><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-size3-R" style="padding-top: 1.256em; padding-bottom: 1.256em;">(</span></span><span class="mjx-mrow"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.298em; padding-bottom: 0.446em;">−</span></span><span class="mjx-mn MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span><span class="mjx-msup"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.446em;">p</span></span></span></span><span class="mjx-sup" style="font-size: 70.7%; vertical-align: 0.812em; padding-left: 0px; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mfrac"><span class="mjx-box MJXc-stacked" style="width: 1.864em; padding: 0px 0.12em;"><span class="mjx-numerator" style="font-size: 83.3%; width: 2.237em; top: -1.288em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span><span class="mjx-denominator" style="font-size: 83.3%; width: 2.237em; bottom: -0.787em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">B</span></span><span class="mjx-mo MathClass-bin"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.298em; padding-bottom: 0.446em;">−</span></span><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span><span style="border-bottom: 1px solid; top: -0.296em; width: 1.864em;" class="mjx-line"></span></span><span style="height: 1.729em; vertical-align: -0.656em;" class="mjx-vsize"></span></span></span></span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-size3-R" style="padding-top: 1.256em; padding-bottom: 1.256em;">)</span></span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.372em;">.</span></span></span></span></span></span></span></td></tr></tbody></table>
+<!-- l. 64 --><p class="indent">  For example, <!-- l. 64 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">B</span></span><span class="mjx-mo MathClass-rel MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">=</span></span><span class="mjx-mn MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">64</span></span></span></span></span></span></span> for unsigned
+integers. When setting <!-- l. 64 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.446em;">p</span></span></span></span></span></span>,
+the trade-offs of clipping distribution tails, false positive risk, and algorithm failure due to no bin count exceeding
+<!-- l. 66 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em; padding-right: 0.04em;">K</span></span></span></span></span></span> must all be considered.
+Values on the order of <!-- l. 67 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo MathClass-open"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span><span class="mjx-mo MathClass-bin MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.298em; padding-bottom: 0.446em;">−</span></span><span class="mjx-mn MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span><span class="mjx-msup"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">0</span></span></span></span><span class="mjx-sup" style="font-size: 70.7%; vertical-align: 0.591em; padding-left: 0px; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mo MathClass-bin"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.298em; padding-bottom: 0.446em;">−</span></span><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">9</span></span></span></span></span><span class="mjx-mo MathClass-close"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>
+for <!-- l. 67 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.446em;">p</span></span></span></span></span></span> can be suitable,
+depending on <!-- l. 67 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span>
+and the size of the input dataset.
+</p><!-- l. 70 --><p class="indent">  The approximate minimum bound can similarly be found by searching for the least significant bin with count
+exceeding&nbsp;<!-- l. 71 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.372em; padding-bottom: 0.298em;">t</span></span></span></span></span></span>.
+We generalize this for signed numbers by adding additional negative-signed
+bins, and for floating point numbers by adding bins for negative powers of
+<!-- l. 73 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span>.
+</p><!-- l. 75 --><p class="indent">  Note that there are two possible ways to use this algorithm to automatically generate reasonable
+bounds: we can either use once over the entire dataset, and use the same bounds in every partition,
+or use it in each partition separately. There are pros and cons to both approaches. Using
+it over the entire dataset means that more data is being used, so a smaller fraction of the
+<!-- l. 79 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span> can be
+used for this operation. Further, for aggregations like sums and counts, it means that the noise
+magnitude used in each partition will be the same, which makes the output data easier to reason about.
+On the other hand, using it over each partition separately is better suited for use cases where the
+magnitude of values varies significantly between partitions.
+</p><!-- l. 87 --><p class="indent">
+<a id="subsubsection*.97"></a>
+</p>
+  <h5 class="subsubsectionHead" id="providing-a-measure-of-accuracy"><a id="x55-190000"></a>Providing a measure of accuracy</h5>
+<!-- l. 89 --><p class="noindent">A ubiquitous challenge for a DP interface is the fact that acceptable accuracy loss depends on the data
+characteristics, as well as on the problem at hand. We address this by giving analysts a variety of utility
+loss measures. These utility loss measures can be used in two ways, depending on the scenario in which
+the differentially private query engine is used.
+</p>
+     <ul class="itemize1">
+                                                                                
+                                                                                
+     <li class="itemize">If the engine is used to generate differentially private data according to a given strategy, by
+     someone who has access to the raw data, the analyst can try various values of parameters
+     to determine which give the best utility for their use case.
+     </li>
+     <li class="itemize">If the engine is used to allow an untrusted analyst to send queries to a dataset to which they
+     have no access, we can still return a subset of utility metrics without breaking differential
+     privacy guarantees.</li></ul>
+<!-- l. 105 --><p class="indent">  There is a profound difference between these two scenarios. Some measures of data loss are useful in both. Since
+all parameters (<!-- l. 106 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span>,
+<!-- l. 106 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span></span></span></span></span>,
+<!-- l. 106 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">κ</span></span></span></span></span></span>, etc.)
+are public, the method and noise parameters used in the anonymization process are not sensitive, and
+can be returned to the engine client. We could give as much detail as we could; however, in practice, we
+have found that confidence intervals (CI) are the best way to communicate uncertainty about the
+results. The CI can be calculated from each function’s contribution bounds and share of
+<!-- l. 112 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span>.
+Importantly, it does not account for the effect of clamping or thresholding. Note that for some
+aggregations, it might be difficult to compute a CI. For example, averages need to combine the
+confidence intervals from two sources of noise (the sum and the count), and we do not support CI for
+quantiles.
+</p><!-- l. 118 --><p class="indent">  Some measures are more useful in the former scenario, if the analyst has access to the raw data. A
+particularly useful metric is <span class="t1xi-x-x-109">partition loss</span>: how many partitions with low user counts are removed by
+<!-- l. 120 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em; padding-right: 0.08em;">τ</span></span></span></span></span></span>-thresholding.
+We can simply return the percentage of lost partitions due to
+<!-- l. 121 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em; padding-right: 0.08em;">τ</span></span></span></span></span></span>-thresholding,
+possibly as a percentage of all partitions. It would be useful to return this metric in the untrusted use
+case, but making it differentially private is not straightforward: a single user could add an unbounded
+amount of partitions, so the sensitivity of this metric is unbounded; and clamping it would
+defeat the point. This metric is important because it is typically actionable: coarsening the
+partitions (e.g.&nbsp;aggregating the data daily instead of hourly) can drastically limit partition
+loss.
+</p><!-- l. 130 --><p class="indent">  Finally, it is also useful to surface the data loss due to clamping: how many values are clamped, and
+what is their magnitude. In the “trusted analyst” use case, we can visualize both by simply comparing
+the private histogram with the non-private histogram, an example is given in&nbsp;Figure&nbsp;4.13. In the
+untrusted use case, if we use automatic bounds determination (Section&nbsp;4.2.5.0), the log-scale histogram
+gives an approximate fraction of inputs exceeding the chosen bounds; since this is private, it could also
+be returned to the analyst.
+</p>
+  <figure class="figure"> 
+
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+<!-- l. 141 --><p class="noindent" id="-screenshots-of-an-internal-tool-showing-the-kind-of-metrics-that-can-be-surfaced-to-a-trusted-data-custodian-to-assist-them-in-tweaking-various-parameters-a-more-detailed-description-of-this-tool-can-be-found-in-pereraimproving"><img alt="PIC" src="chapters/practice/usable-dp-screenshot.png"><br>
+<img alt="PIC" src="chapters/practice/usable-dp-graph.png"> <a id="x55-190001r13"></a>
+</p>
+<figcaption class="caption"><span class="id"> <span class="t1xsc-">F<span class="small-caps">igure</span></span><span class="t1xsc-">&nbsp;4.13:&nbsp;</span></span><span class="content"><span class="t1xr-">Screenshots of an internal tool showing the kind of metrics that can be surfaced to a
+            trusted data custodian to assist them in tweaking various parameters. A more detailed
+            description of this tool can be found in&nbsp;[</span><a href="bibliography.html#cite.0@perera2020improving"><span class="t1xr-">314</span></a><span class="t1xr-">].</span>                                 </span></figcaption><!-- tex4ht:label?: x55-190001r13  -->
+                                                                                
+                                                                                
+  </figure>
+<!-- l. 150 --><p class="indent">  To represent privacy, a techniques and perspectives have been proposed in the literature&nbsp;[<a id="x55-190003"></a><a href="bibliography.html#cite.0@hsu2014differential">200</a><a id="x55-190004"></a>, <a href="bibliography.html#cite.0@krehbiel2019choosing">234</a><a id="x55-190005"></a>,
+<a href="bibliography.html#cite.0@lee2011much">243</a><a id="x55-190006"></a>, <a href="bibliography.html#cite.0@naldi2015differential">290</a><a id="x55-190007"></a>, <a href="bibliography.html#cite.0@nissim2017differential">304</a>]. In practice, we rely on the prior-posterior explanations and visualizations like those
+presented in Section&nbsp;2.1.6.0 to provide an intuitive idea of the guarantees offered by different privacy
+parameters. This choice is often deferred to privacy experts, we discuss possible approaches to tackling
+this challenge in Section&nbsp;4.3.4.0.
+                                                                                
+                                                                                
+</p>
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="Accuracy.html">LINKPREV</a><a href="BuildingAUsableDifferentiallyPrivateQueryEngine.html#Usability.html">LINKUP</a><a href="RobustnessAndTesting.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="Accuracy.html">← previous</a></li>
+        <li><a href="BuildingAUsableDifferentiallyPrivateQueryEngine.html#Usability.html">up</a></li>
+        <li><a href="RobustnessAndTesting.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

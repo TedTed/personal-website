@@ -1,0 +1,435 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="tldr.html" />
+  <link ref="next" href="PersonalContributions.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="tldr.html">← previous</a></li>
+        <li><a href="index.html#Acknowledgements.html">up</a></li>
+        <li><a href="PersonalContributions.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 6 --><div class="crosslinks"><p class="noindent"><a href="tldr.html">LINKPREV</a><a href="index.html#Acknowledgements.html">LINKUP</a><a href="PersonalContributions.html">LINKNEXT</a></p></div>
+  <h4 class="likesubsectionHead" id="acknowledgements-u-ding-"><a id="x3-5000"></a>Acknowledgements <span class="bbding-10x-x-109">✿</span></h4>                                                           <div class="flushright"> <!-- l. 8 --><p class="noindent"> </p> <!-- l. 11 --><p class="noindent">
+<span class="t1xss-x-x-95">Ugh, emotions.</span><br>
+
+  <span class="t1xsssl-x-x-95">(Martha Wells, </span><span class="t1xss-x-x-95">Network Effect</span><span class="t1xsssl-x-x-95">)</span>
+</p>
+</div>
+<!-- l. 14 --><p class="noindent">Pursuing a part-time PhD project, in a large company without any established process nor precedent for
+doing so was, unsurprisingly, not exactly straightforward. It required persistent optimism, a fair amount
+of perseverance, and a lot of unearned privilege. Above all, though, it required the support of a great
+many people, without which this whole endeavor would been entirely impossible. I cannot
+possibly do all of them justice in just a few words, but this certainly will not stop me from
+trying.
+</p><!-- l. 22 --><p class="indent">  First of all, obviously, I would like to thank David Basin, my advisor. He decided to bet on me
+despite my part-time constraints, and having a project fairly distinct from the rest of his group: I am
+immensely grateful for the mentorship, trust, and independence he provided me during these four years.
+His encouragements to slow down when I was over-stretching myself, and his telling me with no
+hesitation that he would hire me full-time if things at Google got too heated, are the kind of show of
+support that I wish for any PhD student.
+</p><!-- l. 30 --><p class="indent">  Thanks as well to Ashwin Machanavajjhala, Carmela Troncoso, and Dennis Hofheinz, who kindly
+accepted to be a part of my dissertation committee. I am also grateful to André Miede and Tino
+Wagner, whose LaTeX packages made it surprisingly painless to produce a beautiful-looking
+thesis.
+</p><!-- l. 35 --><p class="indent">  Laura Arhire supported me from the very start, and was instrumental in my growth as an engineer; I
+can only dream of becoming as good a manager as she is one day. She, and Lorenzo Martignoni, gave
+me a level of freedom that most people only dream of: I thank them both for their trust and kindness.
+Peter Dickman tried to tell me that doing a part-time PhD was a bad idea, then when I still persevered,
+he provided me with much-needed help to collect all necessary approvals, and convinced me not to give
+up in the face of seemingly endless bureaucracy. His mentorship and support during the past four
+years are a major reason why I somehow have not been fired yet; I am very grateful for
+that.
+</p><!-- l. 45 --><p class="indent">  To obtain necessary approvals, Michel Benard’s assistance was also crucial; I am thankful
+that he took so much of his time to help me navigate internal processes. I am also very
+                                                                                
+                                                                                
+grateful to Cyrill Osterwalder, Niels Provos, and Gerhard Eschelbeck for being supportive of
+this project, and unlocking the necessary funding. Thanks to Pern Hui Chia for being the
+main engineering lead for the initial project and for reviewing so much of my code and
+drafts. Many thanks to Bryant Gipson as well for being such a fantastic cheerleader for my
+work.
+</p><!-- l. 54 --><p class="indent">  If support from leaders made it possible to kick-start this project, support from peers is what made it
+sustainable and exhilarating throughout. I was very lucky to work with excellent researchers, who
+taught me a lot about research, writing, and teamwork: thanks to Andreas Lochbihler, Balazs Pejo,
+Elisabeth Krahmer, and Esfandiar Mohammadi, for being lovely people to work with and for making
+scientific research engaging and fun.
+</p><!-- l. 61 --><p class="indent">  Speaking of research, I am also thankful to the many people who reviewed parts of our drafts,
+answered our emails about their work, helped us with thorny issues, or alerted us of typos
+and mistakes on the published thesis: Aaron Johnson, Adam Groce, Adam Smith, Alain
+Forget, Aleksandra Korolova, Aleksei Triastcyn, Alex Kulesza, Antoine Amarilli, Ashwin
+Machanavajjhala, Borja Balle, Bryant Gipson, Chao Li, Chinmoy Mandayam, Christophe de
+Cannière, Kareem Amin, Christoph Dibak, Daniel Kifer, Dennis Kraft, Henk Brozius, Ilya
+Mironov, Iosif Pinelis, Ismaël Bouya, Jakob Dambon, Jessica Staddon, Jonathan Katz,
+Kunal Talwar, Lea Kissner, Lorenzo Martignoni, Marc Jeanmougin, Michael Lugo, Mikhail
+Berlyant, Nina Taft, Pablo Rauzy, Patricia Mirabile, Patrick Scheibe, Peter Dickman, Pierangela
+Samarati, Rebecca Balebako, Rees Davison, Roberto Tauraso Sebastian Meiser, Theresia Weise,
+Úlfar Erlingsson, Virgile Andreani, Yu-Xiang Wang, Yusuke Kawamoto, as well as Stack
+Exchange users egreg, Mark, PSPACEhard, usul, and I apolologize if I missed anyone. I am also
+thankful to all anonymous reviewers, in particular those from IEEE S&amp;P who decided to reject
+the first version of our cardinality estimators paper: their decision was the main motivator
+for me to come back to the drawing board and significantly strenghten the result; it was
+an excellent illustration of the review process working as intended and producing good
+outcomes.
+</p><!-- l. 81 --><p class="indent">  Alessandro, Alejandro, Benjamin, Ioana, Lucas, Marius, Nevena, Paweł, Régis, Robert,
+Roman, Simone, Victor, and Yannis: you made the office a fun place to be, and the endless
+(and impressively creative!) trash talk at the foosball table is the main reason why I am
+looking forward for the office to fully reopen. I am also grateful to the Memecademy (yes)
+for making work a little bit more hilarious and many times more absurd, and for honoring
+me with the most treasured awards I ever received. Special hat tip to Heradon Douglas’
+creative genius. Thanks also to Patrick and Sven for being very pleasant officemates at the
+university.
+</p><!-- l. 91 --><p class="indent">  Cloud DLP, the team I got to work on at the beginning of this project, was a fantastic opportunity to
+build and ship software for reidentification and risk analysis to the outside world; I am especially
+grateful to Jordanna Chord for being an inspiring leader, to Scott Ellis for helping me understand the
+difference between theory and practice, to Felipe Hoffa to take me to fun industry conferences and
+encouraging me to invest in external outreach, and to Emily Rossetti and Michael Daub for being
+excellent teammates.
+</p><!-- l. 99 --><p class="indent">  My work in the Anonymization team has been, and still is, incredibly fun and rewarding. This is due
+in small part to the terrific problem space, but mostly to the exceptional people who compose it.
+Heartfelt thanks to Miguel Guevara, whose efforts to tackle such an uncharted problem space early on
+                                                                                
+                                                                                
+are nothing short of amazing and inspiring; much of what we do today has been made possible by your
+initial vision and leadership. Many thanks to Daniel Simmons-Marengo and Milinda Perera for their
+impossible kindness, and for their principled and rigorous approach to privacy consulting work. (Oh,
+and Daniel, thank you for the many excellent book recommendations, please keep them coming!)
+Thank you to Chao Li, Sławek Goryczka, and Pern Hui Chia for making this group survive against all
+odds when we were under an absurd load. I learned so much from all of you. Special thanks for the trust
+you put in me when you convinced me to take on the leadership hat for Anonymization
+consulting. It was the best and most terrible decision. I would do the same mistake again in a
+heartbeat.
+</p><!-- l. 114 --><p class="indent">  Newer folks to the anonymization world, it is such an honor and a pleasure to work alongside you.
+Thank you to Janina Voigt and Yurii Sushko: you two are excellent leaders; what we have accomplished
+this past year is a testament to your team-building skills. Special thanks to Raine Serrano, Aishe
+Krishnamurthy, and Jessica Colnago: I would have completely drowned under the load if it were not
+for your exceptional work making anonymization consulting better for everyone. Many
+thanks to Christoph Dibak, David Marn, Dennis Kraft, Maria Telyatnikova, Miraç Vuslat
+Başaran, and Sasha Kulankhina; working with you and helping you ramp up and become
+anonymization experts in such a short time is probably the most impactful and rewarding thing I
+have done while at Google. (And Miracç, you turning Privacy on Beam from my ugly
+proof-of-concept to a production-ready open-source library still brings a tear to my eye when I
+think of it.) Thanks to Alain Forget, Vadym Doroshenko, and Xinyu Ye; I almost want to
+apologize to you for not having spent as much time as I would have liked working with you,
+but the fantastic work that you are all doing clearly shows that you do not, in fact, need
+my help. To all of you, I am awe-struck by your enthusiasm, eagerness to learn, technical
+depth, and kindness. I cannot wait to see how you grow, and what you accomplish in the
+future.
+</p><!-- l. 134 --><p class="indent">  Google has been an exceptional place to grow, not only by improving technical and interpersonal
+skills, but also as a human being. Examples of extraordinary leaders abound, but I especially would like
+to thank Lea Kissner for being such an inspiring example of compassionate leadership, unbelievably
+kind and effective communication skills, and principled decision-making. Google is also where I
+learned the crucial importance of speaking truth to power and holding leaders accountable
+for their decisions. I am especially grateful to Irene Knapp and Liz Fong-Jones for giving
+me both the inspiration and the practical tools to organize for ethical principles. Thanks
+to them, I now know that you should, in fact, meet your heroes: if you choose them well,
+they will still somehow be as kind and inspiring in real life as you imagined they would
+be.
+</p><!-- l. 146 --><p class="indent">  This naturally leads me to extend a wholehearted thank you to allies and accomplices
+of the past couple of years. Thanks to everyone making the Zürich site a fairer place to
+work: André Nogueira, Eli Stevens, Miriam Berger, Pedro Gonnet, Tom McAdam, Urs
+Zbinden, and others whom I forget or who prefer not to be named, for their involvement,
+advice, and/or support. Extra-special thanks to Adrien Kunysz and Raphaël Jamet for
+being at my side in October 2019; I would probably have exploded from all the stress of that
+absurd week if it were not for your support. Rebecca, thank you for the many discussions
+about work and life, and your stellar advice on both sides; I am lucky to be friends with
+you.
+                                                                                
+                                                                                
+</p><!-- l. 156 --><p class="indent">  I benefited from an excellent work environment also thanks to my colleagues in temp, vendors, and
+contractors positions: cafe staff, baristas, massage therapists, cleaners, QA engineers, and many others.
+These folks hold the company together, and play a critical role in building and maintaining our core
+products (content moderation, rating, internationalization…), yet they are still kept as second-class
+citizens by the company. They do not get the pay nor benefits they deserve, and the lack of recognition
+they get is insulting: I cannot find a single email welcoming them to the team, or wishing them well
+when they leave, even when we worked alongside them every single day for months. As a result, I can
+only list a few folks I particularly remember for their kindness: Chef Steph, Moussa Dabre,
+Mohammad Bibaoune, Violeta Boneva, Wanapa Inthayard. Thanks to them and to all the
+others.
+</p><!-- l. 169 --><p class="indent">  Having two jobs, even when one has exceptional benefits, sometimes presents quite a challenge for
+the body and brain. I am particularly grateful to Isabelle Frank-Ziem, Johann Glessgen, and Philippe
+Stöckli, whose professional expertise helped me not fall apart when things got particularly
+tough.
+</p><!-- l. 174 --><p class="indent">  The real treasure, of course, is the friends we made along the way. A million hugs to Streambed
+folks, the most wholesome online community there ever was; I am so grateful for all of you, and I can
+only hope to be as kind and strong as you lot one day. Much love towards Postcrossing enthusiasts as
+well: you are what makes the world absurd and beautiful. Thanks to everyone who ever sent me kind
+words for my blog posts or other stuff I put online, you have no idea how much it means. If you are
+reading these lines, go take a couple of minutes to send a few nice words to your favorite online content
+creators. Go on! This thesis will still be there when you come back. Speaking of which, thank you to
+Confused Bi-Product of a Misinformed Culture, whose mixes were the main soundtrack for my
+work.
+</p><!-- l. 186 --><p class="indent">  Tabletop games are one of the main things that kept me sane these four years. Wilson, thank you for
+continuing to invite me to play even though I only have time once in a blue moon. Sam, Marco, and
+Praveena, thanks for the fun times rolling dice together. Cheers to the cast of Critical Role, who made
+me be enthusiastic about playing D&amp;D again, and provided me with countless hours of much-needed
+entertainment during confinement. Many thanks to Andrei, Ioana, Lisa, Lucas, and Robert for being
+such a fun group to play with, and special thanks to Sylvain for being such a devious, fantastic
+DM.
+</p><!-- l. 195 --><p class="indent">  The trick to having a social life outside of your work in Switzerland is to find weird, absurd, joyful
+niche communities: you end up meeting exceptionally lovely people. Maggie, thank you for the many
+drunken discussions about everything and anything. Gabriella, thank you for the ridiculous “five-star”
+experiences, for your trust, and for your great approach to life. Marco, thank you for being your
+beautiful, opinionated self, I aspire to be 1% as cool as you some day. Dan, thank you for your
+openness to try novel and scary things, and for the many fun evenings during confinement. I am lucky
+to have you in my chosen family.
+</p><!-- l. 204 --><p class="indent">  Last but not least. Chloe, my love, thank you so much for being in my life. Thank you for the many
+fun moments, thank you for the constant support, thank you for the cathartic rants about thesis writing,
+thank you for the mind-boggling level of trust, thank you for the positive approach to relationships and
+life, thank you for the much-needed cuddles. Here’s to many more years of swimming up rivers,
+cooking delicious food, waking up lazily on Sunday mornings, drinking cocktails, and dreaming about
+the future.
+                                                                                
+                                                                                
+</p><!-- l. 215 --><p class="noindent">
+</p>
+  <h5 class="likesubsubsectionHead" id="remerciements"><a id="x3-6000"></a>Remerciements</h5>
+<!-- l. 217 --><p class="noindent">Cette thèse est dédicacée à Mamine, feu ma grand-mère paternelle. J’aspire à faire preuve
+d’une fraction de sa gentillesse légendaire. Nombreux sont les gens m’ayant poussé à faire une
+thèse, mais c’est elle qui m’a donné le gros de ma motivation et persévérance.
+</p><!-- l. 222 --><p class="indent">  Je suis reconnaissant d’avoir une famille qui m’a soutenu tout du long: l’amour, c’est de continuer à
+manifester son soutien et affection même lorsqu’on ne comprend pas certains choix de vie&nbsp;; j’ai une
+chance infinie à ce niveau. Papa, merci pour m’avoir donné le virus du syndicalisme, et pour
+continuer à me supporter même quand je déblatère ce genre d’ânerie. Maman, merci mille
+fois pour l’amour débordant, les longues discussions philosophiques, les hectolitres de
+thé, et le regard résolument positif sur la vie. Carline et Violaine, merci pour le soutien
+constant et l’apport de zen lorsque j’en avais sacrément besoin. Merci à Françoise pour
+les conseils et l’hospitalité légendaire, merci à Hervé pour m’avoir donné le goût
+pour l’informatique il y a une vingtaine d’années, merci à Nelly et Margot pour être les
+cousines les plus adorables et enthousiasmantes de l’univers, merci à Frédi, Cécile, Papi
+et Mamike pour les chouettes et nombreuses fêtes et vacances en famille. Je vous aime
+fort!
+</p><!-- l. 236 --><p class="indent">  Merci à tous mes potes de l’ENS et adjacents pour m’avoir injecté une quantité adéquate de
+pression sociale pour que je fasse une thèse. Vous aviez raison&nbsp;: c’était un projet absurde, mais
+quand même bien marrant. Merci aux Grotas pour les chouettes discussions politiques qui m’ont
+aidé à faire la part des choses et à ne pas trop devenir lobotomisé par la culture d’entreprise. Tout
+plein de remerciements à a3nm, Elarnon, louis, Mc, Machin, olasd, pintoch, Robin, Yap, et tous les
+autres gens d’IRC pour vos principes et pour les discussions mathématiques ou philosophiques aussi
+interminables qu’enrichissantes, et pensées spéciales pour ceux d’entre vous qui m’ont suivi dans la
+poudreuse en hiver!
+</p><!-- l. 247 --><p class="indent">  Alex, Alma, Nicolas, et Shauna, merci pour les visites, les jeux de société et les nombreux
+chouettes moments. Noélie, merci pour les visites, toujours plaisantes même lorsqu’on se fait
+surprendre par l’apocalypse. Pauline, merci pour l’hospitalité, les millions de cartes postales
+réjouissantes, et le soutien moral permanent. Manon, merci pour les jeux et la confiance qui va avec, je
+suis fier de t’avoir connue avant que tu ne deviennes une auteure mondialement célèbre. Juliette,
+merci pour la confiance et pour l’inspiration, je suis fier et chanceux de te compter parmi mes amies.
+Patricia, merci pour le soutien, les recommandations de lecture, et les excellents conseils sentimentaux.
+Laure, merci aussi pour la confiance, les vacances random et les discussions à cœur ouvert m’ont
+probablement évité de perdre pied plus d’une fois, merci tout plein pour être une personne aussi
+exceptionnellement enthousiasmante. Rien que lister tous les gens qui m’ont accompagné
+me met la larme à l’œil… Je ne sais pas ce que j’ai fait pour mériter d’être aussi bien
+entouré.
+</p><!-- l. 265 --><p class="noindent">
+                                                                                
+                                                                                
+</p>
+  <h5 class="likesubsubsectionHead" id="danksagung"><a id="x3-7000"></a>Danksagung</h5>
+<!-- l. 267 --><p class="noindent">Sfé, Pascal und Tricia, ihr seid der Grund, warum ich mich zum ersten Mal in Zürich wie zuhause
+gefühlt habe. Tausend Dank für die Abendessen, Spiele une Organisation der Veranstaltungen. Olga,
+danke für dein Vertrauen une die vielen lustigen Abende. Danke, dass ihr alle so seltsame und
+augezeichnete Menschen seid.
+</p><!-- l. 273 --><p class="indent">  Annerose und Bernd, vielen Dank für die herausragende Gastfreundlichkeit. Das Gefühl ein
+Familienmitgleid zu sein war sowohl sehr berührend als auch entscheidend, um meine Doktorarbeit
+fertig zu schreiben.
+</p><!-- l. 277 --><p class="indent">  Schließlich, Sia, Liebe meines Lebens. Ich weiß nicht, wie ich dir nur annähernd für die ständige
+Liebe, Unterstützung une Vertrauen in diesen Jahren danken könnte. Du warst in den dunkelsten
+Momenten für mich da, und du hast die besten Zeiten tausendmal freudiger gemacht. Ich freue mich
+auf viele weitere Kuschelstunden, ausgefallene Abendessen, Autoreisen, Massagen, Star-Trek-Abende
+und Träume von der Zukunft.
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+</p>
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="tldr.html">LINKPREV</a><a href="index.html#Acknowledgements.html">LINKUP</a><a href="PersonalContributions.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="tldr.html">← previous</a></li>
+        <li><a href="index.html#Acknowledgements.html">up</a></li>
+        <li><a href="PersonalContributions.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

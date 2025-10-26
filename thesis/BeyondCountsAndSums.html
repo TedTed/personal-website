@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="FurtherImprovementsAndOpenQuestions.html" />
+  <link ref="next" href="PartitionSelection.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="FurtherImprovementsAndOpenQuestions.html">← previous</a></li>
+        <li><a href="FurtherImprovementsAndOpenQuestions.html#BeyondCountsAndSums.html">up</a></li>
+        <li><a href="PartitionSelection.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="FurtherImprovementsAndOpenQuestions.html">LINKPREV</a><a href="FurtherImprovementsAndOpenQuestions.html#BeyondCountsAndSums.html">LINKUP</a><a href="PartitionSelection.html">LINKNEXT</a></p></div>
+  <h4 class="subsectionHead" id="beyond-counts-and-sums-u-ding-"><span class="titlemark">4.3.1</span>&nbsp;&nbsp;<a id="x58-1990004.3.1"></a>Beyond counts and sums <span class="bbding-10x-x-109">✿</span></h4> <!-- l. 3 --><p class="noindent">
+Differentially private counts and sums are enough to solve a large class of use cases requiring
+anonymized data aggregation. However, analysts sometimes need more complex aggregations, and
+some of them raise interesting questions. These questions fall into two categories: how to fit these
+aggregations in the two-step aggregation model of our framework (per-user aggregation first, cross-user
+aggregation second) in a usable fashion, and how to implement the related primitives in a scalable
+fashion.
+</p><!-- l. 12 --><p class="indent">
+<a id="subsubsection*.101"></a>
+</p>
+  <h5 class="subsubsectionHead" id="average"><a id="x58-200000"></a>Average</h5>
+<!-- l. 14 --><p class="noindent">Averages are a first simple example. At first glance, they seem to be nothing more than a sum
+divided by a count. However, to compute them this way, the user would need to specify
+<span class="t1xi-x-x-109">three </span>parameters: a lower and upper bound for the sum, and an upper bound of the amount
+of contributions. Thus, they would need to know not only the range of typical values, but
+also the number of values that each user typically contributes. This is a lot to ask of an
+analyst who simply wants to know the average of a column. We could use automatic bounds
+determination for both operations, but the privacy budget cost would then be particularly
+high.
+</p><!-- l. 24 --><p class="indent">  To compute averages, an alternative option is to first compute a non-private per-user average, and
+then to average the results across all users in a private way. This changes the semantics of the operation:
+we are now computing an average of averages, instead of an average of all values. If there is a
+correlation between the distribution of values and the number of contributions (for example,
+each user contributes either few low values, or many large values), this might introduce
+bias. This change of semantics might seem shocking at first glance, but note that this is not
+limited to averages: clamping, or contribution bounding, also change the semantics of a
+query.
+</p><!-- l. 34 --><p class="indent">  In practice, averaging averages does not create significant quality issues. Thus, in scenarios where
+usability is most important, like the SQL implementation of our framework, we use this method. For
+implementations of the framework that tend to be used by engineers with more knowledge about their
+data and with the ability to run exploratory analyses, we opt for the mechanism that performs a global
+sum and divides it by a global count.
+</p><!-- l. 41 --><p class="indent">  Note that in that case, the output of the per-user aggregation is <span class="t1xi-x-x-109">different </span>than the overall result. Each
+per-user aggregation must return a partial sum and a partial count, while the cross-user aggregation will
+only return an average value. Thus, we have to modify our framework to remove the simplifying
+                                                                                
+                                                                                
+assumption that the per-user aggregation is simply the non-private version of the cross-user
+aggregation.
+</p><!-- l. 49 --><p class="indent">
+<a id="subsubsection*.102"></a>
+</p>
+  <h5 class="subsubsectionHead" id="variance"><a id="x58-201000"></a>Variance</h5>
+<!-- l. 51 --><p class="noindent">The variance operation has the same basic problem as the average operation, although the right decision
+is even more clear-cut: computing a per-user variance, and taking the variance of the result, is
+obviously not a valid way to compute the total variance between all values. In fact, there is no
+obvious way to compute a per-user partial aggregation that would allow to compute the
+variance of values. The only option is to preserve the original values, and for the per-user
+“aggregation” step to be only a <span class="t1xi-x-x-109">sampling </span>step, that selects up to a fixed number of values
+associated to each user. This underscores the importance of extending our framework to make
+sure that the per-user aggregation step can be arbitrarily different from the cross-user DP
+aggregation.
+</p><!-- l. 64 --><p class="indent">
+<a id="subsubsection*.103"></a>
+</p>
+  <h5 class="subsubsectionHead" id="quantiles"><a id="x58-202000"></a>Quantiles</h5>
+<!-- l. 66 --><p class="noindent">Quantiles present interesting challenges. First, they raise the same question as averages: is it appropriate
+to use the non-private version of the aggregation as a per-user aggregation step? For some values of
+quantiles, the answer is clearly positive: for example, to compute the minimum value of a dataset, we
+can take the per-user minimum, and run the differentially private minimum on this set. This limits the
+contribution per user to 1, which is good for utility, and does not change the semantics of the
+aggregation.
+</p><!-- l. 74 --><p class="indent">  However, the situation is different for non-extremum quantiles. For medians, taking the per-user
+median value and computing the median of those can introduce the same kind of bias as for averages.
+Compute near-extremum quantile values (like the 1st and 99th percentile) per-user is also highly non
+trivial if each user only contributes a handful of values. Thus, like for averages, it might be a good idea
+to simply sample a fixed number of records as a per-user “aggregation” step; although deciding when to
+make this choice is not obvious.
+</p><!-- l. 82 --><p class="indent">  Second, privately computing quantiles in a scalable way does not seem to be a solved problem. Most
+common options implicitly assume that all values can fit in memory, which is unsuited to large-scale
+datasets and massively parallel computation frameworks. This is the case for Bayesian binary
+search&nbsp;[<a id="x58-202001"></a><a href="bibliography.html#cite.0@ben2008bayesian">44</a><a id="x58-202002"></a>, <a href="bibliography.html#cite.0@karp2007noisy">215</a>], for smooth sensitivity&nbsp;[<a id="x58-202003"></a><a href="bibliography.html#cite.0@nissim2007smooth">303</a>], and for the exponential mechanism&nbsp;[<a id="x58-202004"></a><a href="bibliography.html#cite.0@dwork2009robust">127</a>]. Existing
+methods have been proposed in the literature for the non-private case, like KLL&nbsp;[<a id="x58-202005"></a><a href="bibliography.html#cite.0@karnin2016optimal">214</a>], but those do not
+provide privacy guarantees, and naively adding noise to their result does not provide good utility, since
+                                                                                
+                                                                                
+their global sensitivity is unbounded. A naive option is to randomly sample values when there are
+too many values to fit them all in memory, but this option likely provides very suboptimal
+accuracy.
+</p><!-- l. 96 --><p class="indent">  Third, all the methods that we could find in the literature on differentially private quantiles also
+implicitly assume that each user contributes at most one value. They can be adapted to the case where
+each user contributes multiple values by bounding the total number of values contributed by each user,
+and using composition theorems, but there is no reason why this naive strategy would provide optimal
+or even good utility.
+</p><!-- l. 103 --><p class="indent">  Finally, many practical use cases for quantiles actually require to compute <span class="t1xi-x-x-109">multiple </span>quantiles for
+the same series of values. For example, it is common to compute latency at the 50th, 95th
+and 99th percentile&nbsp;[<a id="x58-202006"></a><a href="bibliography.html#cite.0@apigeelatency">236</a>]. When naively using the private methods mentioned above, each
+such percentile must be computed on a separate privacy budget, which is likely far from
+optimal. We leave it to future work to improve the state-of-the-art of differentially private
+quantiles.
+</p><!-- l. 112 --><p class="indent">
+<a id="subsubsection*.104"></a>
+</p>
+  <h5 class="subsubsectionHead" id="counting-distinct-values"><a id="x58-203000"></a>Counting distinct values</h5>
+<!-- l. 114 --><p class="noindent" id="-count-distinct-operation">Counting distinct values corresponds to the following operation.
+<a id="x58-203001r11"></a>
+<a id="x58-203002"></a>
+</p>
+  <!-- l. 116 --><pre class="listings" id="listing-12"><span class="label"><a id="x58-203003r1"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">SELECT</span></span> 
+<span class="label"><a id="x58-203004r2"></a></span><span class="t1xtt-x-x-109">&nbsp;&nbsp;</span><span style="color:#000000"><span class="t1xtt-x-x-109">website</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">,</span></span> 
+<span class="label"><a id="x58-203005r3"></a></span><span class="t1xtt-x-x-109">&nbsp;&nbsp;</span><span style="color:#000000"><span class="t1xbtt-x-x-109">COUNT</span></span><span style="color:#000000"><span class="t1xtt-x-x-109">(</span></span><span style="color:#000000"><span class="t1xbtt-x-x-109">DISTINCT</span></span><span style="color:#000000"> <span class="t1xtt-x-x-109">browser_agent)</span> 
+</span><span class="label"><a id="x58-203006r4"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">FROM</span></span><span style="color:#000000"> <span class="t1xtt-x-x-109">access_logs</span> 
+</span><span class="label"><a id="x58-203007r5"></a></span><span style="color:#000000"><span class="t1xbtt-x-x-109">GROUP</span></span><span style="color:#000000"> <span class="t1xbtt-x-x-109">BY </span><span class="t1xtt-x-x-109">website</span>
+   
+</span><span class="label"><a id="x58-203008r6"></a></span></pre>
+<figcaption class="caption"><span class="id">Listing&nbsp;4.11: </span><span class="content">&nbsp;Count distinct operation</span></figcaption><!-- tex4ht:label?: x58-203008r  -->
+<!-- l. 124 --><p class="indent">  This is easy to do in a scalable way if we want to count unique user identifiers, but if we want to
+count distinct <span class="t1xi-x-x-109">values </span>(here, browser agents), it presents an interesting scalability challenge. If the total
+number of distinct values is small enough to keep all of them in memory, the problem is trivial: simply
+add Laplace noise to the exact count, scaled by the maximum number of contributions for any single
+user. However, if linear memory usage is not an option because of scalability requirements, we need a
+smarter approach.
+</p><!-- l. 132 --><p class="indent">  Many non-private sketching algorithms have been proposed for this problem, and a number of them
+are listed in in Section&nbsp;3.3.1.0. How to make their output differentially private? Note that this is a
+fundamentally different problem than the one tackled in Section&nbsp;3.3: we do not want to protect the
+sketches themselves, but only their output. A noisy variant of Bloom filters was proposed for a related
+problem in&nbsp;[<a id="x58-203009"></a><a href="bibliography.html#cite.0@alaggan2018privacy">9</a>], and in&nbsp;[<a id="x58-203010"></a><a href="bibliography.html#cite.0@choi2020differentially">77</a>], authors show that LogLog&nbsp;[<a id="x58-203011"></a><a href="bibliography.html#cite.0@durand2003loglog">120</a>] achieves differential privacy “for free” if
+we assume the hashes used in the algorithm are computed after adding a random salt to
+the input values. This method can serve as a first approach to implement this important
+primitive.
+                                                                                
+                                                                                
+</p><!-- l. 144 --><p class="indent">  In the generic case where each user contributes multiple values to the initial dataset,
+another natural problem emerges: how to <span class="t1xi-x-x-109">choose </span>the values that each user contributes in
+an optimal way? For example, assume each user contributes two values: one fixed value
+<!-- l. 147 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">a</span></span></span></span></span></span> which is the same across
+all users, and a value <!-- l. 148 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">b</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span></span></span></span></span></span></span></span>
+that is different for each user. If the contribution bound is fixed to
+<!-- l. 149 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span>, choosing a value at
+random between <!-- l. 149 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">a</span></span></span></span></span></span>
+and <!-- l. 149 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">b</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span></span></span></span></span></span></span></span> for
+each user is very suboptimal: we should, instead, try to pick <span class="t1xi-x-x-109">rare </span>values to increment the total count.
+This raises a problem similar to the one tackled in&nbsp;[<a id="x58-203012"></a><a href="bibliography.html#cite.0@gopi2020differentially">179</a>]: the choice for each user should depend
+on the choice for other users, but this obviously makes it trickier to calculate sensitivity.
+We are not aware of any research on this specific point; we leave this as an open research
+question.
+                                                                                
+                                                                                
+</p>
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="FurtherImprovementsAndOpenQuestions.html">LINKPREV</a><a href="FurtherImprovementsAndOpenQuestions.html#BeyondCountsAndSums.html">LINKUP</a><a href="PartitionSelection.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="FurtherImprovementsAndOpenQuestions.html">← previous</a></li>
+        <li><a href="FurtherImprovementsAndOpenQuestions.html#BeyondCountsAndSums.html">up</a></li>
+        <li><a href="PartitionSelection.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

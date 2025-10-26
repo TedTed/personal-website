@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="PassiveVsActiveAttackers.html" />
+  <link ref="next" href="CountingQueries.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="PassiveVsActiveAttackers.html">← previous</a></li>
+        <li><a href="DifferentialPrivacyUnderPartialKnowledge.html#OpportunitiesAggregationsThresholding.html">up</a></li>
+        <li><a href="CountingQueries.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="PassiveVsActiveAttackers.html">LINKPREV</a><a href="DifferentialPrivacyUnderPartialKnowledge.html#OpportunitiesAggregationsThresholding.html">LINKUP</a><a href="CountingQueries.html">LINKNEXT</a></p></div>
+  <h3 class="sectionHead" id="opportunities-aggregations-thresholding-u-ding-"><span class="titlemark">3.2</span>&nbsp;&nbsp;<a id="x32-1050003.2"></a>Opportunities: aggregations &amp; thresholding <span class="bbding-10x-x-109">✿</span></h3> <!-- l. 3 --><p class="noindent"><a id="aggregations"></a> </p> <!-- l. 5 --><p class="indent">
+Consider a national referendum where more than 10 million people vote on a Yes/No question. Do
+the exact results of this referendum reveal information about individuals? It is very reasonable to
+assume that no realistic attacker has background knowledge of more than 99% of all votes. The
+remaining uncertainty of 1% of the data (100k data points) leads to a significant uncertainty that can, if
+properly quantified, show that no attacker can use the results of the referendum to determine how a
+given individual voted: the referendum results are private, even if no noise was added to
+them.
+</p><!-- l. 14 --><p class="indent">  In the previous section, we introduced conceptual tools to rigorously analyse such scenarios. In this
+section, we build on these foundations to analyze such noiseless mechanisms and prove strong and
+intuitive results about their privacy. We also analyze the conditions necessary to use these notions in
+practical contexts, without making risky assumptions on their uncertainty or capabilities. Our main
+contributions are as follows.
+</p><!-- l. 21 --><p class="indent">  First, we provide a formal account of the privacy of common kinds of queries under partial
+knowledge, using the tools introduced in the previous section. We show that counting queries under
+partial knowledge can provide privacy, with significantly lower bounds than those previously
+given.
+</p><!-- l. 26 --><p class="indent">  Second, we show that thresholding—only returning the output if it is larger than a given
+threshold—can render counting queries private against passive attackers, even when there is not enough
+entropy in the data for the previous result to apply.
+</p><!-- l. 31 --><p class="indent">  Third, we combine these results to show that under certain conditions,
+<!-- l. 32 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+protects against a passive attacker with partial knowledge. We discuss the genericity
+and the limits of this result, which clearly delineates the conditions in which
+<!-- l. 34 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+provides meaningful protection.
+</p><!-- l. 36 --><p class="indent">  Finally, we look at composition, a property that is crucial to the practical applicability of privacy
+notions. We prove bounds for the sequential composition of noiseless mechanisms, which allows us to
+quantify the privacy leakage of multiple mechanisms with the same input, or of a mechanism repeated
+over time. We also look at nested composition: combining the uncertainty coming from the attacker’s
+uncertainty with noise added to the result of the aggregation. We show basic properties of such
+mechanisms, and explain how numeric evaluation can be used to estimate the privacy loss in this
+context.
+                                                                                
+                                                                                
+</p><!-- l. 1 --><p class="noindent">
+</p>
+
+
+
+                                                                                
+                                                                                
+  <div class="footnotes"></div> <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="PassiveVsActiveAttackers.html">LINKPREV</a><a href="DifferentialPrivacyUnderPartialKnowledge.html#OpportunitiesAggregationsThresholding.html">LINKUP</a><a href="CountingQueries.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="PassiveVsActiveAttackers.html">← previous</a></li>
+        <li><a href="DifferentialPrivacyUnderPartialKnowledge.html#OpportunitiesAggregationsThresholding.html">up</a></li>
+        <li><a href="CountingQueries.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

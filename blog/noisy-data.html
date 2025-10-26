@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Don't worry, your data's noisy - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Don't worry, your data's noisy - Ted is writing things" />
+  <meta property="twitter:title" content="Don't worry, your data's noisy - Ted is writing things" />
+  <meta name="description" property="og:description" content="Your data was already noisy before I got a chance to add noise to it! Here's why you shouldn't panic, and also what you should do about it." />
+  <meta property="twitter:description" content="Your data was already noisy before I got a chance to add noise to it! Here's why you shouldn't panic, and also what you should do about it." />
+  <meta property="summary" content="Your data was already noisy before I got a chance to add noise to it! Here's why you shouldn't panic, and also what you should do about it." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/noisy-data.html" />
+  <link rel="prev" href="more-useful-results-dp.html" />
+  <link rel="next" href="joining-tumult-labs.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="more-useful-results-dp.html">← previous</a>
+ —     <a href="joining-tumult-labs.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./noisy-data.html">Don't worry, your data's noisy</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2021-07-27T00:00:00+02:00">
+      2021-07-27
+    </time>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p></small></p>
+<hr>
+<p><span class='lettrine'>H</span><strong>ere</strong> is a cold, hard, inescapable truth: your
+data has noise in it. No, we're not talking about differential privacy (yet)!
+Nobody added random numbers to your statistics so far. But still, your data is
+noisy. It's wrong. It's not 100% accurate. It's uncertain. Worse, there are <em>two
+kinds</em> of uncertainty.</p>
+<h1 id="two-kinds-of-uncertainty">Two kinds of uncertainty</h1>
+<p>Let's start with the first kind. Here's a diagram.</p>
+<p><center>
+<img alt="The picture is split in two. On the left, a point is labeled &quot;What you think
+your data looks like&quot;. On the right, the same point with a confidence interval
+(a line that ends with small perpendicular lines) is labeled &quot;What your data
+actually looks like&quot;." src="https://desfontain.es/blog/images/point-vs-confidence-interval.svg">
+</center></p>
+<p>The point on the left is how most people think about statistics. Precise numbers
+that corresponds to exact truths. Take, for example, a database with eye color
+information in it. Here is a statistic: « there are 4217 people with brown eyes
+in this database ». What did you learn about the world when reading this
+statistic? One answer could be « well, I've learned that the dataset contains
+4217 people with brown eyes ». That sounds reasonable enough. Right?</p>
+<p>Wrong.</p>
+<p>At best, you've learned that the number of people with brown eyes in the
+database is <em>around</em> 4217. It might be the best estimate you've got. But is this
+statistic 100% accurate? Would you bet money on it being 100% accurate? What
+would it take for you to be willing to take such a bet?</p>
+<p>I can hear your objections already. « Whoa, wait a second. What does 100%
+accurate means? How is eye color defined exactly? How do we double-check the
+number? And how was this statistic generated, anyway? Did each person answer a
+question about their own eye color? Or did someone else do the classifying? Is
+eye color information available for 100% of the people in the database? » And so
+on. You probably have many other valid questions. Behind those questions lies
+the deep, uncomfortable truth: this statistic is almost certainly noisy.</p>
+<p>At best, you need to add error bars if you want to represent this statistic in
+an honest way. This is what happens on the right side of the previous picture.
+We've got an exact number, represented by a point, and a <em>confidence interval</em>
+(or <em>error bars</em>) around this point. This statistic no longer says « there are
+exactly 4217 people with brown eyes in this database ». Instead, it says
+something more complex, but more accurate. « With 95% certainty, there are
+between 4209 and 4226 browned-eyed people in the database. The best estimate
+we've got is 4217. »</p>
+<p>Wait a second.</p>
+<p><center>
+<img alt="A scene from Futurama, where Bender picks up a cigar and smokes it, while
+Hermes and Zoidberg look at the scene from the background. Hermes' line appears
+in a subtitle: &quot;That just raises further
+questions!&quot;" src="https://desfontain.es/blog/images/further-questions.gif">
+</center></p>
+<p>Right. How was this confidence interval computed? What do we mean by 95%
+certainty? What is the uncertainty capturing? Did we miss some sources of
+uncertainty? Is there uncertainty in this uncertainty estimate<sup id="fnref:uncertainty"><a class="footnote-ref" href="#fn:uncertainty">1</a></sup>?</p>
+<p>This leads me to my second point, even more devastating than the first. Your
+data is noisy, and also, you probably don't even know <em>how much noise</em> is in it.
+The statistics you have are best guesses, not much more.</p>
+<p><center>
+<img alt="A diagram similar to the previous one, split in two. On the left, the same
+confidence interval as above is labeled &quot;What you wish your data looked like&quot;.
+On the right, the confidence interval has been replaced by a dotted-line
+representing unknown uncertainty, and labeled &quot;What your data actually looks
+like&quot;." src="https://desfontain.es/blog/images/confidence-interval-fuzzy-uncertainty.svg">
+</center></p>
+<p>The figure on the right represents this unknown uncertainty. You suspect that
+the number you have isn't too far removed from the actual number. But you can't
+quantify how far.</p>
+<p>Let's take a closer look at both kinds of uncertainty. Quantifiable
+uncertainties can take several forms.</p>
+<ul>
+<li>Your data might be a uniform sample of a larger population. In this case, you
+  can calculate the
+  <a href="https://en.wikipedia.org/wiki/Sampling_error">sampling error</a> of your
+  statistics.</li>
+<li>A large-scale data collection process might miss a few events. This happens,
+  for example, when servers crash, or network problems occur. But you might be
+  able to estimate how often that happens, and say the uncertainty is below e.g.
+  1%.</li>
+<li>The accuracy of certain algorithms can be measured. For example, you train
+  machine learning algorithms on a training set, and evaluate them on a test
+  set.</li>
+<li>If humans are labelling data by hand, you can have several analysts label
+  the same data. This way, you can get an idea of how often they agree, and
+  estimate uncertainty this way.</li>
+</ul>
+<p>After quantifying the uncertainty, you can take it into account in the analyses
+you run. For example, you can propagate the error bars. Or only return results
+if they are very likely to still be valid <em>despite</em> the
+sources of error.</p>
+<p>Meanwhile, unquantifiable uncertainties can also come from several places.</p>
+<ul>
+<li>In practice, statistical sampling is often not uniform: your statistics might
+  suffer from <a href="https://en.wikipedia.org/wiki/Selection_bias">selection bias</a> or
+  <a href="https://en.wikipedia.org/wiki/Survivorship_bias">survivorship bias</a>. You can
+  guesstimate the effect of those on your data, but it's hard to be 100% sure.</li>
+<li>When you ask people questions, their answers might not be accurate. This is
+  called <a href="https://en.wikipedia.org/wiki/Reporting_bias">reporting bias</a>. There
+  are many reasons why it can happen, and the overall impact is also difficult
+  to estimate.</li>
+<li>People sometimes dig into data until they find something interesting to
+  report. This practice, called
+  <a href="https://en.wikipedia.org/wiki/Data_dredging">data dredging</a>, generates
+  good-looking, but completely meaningless results. This is made worse by the
+  fact that positive results are
+  <a href="https://en.wikipedia.org/wiki/Publication_bias">more likely to get published</a>.
+  Both phenomena lead to real problems in practice! They create inherent
+  uncertainty in the results reported in the scientific literature. And again,
+  it's hard to quantify this uncertainty.</li>
+</ul>
+<p>Sometimes, the situation is even worse than that. People might use ad hoc
+protection techniques that add some fuzziness to the data, and <em>not tell you
+about it</em>. Or they might give you an idea, but no details. This is what the US
+Census Bureau did for their 2000 and 2010 releases: they randomly swapped
+records, but didn't publish any details about how that procedure worked. Sadly,
+it <a href="us-census-reconstruction-attack.html">didn't even succeed</a> in protecting the data. But it did make
+the entire data noisy in ways nobody could find out, nor take into account.</p>
+<p>Often, both quantifiable and unquantifiable effects end up affecting your data.
+So you end up with something like this.</p>
+<p><center>
+<img alt="A diagram combining a confidence interval (in blue) and dotted-line unknown
+uncertainty (in brown), around the same point. It's label &quot;What your data ends
+up looking like&quot;." src="https://desfontain.es/blog/images/combined-uncertainties.svg">
+</center></p>
+<p>The quantifiable uncertainty, for which you can draw confidence intervals, is in
+blue. But there is still some unquantifiable uncertainty, here in brown: you
+should take the whole thing, including the error bars, with a grain of salt.</p>
+<p>You probably see what's coming next. What if we add noise to the statistics, to
+get <a href="differential-privacy-awesomeness.html">differential privacy</a> guarantees?</p>
+<h1 id="adding-differential-privacy-to-the-mix">Adding differential privacy to the mix</h1>
+<p>Differential privacy is typically obtained by adding <em>noise</em> to statistics. We
+pick a number at random according to some distribution, and add it to the
+statistics. This distribution isn't secret, only the random number is. So this
+is the nice kind of uncertainty: the one we can quantify. If you already have
+some quantifiable uncertainty, you can combine both, and get a single confidence
+interval. And of course, the whole thing might still be uncertain in ways we
+can't quite estimate.</p>
+<p><center>
+<img alt="Another diagram split in two. On the left, the same picture as the previous
+one (with both a confidence interval and unknown uncertainty) is labeled &quot;Before
+DP&quot;. On the right, the same picture is duplicated twice, with an &quot;approximately
+equal&quot; sign between both duplicates; one duplicate has an additional confidence
+interval in red, the other has both confidence intervals combined into a purple,
+larger one. The right picture is labeled &quot;After
+DP&quot;." src="https://desfontain.es/blog/images/uncertainty-before-after-dp.svg">
+</center></p>
+<p>We didn't change the situation much. We only made the confidence interval a
+little bit wider. The quantifiable uncertainty increased a little, and we could
+quantify how much.</p>
+<p>Some DP algorithms are more complex, and add noise to data in more creative
+ways. Computing the uncertainty for these algorithms can be difficult. But most
+building blocks can be analyzed to find out confidence intervals. This might be
+a bit of a pain, so in an ideal world, you don't have to do this by hand: the
+tooling you use does it for you.</p>
+<p>Sometimes, though, you get the not-so-nice kind of uncertainty. For example, you
+might need to <a href="differential-privacy-in-practice.html#counting-things">limit the contribution</a> of each person in your database.
+This can take several forms, like <em>clamping</em> or <em>subsampling</em>. This creates
+additional error, or uncertainty, on top of the noise itself. But this one is
+hard to quantify: in theory, someone could contribute a billion things, and we
+would only count 5 of them. In that case, the error due to this single outlier
+would be huge. </p>
+<p>If you want to quantify this effect, you have two options. The people publishing
+the data can tell you the magnitude of data loss due to clamping. If that didn't
+happen, you can make some reasonable assumptions on these outliers: how many
+there are, and how much data was dropped. In both cases, note this clamping is
+often <em>positive</em> for data quality: robust statistical analyses shouldn't be
+sensitive to huge outliers.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>Differential privacy's effect on data isn't as world-ending as you might think.
+Your data didn't go from perfect to noisy. It was noisy all along! DP only made
+it a little more so. And you can quantify the effect of this new noise, which is
+nice. (At least, nicer than some of the uncertainty sources that were already
+there.)</p>
+<p>This might come off as a surprise. You might have been using your data as if it
+was a perfect source of absolute truth. Not the most scientific approach, but
+maybe that was good enough for your application. In that case… you can probably
+continue doing the same with DP data? If the people who designed the DP
+process did a decent job, the statistics shouldn't be too far from the real
+data. Unless you were looking at very small statistics, of course. But in that
+case, you were looking at pure statistical noise in the first place.</p>
+<p>If you were already taking uncertainty into account, DP doesn't change much. It
+only adds a new, quantifiable element to this uncertainty. With one caveat: you
+need to know exactly what was done to the data. Privacy parameters aren't enough
+for you to guess. You need to know the shape and magnitude of the noise, and all
+other ways in which the data was altered.</p>
+<p>This also means that DP practitioners should give you this information. People
+creating and implementing DP algorithms share part of this responsibility, too.
+Novel algorithms should come with a way to calculate arbitrary confidence
+intervals. Tools should return uncertainty information along with the output:
+nobody wants to compute it by hand. </p>
+<p>In a few words: transparency is key. It brings trust. It makes the data more
+useful. And it can show that the accuracy impact of DP is smaller than people
+might think!</p>
+<hr>
+<p>For more musings on differential privacy, head over to the <a href="friendly-intro-to-differential-privacy.html">table of
+contents</a> of this blog post series.</p>
+<hr>
+<p><small>I'm thankful to Cynthia Dwork and danah boyd for their helpful feedback
+on drafts of this blog post.</small></p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:uncertainty">
+<p>This is not a silly question! And it can go further. I have seen
+  physicists calculating confidence intervals for confidence interval bounds
+  <em>for confidence interval bounds</em>. It is a real thing that very serious
+  scientists sometimes do.&#160;<a class="footnote-backref" href="#fnref:uncertainty" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20210727,
+  title = &#123;Don't worry, your data's noisy},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/noisy-data.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2021},
+  month = &#123;07}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="more-useful-results-dp.html">← previous</a>
+    </li>
+    <li>
+      <a href="joining-tumult-labs.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

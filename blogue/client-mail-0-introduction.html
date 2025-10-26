@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Gérer ses mails en local : étape 0, introduction. - Ted écrit des trucs</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="archives.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blogue/" type="application/rss+xml" rel="alternate" title="Ted écrit des trucs - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Gérer ses mails en local : étape 0, introduction. - Ted écrit des trucs" />
+  <meta property="twitter:title" content="Gérer ses mails en local : étape 0, introduction. - Ted écrit des trucs" />
+  <meta name="description" property="og:description" content="Introduction et table des matières d'une série sur la façon dont je gère mes mails en local." />
+  <meta property="twitter:description" content="Introduction et table des matières d'une série sur la façon dont je gère mes mails en local." />
+  <meta property="summary" content="Introduction et table des matières d'une série sur la façon dont je gère mes mails en local." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blogue/client-mail-0-introduction.html" />
+  <link rel="prev" href="client-mail-1-offlineimap.html" />
+  <link rel="next" href="client-mail-4-gpg.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Aller vers le contenu" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+              ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+              <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious-fr.html"> Présentation <img src="../flag-france.gif" alt=""/></a>
+          <a href="../serious.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-france.gif" alt=""/>
+          <a href="../blog/index.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recettes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="feed.xml">rss</a> —
+            <a href="archives.html">archives</a>
+          </span>
+          <span class="droite">
+            <a href="offlineimap-mbsync.html"
+                 title="Passer d'OfflineIMAP à isync/mbsync">← précédent</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted écrit des trucs</span>
+      </a></h1>
+      Sur des sujets en lien avec la vie privée, ou parfois pas.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./client-mail-0-introduction.html">Gérer ses mails en local : étape 0, introduction.</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2014-04-08T00:00:00+02:00">
+      2014-04-08
+    </time>
+    <small>&mdash; modifié le
+      <time datetime="2014-10-12T00:00:00+02:00">
+        2014-10-12
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><strong>Ce</strong> billet est le premier d'une courte série d'articles longs. Elle a pour
+objectif de décrire la façon dont je gère mes courriels en local, sur mon
+laptop, sous la forme d'un tutoriel que j'espère accessible pour quelqu'un de
+débutant qui veut démarrer avec mutt.</p>
+<p>Depuis le logiciel utilisé pour se connecter en IMAP sur mon compte et récupérer
+les nouveaux messages, jusqu'au client SMTP qui s'occupe de les envoyer, en
+passant par tous les petits trucs de configuration que j'utilise pour gérer mes
+différentes boîtes mail, je vais essayer d'être à peu près exhaustif.</p>
+<p>Précisons dès maintenant que le but de cette est de présenter une configuration
+<em>faite pour fonctionner avec mutt</em>. Elle est adaptable pour un autre client mail
+minimaliste, mais si vous voulez utiliser un gros logiciel qui fait du
+tout-en-un (comme Thunderbird), ça n'est pas du tout pertinent de suivre ce
+tutoriel.</p>
+<p>Je vais commencer par les trucs simples et nécessaires pour finir sur les trucs
+et astuces divers qui rendent mes fichiers de configuration longs et compliqués,
+qui maximisent le confort d'utilisation et qui constituent un exemple de la
+puissance potentielle de mutt (ou au moins d'une petite partie).</p>
+<p>Un détail technique : ce tutoriel décrit la configuration de mon laptop, qui
+tourne sous Debian Sid. Il devrait cependant être adaptable sans problème pour
+n'importe quelle machine sous Linux et probablement aussi sous d'autres systèmes
+Unix : on ne manipule que des fichiers de config' dans le $HOME et tous les
+logiciels utilisés sont disponibles sous n'importe quelle distribution.</p>
+<p>Donc, dans l'ordre.</p>
+<ul>
+<li>Étape 0 : Introduction ← vous êtes ici !</li>
+<li>Étape 1 : <a href="client-mail-1-offlineimap.html">Synchronisation IMAP avec
+  OfflineIMAP</a></li>
+<li>Étape 2 : <a href="client-mail-2-msmtp.html">Envoi d'e-mails avec msmtp et msmtpq</a></li>
+<li>Étape 3 : <a href="client-mail-3-mutt.html">Configuration de mutt</a></li>
+<li>Étape 3 bis : <a href="client-mail-3bis-mutt.html">Dose supplémentaire de mutt</a></li>
+<li>Étape 4 : <a href="client-mail-4-gpg.html">Chiffrement et signature avec PGP</a></li>
+</ul>
+<p>Bonne lecture !</p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Citez cet article!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>L'entrée BibTeX a été copiée dans votre presse-papiers.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblogue20140408,
+  title = &#123;Gérer ses mails en local : étape 0, introduction.},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blogue/client-mail-0-introduction.html}},
+  note = &#123;Ted écrit des trucs (blog personnel)},
+  year = &#123;2014},
+  month = &#123;04}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="client-mail-1-offlineimap.html">← précédent</a>
+    </li>
+    <li>
+      <a href="client-mail-4-gpg.html">suivant →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">haut de page</a></li>
+    <li><a href="index.html">accueil</a></li>
+    <li><a href="archives.html">archives</a></li>
+  </ul>
+</nav>
+
+      <div class="feedback">
+        Tout ce que je raconte ici sont mes opinions personnelles, pas celles de
+        mon employeur.
+        <br>
+        Je suis toujours ravi de recevoir des réactions, critiques, questions,
+        ou autres commentaires sur ce que j'écris. Envoyez-moi ce qui vous
+        chante à <span class="baddirection">se.niatnofsed@neimad</span>.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          par 
+          <a rel="dct:publisher" href="http://desfontain.es/serious-fr.html">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="Je pense que le concept de propriété intellectuelle n'a aucun sens. Le contenu de ce blog est dans le domaine public."/>
+          </a>
+          &mdash;
+          mis en orbite par <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

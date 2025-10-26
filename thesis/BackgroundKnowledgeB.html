@@ -1,0 +1,415 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="VariationOfPrivacyLossV.html" />
+  <link ref="next" href="ChangeInFormalismF.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="VariationOfPrivacyLossV.html">← previous</a></li>
+        <li><a href="SystematizingVariantsExtensionsOfDifferentialPrivacy.html#BackgroundKnowledgeB.html">up</a></li>
+        <li><a href="ChangeInFormalismF.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="VariationOfPrivacyLossV.html">LINKPREV</a><a href="SystematizingVariantsExtensionsOfDifferentialPrivacy.html#BackgroundKnowledgeB.html">LINKUP</a><a href="ChangeInFormalismF.html">LINKNEXT</a></p></div>
+  <h4 class="subsectionHead" id="background-knowledge-b"><span class="titlemark">2.2.5</span>&nbsp;&nbsp;<a id="x20-620002.2.5"></a>Background knowledge (B)</h4>
+<!-- l. 3 --><p class="noindent">In differential privacy, the attacker is implicitly assumed to have full knowledge of the dataset: their
+only uncertainty is about their target. This implicit assumption is also present for the definitions of the
+previous dimensions: indeed, the attacker has to distinguish between two <span class="t1xi-x-x-109">fixed </span>datasets
+<!-- l. 7 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span></span></span></span></span> and
+<!-- l. 7 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span></span></span></span>. The only source of randomness
+in <!-- l. 8 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span>-indistinguishability
+comes from the mechanism itself. In many cases, this assumption is unrealistic, and it is natural to
+consider weaker adversaries, who do not have full background knowledge. One of the main motivations
+to do so is to use significantly less noise in the mechanism&nbsp;[<a id="x20-62001"></a><a href="bibliography.html#cite.0@duan2009privacy">116</a>].
+</p><!-- l. 13 --><p class="indent">  The typical way to represent this uncertainty formally is to assume that the input data
+comes from a certain probability distribution (named <span class="t1xi-x-x-109">data evolution scenario </span>in&nbsp;[<a id="x20-62002"></a><a href="bibliography.html#cite.0@kifer2012rigorous">228</a>]):
+the randomness of this distribution models the attacker’s uncertainty. Informally, the more
+random this probability distribution is, the less knowledge the attacker has. However, the
+definition that follows depends whether DP is considered with the associative or the causal
+view. In the associative view, the sensitive property changes <span class="t1xi-x-x-109">before </span>the data is generated: it
+conditions the data-generating probability distribution. In the causal view, however, the sensitive
+property is only changed <span class="t1xi-x-x-109">after </span>the data is generated. The two options lead to very distinct
+definitions.
+</p><!-- l. 26 --><p class="indent">
+<a id="subsubsection*.30"></a>
+</p>
+  <h5 class="subsubsectionHead" id="conditioning-the-output-on-the-sensitive-property"><a id="x20-63000"></a>Conditioning the output on the sensitive property</h5>
+<!-- l. 28 --><p class="noindent">Using a probability distribution to generate the input data means that the
+<!-- l. 29 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span>-indistinguishability
+property cannot be expressed between two fixed datasets. Instead, one natural way to express it is to
+condition this distribution on some sensitive property. The corresponding notion, <span class="t1xi-x-x-109">noiseless
+                                                                                
+                                                                                
+privacy</span><span class="footnote-mark"><a href="#fn15x2" id="fn15x2-bk"><sup class="textsuperscript">15</sup></a></span><a id="x20-63001f15"></a>
+was first introduced in&nbsp;[<a href="bibliography.html#cite.0@duan2009privacy">116</a>] and formalized in&nbsp;[<a id="x20-63004"></a><a href="bibliography.html#cite.0@bhaskar2011noiseless">46</a>].
+</p>
+  <div class="newtheorem">
+<!-- l. 37 --><p class="noindent"><span class="head">
+<a id="x20-63005r33"></a>
+<span class="t1xb-x-x-109">Definition 33 </span>(<!-- l. 37 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">Θ</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>-noiseless privacy&nbsp;[<a id="x20-63006"></a><a href="bibliography.html#cite.0@bhaskar2011noiseless">46</a><a id="x20-63007"></a>, <a href="bibliography.html#cite.0@duan2009privacy">116</a>])<span class="t1xb-x-x-109">.</span>  </span>
+<span class="t1xi-x-x-109">Given a family </span><!-- l. 38 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">Θ</span></span></span></span></span></span> <span class="t1xi-x-x-109">of
+probability distribution on </span><!-- l. 38 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.081em;">D</span></span></span></span></span></span></span></span><span class="t1xi-x-x-109">,
+a mechanism </span><!-- l. 39 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.136em;">M</span></span></span></span></span></span></span></span> <span class="t1xi-x-x-109">is</span>
+<!-- l. 39 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">Θ</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>-noiseless private
+<span class="t1xi-x-x-109">(NPr) if for all </span><!-- l. 40 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">θ</span></span><span class="mjx-mo MathClass-rel MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.372em;">∈</span></span><span class="mjx-mi MJXc-space3"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">Θ</span></span></span></span></span></span></span><span class="t1xi-x-x-109">,
+all </span><!-- l. 40 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span></span></span></span></span> <span class="t1xi-x-x-109">and
+all </span><!-- l. 40 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.372em; padding-bottom: 0.298em;">t</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-msup MJXc-space1"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.372em; padding-bottom: 0.298em;">t</span></span></span></span><span class="mjx-sup" style="font-size: 70.7%; vertical-align: 0.513em; padding-left: 0px; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-sans-I" style="padding-top: 0.446em; padding-bottom: 0.225em; padding-right: 0.057em;">'</span></span></span></span></span><span class="mjx-mo MathClass-rel MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.372em;">∈</span></span><span class="mjx-mstyle MJXc-space3"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.249em;">T</span></span></span></span></span></span></span></span></span><span class="t1xi-x-x-109">:</span>
+</p><table class="equation-star"><tbody><tr><td>
+<!-- l. 41 --><span class="mjpage mjpage__block"><span class="mjx-chtml MJXc-display" style="text-align: center;"><span class="mjx-math equation" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.136em;">M</span></span></span></span><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.439em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">∼</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">θ</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span><span class="mjx-mrow"><span class="mjx-mo" style="padding-left: 0.15em; padding-right: 0.15em;"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span></span><span class="mjx-mo" style="padding-left: 0.15em; padding-right: 0.15em;"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">=</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.372em; padding-bottom: 0.298em;">t</span></span></span></span></span><span class="mjx-msub MJXc-space3"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.298em;">≈</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span><span class="mjx-mstyle MJXc-space3"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.136em;">M</span></span></span></span><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.439em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">∼</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">θ</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span><span class="mjx-mrow"><span class="mjx-mo" style="padding-left: 0.15em; padding-right: 0.15em;"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span></span><span class="mjx-mo" style="padding-left: 0.15em; padding-right: 0.15em;"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">=</span></span><span class="mjx-msup"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.372em; padding-bottom: 0.298em;">t</span></span></span></span><span class="mjx-sup" style="font-size: 83.3%; vertical-align: 0.347em; padding-left: 0px; padding-right: 0.06em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-sans-I" style="padding-top: 0.446em; padding-bottom: 0.225em; padding-right: 0.057em;">'</span></span></span></span></span></span></span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.372em;">.</span></span></span></span></span></span></span></td></tr></tbody></table>
+  </div>
+<!-- l. 44 --><p class="indent">
+</p><!-- l. 46 --><p class="indent">  In the original definition, the <span class="t1xi-x-x-109">auxiliary knowledge </span>of the attacker is explicitly pointed out in an
+additional parameter. As we show in Section&nbsp;<a href="#x30-960003.1.2.0">3.1.2.0<!-- tex4ht:ref: sec:correlated-existing  --></a> after Definition&nbsp;<a href="CorrelatedData.html#x30-96003r49">49<!-- tex4ht:ref: def:np  --></a>, in the case where there is no
+<!-- l. 49 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span></span></span></span></span> of
+<!-- l. 49 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo MathClass-open"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mn MJXc-space1"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">0</span></span><span class="mjx-mo MathClass-close"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>-DP,
+this syntactic add-on is not necessary, so we omitted it here.
+</p><!-- l. 52 --><p class="indent">  This definition follows naturally from considering the associative view of DP with the strong
+adversary assumption, and attempting to relax this assumption. The exact way to model the adversary’s
+uncertainty can be changed; for example <span class="t1xi-x-x-109">DP under sampling</span>&nbsp;[<a id="x20-63008"></a><a href="bibliography.html#cite.0@li2011provably">255</a>], an instance of noiseless privacy,
+models it using random sampling.
+</p><!-- l. 58 --><p class="indent">  This definition was not the first attempt at formalizing an adversary with partial background knowledge. In&nbsp;[<a id="x20-63009"></a><a href="bibliography.html#cite.0@machanavajjhala2009data">264</a>],
+authors define <!-- l. 60 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span></span><span class="t1xi-x-x-109">-privacy</span>,
+which represents the partial knowledge as a Dirichlet distribution (instead of an arbitrary distribution),
+                                                                                
+                                                                                
+whose parameters are interpreted as characteristics of the attacker. However, this definition
+imposes a condition on the output, but not on the mechanism which produced the output. As
+such, it does not offer strong semantic guarantees like the other definitions presented in this
+survey.
+</p><!-- l. 68 --><p class="indent">
+<a id="subsubsection*.31"></a>
+</p>
+  <h5 class="subsubsectionHead" id="removing-the-effect-of-correlations-in-the-data"><a id="x20-64000"></a>Removing the effect of correlations in the data</h5>
+<!-- l. 70 --><p class="noindent">In&nbsp;[<a id="x20-64001"></a><a href="bibliography.html#cite.0@bassily2013coupled">36</a>], however, the authors argue that in the presence of correlations in the data, noiseless privacy can
+be too strong, and make it impossible to learn global properties of the data. Indeed, if one record can
+have an arbitrarily large influence on the rest of the data, conditioning on the value of this record can
+lead to very distinguishable outputs even if the mechanism only depends on global properties of the
+data. To fix this problem, they propose <span class="t1xi-x-x-109">distributional DP </span>(DistDP), an alternative definition that that
+only conditions the data-generating distribution on one possible value of the target record, and
+quantifies the information leakage from the mechanism. DistDP uses a simulator, similarly to variants
+introduced in Section&nbsp;<a href="RelativizationOfTheKnowledgeGainR.html#relativization-of-the-knowledge-gain-r">2.2.7<!-- tex4ht:ref: sec:r  --></a>.
+</p><!-- l. 82 --><p class="indent">  As we show later, this creates definitional issues in the presence of partial knowledge.
+These issues are discussed in length in Section&nbsp;<a href="CorrelatedData.html#correlated-data">3.1.2<!-- tex4ht:ref: sec:correlated  --></a>, where we also introduce an alternative
+definition that captures the same intuition without encountering the same problems: <span class="t1xi-x-x-109">causal
+DP</span>.
+</p>
+  <div class="newtheorem">
+<!-- l. 87 --><p class="noindent"><span class="head">
+<a id="x20-64002r34"></a>
+<span class="t1xb-x-x-109">Definition 34 </span>(<!-- l. 87 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">Θ</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>-causal differential privacy)<span class="t1xb-x-x-109">.</span>  </span>
+<span class="t1xi-x-x-109">Given a family </span><!-- l. 88 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">Θ</span></span></span></span></span></span> <span class="t1xi-x-x-109">of
+probability distributions on </span><!-- l. 88 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.081em;">D</span></span></span></span></span></span></span></span><span class="t1xi-x-x-109">,
+a mechanism </span><!-- l. 89 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.136em;">M</span></span></span></span></span></span></span></span> <span class="t1xi-x-x-109">satisfies</span>
+<!-- l. 89 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">Θ</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>-causal DP <span class="t1xi-x-x-109">(CausDP) if for
+all probability distributions </span><!-- l. 90 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">θ</span></span><span class="mjx-mo MathClass-rel MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.372em;">∈</span></span><span class="mjx-mi MJXc-space3"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">Θ</span></span></span></span></span></span></span><span class="t1xi-x-x-109">,
+for all </span><!-- l. 90 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span></span></span></span></span> <span class="t1xi-x-x-109">and
+all </span><!-- l. 91 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.372em; padding-bottom: 0.298em;">t</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-msup MJXc-space1"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.372em; padding-bottom: 0.298em;">t</span></span></span></span><span class="mjx-sup" style="font-size: 70.7%; vertical-align: 0.513em; padding-left: 0px; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-sans-I" style="padding-top: 0.446em; padding-bottom: 0.225em; padding-right: 0.057em;">'</span></span></span></span></span><span class="mjx-mo MathClass-rel MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.372em;">∈</span></span><span class="mjx-mstyle MJXc-space3"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.249em;">T</span></span></span></span></span></span></span></span></span><span class="t1xi-x-x-109">:</span>
+</p><table class="equation-star"><tbody><tr><td>
+                                                                                
+                                                                                
+<!-- l. 92 --><span class="mjpage mjpage__block"><span class="mjx-chtml MJXc-display" style="text-align: center;"><span class="mjx-math equation" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.136em;">M</span></span></span></span><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.439em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">∼</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">θ</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span><span class="mjx-mrow"><span class="mjx-mo" style="padding-left: 0.15em; padding-right: 0.15em;"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span></span><span class="mjx-mo" style="padding-left: 0.15em; padding-right: 0.15em;"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">=</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.372em; padding-bottom: 0.298em;">t</span></span></span></span></span><span class="mjx-msub MJXc-space3"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.298em;">≈</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span><span class="mjx-mstyle MJXc-space3"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.136em;">M</span></span></span></span><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.388em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.372em;">→</span></span><span class="mjx-msup"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.372em; padding-bottom: 0.298em;">t</span></span></span></span><span class="mjx-sup" style="font-size: 83.3%; vertical-align: 0.347em; padding-left: 0px; padding-right: 0.06em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-sans-I" style="padding-top: 0.446em; padding-bottom: 0.225em; padding-right: 0.057em;">'</span></span></span></span></span></span></span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.474em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">∼</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">θ</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span><span class="mjx-mrow"><span class="mjx-mo" style="padding-left: 0.15em; padding-right: 0.15em;"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span></span><span class="mjx-mo" style="padding-left: 0.15em; padding-right: 0.15em;"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">=</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.372em; padding-bottom: 0.298em;">t</span></span></span></span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.372em;">.</span></span></span></span></span></span></span></td></tr></tbody></table>
+<!-- l. 95 --><p class="indent">  <span class="t1xi-x-x-109">where </span><!-- l. 95 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.388em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.372em;">→</span></span><span class="mjx-msup"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.372em; padding-bottom: 0.298em;">t</span></span></span></span><span class="mjx-sup" style="font-size: 83.3%; vertical-align: 0.347em; padding-left: 0px; padding-right: 0.06em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-sans-I" style="padding-top: 0.446em; padding-bottom: 0.225em; padding-right: 0.057em;">'</span></span></span></span></span></span></span></span></span></span></span></span>
+<span class="t1xi-x-x-109">is the dataset obtained by changing the </span><!-- l. 95 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">i</span></span></span></span></span></span><span class="t1xi-x-x-109">-th
+record of </span><!-- l. 96 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span></span></span></span>
+<span class="t1xi-x-x-109">into </span><!-- l. 96 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msup"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.372em; padding-bottom: 0.298em;">t</span></span></span></span><span class="mjx-sup" style="font-size: 70.7%; vertical-align: 0.513em; padding-left: 0px; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-sans-I" style="padding-top: 0.446em; padding-bottom: 0.225em; padding-right: 0.057em;">'</span></span></span></span></span></span></span></span></span><span class="t1xi-x-x-109">.</span>
+</p>
+  </div>
+<!-- l. 97 --><p class="indent">
+</p><!-- l. 99 --><p class="indent">  In this definition, one record is changed <span class="t1xi-x-x-109">after </span>the dataset has been generated, so it does not affect
+other records through dependence relationships. These dependence relationships are the
+only difference between noiseless privacy and causal DP: as we show in Proposition&nbsp;<a href="CorrelatedData.html#x30-97012r22">22<!-- tex4ht:ref: prop:np-cdp-independence  --></a> in
+Section&nbsp;<a href="#x30-970003.1.2.0">3.1.2.0<!-- tex4ht:ref: sec:correlated-ddp  --></a>, when each record is independent of all others, this definition is equivalent to noiseless
+privacy.
+</p><!-- l. 107 --><p class="indent">
+<a id="subsubsection*.32"></a>
+</p>
+  <h5 class="subsubsectionHead" id="multidimensional-definitions3"><a id="x20-65000"></a>Multidimensional definitions</h5>
+<!-- l. 109 --><p class="noindent">Limiting the background knowledge of an attacker is orthogonal to the dimensions introduced
+previously: one can modify the risk model, introduce different neighborhood definitions, or even vary
+the privacy parameters across the protected properties along with limiting the attacker’s background
+knowledge.
+</p>
+<!-- l. 114 --><p class="noindent"><span class="likeparagraphHead" id="combination-with-q1"><a id="x20-66000"></a>Combination with Q</span>
+</p><!-- l. 116 --><p class="indent">  Modifying the risk model while limiting the attacker’s background knowledge has interesting
+consequences. In Section&nbsp;<a href="PassiveVsActiveAttackers.html#passive-vs-active-attackers">3.1.3<!-- tex4ht:ref: sec:passiveactive  --></a>, we show that two options are possible: either consider the partial
+knowledge as additional information given to the attacker or let the attacker <span class="t1xi-x-x-109">influence </span>the partial
+knowledge. This distinction between an <span class="t1xi-x-x-109">active </span>and a <span class="t1xi-x-x-109">passive </span>attacker does not matter if only the
+worst-case scenario is considered, like in noiseless privacy. However, under different risk models, such
+as allowing a small probability of error, they lead to two different definitions: <span class="t1xi-x-x-109">active partial knowledge
+DP </span>(APKDP) and <span class="t1xi-x-x-109">passive partial knowledge DP </span>(PPKDP). Both definitions are introduced and
+discussed in more detail in Section&nbsp;<a href="PassiveVsActiveAttackers.html#passive-vs-active-attackers">3.1.3<!-- tex4ht:ref: sec:passiveactive  --></a>.
+                                                                                
+                                                                                
+</p><!-- l. 128 --><p class="indent">  To model an active attacker, APKDP quantifies over all possible values of the partial
+knowledge. It was first introduced in&nbsp;[<a id="x20-66001"></a><a href="bibliography.html#cite.0@bassily2013coupled">36</a><a id="x20-66002"></a>, <a href="bibliography.html#cite.0@bhaskar2011noiseless">46</a>] as <span class="t1xi-x-x-109">noiseless privacy</span>, with an additional
+<!-- l. 131 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span></span></span></span></span>
+parameter. We reformulate it to clarify that it implicitly assumes an active attacker. One specialization
+of this definition is <span class="t1xi-x-x-109">DP under sampling</span>&nbsp;[<a id="x20-66003"></a><a href="bibliography.html#cite.0@li2011provably">255</a>] (DPuS), which mandates DP to be satisfied after a
+random sampling is applied to the dataset. The authors use this definition to show that applying
+<!-- l. 135 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity
+to a randomly sampled dataset provides differential privacy; but this definition could also be used on its
+own, to model the attacker’s uncertainty using a randomly sampled distribution.
+</p><!-- l. 140 --><p class="indent">  PPKDP is strictly weaker: it models a passive attacker, who cannot choose
+their partial knowledge, and thus cannot influence the data. In this context,
+<!-- l. 141 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span></span></span></span></span> does
+not only apply to the output of the mechanism, but also to the value of the partial knowledge.
+</p><!-- l. 145 --><p class="indent">  Causal DP can also be adapted to a risk model similar to
+<!-- l. 145 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>-DP:
+in&nbsp;[<a id="x20-66004"></a><a href="bibliography.html#cite.0@burchard2019empirical">58</a>], authors introduce a similar notion to causal DP as <span class="t1xi-x-x-109">inherit DP </span>(InhDP), with the small difference
+that the second dataset is obtained by removing one record from the first dataset, instead of replacing it; and
+<!-- l. 149 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>-indistinguishability is used. The authors
+also define <span class="t1xi-x-x-109">empirical DP</span>&nbsp;[<a href="bibliography.html#cite.0@burchard2019empirical">58</a>]<span class="footnote-mark"><a href="#fn16x2" id="fn16x2-bk"><sup class="textsuperscript">16</sup></a></span><a id="x20-66005f16"></a>,
+which is identical, except the empirical distribution is used instead of the actual data
+distribution, in context where the latter is unknown. In both cases, the influence of
+<!-- l. 154 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.007em;">δ</span></span></span></span></span></span> on the
+attacker model is unclear.
+</p>
+<!-- l. 157 --><p class="noindent"><span class="likeparagraphHead" id="combination-with-n1"><a id="x20-67000"></a>Combination with N</span>
+</p><!-- l. 159 --><p class="indent">  Modifying the neighborhood definition is simpler: it is clearly orthogonal to the dimensions
+introduced in this section. In all definitions of this section so far, the two possibilities between which
+the adversary must distinguish are similar to bounded DP. This can easily be changed to choose other
+properties to protect from the attacker. This is done in <span class="t1xi-x-x-109">pufferfish privacy</span>&nbsp;[<a id="x20-67001"></a><a href="bibliography.html#cite.0@kifer2012rigorous">228</a>], which extends the
+concept of neighboring datasets to neighboring <span class="t1xi-x-x-109">distributions </span>of datasets.
+</p>
+  <div class="newtheorem">
+<!-- l. 167 --><p class="noindent"><span class="head">
+<a id="x20-67002r35"></a>
+<span class="t1xb-x-x-109">Definition 35 </span>(<!-- l. 167 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo MathClass-open"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">Θ</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">Φ</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span><span class="mjx-mo MathClass-close"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>-pufferfish privacy&nbsp;[<a href="bibliography.html#cite.0@kifer2012rigorous">228</a>])<span class="t1xb-x-x-109">.</span>  </span>
+<span class="t1xi-x-x-109">Given a family of probability distributions </span><!-- l. 168 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">Θ</span></span></span></span></span></span>
+<span class="t1xi-x-x-109">on </span><!-- l. 168 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.081em;">D</span></span></span></span></span></span></span></span><span class="t1xi-x-x-109">, and a family of pairs of
+predicates </span><!-- l. 169 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">Φ</span></span></span></span></span></span> <span class="t1xi-x-x-109">on datasets,
+a mechanism </span><!-- l. 169 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.136em;">M</span></span></span></span></span></span></span></span> <span class="t1xi-x-x-109">verifies</span>
+<!-- l. 170 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mo MathClass-open"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">Θ</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">Φ</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span><span class="mjx-mo MathClass-close"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span>-pufferfish privacy <span class="t1xi-x-x-109">(PFPr)
+                                                                                
+                                                                                
+if for all distributions </span><!-- l. 171 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">θ</span></span><span class="mjx-mo MathClass-rel MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.372em;">∈</span></span><span class="mjx-mi MJXc-space3"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">Θ</span></span></span></span></span></span></span> <span class="t1xi-x-x-109">and
+all pairs of predicates </span><!-- l. 172 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.519em;">ϕ</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-msub MJXc-space1"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.519em;">ϕ</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span><span class="mjx-mo MathClass-rel MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.372em;">∈</span></span><span class="mjx-mi MJXc-space3"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">Φ</span></span></span></span></span></span></span><span class="t1xi-x-x-109">:</span>
+</p><table class="equation-star"><tbody><tr><td>
+<!-- l. 173 --><span class="mjpage mjpage__block"><span class="mjx-chtml MJXc-display" style="text-align: center;"><span class="mjx-math equation" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mstyle"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.136em;">M</span></span></span></span><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.439em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">∼</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">θ</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.519em;">ϕ</span></span></span></span><span class="mjx-sub" style="font-size: 83.3%; vertical-align: -0.267em; padding-right: 0.06em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">1</span></span></span></span></span><span class="mjx-mrow"><span class="mjx-mo" style="padding-left: 0.15em; padding-right: 0.15em;"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span><span class="mjx-mo" style="padding-left: 0.15em; padding-right: 0.15em;"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span><span class="mjx-msub MJXc-space3"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.225em; padding-bottom: 0.298em;">≈</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.212em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">ε</span></span></span></span></span><span class="mjx-mstyle MJXc-space3"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.136em;">M</span></span></span></span><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mrow"><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span><span class="mjx-mo"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.439em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">|</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span><span class="mjx-mo MathClass-rel"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.077em; padding-bottom: 0.298em;">∼</span></span><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.519em; padding-bottom: 0.298em;">θ</span></span><span class="mjx-mo MathClass-punc"><span class="mjx-char MJXc-TeX-main-R" style="margin-top: -0.144em; padding-bottom: 0.519em;">,</span></span><span class="mjx-msub"><span class="mjx-base"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.519em;">ϕ</span></span></span></span><span class="mjx-sub" style="font-size: 83.3%; vertical-align: -0.267em; padding-right: 0.06em;"><span class="mjx-mrow" style=""><span class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span><span class="mjx-mrow"><span class="mjx-mo" style="padding-left: 0.15em; padding-right: 0.15em;"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">(</span></span><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">D</span></span></span><span class="mjx-mo" style="padding-left: 0.15em; padding-right: 0.15em;"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.446em; padding-bottom: 0.593em;">)</span></span></span></span></span></span></span></span></span></span></span></td></tr></tbody></table>
+  </div>
+<!-- l. 176 --><p class="indent">
+</p><!-- l. 178 --><p class="indent">  Pufferfish privacy extends the concept of neighboring datasets to neighboring
+<span class="t1xi-x-x-109">distributions </span>of datasets; starting with a set of data-generating distributions, then
+conditioning them on sensitive attributes. The result compares pairs of distributions
+encompasses noiseless privacy, as well as other notions. For example, it captures <span class="t1xi-x-x-109">bayesian
+DP</span><span class="footnote-mark"><a href="#fn17x2" id="fn17x2-bk"><sup class="textsuperscript">17</sup></a></span><a id="x20-67003f17"></a>
+(BayDP<sup class="textsuperscript"><span class="t1xr-">[</span><a id="x20-67007"></a><a href="bibliography.html#cite.0@leung2012bayesian"><span class="t1xr-">248</span></a><span class="t1xr-">]</span></sup>), introduced in&nbsp;[<a href="bibliography.html#cite.0@leung2012bayesian">248</a>], in which neighboring dataset have up to
+<!-- l. 187 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>
+fixed records in common and all other records are generated randomly from a distribution
+<!-- l. 189 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em; padding-right: 0.003em;">π</span></span></span></span></span></span>.
+</p><!-- l. 191 --><p class="indent">  The same idea can be formalized by comparing pairs of distributions directly. This is
+done in&nbsp;[<a id="x20-67008"></a><a href="bibliography.html#cite.0@jelasity2014distributional">206</a><a id="x20-67009"></a>, <a href="bibliography.html#cite.0@kawamoto2019esorics">219</a>] via <span class="t1xi-x-x-109">distribution privacy </span>(DnPr). The two formalisms are equivalent:
+an arbitrary pair of distributions can be seen as a single distribution, conditioned on the
+value of a secret parameter. Distribution privacy was instantiated in&nbsp;[<a id="x20-67010"></a><a href="bibliography.html#cite.0@geumlek2019profile">162</a>] via <span class="t1xi-x-x-109">profile-based
+DP </span>(PBDP), in which the attacker tries to distinguish between different probabilistic user
+profiles.
+</p><!-- l. 200 --><p class="indent">  Further relaxations encompassing the introduced dimensions are <span class="t1xi-x-x-109">probabilistic distribution
+privacy</span>&nbsp;[<a href="bibliography.html#cite.0@kawamoto2019esorics">219</a>] (PDnPr), a combination of distribution privacy and probabilistic DP,
+<span class="t1xi-x-x-109">extended distribution privacy</span>&nbsp;[<a href="bibliography.html#cite.0@kawamoto2019esorics">219</a>] (EDnPr), a combination of distribution privacy and
+<!-- l. 204 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-msub"><span class="mjx-base" style="margin-right: -0.003em;"><span class="mjx-mrow"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em; padding-right: 0.003em;">d</span></span></span></span><span class="mjx-sub" style="font-size: 70.7%; vertical-align: -0.233em; padding-right: 0.071em;"><span class="mjx-mrow" style=""><span class="mjx-mstyle" style="font-size: 113.1%;"><span class="mjx-mrow" style="font-size: 88.4%;"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-script-R" style="padding-top: 0.519em; padding-bottom: 0.298em; padding-right: 0.081em;">D</span></span></span></span></span></span></span></span></span></span></span>-privacy,
+<span class="t1xi-x-x-109">divergence distribution privacy</span>&nbsp;[<a id="x20-67011"></a><a href="bibliography.html#cite.0@kawamoto2019allerton">218</a>] (DDnPr), a combination of distribution privacy, and <span class="t1xi-x-x-109">extended
+divergence distribution privacy</span>&nbsp;[<a href="bibliography.html#cite.0@kawamoto2019allerton">218</a>] (EDDnPr), which combines the latter two definitions. Finally,
+<span class="t1xi-x-x-109">divergence distribution privacy with auxiliary inputs</span>&nbsp;[<a href="bibliography.html#cite.0@kawamoto2019allerton">218</a>] considers the setting where the attacker
+might not know the input probability distribution perfectly.
+</p><!-- l. 212 --><p class="indent">  Definitions of this section are an active area of research; a typical question is to quantify in which
+conditions deterministic mechanisms can provide some level of privacy. However, they are not used a
+lot in practice, likely because of their brittleness: if the assumptions about the attacker’s limited
+                                                                                
+                                                                                
+background knowledge are wrong in practice, then the definitions do not provide any guarantee of
+protection.
+                                                                                
+                                                                                
+</p>
+  <div class="footnotes"><a id="x20-63002x15"></a>
+     <!-- l. 33 --><p class="indent">    <span class="footnote-mark"><a href="#fn15x2-bk" id="fn15x2"><sup class="textsuperscript">15</sup></a></span><span class="t1xr-x-x-90">Another definition with the same name is introduced in&nbsp;[</span><a id="x20-63003"></a><a href="bibliography.html#cite.0@farokhi2019noiseless"><span class="t1xr-x-x-90">147</span></a><span class="t1xr-x-x-90">], we mention it in Section&nbsp;</span><a href="#x25-860002.2.10.0"><span class="t1xr-x-x-90">2.2.10.0</span><!-- tex4ht:ref: sec:out  --></a><span class="t1xr-x-x-90">.</span></p><a id="x20-66006x16"></a>
+      <!-- l. 152 --><p class="indent">     <span class="footnote-mark"><a href="#fn16x2-bk" id="fn16x2"><sup class="textsuperscript">16</sup></a></span><span class="t1xr-x-x-90">Another definition with the same name is introduced in&nbsp;[</span><a id="x20-66007"></a><a href="bibliography.html#cite.0@abowd2013differential"><span class="t1xr-x-x-90">5</span></a><span class="t1xr-x-x-90">], we mention it in Section&nbsp;</span><a href="#x25-860002.2.10.0"><span class="t1xr-x-x-90">2.2.10.0</span><!-- tex4ht:ref: sec:out  --></a><span class="t1xr-x-x-90">.</span></p><a id="x20-67004x17"></a>
+      <!-- l. 185 --><p class="indent">     <span class="footnote-mark"><a href="#fn17x2-bk" id="fn17x2"><sup class="textsuperscript">17</sup></a></span><span class="t1xr-x-x-90">There are two other notions with the same name: introduced in&nbsp;[</span><a id="x20-67005"></a><a href="bibliography.html#cite.0@triastcyn2019bayesian"><span class="t1xr-x-x-90">367</span></a><a id="x20-67006"></a><span class="t1xr-x-x-90">, </span><a href="bibliography.html#cite.0@yang2015bayesian"><span class="t1xr-x-x-90">399</span></a><span class="t1xr-x-x-90">], we mention them in Section&nbsp;</span><a href="NeighborhoodDefinitionN.html#neighborhood-definition-n-u-ding-"><span class="t1xr-x-x-90">2.2.3</span><!-- tex4ht:ref: sec:n  --></a> <span class="t1xr-x-x-90">and&nbsp;</span><a href="VariationOfPrivacyLossV.html#variation-of-privacy-loss-v"><span class="t1xr-x-x-90">2.2.4</span><!-- tex4ht:ref: sec:v  --></a>
+      <span class="t1xr-x-x-90">respectively.</span></p>                                                                                                                                                                </div>
+<!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="VariationOfPrivacyLossV.html">LINKPREV</a><a href="SystematizingVariantsExtensionsOfDifferentialPrivacy.html#BackgroundKnowledgeB.html">LINKUP</a><a href="ChangeInFormalismF.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="VariationOfPrivacyLossV.html">← previous</a></li>
+        <li><a href="SystematizingVariantsExtensionsOfDifferentialPrivacy.html#BackgroundKnowledgeB.html">up</a></li>
+        <li><a href="ChangeInFormalismF.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

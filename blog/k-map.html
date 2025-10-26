@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>k-map, the weird cousin of k-anonymity - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="k-map, the weird cousin of k-anonymity - Ted is writing things" />
+  <meta property="twitter:title" content="k-map, the weird cousin of k-anonymity - Ted is writing things" />
+  <meta name="description" property="og:description" content="Weakening k-anonymity, really? This sounds weird, but this can actually be quite reasonable. Let's learn why!" />
+  <meta property="twitter:description" content="Weakening k-anonymity, really? This sounds weird, but this can actually be quite reasonable. Let's learn why!" />
+  <meta property="summary" content="Weakening k-anonymity, really? This sounds weird, but this can actually be quite reasonable. Let's learn why!" />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/k-map.html" />
+  <link rel="prev" href="twitter-tear-gas.html" />
+  <link rel="next" href="crash-override.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="twitter-tear-gas.html">← previous</a>
+ —     <a href="crash-override.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./k-map.html">k-map, the weird cousin of k-anonymity</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2017-10-10T00:00:00+02:00">
+      2017-10-10
+    </time>
+    <small>&mdash; updated
+      <time datetime="2018-04-26T00:00:00+02:00">
+        2018-04-26
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><strong>Suppose</strong> that you're a doctor who studies human sexual behavior. You want to
+run a study with all the patients that you can find, but you don't find a lot of
+volunteers. You only end up with about 40 subjects.</p>
+<p>After you've ran your study and collected data, you want to share this data with
+other researchers. You look at the attributes, and deduce that ZIP code and age
+are likely to be used in reidentification attacks. To share it in a safe way,
+you're thinking of <a href="k-anonymity.html"><span class="math">\(k\)</span>-anonymity</a>.</p>
+<p>When trying to find a strategy to obtain <span class="math">\(k\)</span>-anonymity, you find out that you
+would have to lose a lot of information. For <span class="math">\(k=10\)</span>, a rather small value, you
+end up with buckets like <span class="math">\(20\le age\lt 50\)</span>. That makes sense: you have only few
+people in your database, so you have to bundle together very different age
+values.</p>
+<p>But when you think about it, you start questioning whether you really need
+<span class="math">\(k\)</span>-anonymity. Who are the attackers, in your scenario? The researchers with
+whom you share the data, and possibly unknown parties if the data ever leaks.
+None of these people have background information about who is in the dataset.
+Thus, the attacker doesn't just have to distinguish between different records,
+but to actually find the <em>real identity</em> of a record based on its information.
+This attacker has significantly weaker capabilities than for <span class="math">\(k\)</span>-anonymity!</p>
+<p>Let's look at two different rows in this database.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">79</td>
+</tr>
+<tr>
+<td style="text-align: center;">60629</td>
+<td style="text-align: center;">42</td>
+</tr>
+</tbody>
+</table>
+<p>At first glance, the amount of information for this two individuals seems to be
+the same. But let's take a look at the values…</p>
+<ul>
+<li><a href="https://www.unitedstateszipcodes.org/85535/">85535</a> corresponds to a place in Arizona named Eden. Approximately 20 people
+  live in this ZIP code. How many people do you think are exactly 79 years old
+  in this particular ZIP code? Probably only one.</li>
+<li><a href="https://www.unitedstateszipcodes.org/60629/">60629</a> corresponds to a part of the Chicago metropolitan area. More than
+  100,000 people live there. How many of them are 42 years old? A thousand, at
+  least, and probably more!</li>
+</ul>
+<p>It seems that it would be very easy to reidentify the first row, but that we
+don't have enough information to reidentify the second row. But according to
+<span class="math">\(k\)</span>-anonymity, both rows might be completely unique in the dataset.</p>
+<p>Obviously, <span class="math">\(k\)</span>-anonymity doesn't fit this use case. We need a different
+definition: that's where <span class="math">\(k\)</span>-map comes in.</p>
+<h1 id="definition">Definition</h1>
+<p>Just like <a href="k-anonymity.html"><span class="math">\(k\)</span>-anonymity</a>, <span class="math">\(k\)</span>-map requires you to determine
+which columns of your database are <em>quasi-identifiers</em>. This answers the
+question: what can your attacker use to reidentify their target?</p>
+<p>But this information alone is not enough to compute <span class="math">\(k\)</span>-map. In the example
+above, we assumed that the attacker doesn't know whether their target is in the
+dataset. So what are they comparing a given row with? With all other individuals
+sharing the same values in a larger, sometimes implicit, dataset. For the
+previous example, this could be "everybody living in the US", if you assume the
+attacker has no idea who could have this genetic disease. Let's call this larger
+table the <em>reidentification dataset</em>.</p>
+<p>Once you picked the quasi-identifiers and the reidentification dataset, the
+definition is straightforward. Your data satisfies <span class="math">\(k\)</span>-map if every combination
+of values for the quasi-identifiers appears at least <span class="math">\(k\)</span> times <em>in the
+reidentification dataset</em>.</p>
+<p>In our example, this corresponds to counting the number of people in the US who
+share the quasi-identifier values of each row in your dataset. Consider our tiny
+dataset above:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">85535</td>
+<td style="text-align: center;">79</td>
+</tr>
+<tr>
+<td style="text-align: center;">60629</td>
+<td style="text-align: center;">42</td>
+</tr>
+</tbody>
+</table>
+<p>We said earlier than the values of the first row matched only one person in the
+US. Thus, this dataset does not satisfy <span class="math">\(k\)</span>-map for any value of <span class="math">\(k\ge 2\)</span>.</p>
+<p>How do we get a larger <span class="math">\(k\)</span>? We could generalize the first value like this:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">ZIP code</th>
+<th style="text-align: center;">age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">85***</td>
+<td style="text-align: center;">79</td>
+</tr>
+<tr>
+<td style="text-align: center;">60629</td>
+<td style="text-align: center;">42</td>
+</tr>
+</tbody>
+</table>
+<p>ZIP codes between 85000 and 85999 include the entire city of <a href="https://en.wikipedia.org/wiki/Phoenix,_Arizona">Phoenix</a>. There
+are 36,000+ people between 75 and 84 years old in Phoenix, according to some
+<a href="http://phoenix.areaconnect.com/statistics.htm">old stats</a>. It's probably safe to assume that there are more than 1,000 people
+who match the quasi-identifiers values of the first row. We saw earlier that the
+second row also matched 1,000+ people. So this generalized dataset satisfies
+1000-map.</p>
+<h1 id="attack-model-considerations">Attack model considerations</h1>
+<p>Wait a second, why does this feel like cheating? What happened there, to give us
+such a generous number so easily? This comes from the generous assumptions we
+made in our attack model. We assumed that the attacker had <em>zero</em> information on
+their target, except that they live in the US (which is implied by the presence
+of ZIP codes). And with only the information (ZIP code, age), you don't need a
+lot of generalization to make each row of your dataset blend in a large crowd.</p>
+<p>To make this attack model stronger, you could assume that the attacker will use
+a <em>smaller</em> reidentification database. For example, suppose that your genetic
+disease you're studying requires regular hospital check-ups. The attacker could
+restrict their search only to people who have visited a hospital in the last
+year. The number of possible "suspects" for each value tuple gets smaller, so
+the <span class="math">\(k\)</span> of <span class="math">\(k\)</span>-map decreases too<sup id="fnref:generic"><a class="footnote-ref" href="#fn:generic">1</a></sup>.</p>
+<p><span class="math">\(k\)</span>-map is inherently a <em>weak</em> model. So when choosing the quasi-identifiers and
+reidentification dataset, you have to think hard at what an attacker could do.
+If your attacker doesn't have lots of resources, it can be reasonable to assume
+that they won't get more data than, say, the voter files from your state. But if
+they can figure out more about your users, and you don't really know which
+reidentification dataset they could use, maybe <span class="math">\(k\)</span>-anonymity is a safer
+bet<sup id="fnref:safer"><a class="footnote-ref" href="#fn:safer">2</a></sup>.</p>
+<h1 id="and-now-some-practice">And now, some practice</h1>
+<p>OK, enough theory. Let's learn how to compute <span class="math">\(k\)</span>-map in practice, and anonymize
+your datasets to make them verify the definition!</p>
+<p>… There's one slight problem, though.</p>
+<p>It's usually impossible.</p>
+<p>Choosing the reidentification dataset is already a difficult exercise. Maybe you
+can afford to make generous assumptions, and assume the attacker doesn't know
+much. At best, you think, they'll buy voter files, or a commercial database,
+which contains everyone in your state, or in the US. But… then what?</p>
+<p>To compute the maximum <span class="math">\(k\)</span> such as your dataset verifies <span class="math">\(k\)</span>-map, you would
+first need to get the reidentification dataset yourself. But commercial
+databases are expensive. Voter files might not be legal for you to obtain (even
+though an evil attacker could break the law to get them).</p>
+<p>So, most of the time, you can't actually check whether your data satisfies
+<span class="math">\(k\)</span>-map. If it's impossible to check, it's also impossible to know exactly which
+strategy to adopt to make your dataset verify the definition.</p>
+<h4 id="exception-1-secret-sample">Exception 1: secret sample</h4>
+<p>Suppose you're not releasing all your data, but only a <em>subset</em> (or <em>sample</em>) of
+a bigger dataset that you own. Then, you can compute the <span class="math">\(k\)</span>-map value of the
+sample with regard to the original, bigger dataset. In this case, choosing
+<span class="math">\(k\)</span>-map over <span class="math">\(k\)</span>-anonymity is relatively safe.</p>
+<p>Indeed, your original dataset is certainly <em>smaller</em> than the reidentification
+dataset used by the attacker. Using the same argument as above, this means that
+you will obtain a <em>lower bound</em> on the value of <span class="math">\(k\)</span>. Essentially, you're being
+pessimistic, which means that you're on the safe side.</p>
+<p>Even if the attacker has access to the original dataset, they won't know which
+records are in the sample. So if the original dataset is secret, or if you've
+chosen the sample in a secret way, <span class="math">\(k\)</span>-map is a reasonable definition to use,
+and you can compute a pessimistic approximation of it.</p>
+<h4 id="exception-2-representative-distribution">Exception 2: representative distribution</h4>
+<p>This case is slightly different. Suppose that you can make the assumption that
+your data is a <a href="http://arx.deidentifier.org/anonymization-tool/configuration/#a27"><em>representative</em></a> (or <em>unbiaised</em>) sample of a larger
+dataset. This might be a good approximation if you selected people (uniformly)
+at random to build your dataset, or if it was gathered by a polling
+organization.</p>
+<p>In this case, you can compute an estimate of the <span class="math">\(k\)</span>-map value for your data,
+even without the reidentification dataset. The statistical properties which
+enable this, and the methods you can use, are pretty complicated: I won't
+explain them in detail here. They are mentioned and compared in <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2528029/">this
+paper</a>, which has references to the original versions of each of them.</p>
+<h4 id="exception-3-using-humans">Exception 3: using humans</h4>
+<p>For the case of our doctor earlier, if the dataset is small enough, a motivated
+data owner could actually do the job of an attacker "by hand". Go through each
+record, and try to map it to a real person, or estimate the chances of it being
+possible. We pretty much did that in this article!</p>
+<p>This is very approximative, and obviously not scalable. But for our imaginary
+doctor, it might be a reasonable solution!</p>
+<h4 id="implementations">Implementations</h4>
+<p><a href="http://arx.deidentifier.org/">ARX</a> implements the methods from exceptions 1 and 2. Documentation for the
+first one can be found <a href="http://arx.deidentifier.org/anonymization-tool/configuration/#a27">here</a>. Instructions to estimate the number of
+<em>unique</em> values assuming uniformity can be found <a href="http://arx.deidentifier.org/anonymization-tool/risk-analysis/#a56">here</a>. Originally,
+<a href="http://neon.vb.cbs.nl/casc/..%5Ccasc%5Cmu.htm">μ-ARGUS</a> was the first software with this feature, but I couldn't run
+it on my machine, so I can't say much about it.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>You might wonder why I wrote an entire article on a definition that is hardly
+used because of how impractical it is. In addition to the unique problems that
+we talked about in this article, the limitations of <span class="math">\(k\)</span>-anonymity also apply.
+It's difficult to choose <span class="math">\(k\)</span>, non-trivial to pick the quasi-identifiers, and
+even trickier to model the reidentification database.</p>
+<p>The definition also didn't get a lot of attention from academics. Historically,
+<span class="math">\(k\)</span>-anonymity came first<sup id="fnref:history"><a class="footnote-ref" href="#fn:history">4</a></sup>. Then, people showed that <span class="math">\(k\)</span>-anonymity was
+sometimes not sufficient to protect sensitive data, and tried to find <em>stronger</em>
+definitions to fix it. Weaker definitions were, of course, less interesting.</p>
+<p>Nonetheless, I find that it's an interesting relaxation of <span class="math">\(k\)</span>-anonymity. It
+shows one of its implicit assumptions: the attacker knows that their target
+belongs to the dataset. This assumption is sometimes too pessimistic: it might
+be worth considering alternate definitions.</p>
+<p>Choosing a privacy model is all about modeling the attacker correctly. Learning
+to question implicit assumptions can only help!</p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:generic">
+<p>There is a generic version of this argument. Let's call your
+  database <span class="math">\(D\)</span>, and suppose <span class="math">\(R\)</span> and <span class="math">\(R^\prime\)</span> are two possible reidentification
+  databases. Suppose that <span class="math">\(R^\prime\)</span> is "larger" than <span class="math">\(R\)</span> (each element of <span class="math">\(R\)</span>
+  appears in <span class="math">\(R^\prime\)</span>). Then if <span class="math">\(D\)</span> satisfies <span class="math">\(k\)</span>-map with regard to <span class="math">\(R\)</span>, it
+  also satisfies <span class="math">\(k\)</span>-map with regard to <span class="math">\(R^\prime\)</span>. The reverse is not true.&#160;<a class="footnote-backref" href="#fnref:generic" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:safer">
+<p>One simple consequence of the previous footnote is that if a dataset
+  <span class="math">\(D\)</span> verifies <span class="math">\(k\)</span>-anonymity, then it automatically verifies <span class="math">\(k\)</span>-map for any
+  reidentification dataset<sup id="fnref:assumption"><a class="footnote-ref" href="#fn:assumption">3</a></sup>.&#160;<a class="footnote-backref" href="#fnref:safer" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:assumption">
+<p>I didn't say this explicitly, but the reidentification dataset is
+  always assumed to contain all rows from your dataset. It's usually not the
+  case in practice because data is messy, but it's a safe assumption. Hoping
+  that your attacker will just ignore some records in your data would be a bit
+  overly optimistic.&#160;<a class="footnote-backref" href="#fnref:assumption" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:history">
+<p>Latanya Sweeney first mentioned the idea behind <span class="math">\(k\)</span>-map in
+  <a href="https://desfontain.es/PDFs/PhD/AchievingKAnonymityPrivacyProtectionUsingGeneralizationAndSuppression.pdf">this 2002 paper<sup> (pdf)</sup></a>, several years after the
+  introduction of <span class="math">\(k\)</span>-anonymity.&#160;<a class="footnote-backref" href="#fnref:history" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20171010,
+  title = &#123;k-map, the weird cousin of k-anonymity},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/k-map.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2017},
+  month = &#123;10}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="twitter-tear-gas.html">← previous</a>
+    </li>
+    <li>
+      <a href="crash-override.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

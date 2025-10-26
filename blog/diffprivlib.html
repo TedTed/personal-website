@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Don't use diffprivlib - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Don't use diffprivlib - Ted is writing things" />
+  <meta property="twitter:title" content="Don't use diffprivlib - Ted is writing things" />
+  <meta name="description" property="og:description" content="A critical examination of an open-source differential privacy library." />
+  <meta property="twitter:description" content="A critical examination of an open-source differential privacy library." />
+  <meta property="summary" content="A critical examination of an open-source differential privacy library." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/diffprivlib.html" />
+  <link rel="prev" href="privacy-in-ai.html" />
+  <link rel="next" href="differential-privacy-glossary.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="privacy-in-ai.html">← previous</a>
+ —     <a href="differential-privacy-glossary.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./diffprivlib.html">Don't use diffprivlib</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2025-01-20T00:00:00+01:00">
+      2025-01-20
+    </time>
+  </footer>
+  <div>
+    <p>If you're looking for a Python library to perform differential privacy
+computations, <a href="https://github.com/IBM/differential-privacy-library">diffprivlib</a> seems to be an attractive choice. You'll find it
+prominently featured in Google search results. It's maintained by IBM, and
+extensively cited in the scientific literature. Its README states that you can
+use it to "build your own differential privacy applications"<sup id="fnref:build"><a class="footnote-ref" href="#fn:build">1</a></sup>, and it's
+regularly updated. Last but not least, it's very easy to pick up: its API mimics
+well-known tools like NumPy or scikit-learn, making it look simple and familiar
+to data scientists.</p>
+<p>Unfortunately, diffprivlib is flawed in a number of important ways. I think most
+people should avoid using it. This blog post lists a few reasons why.</p>
+<h1 id="unclear-and-inconsistent-privacy-notions">Unclear and inconsistent privacy notions</h1>
+<p>Differential privacy comes in different flavors. A common distinction for the
+"standard" definition is: are you trying to protect the addition or removal of a
+single record? Or are you trying to protect a single record changing its value?
+This distinction is subtle, but critical: a mechanism that satisfies one notion
+does not necessarily satisfy the other. So if you want to correctly document
+your DP strategy, or run experiments that compare multiple mechanisms for the
+same task, you really want to get it right.</p>
+<p>Diffprivlib does not document the privacy notion they use. Worse, the source
+code suggests that in fact, it uses <em>different</em> notions in different parts of
+the API. The implementation of <code>mean</code> divides the noisy sum by the real count,
+which only works in the change-one-record model. But the implementation of
+<code>histogram</code> adds geometric noise of scale <span class="math">\(1/\varepsilon\)</span>, which only makes
+sense in the add-or-remove-one-record model.</p>
+<p>Some API methods blur the picture even further. For example, <code>histogram</code> accepts
+a <code>weight</code> argument, which makes some records "count" more than others, but has
+no impact on the sensitivity behind the scenes. This is a bad footgun: if one of
+the weights is larger than 1, you're simply not getting the advertised privacy
+guarantee.</p>
+<h1 id="floating-point-vulnerabilities">Floating-point vulnerabilities</h1>
+<p>One of the most well-known potential vulnerabilities with DP software is the use
+of floating-point math in noise addition. If you do this naively, the guarantees
+vanish: an attacker can confirm a hypothesis about a specific person with 100%
+certainty. This class of problems is worse than other kinds of vulnerabilities,
+like timing attacks: it can happen even if the attacker cannot influence the
+data, and if the person writing the code is trusted.</p>
+<p>This has been known for a decade. It's table stakes for any DP software to fix
+this issue<sup id="fnref:nist"><a class="footnote-ref" href="#fn:nist">2</a></sup>. Diffprivlib authors proposed a solution to this problem in a
+<a href="https://arxiv.org/abs/2107.10138">2021 paper</a>. Crucially, they only showed that their fix mitigated
+<em>one specific attack</em>, not that the result actually satisfied DP.</p>
+<p>Three months later, I came up with a simple variant of the attack that
+<a href="https://www.tmlt.io/resources/tiny-bits-matter-precision-based-attacks-on-differential-privacy">completely broke their fix</a>. I let them know about the problem, and about
+<a href="https://github.com/google/differential-privacy/blob/5a84fbfdf806fd20e7fc9128c1a87445068b4a55/common_docs/Secure_Noise_Generation.pdf">existing approaches</a> that solved this in a more principled way. My
+colleagues and I later came up with a <a href="https://arxiv.org/abs/2207.13793">different solution</a> to this
+problem, with a readily-available, open-source Python implementation.</p>
+<p>That was more than 3 years ago. The vulnerable code in diffprivlib is still
+there. Most of the noise addition primitives in diffprivlib are broken.</p>
+<h1 id="mishandled-edge-cases">Mishandled edge cases</h1>
+<p>Real-world data isn't as perfect as our math formulas would like them to be. It
+has null values. Floating-point values can be NaN or infinite. Such "erroneous"
+values can encode sensitive data in practice: a null value in a "salary" column
+can mean "unemployed", a NaN in a test result column can mean "has not been
+tested yet", and so on. It's important to deal with them in a way that doesn't
+break DP guarantees.</p>
+<p>Diffprivlib largely ignores this problem. Inject a single NaN value to e.g. the
+<code>median</code> operation and you get NaN as the result. This is deterministic and
+silent: you just get a result that leaks information about a single data point.
+Too bad if you're building a data product that runs every day: everything might
+work fine at first, then your data changes ever-so-slightly, and all of a sudden
+you're publishing data that leaks information about individuals, without
+noticing.</p>
+<p>There are many other subtleties that you have to be mindful of when building DP
+software. Diffprivlib doesn't seem to have a principled approach to deal with
+any of them, leading to tons of vulnerabilities of this kind. Empty
+data<sup id="fnref:empty"><a class="footnote-ref" href="#fn:empty">4</a></sup>, overflows<sup id="fnref:overflows"><a class="footnote-ref" href="#fn:overflows">3</a></sup>, floating-point precision
+issues<sup id="fnref:precision"><a class="footnote-ref" href="#fn:precision">5</a></sup>, and so on.</p>
+<h1 id="misleading-documentation">Misleading documentation</h1>
+<p>Diffprivlib's safety issues are not documented anywhere. Take the floating-point
+vulnerabilities, for example: the documentation even suggests that the noise
+primitives "<a href="https://diffprivlib.readthedocs.io/en/latest/modules/mechanisms.html#diffprivlib.mechanisms.Laplace">prevent against reconstruction attacks</a>". It links to
+the paper, which hasn't been retracted, or appended with a comment like "this
+method is actually not safe, please don't use it".</p>
+<p>This has negative consequences not just for diffprivlib users and the people in
+their data, but for the larger ecosystem. A completely different tool, built
+recently, uses the <a href="https://dp-docs.oasislabs.com/docs/technology/SecurityHardening">same broken method</a> to implement their noise
+addition primitives<sup id="fnref:oasis"><a class="footnote-ref" href="#fn:oasis">6</a></sup>. This probably would not have happened if
+diffprivlib had adequate disclaimers.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>There's more to say about diffprivlib<sup id="fnref:more"><a class="footnote-ref" href="#fn:more">7</a></sup>, and I only looked at the simpler
+parts of the API, not the more complex ML stuff. But that's enough for me: I'm
+confident recommending people avoid using it. This recommendation is not only
+for real-world use cases that would put people at risk: this list of issues can
+also lead to incorrectly interpreting experiments, which can be a major problem
+for research use cases as well.</p>
+<p>I think there's a path for things to get better. It starts with clearly
+discouraging the use of the library for real-world use cases, and documenting
+vulnerabilities and caveats. Then, the authors could e.g. unify and clearly
+document the privacy notion used by different methods, and make sure that
+precision issues can't lead to misleading experimental results. At that point,
+it might become a useful tool for experimentation and research.</p>
+<p>I sent a draft of this blog post to diffprivlib maintainers a month before
+publication. This was their response.</p>
+<blockquote>
+<p>Diffprivlib is a valuable resource for scientists and engineers as an
+introduction to differential privacy and was never envisaged to be deployed in
+production use cases as-is. We have amended the Readme to make this more
+explicit and avoid any confusion. Our research on related topics continues as
+time allows, a recent example of which is our paper published at
+<a href="https://dl.acm.org/doi/10.1145/3658644.3690347">ACM CCS 2024</a>. We anticipate
+this work will be integrated within diffprivlib in due course.</p>
+</blockquote>
+<hr>
+<p><small></p>
+<p>And now for some additional notes and disclaimers.</p>
+<h4 id="open-source">Open-source</h4>
+<p>The reason why I can write a blog post like this is because Diffprivlib is open
+source. This is why I, or anyone else, can play with it, break it, understand
+its flaws. Many other tools claim to achieve differential privacy, but do not
+publish their source code nor design decisions, so these claims are completely
+unverifiable. <strong>This is strictly worse.</strong> Differential privacy is like
+cryptography: you should assume that anyone who tells you "my system satisfies
+DP but I'm keeping the details secret" is a clown at best and dishonest at
+worst.</p>
+<h4 id="scope-and-related-work">Scope and related work</h4>
+<p>This article focuses on flaws present in a specific tool. It does not attempt to
+explain what it takes to build a robust, production-ready DP engine. If that's
+what you're looking for, you might enjoy <a href="https://www.tmlt.io/resources/a-framework-to-evaluate-the-robustness-of-anonymization-solutions">this blog post</a>. It also
+doesn't go into detail about what makes a DP vulnerability more or less severe.
+There's a lot to say about this — that blog post idea is on my backlog, let me
+know if you're particularly interested in reading about it.</p>
+<h4 id="conflict-of-interest">Conflict of interest</h4>
+<p>My job involves maintaining a different
+<a href="https://tmlt.dev">open-source DP library</a>. You may consider me as biased when
+discussing other tools. This article only represents my personal opinions and
+has not been vetted by my employer.</p>
+<h4 id="acknowledgments">Acknowledgments</h4>
+<p>I am thankful to Alexander Knop, Daniel Simmons-Marengo, Jonathan Ullman,
+Juba Ziani, and Naoise Holohan for their helpful comments on previous versions
+of this post.</p>
+<p></small></p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:build">
+<p>This has since been updated, see below.&#160;<a class="footnote-backref" href="#fnref:build" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:nist">
+<p>For example, this is explicitly called out in the
+<a href="https://csrc.nist.gov/pubs/sp/800/226/ipd">NIST guidelines</a> on differential privacy.&#160;<a class="footnote-backref" href="#fnref:nist" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:overflows">
+<p><code>median([0]+[1]*2982, bounds=(0,1))</code> consistently returns a value.
+<code>median([0]+[1]*2983, bounds=(0,1))</code> consistently crashes.&#160;<a class="footnote-backref" href="#fnref:overflows" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:empty">
+<p><code>mean([1], bounds=(0,1))</code> consistently returns a value.
+<code>mean([], bounds=(0,1))</code> consistently crashes.&#160;<a class="footnote-backref" href="#fnref:empty" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:precision">
+<p>I have not re-implemented the attack described in
+<a href="https://arxiv.org/abs/1912.04222">this paper</a>, but the exponential
+mechanism is implemented exactly as described in the paper, without any
+consideration for precision issues.&#160;<a class="footnote-backref" href="#fnref:precision" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+<li id="fn:oasis">
+<p>They are now saying they will fix it, yay.&#160;<a class="footnote-backref" href="#fnref:oasis" title="Jump back to footnote 6 in the text">&#8617;</a></p>
+</li>
+<li id="fn:more">
+<p>See for example the findings of usabilities studies like
+<a href="https://arxiv.org/abs/2309.13506">this one</a> or
+<a href="https://arxiv.org/abs/2410.09721">this one</a>, which confirm that these
+aren't theoretical concerns: when people try using diffprivlib, they don't
+get the privacy guarantees they expect.&#160;<a class="footnote-backref" href="#fnref:more" title="Jump back to footnote 7 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20250120,
+  title = &#123;Don't use diffprivlib},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/diffprivlib.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2025},
+  month = &#123;01}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="privacy-in-ai.html">← previous</a>
+    </li>
+    <li>
+      <a href="differential-privacy-glossary.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

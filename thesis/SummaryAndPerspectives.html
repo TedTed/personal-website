@@ -1,0 +1,273 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="ExperimentalValidation.html" />
+  <link ref="next" href="BuildingAUsableDifferentiallyPrivateQueryEngine.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="ExperimentalValidation.html">← previous</a></li>
+        <li><a href="AnalyzingPrivacyRisksAtScale.html#SummaryAndPerspectives.html">up</a></li>
+        <li><a href="BuildingAUsableDifferentiallyPrivateQueryEngine.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="ExperimentalValidation.html">LINKPREV</a><a href="AnalyzingPrivacyRisksAtScale.html#SummaryAndPerspectives.html">LINKUP</a><a href="BuildingAUsableDifferentiallyPrivateQueryEngine.html">LINKNEXT</a></p></div>
+  <h4 class="subsectionHead" id="summary-and-perspectives-u-ding-"><span class="titlemark">4.1.5</span>&nbsp;&nbsp;<a id="x49-1610004.1.5"></a>Summary and perspectives <span class="bbding-10x-x-109">✿</span></h4> <!-- l. 3 --><p class="noindent">
+The scale of data and systems in large organizations demands an efficient approach for reidentifiability
+and joinability analysis. KHyperLogLog (KHLL) innovates on approximate counting techniques to
+estimate the uniqueness distribution and pairwise containment of very large databases at
+scale.
+</p><!-- l. 8 --><p class="indent">  The efficiency and scalability of risk analysis using KHLL represent a practical and useful tool for
+large organizations in protecting user privacy. It provides an objective, quantifiable and
+replicable measure of reidentifability of datasets. The KHLL algorithm also presents a novel and
+practical approach for tackling the joinability risks of datasets and ID spaces. The efficiency of
+KHLL further enables periodic analyses of complex production systems that evolve over
+time.
+</p><!-- l. 17 --><p class="indent">
+<a id="subsubsection*.78"></a>
+</p>
+  <h5 class="subsubsectionHead" id="related-work1"><a id="x49-162000"></a>Related work</h5>
+<!-- l. 19 --><p class="noindent">Using the frequency of (combinations of) column values as a proxy
+to measure reidentifiability is not new: this is the core intuition behind
+<!-- l. 20 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity,
+which we introduced in Section&nbsp;2.1.1. Rather than just estimating
+<!-- l. 22 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity, the
+KHLL algorithm estimates the entire uniqueness distribution, which is useful for evaluating the impact to data loss
+with <!-- l. 23 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymization.
+The reidentifiability and joinability risks as estimated using KHLL can serve to help determine a
+suitable anonymization strategy, particularly when considering the different contexts and use cases of
+anonymization.
+</p><!-- l. 28 --><p class="indent">  The problem of gathering metadata and organizing datasets in large organizations has been
+described on several occasions. In&nbsp;[<a id="x49-162001"></a><a href="bibliography.html#cite.0@halevy2016goods">183</a>], the authors detail a search engine for datasets, which
+gathers metadata at dataset level; while in&nbsp;[<a id="x49-162002"></a><a href="bibliography.html#cite.0@sen2014bootstrapping">342</a>], the authors explain how to detect and
+propagate column-level semantic annotations using assisted labeling and data-flow analysis. The
+tools we develop to automatically detect joinability of datasets could be used for a similar
+purpose. Inconsistent semantic annotations between data columns with high similarity scores
+(containment or Jaccard) can be automatically detected with the correct annotations propagated
+accordingly.
+                                                                                
+                                                                                
+</p><!-- l. 38 --><p class="indent">  Cardinality estimators have been the subject of a significant body of research&nbsp;[<a id="x49-162003"></a><a href="bibliography.html#cite.0@beyer2007synopses">45</a><a id="x49-162004"></a>, <a href="bibliography.html#cite.0@flajolet2008hyperloglog">152</a><a id="x49-162005"></a>, <a href="bibliography.html#cite.0@heule2013hyperloglog">195</a><a id="x49-162006"></a>, <a href="bibliography.html#cite.0@xiao2017better">394</a>].
+The techniques we propose are largely independent of the particular algorithm chosen to approximate
+ID cardinality. Beyond privacy, estimating value distribution is also essential to database query
+optimization and data stream processing. Most research in this domain focuses on sketching values of
+high frequency (i.e.&nbsp;statistical heavy hitters or top-k queries). The closest analogue of KHLL
+was presented by Cormode et al.&nbsp;[<a id="x49-162007"></a><a href="bibliography.html#cite.0@cormode2005space">86</a>]; it combines the Count-Min sketch&nbsp;[<a id="x49-162008"></a><a href="bibliography.html#cite.0@cormode2005improved">85</a>] and the
+LogLog sketch&nbsp;[<a id="x49-162009"></a><a href="bibliography.html#cite.0@flajolet1983probabilistic">153</a>] for value distribution estimation. However, the Count-Min algorithm
+biases towards values of high frequency, which is not helpful for evaluating the impact of
+<!-- l. 49 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>-anonymity given the
+typical choices of <!-- l. 50 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em;">k</span></span></span></span></span></span>
+are much smaller than the frequency of heavy hitters.
+</p><!-- l. 52 --><p class="indent">  MinHash&nbsp;[<a id="x49-162010"></a><a href="bibliography.html#cite.0@broder1997resemblance">55</a>] and SimHash&nbsp;[<a id="x49-162011"></a><a href="bibliography.html#cite.0@charikar2002similarity">66</a>] are two popular algorithms for estimating
+the Jaccard similarity of datasets. The KHLL algorithm leverages the
+<!-- l. 54 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.446em; padding-bottom: 0.298em; padding-right: 0.04em;">K</span></span></span></span></span></span> Minimum
+Values in the first level of the two-level sketch for estimating Jaccard and containment scores, using a similar log
+<!-- l. 56 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">n</span></span></span></span></span></span>-space memory
+footprint. A possible improvement might be to adapt from HyperMinHash&nbsp;[<a id="x49-162012"></a><a href="bibliography.html#cite.0@yu2017hyperminhash">402</a>], capable of estimating Jaccard
+using only <!-- l. 58 --><span class="mjpage"><span class="mjx-chtml"><span class="mjx-math" aria-label="Equation"><span class="mjx-mrow" aria-hidden="true"><span class="mjx-mrow"><span class="mjx-mtext qopname"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.519em;">log</span></span><span class="mjx-mo"><span class="mjx-char"></span></span><span class="mjx-mtext qopname MJXc-space1"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.372em; padding-bottom: 0.519em;">log</span></span><span class="mjx-mo"><span class="mjx-char"></span></span><span class="mjx-mi MJXc-space1"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.225em; padding-bottom: 0.298em;">n</span></span></span></span></span></span></span>-space.
+Yet, given that the bulk of memory usage by KHLL actually comes from the second level of the sketch
+for estimating the uniqueness distribution, we have not explored the feasibility of adapting KHLL to
+have a HyperMinHash-like data structure in the first level.
+</p><!-- l. 63 --><p class="indent">  Finally, despite the extensive research for detecting data similarity, we have not seen any prior work
+tackling the problem of automatically detecting possible joinability between different ID spaces across
+datasets.
+</p><!-- l. 68 --><p class="indent">
+<a id="subsubsection*.79"></a>
+</p>
+  <h5 class="subsubsectionHead" id="future-work"><a id="x49-163000"></a>Future work</h5>
+<!-- l. 70 --><p class="noindent">While KHyperLogLog is memory efficient, it still requires a linear pass over the data, which in practice
+is the main performance bottleneck. Techniques to produce sketches suitable for joinability analysis
+without scanning the entire dataset would be helpful, for example by sampling input records. It would
+also be interesting to pursue further innovative uses of cardinality estimation techniques in
+privacy enhancing technologies, for example for automatically adding semantic labels to
+datasets, detecting violations of retention policies, or for suggesting effective anonymization
+strategies.
+                                                                                
+                                                                                
+</p>
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="ExperimentalValidation.html">LINKPREV</a><a href="AnalyzingPrivacyRisksAtScale.html#SummaryAndPerspectives.html">LINKUP</a><a href="BuildingAUsableDifferentiallyPrivateQueryEngine.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="ExperimentalValidation.html">← previous</a></li>
+        <li><a href="AnalyzingPrivacyRisksAtScale.html#SummaryAndPerspectives.html">up</a></li>
+        <li><a href="BuildingAUsableDifferentiallyPrivateQueryEngine.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

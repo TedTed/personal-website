@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Converters between differential privacy variants - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Converters between differential privacy variants - Ted is writing things" />
+  <meta property="twitter:title" content="Converters between differential privacy variants - Ted is writing things" />
+  <meta name="description" property="og:description" content="A small collection of interactive converters between differential privacy variants." />
+  <meta property="twitter:description" content="A small collection of interactive converters between differential privacy variants." />
+  <meta property="summary" content="A small collection of interactive converters between differential privacy variants." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/converters-diagram.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/converters-diagram.png" />
+  <meta property="twitter:image:alt" content="A diagram with four text elements: Pure DP, Zero-concentrated DP, Gaussian DP, and Approximate DP. Arrows go from Pure DP to Zero-concentrated DP, from Gaussian DP to Zero-concentrated DP, from Gaussian DP to Approximate DP, and from Zero-concentrated DP to Approximate DP." />
+  <link rel="canonical" href="https://desfontain.es/blog/converters-differential-privacy.html" />
+  <link rel="prev" href="ml-privacy-evaluations.html" />
+  <link rel="next" href="bad-ugly-good-maybe.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="ml-privacy-evaluations.html">← previous</a>
+ —     <a href="bad-ugly-good-maybe.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./converters-differential-privacy.html">Converters between differential privacy variants</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2024-06-02T00:00:00+02:00">
+      2024-06-02
+    </time>
+  </footer>
+  <div>
+    <p>This is a small collection of interactive converters between differential
+privacy variants.</p>
+<p><center>
+<img alt="A diagram with four text elements: Pure DP, Zero-concentrated DP, Gaussian DP,
+and Approximate DP. Arrows go from Pure DP to Zero-concentrated DP, from
+Gaussian DP to Zero-concentrated DP, from Gaussian DP to Approximate DP, and
+from Zero-concentrated DP to Approximate
+DP." src="https://desfontain.es/blog/images/converters-diagram.png">
+</center></p>
+<style>
+.error-msg {
+  background-color: #ffbbbb;
+}
+input[type=number] {
+    -moz-appearance:textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+</style>
+
+<script type="text/javascript">
+const positive = 'All parameters should be strictly positive!';
+const deltaone = 'The δ parameter must be strictly below 1!';
+const oneparam = 'Please specify exactly one parameter!';
+const twoparams = 'Please specify exactly two parameters!';
+const epslargerthanrho = 'ε must be strictly larger than ρ!';
+const ERR_TOOSMALL = -1;
+const toosmall = 'Due to floating-point imprecision, the result has been rounded to 0. To get an accurate answer, consider using symbolic or arbitrary-precision arithmetic software.';
+const ERR_APPROX = -2;
+const approx = 'Couldn\'t get an accurate answer for these parameters due to floating-point imprecision. Consider using symbolic or arbitrary-precision arithmetic software.';
+const ERR_NORHO = -3;
+const norho = 'Could not find a value of ρ satisfying the conversion formula. Try decreasing δ or increasing ε.';
+const ERR_NOEPS_RHO = -4;
+const noeps_rho = 'Could not find a value of ε satisfying the conversion formula. Try decreasing δ or increasing ρ.';
+const ERR_EPSTOOLARGE = -5;
+const epstoolarge = 'Could not compute the conversion formula for these parameters. Try decreasing ε.';
+const ERR_NOEPS_MU = -6;
+const noeps_mu = 'Could not find a value of ε satisfying the conversion formula. Try decreasing δ or increasing ρ.';
+
+const closeEnough = function(x, goal, tol=1e-7) {
+    if (Math.abs(goal-x)/goal < tol) {
+        return true;
+    }
+    return false;
+}
+const format = function(x) {
+    if (Math.abs(x) < 1e-4 || Math.abs(x) >= 1e6) {
+        return x.toExponential(6);
+    }
+    return x.toPrecision(6);
+}
+</script>
+
+<h4 id="pure-dp-to-zero-concentrated-dp">Pure DP to zero-concentrated DP</h4>
+<p>If a mechanism satisfies <span class="math">\(\varepsilon\)</span>-DP with
+<span class="math">\(\varepsilon=\)</span> <input type="number" step="any" id="pzc-eps">, then it also
+satisfies <span class="math">\(\rho\)</span>-zero-concentrated DP with
+<span class="math">\(\rho=\)</span> <input type="number" step="any" id="pzc-rho">.
+<strong>The converse is not true.</strong></p>
+<p><button value="Reset all" id="resetall-pzc"> Reset all </button>
+<button value="Reset last" id="resetlast-pzc"> Reset last </button>
+<button value="Calculate" id="calculate-pzc"> Calculate </button>
+<span class="error-msg" id="error-pzc"></span></p>
+<p><button value="Info" id="info-pzc"> More info </button>
+<span id="infotext-pzc" style="display: none">
+This uses the optimal conversion formula, proven in <a href="https://differentialprivacy.org/pdp-to-zcdp/">this blog post</a>:
+<span class="math">\(\rho=\varepsilon\frac{e^\varepsilon-1}{e^\varepsilon+1}\)</span>. 
+</span></p>
+<script type="text/javascript">
+
+const epsilonToRho = function (epsilon) {
+    //console.log("epsilonToRho, epsilon = ", epsilon);
+    return epsilon*Math.tanh(epsilon/2);
+}
+const rhoToEpsilon = function (rho) {
+    //console.log("rhoToEpsilon, rho (target) = ", rho);
+    var low = 0;
+    // A simpler bound than the formula above is rho < eps and rho < eps^2/2. We
+    // invert both formulas, and multiply the by 2 to get an upper bound for our
+    // binary search.
+    var high = 2*Math.max(rho, 2*Math.sqrt(rho));
+    while (true) {
+        var mid = low/2 + high/2;
+        var r = epsilonToRho(mid);
+        console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", r = ", r);
+        if (closeEnough(r, rho)) {
+            return mid;
+        }
+        if (mid == low || mid == high) {
+            console.log("rhoToEpsilon, rho (target) = ", rho);
+            console.log("Binary search failed. low = ", low, ", high = ", high, ", mid = ", mid, ", r = ", r);
+            return ERR_APPROX;
+        }
+        if (r > rho) {
+            high = mid;
+        } else {
+            low = mid;
+        }
+    }
+}
+var pzcEps = document.getElementById('pzc-eps');
+var pzcRho = document.getElementById('pzc-rho');
+var errorPZC = document.getElementById('error-pzc');
+var resetallPZC = document.getElementById('resetall-pzc');
+resetallPZC.addEventListener('click', function (event) {
+    pzcEps.value = '';
+    pzcRho.value = '';
+    errorPZC.innerHTML = '';
+});
+var resetlastPZC = document.getElementById('resetlast-pzc');
+var lastPZC = pzcRho;
+resetlastPZC.addEventListener('click', function (event) {
+    lastPZC.value = '';
+});
+var calculatePZC = document.getElementById('calculate-pzc');
+calculatePZC.addEventListener('click', function (event) {
+    var eps = pzcEps.value;
+    var rho = pzcRho.value;
+    if ((eps !== '' && eps <= 0) || (rho !== '' && rho <= 0)) {
+        errorPZC.innerHTML = positive;
+        return;
+    }
+    if (eps !== '' && rho === '') {
+        pzcRho.value = format(epsilonToRho(Number(eps)));
+        errorPZC.innerHTML = '';
+        lastPZC = pzcRho;
+        return;
+    }
+    if (eps === '' && rho !== '') {
+        e = rhoToEpsilon(Number(rho));
+        if (e == ERR_APPROX) {
+            errorPZC.innerHTML = approx;
+            return;
+        }
+        pzcEps.value = format(e);
+        errorPZC.innerHTML = '';
+        lastPZC = pzcEps;
+        return;
+    }
+    errorPZC.innerHTML = oneparam;
+});
+var infoPZC = document.getElementById('info-pzc');
+infoPZC.addEventListener('click', function (event) {
+    infotextPZC = document.getElementById('infotext-pzc');
+    infotextPZC.style.display = 'inline';
+});
+</script>
+
+<h4 id="zero-concentrated-dp-to-approximate-dp">Zero-concentrated DP to approximate DP</h4>
+<p>If a mechanism satisfies <span class="math">\(\rho\)</span>-zero-concentrated DP with
+<span class="math">\(\rho=\)</span> <input type="number" step="any" id="zca-rho">, then it also
+satisfies <span class="math">\((\varepsilon,\delta)\)</span>-DP with
+<span class="math">\(\varepsilon=\)</span> <input type="number" step="any" id="zca-epsilon"> and 
+<span class="math">\(\delta=\)</span> <input type="number" step="any" id="zca-delta">.
+<strong>The converse is not true.</strong></p>
+<p><button value="Reset all" id="resetall-zca"> Reset all </button>
+<button value="Reset last" id="resetlast-zca"> Reset last </button>
+<button value="Calculate" id="calculate-zca"> Calculate </button>
+<span class="error-msg" id="error-zca"></span></p>
+<p><button value="Info" id="info-zca"> More info </button>
+<span id="infotext-zca" style="display: none">
+This uses the best formula given by Lemma 3.6 in <a href="https://arxiv.org/abs/1605.02065">this paper</a>:
+<span class="math">\(\delta=\frac{2e^{-(\varepsilon-\rho)^2/4\rho}}{1+\frac{\varepsilon-\rho}{2\rho}+\sqrt{\left(1+\frac{\varepsilon-\rho}{2\rho}\right)^2+\frac{4}{\pi\rho}}}\)</span>.
+This formula is not tight: Corollary 13 in <a href="https://arxiv.org/abs/2004.00010">this paper</a> gives
+a way to numerically compute a better bound, and the results in Section III in
+<a href="https://arxiv.org/abs/2001.05990">this other paper</a> or Section F in <a href="https://arxiv.org/abs/2106.08567">this one</a>
+could be used to perform the conversion in an optimal way. I use the simpler
+result to avoid having to do nested binary searches to perform the conversion in
+reverse directions, and because it's easier to check the correctness of a single
+formula.
+</span></p>
+<script type="text/javascript">
+const rhoEpsilonToDelta = function (rho, epsilon) {
+    //console.log("rhoEpsilonToDelta, rho = ", rho, ", epsilon = ", epsilon);
+    term = (epsilon-rho)/(2*rho);
+    delta = 2*Math.exp(-term*term*rho) / (1 + term + Math.sqrt((1+term)*(1+term)+4/(Math.PI*rho)));
+    if (delta === 0) {
+        console.log("rhoEpsilonToDelta returns 0, rho = ", rho, ", epsilon = ", epsilon);
+        return ERR_TOOSMALL;
+    }
+    return delta;
+}
+const rhoDeltaToEpsilon = function (rho, delta) {
+    // The conversion formula only holds for ε≥ρ, so we use it as our binary
+    // search lower bound.
+    var low = rho;
+    // The formula above is a fraction with 2*exp(-(ε-ρ)²/(4ρ)) as a numerator
+    // and something strictly larger than 1 as a denominator. So we can simply
+    // invert the formula for numerator to get our binary search upper bound.
+    var high = rho + 2*Math.sqrt(-rho*Math.log(delta/2));
+    // First, we check that we have a chance to achieve our target δ.
+    if (rhoEpsilonToDelta(rho, rho) < delta) {
+        console.log("rhoDeltaToEpsilon: rho = ", rho, ", delta (target) = ", delta);
+        console.log("Impossible to find an appropriate value for eps. Minimal delta is ", rhoEpsilonToDelta(rho, rho));
+        return ERR_NOEPS_RHO;
+    }
+    while (true) {
+        var mid = low/2 + high/2;
+        var del = rhoEpsilonToDelta(rho, mid);
+        //console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
+        if (closeEnough(del, delta)) {
+            return mid;
+        }
+        if (mid == low || mid == high) {
+            console.log("rhoDeltaToEpsilon: rho = ", rho, ", delta (target) = ", delta);
+            console.log("Binary search failed. low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
+            return ERR_APPROX;
+        }
+        if (del < delta) {
+            high = mid;
+        } else {
+            low = mid;
+        }
+    }
+}
+const epsilonDeltaToRho = function (epsilon, delta) {
+    var low = 0;
+    // The conversion formula only holds for ε≥ρ, so we use it as our binary
+    // search upper bound.
+    var high = epsilon;
+    // First, we check that we have a chance to achieve our target δ.
+    if (rhoEpsilonToDelta(epsilon, epsilon) < delta) {
+        console.log("epsilonDeltaToRho: epsilon (target) = ", epsilon, ", delta = ", delta);
+        console.log("Impossible to find an appropriate value for rho. Minimal delta is", rhoEpsilonToDelta(epsilon, epsilon));
+        return ERR_NORHO;
+    }
+    while (true) {
+        var mid = low/2 + high/2;
+        var del = rhoEpsilonToDelta(mid, epsilon);
+        console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
+        if (closeEnough(del, delta)) {
+            return mid;
+        }
+        if (mid == low || mid == high) {
+            console.log("epsilonDeltaToRho: epsilon (target) = ", epsilon, ", delta = ", delta);
+            console.log("Binary search failed. low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
+            return ERR_APPROX;
+        }
+        if (del > delta) {
+            high = mid;
+        } else {
+            low = mid;
+        }
+    }
+}
+
+var zcaRho = document.getElementById('zca-rho');
+var zcaEps = document.getElementById('zca-epsilon');
+var zcaDel = document.getElementById('zca-delta');
+var errorZCA = document.getElementById('error-zca');
+var resetallZCA = document.getElementById('resetall-zca');
+resetallZCA.addEventListener('click', function (event) {
+    zcaEps.value = '';
+    zcaDel.value = '';
+    zcaRho.value = '';
+    errorZCA.innerHTML = '';
+});
+var resetlastZCA = document.getElementById('resetlast-zca');
+var lastZCA = zcaRho;
+resetlastZCA.addEventListener('click', function (event) {
+    lastZCA.value = '';
+});
+var calculateZCA = document.getElementById('calculate-zca');
+calculateZCA.addEventListener('click', function (event) {
+    var rho = zcaRho.value;
+    var eps = zcaEps.value;
+    var del = zcaDel.value;
+    if ((rho !== '' && rho <= 0) || (eps !== '' && eps <= 0) || (del !== '' && del <= 0)) {
+        errorZCA.innerHTML = positive;
+        return;
+    }
+    if (del !== '' && del >= 1) {
+        errorZCA.innerHTML = deltaone;
+        return
+    }
+    if (rho !== '' && eps !== '' && del === '') {
+        if (eps <= rho) {
+            errorZCA.innerHTML = epslargerthanrho;
+            return;
+        }
+        d = rhoEpsilonToDelta(Number(rho), Number(eps));
+        if (d == ERR_TOOSMALL) {
+            errorZCA.innerHTML = toosmall;
+            return;
+        }
+        errorZCA.innerHTML = '';
+        zcaDel.value = format(d);
+        lastZCA = zcaDel;
+        return;
+    }
+    if (rho !== '' && eps === '' && del !== '') {
+        errorZCA.innerHTML = '';
+        e = rhoDeltaToEpsilon(Number(rho), Number(del));
+        if (e == ERR_NOEPS_RHO) {
+            errorZCA.innerHTML = noeps_rho;
+            return;
+        }
+        if (e == ERR_APPROX) {
+            errorZCA.innerHTML = approx;
+            return;
+        }
+        zcaEps.value = format(e);
+        lastZCA = zcaEps;
+        return;
+    }
+    if (rho === '' && eps !== '' && del !== '') {
+        errorZCA.innerHTML = '';
+        r = epsilonDeltaToRho(Number(eps), Number(del))
+        if (r == ERR_NORHO) {
+            errorZCA.innerHTML = norho;
+            return;
+        }
+        if (r == ERR_APPROX) {
+            errorZCA.innerHTML = approx;
+            return;
+        }
+        zcaRho.value = format(r);
+        lastZCA = zcaRho;
+        return;
+    }
+    errorZCA.innerHTML = twoparams;
+});
+var infoZCA = document.getElementById('info-zca');
+infoZCA.addEventListener('click', function (event) {
+    infotextZCA = document.getElementById('infotext-zca');
+    infotextZCA.style.display = 'inline';
+});
+</script>
+
+<h4 id="gaussian-dp-to-approximate-dp">Gaussian DP to approximate DP</h4>
+<p>If a mechanism satisfies <span class="math">\(\mu\)</span>-Gaussian DP with
+<span class="math">\(\mu=\)</span> <input type="number" step="any" id="ga-mu">, then it also
+satisfies <span class="math">\((\varepsilon,\delta)\)</span>-DP with
+<span class="math">\(\varepsilon=\)</span> <input type="number" step="any" id="ga-epsilon"> and 
+<span class="math">\(\delta=\)</span> <input type="number" step="any" id="ga-delta">.
+<strong>The converse is not true.</strong></p>
+<p><button value="Reset all" id="resetall-ga"> Reset all </button>
+<button value="Reset last" id="resetlast-ga"> Reset last </button>
+<button value="Calculate" id="calculate-ga"> Calculate </button>
+<span class="error-msg" id="error-ga"></span></p>
+<p><button value="Info" id="info-ga"> More info </button>
+<span id="infotext-ga" style="display: none">
+Using Corollary 2.13 from <a href="https://arxiv.org/abs/1905.02383">this paper</a>, which relies on Theorem 8 in
+<a href="https://arxiv.org/abs/1805.06530">this paper</a>:
+<span class="math">\(\delta=\Phi\left(-\frac{\varepsilon}{\mu}+\frac{\mu}{2}\right)-e^\varepsilon\cdot\Phi\left(-\frac{\varepsilon}{\mu}-\frac{\mu}{2}\right)\)</span>,
+where <span class="math">\(\Phi\)</span> is the cumulative distribution function of a normal distribution of
+mean <span class="math">\(0\)</span> and scale <span class="math">\(1\)</span>.
+</span></p>
+<p>You can also use this to compute the <span class="math">\((\varepsilon,\delta)\)</span>-DP guarantees of a
+Gaussian mechanism of standard deviation <span class="math">\(\sigma\)</span> applied to a mechanism of
+global <span class="math">\(L^2\)</span> sensitivity <span class="math">\(\Delta_2\)</span>, by replacing <span class="math">\(\mu\)</span> above by
+<span class="math">\(\Delta_2/\sigma\)</span>.</p>
+<script type="text/javascript">
+// From https://dx.doi.org/10.2139/ssrn.4487559
+// Modified from exp(a)*b to exp(a+log(b)) following the advice of the author.
+// This can return 0, but never NaN.
+const erfc = function(x) {
+    if (x >= 0) {
+        factor = ((0.56418958354775629) / (x + 2.06955023132914151))
+            * ((x*x + 2.71078540045147805*x + 5.80755613130301624) / (x*x + 3.47954057099518960*x + 12.06166887286239555))
+            * ((x*x + 3.47469513777439592*x + 12.07402036406381411) / (x*x + 3.72068443960225092*x + 8.44319781003968454))
+            * ((x*x + 4.00561509202259545*x + 9.30596659485887898) / (x*x + 3.90225704029924078*x + 6.36161630953880464))
+            * ((x*x + 5.16722705817812584*x + 9.12661617673673262) / (x*x + 4.03296893109262491*x + 5.13578530585681539))
+            * ((x*x + 5.95908795446633271*x + 9.19435612886969243) / (x*x + 4.11240942957450885*x + 4.48640329523408675));
+        return Math.exp(-x*x + Math.log(factor));
+    }
+    return 2-erfc(-x);
+}
+const phi = function (x) {
+    return erfc(-x/Math.sqrt(2))/2;
+}
+const muEpsilonToDelta = function (mu, epsilon) {
+    // First failure mode: exp(epsilon) below can be too large to fit in
+    // floating-point space. We check for that and fail if it's the case.
+    if (Math.exp(epsilon) == Infinity) {
+        console.log("muEpsilonToDelta: mu = ", mu, ", epsilon = ", epsilon);
+        console.log("exp(epsilon) is infinity.");
+        return ERR_EPSTOOLARGE;
+    }
+    a = phi(-epsilon/mu+mu/2);
+    b = Math.exp(epsilon)*phi(-epsilon/mu-mu/2);
+    delta = a-b;
+    // The formula above is a difference between two terms. If these two terms
+    // are very close, that's bad news: that means that the difference is
+    // probably not very accurate. We check for that and fail if it happens.
+    tol = 1e-10;
+    ratio = Math.abs(delta) / Math.max(Math.abs(a),Math.abs(b));
+    if (ratio < tol) {
+        console.log("muEpsilonToDelta: mu = ", mu, ", epsilon = ", epsilon);
+        console.log("Approximation error: difference between the two terms is too low. a = ", a, ", b = ", b, ", delta = ", delta, ", ratio = ", ratio);
+        return ERR_APPROX;
+    }
+    // The formula above should always return something positive; if that's not
+    // the case, some approximation error happened and we also fail.
+    if (delta <= 0) {
+        console.log("muEpsilonToDelta: mu = ", mu, ", epsilon = ", epsilon);
+        console.log("Negative or zero delta. a = ", a, ", b = ", b, "delta = ", delta);
+        return ERR_TOOSMALL;
+    }
+    return delta;
+}
+const muDeltaToEpsilon = function (mu, delta) {
+    // First, we check that we have a chance to achieve our target δ.
+    if (muEpsilonToDelta(mu, 0) < delta) {
+        console.log("muDeltaToEpsilon: mu = ", mu, ", delta (target) = ", delta);
+        console.log("Impossible to find an appropriate value for epsilon. Minimal delta is ", muEpsilonToDelta(mu, 0));
+        return ERR_NOEPS_MU;
+    }
+    var low = 0;
+    var high = 1;
+    // Same doubling trick as above to find a good binary search interval.
+    while (true) {
+        var del = muEpsilonToDelta(mu, high);
+        console.log("    → (doubling trick) low = ", low, ", high = ", high, ", del = ", del);
+        if (del < delta) {
+            break;
+        }
+        low = high;
+        high = high*2;
+    }
+    while (true) {
+        var mid = low/2 + high/2;
+        var del = muEpsilonToDelta(mu, mid);
+        console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
+        if (closeEnough(del, delta)) {
+            return mid;
+        }
+        if (mid == low || mid == high) {
+            console.log("muDeltaToEpsilon: mu = ", mu, ", delta (target) = ", delta);
+            console.log("Binary search ended without finding a good candidate. low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
+            return ERR_APPROX;
+        }
+        if (del < delta) {
+            high = mid;
+        } else {
+            low = mid;
+        }
+    }
+}
+const epsilonDeltaToMu = function (epsilon, delta) {
+    var low = 0;
+    var high = 1;
+    // There is no easy upper bound here, so we just find one empirically.
+    while (true) {
+        console.log(low, high, muEpsilonToDelta(high, epsilon));
+        del = muEpsilonToDelta(high, epsilon);
+        if (del == ERR_EPSTOOLARGE) {
+            console.log("epsilonDeltaToMu: epsilon = ", epsilon, ", delta (target) = ", delta);
+            console.log("Doubling trick failed. low = ", low, ", high = ", high, ", del = ", del);
+            return ERR_EPSTOOLARGE;
+        }
+        if (del > delta) {
+            break;
+        }
+        low = high;
+        high = high*2;
+    }
+    tol = 1e-6
+    while (true) {
+        var mid = low/2 + high/2;
+        var del = muEpsilonToDelta(mid, epsilon);
+        console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
+        if (closeEnough(del, delta)) {
+            return mid;
+        }
+        if (mid == low || mid == high) {
+            console.log("epsilonDeltaToMu: epsilon = ", epsilon, ", delta (target) = ", delta);
+            console.log("Binary search failed. low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
+            return ERR_APPROX;
+        }
+        if (del > delta) {
+            high = mid;
+        } else {
+            low = mid;
+        }
+    }
+}
+
+var gaMu = document.getElementById('ga-mu');
+var gaEps = document.getElementById('ga-epsilon');
+var gaDel = document.getElementById('ga-delta');
+var errorGA = document.getElementById('error-ga');
+var resetallGA = document.getElementById('resetall-ga');
+resetallGA.addEventListener('click', function (event) {
+    gaEps.value = '';
+    gaDel.value = '';
+    gaMu.value = '';
+    errorGA.innerHTML = '';
+});
+var resetlastGA = document.getElementById('resetlast-ga');
+var lastGA = gaMu;
+resetlastGA.addEventListener('click', function (event) {
+    lastGA.value = '';
+});
+var calculateGA = document.getElementById('calculate-ga');
+calculateGA.addEventListener('click', function (event) {
+    var mu = gaMu.value;
+    var eps = gaEps.value;
+    var del = gaDel.value;
+    if ((mu !== '' && mu <= 0) || (eps !== '' && eps <= 0) || (del !== '' && del <= 0)) {
+        errorGA.innerHTML = positive;
+        return;
+    }
+    if (del !== '' && (del == 0 || del >= 1)) {
+        errorGA.innerHTML = deltaone;
+        return;
+    }
+    if (mu !== '' && eps !== '' && del === '') {
+        errorGA.innerHTML = '';
+        d = muEpsilonToDelta(Number(mu), Number(eps));
+        if (d == ERR_EPSTOOLARGE) {
+            errorGA.innerHTML = epstoolarge;
+            return;
+        }
+        if (d == ERR_TOOSMALL) {
+            errorGA.innerHTML = toosmall;
+            return;
+        }
+        if (d == ERR_APPROX) {
+            errorGA.innerHTML = approx;
+            return;
+        }
+        gaDel.value = format(d);
+        lastGA = gaDel;
+        return;
+    }
+    if (mu !== '' && eps === '' && del !== '') {
+        errorGA.innerHTML = '';
+        e = muDeltaToEpsilon(Number(mu), Number(del));
+        if (e == ERR_NOEPS_MU) {
+            errorGA.innerHTML = noeps_mu;
+            return;
+        }
+        if (e == ERR_APPROX) {
+            errorGA.innerHTML = approx;
+            return;
+        }
+        gaEps.value = format(e);
+        lastGA = gaEps;
+        return;
+    }
+    if (mu === '' && eps !== '' && del !== '') {
+        errorGA.innerHTML = '';
+        m = epsilonDeltaToMu(Number(eps), Number(del));
+        if (m == ERR_EPSTOOLARGE) {
+            errorGA.innerHTML = epstoolarge;
+            return;
+        }
+        if (m == ERR_APPROX) {
+            errorGA.innerHTML = approx;
+            return;
+        }
+        gaMu.value = format(m);
+        lastGA = gaMu;
+        return;
+    }
+    errorGA.innerHTML = twoparams;
+});
+var infoGA = document.getElementById('info-ga');
+infoGA.addEventListener('click', function (event) {
+    infotextGA = document.getElementById('infotext-ga');
+    infotextGA.style.display = 'inline';
+});
+</script>
+
+<h4 id="gaussian-dp-to-zero-concentrated-dp">Gaussian DP to zero-concentrated DP</h4>
+<p>If a mechanism satisfies <span class="math">\(\mu\)</span>-Gaussian DP with
+<span class="math">\(\mu=\)</span> <input type="number" step="any" id="gzc-mu">, then it also
+satisfies <span class="math">\(\rho\)</span>-zero-concentrated DP with
+<span class="math">\(\rho=\)</span> <input type="number" step="any" id="gzc-rho">.
+<strong>The converse is not true.</strong></p>
+<p><button value="Reset all" id="resetall-gzc"> Reset all </button>
+<button value="Reset last" id="resetlast-gzc"> Reset last </button>
+<button value="Calculate" id="calculate-gzc"> Calculate </button>
+<span class="error-msg" id="error-gzc"></span></p>
+<p><button value="Info" id="info-gzc"> More info </button>
+<span id="infotext-gzc" style="display: none">
+The conversion formula, <span class="math">\(\rho=\mu^2/2\)</span>, is an immediate consequence from
+Corollary B.6 in <a href="https://arxiv.org/abs/1905.02383">this paper</a>.
+</span></p>
+<script type="text/javascript">
+const muToRho = function (mu) {
+    return mu*mu/2;
+}
+const rhoTomu = function (rho) {
+    return Math.sqrt(2*rho);
+}
+var gzcMu = document.getElementById('gzc-mu');
+var gzcRho = document.getElementById('gzc-rho');
+var errorGZC = document.getElementById('error-gzc');
+var resetallGZC = document.getElementById('resetall-gzc');
+resetallGZC.addEventListener('click', function (event) {
+    gzcMu.value = '';
+    gzcRho.value = '';
+    errorGZC.innerHTML = '';
+});
+var resetlastGZC = document.getElementById('resetlast-gzc');
+var lastGZC = gzcRho;
+resetlastGZC.addEventListener('click', function (event) {
+    lastGZC.value = '';
+});
+var calculateGZC = document.getElementById('calculate-gzc');
+calculateGZC.addEventListener('click', function (event) {
+    var mu = gzcMu.value;
+    var rho = gzcRho.value;
+    if ((mu !== '' && mu <= 0) || (rho !== '' && rho <= 0)) {
+        errorGZC.innerHTML = positive;
+        return;
+    }
+    if (mu !== '' && rho === '') {
+        gzcRho.value = format(muToRho(Number(mu)));
+        errorGZC.innerHTML = '';
+        lastGZC = gzcRho;
+        return;
+    }
+    if (mu === '' && rho !== '') {
+        gzcMu.value = format(rhoTomu(Number(rho)));
+        errorGZC.innerHTML = '';
+        lastGZC = gzcMu;
+        return;
+    }
+    errorGZC.innerHTML = oneparam;
+});
+var infoGZC = document.getElementById('info-gzc');
+infoGZC.addEventListener('click', function (event) {
+    infotextGZC = document.getElementById('infotext-gzc');
+    infotextGZC.style.display = 'inline';
+});
+</script>
+
+<h4 id="frequently-asked-questions">Frequently asked questions</h4>
+<p style="text-indent: 0em"><strong>What are all these weird
+definitions?</strong></p>
+<ul>
+<li>Pure DP is the name of the original definition of differential privacy. Check
+  out this <a href="friendly-intro-to-differential-privacy.html">blog post series</a> for a friendly introduction to the
+  field.</li>
+<li>Approximate DP introduces an additional parameter that allows for a small
+  chance of privacy failure. Previous blog posts of mine explain <a href="almost-differential-privacy.html">what it can be
+  used for</a>, and provide a <a href="privacy-loss-random-variable.html">more precise characterization</a> of the
+  guarantee provided by this definition.</li>
+<li>Zero-concentrated DP gives a bound on the average privacy loss, for many kinds
+  of average at once. You can read more about it in <a href="renyi-dp-zero-concentrated-dp.html">this blog post</a>.</li>
+<li>Gaussian DP asserts that the privacy loss of a mechanism is bounded by the
+  privacy loss of a Gaussian mechanism with certain parameters. It is a special
+  case of a larger class of definitions called <span class="math">\(f\)</span>-DP, introduced in <a href="https://arxiv.org/abs/1905.02383">this
+  paper</a>.</li>
+</ul>
+<p style="text-indent: 0em"><strong>Are there conversion results in the
+reverse direction?</strong></p>
+<ul>
+<li>Converting from zero-concentrated DP to pure DP is impossible.</li>
+<li>Converting from approximate DP to zero-concentrated DP or to Gaussian DP is
+  also impossible (unless <span class="math">\(\delta=0\)</span>).</li>
+<li>Converting from zero-concentrated DP to Gaussian DP seems like it should be
+  possible, but I don't know of any existing result in the literature.</li>
+</ul>
+<p style="text-indent: 0em"><strong>How do you deal with floating-point
+issues?</strong></p>
+<p>The short answer is "not in a very robust way, don't do this in production".</p>
+<p>The long answer is that I did somewhat of an effort to detect and avoid
+numerical stability issues, but all the math is still done in floating-point
+space, so there will be approximations errors, and rounding is not done in
+conservative directions. Here is an overview of what I did for each formula.</p>
+<ul>
+<li>For pure DP to zero-concentrated DP, and for Gaussian DP to zero-concentrated
+  DP, the formulas are pretty simple, so I didn't do anything special.</li>
+<li>For zero-concentrated DP to approximate DP, there is one main failure mode:
+  the conversion formula can return a <span class="math">\(\delta\)</span> that is so small that it rounds
+  to zero. The code checks that this doesn't happen and returns an error if it
+  does.</li>
+<li>The conversion from Gaussian DP to approximate DP is surprisingly tricky.
+  First, the CDF of the Gaussian distribution, a critical building block of the
+  conversion formula, is difficult to compute in an accurate way. I use the
+  technique introduced in <a href="https://dx.doi.org/10.2139/ssrn.4487559">this paper</a>
+  to get a good approximation. Then, multiple things can go wrong.<ol>
+<li>There's a multiplication by <span class="math">\(e^\varepsilon\)</span> in the formula, so this can
+   easily become <span class="math">\(+\infty\)</span> in floating-point space if <span class="math">\(\varepsilon\)</span> is
+   large. The code returns an error if it happens<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>.</li>
+<li>For some parameters combinations, <span class="math">\(\delta\)</span> can round down to zero. The
+   code checks that this doesn't happen and returns an error if it does.</li>
+<li>The formula requires computing the difference between two terms <span class="math">\(a\)</span> and
+   <span class="math">\(b\)</span>, where <span class="math">\(a\)</span> can be very close to <span class="math">\(b\)</span>. This can be very imprecise when
+   done in floating-space. I'm not sure whether this <em>can</em> happen in this
+   context, but if it does, the code should catch the problem and return an
+   error.</li>
+</ol>
+</li>
+</ul>
+<p>In addition, a number of these conversions are implemented using a binary
+search. The code checks that the result of the binary search is "close enough"
+to the target value, and returns an approximation error if it's not.</p>
+<p>This is all still very ad hoc, so for production use cases, I recommend using a
+library that does these conversions using symbolic or arbitrary-precision
+computation, like <a href="https://tmlt.dev">Tumult Analytics</a>.</p>
+<p style="text-indent: 0em"><strong>Why didn't you use symbolic or
+arbitrary-precision computation, then?</strong></p>
+<p>I couldn't find a JavaScript library that had support for all the mathematical
+building blocks I needed.</p>
+<p style="text-indent: 0em"><strong>Why am I getting errors telling me that
+my parameter choices are bad?</strong></p>
+<p>The code contains various validation checks, besides the floating-point stuff
+outlined above. Some of these checks are for fairly obvious issues: all
+parameters must be strictly positive, and <span class="math">\(\delta\)</span> must be smaller than 1. Some
+are for more subtle problems: the conversion from zero-concentrated DP to
+approximate DP only holds for <span class="math">\(\varepsilon\ge\rho\)</span>, which means that some
+conversions are impossible. Similar issues arise for the Gaussian DP to
+approximate DP conversion: <span class="math">\(\mu\)</span>-Gaussian DP implies <span class="math">\((0,\delta)\)</span> for some
+<span class="math">\(\delta\)</span>, so if you specify a smaller <span class="math">\(\delta\)</span> than that, the formula will not
+be able to find a positive <span class="math">\(\varepsilon\)</span>.</p>
+<p>I tried to catch all these possible problems in friendly error messages<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>.
+Please let me know if you encounter an issue that isn't caught by one.</p>
+<p style="text-indent: 0em"><strong>Are you logging anything?</strong></p>
+<p>No. Everything runs locally, in your browser. You can check the source code or
+run this page while completely offline if you'd like to be sure.</p>
+<p>(But please <a href="real-world-differential-privacy.html">publish your privacy
+parameters</a>!)</p>
+<hr>
+<p>I'm grateful to Clément Canonne, Moshe Shenfeld, and Yu-Xiang Wang for helping
+me figure out the right conversion results, very grateful to Yaya D. Dia for
+helping me understand how to compute the formula necessary for Gaussian DP to
+approximate DP conversion in floating-point space, and extra super grateful to
+Thomas Steinke for properly writing up the proof of the tight conversion between
+pure DP and zero-concentrated DP.</p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:1">
+<p>I think I could probably rearrange some of the terms in the formula to
+make it happen less (so, make it work for a wider range of parameters). If
+you need this, please let me know. (Or send me a patch. The source code is
+one right click → "View page source" away.)&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>In total, there are 11 different possible error messages you can get
+across the different converters. You can probably reach 10 of them fairly
+easily. If you manage to reach all 11, please let me know!&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20240602,
+  title = &#123;Converters between differential privacy variants},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/converters-differential-privacy.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2024},
+  month = &#123;06}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="ml-privacy-evaluations.html">← previous</a>
+    </li>
+    <li>
+      <a href="bad-ugly-good-maybe.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Answering the BfDI's questions on personal data in LLMs - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Answering the BfDI's questions on personal data in LLMs - Ted is writing things" />
+  <meta property="twitter:title" content="Answering the BfDI's questions on personal data in LLMs - Ted is writing things" />
+  <meta name="description" property="og:description" content="The German data protection authority asked me for my input on technical questions regarding the use of personal data in AI models; here are my answers." />
+  <meta property="twitter:description" content="The German data protection authority asked me for my input on technical questions regarding the use of personal data in AI models; here are my answers." />
+  <meta property="summary" content="The German data protection authority asked me for my input on technical questions regarding the use of personal data in AI models; here are my answers." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/bfdi-consultation.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/bfdi-consultation.png" />
+  <meta property="twitter:image:alt" content="A screenshot of the beginning of the PDF version of the BfDI public consultation on personal data and AI. There is a BfDI logo, indication about date of publication (10 July 2025) and deadline for comments (31 August 2025), a title ("Consultation on the data protection-compliant handling of personal data in AI models of the Federal Commissioner for Data Protection and Freedom of Information"), and the first paragraph ("Background of the consultation AI models, especially large language models (LLMs), are usually trained with enormous amounts of data. This often includes personal data. In its Opinion 28/2024 of 18 December 2024, the European Data Protection Board (EDPB) stated that AI models may contain personal data if they were trained with personal data (often referred to in discourse as memorization)")." />
+  <link rel="canonical" href="https://desfontain.es/blog/bfdi-consultation-ai.html" />
+  <link rel="prev" href="hiding-nemo.html" />
+  <link rel="next" href="five-hard-lessons.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="hiding-nemo.html">← previous</a>
+ —     <a href="five-hard-lessons.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./bfdi-consultation-ai.html">Answering the BfDI's questions on personal data in LLMs</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2025-08-11T00:00:00+02:00">
+      2025-08-11
+    </time>
+    <small>&mdash; updated
+      <time datetime="2025-08-13T00:00:00+02:00">
+        2025-08-13
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><strong>The</strong> German data protection authority (called BfDI, for <em>Bundesbeauftragter
+für den Datenschutz und die Informationsfreiheit</em>, or "Federal Commissioner for
+Data Protection and Freedom of Information") is currently running a <a href="https://www.bfdi.bund.de/EN/BfDI/Konsultationsverfahren/KI-Modelle-pbD/KI-Modelle-pbD_node.html">public
+consultation</a> about personal data in AI models. One of their
+employees reached out to me after reading my <a href="privacy-in-ai.html">blog post</a> on the topic, and
+asked me if I would like to contribute. The questions raised by the BfDI are
+interesting, and it's great that regulators ask technical experts for their
+input. This blog post is a copy of my answers to their questions.</p>
+<blockquote>
+<p><strong>1.</strong> According to Recital 26, sentence 3 of the GDPR, when determining
+whether a natural person is identifiable, account should be taken of all means
+reasonably likely to be used by the controller or by another person to
+identify that natural person, directly or indirectly. Taking into account the
+procedures listed in EDPB Opinion 28/2024, paras. 35 et seq., under what
+circumstances could an LLM be considered anonymous?</p>
+</blockquote>
+<p>By LLM, I assume we're talking about models that use pretty much the entire Web
+as training data. This includes multimodal models that are trained on more than
+just text (but also pictures, videos, audio sources, etc.). This does not
+include models that are only trained on smaller collections of well-structured
+data (like tabular datasets, GPS traces, medical imagery data, etc.).</p>
+<p>This massive pile of unstructured data used to train LLMs includes a <em>lot</em> of
+personal data. This data includes direct identifiers (names, email addresses,
+phone numbers, etc.), but also pseudonyms, and a ton of unstructured stories and
+information that relates to specific people.</p>
+<p>This personal data is a core part of the training set: to get rid of it, one
+first needs to explicitly spell out the criteria that define personal data, in a
+way that a computer can understand. But that's a fractally complex endeavor: the
+same data can be personal or not depending on context entirely outside of the
+scope of the training data itself! For example, an email or a phone number can
+belong to a public entity or a random individual. A description of a person's
+characteristics can be a part of a fictional short story, or it can be written
+by harassment mobs in order to target a real person. A string of numbers can be
+a random timestamp, or it can be a national identification number. Removing
+everything that could plausibly be personal data would severely hurt the
+performance of the LLM (which nobody wants to do), and still would miss a <em>ton</em>
+of edge cases.</p>
+<p>So, a ton of personal data gets into LLMs. These models then memorize a bunch of
+this personal data. This is unavoidable for two reasons: by design, and because
+it seems to be needed for learning.</p>
+<ol>
+<li>LLMs are trying to get as much information about the world as possible, to
+   accurately answer user queries. Some of this means returning personal data!
+   Answering queries like "what job is this person doing", "how old is this
+   celebrity", "who was charged with a crime covered in this press publication",
+   and so on. There's no clear delineation between celebrities and random people
+   (and celebrities deserve some privacy, too). You can't decide what personal
+   data was memorized for a "good" reason, and what should not have been
+   memorized.</li>
+<li>From a scientific standpoint, it sure seems like memorizing verbatim some of
+   the training data is essential for LLMs to be able to generate plausible
+   human language. Researchers don't fully understand this phenomenon yet, but
+   it's been empirically confirmed multiple times over.</li>
+</ol>
+<p>Finally, memorized personal data can be extracted from LLMs. Again, this is
+partly by design: some valid use cases require that. But we also couldn't stop
+it even if we wanted to! Users interact with LLMs in a very unstructured way,
+using natural language. So we hit the same fundamental problem as earlier:
+there's no way to define whether a chatbot answer has personal data in it, or if
+a user is asking an appropriate question to attempt to generate personal data.
+Various mitigations to try and prevent LLMs for doing bad things have very
+limited success, and broadly cannot be relied upon.</p>
+<p>Put all of this together, and you get a straightforward answer: there are no
+realistic circumstances under which LLMs should be considered anonymous data.</p>
+<blockquote>
+<p><strong>2.</strong> What technical measures do you already use or plan to use to prevent
+data memorization (such as deduplication, use of anonymous or anonymized
+training data, fine-tuning without personal data, differential privacy, etc.)?
+What experiences have you had with these?</p>
+</blockquote>
+<p>As mentioned above, preventing data memorization in the original, Web-scale
+training set is both impossible and undesirable. There are measures that can be
+taken at that stage (such as deduplication or more careful data curation) to try
+to limit the scope of the problem, but it won't go away completely. Anonymizing
+unstructured datasets at this scale is impossible.</p>
+<p>What <em>can</em> be done is fine-tuning the model with a well-structured,
+well-understood dataset, and provide privacy guarantees to that additional data.
+This can be done by properly anonymizing this additional dataset before using
+it, or applying techniques like differential privacy during fine-tuning.
+Synthetic data can be a useful tool there, though it's not a silver bullet, and
+it should not automatically be considered anonymous. Here is a diagram from my
+<a href="privacy-in-ai.html">previous blog post</a> about this.</p>
+<p><center>
+<img alt="A diagram about where you can apply robust privacy methods in an LLM context.
+On the left, a cloud is labeled &quot;Big pile of data indiscriminately scraped off
+the Internet&quot;. An arrow labeled &quot;Initial training&quot; goes to a &quot;Massive generic AI
+model&quot;, this arrow is itself labeled &quot;You can't really have robust privacy at
+that stage&quot;. Another arrow labeled &quot;Fine-tuning&quot; goes from the &quot;Massive generic
+AI model&quot; box, towards &quot;AI model fine-tuned to solve a specific task&quot;. This
+arrow receives input from a database icon labeled &quot;Well-understood dataset
+containing personal data&quot;, and has another label &quot;You may be able to robustly
+protect the fine-tuning dataset at this
+stage&quot;." src="https://desfontain.es/blog/images/privacy-in-llms.svg" width="100%">
+</center></p>
+<p>If you use such techniques correctly, you can then say that the LLM is not
+processing personal data from the fine-tuning dataset. This can be useful when
+dealing with particularly sensitive data: maybe you're willing to accept the
+privacy &amp; compliance risk of using off-the-shelf LLMs, but need a stronger
+guarantee for the fine-tuning dataset.</p>
+<blockquote>
+<p><strong>3.</strong> How do you assess the risk of personal data being extracted from an
+LLM? Explain your assessment, if possible, using concrete examples, individual
+cases, or empirical observations.</p>
+</blockquote>
+<p>The only way to get a reasonably good estimate of the practical privacy risk of
+a practical AI system is to have red teaming experts perform a manual audit.
+They might use AI tools during the audit, but having a human in the loop is
+essential: automated solutions can only ever look for pre-existing patterns,
+while human experts can create novel attacks. Real-world attackers can also
+notice and exploit subtle issues at the boundary between the technology and user
+expectations, in a way AI cannot do on its own.</p>
+<p>This is not a very popular answer among AI vendors, who much prefer automated
+solutions. Selling privacy scoring products is a business that can attract VC
+funding and scale exponentially, while human-led audits cannot. And it's very
+easy for LLM providers to optimize their models to pass automated privacy tests,
+even if this does not translate to real-world risk mitigation. Manual audits are
+more expensive and much more likely to identify problematic findings, which also
+take away the ability for LLM providers to claim that they did not know about
+existing issues in their products.</p>
+<p>I also want to challenge the premise of this question. Rather than asking "is it
+possible to extract personal data?", I would suggest treating LLMs as abstracted
+databases that contain personal data by default, and treating their deployment
+accordingly. LLMs are novel technology, but there is no fundamental reason why
+they should be treated differently as any other data structure: their
+development and use should rely on an appropriate legal basis, they should
+implement measures to uphold the fundamental rights of data subjects, bad
+practices should be sanctioned, and so on. Trying to fit LLMs into the
+"anonymous data" box to avoid all that is a cop-out that doesn't really make
+sense from a technical standpoint.</p>
+<blockquote>
+<p><strong>4.</strong> Data protection law is linked to the processing of personal data. Each
+input of a prompt triggers a calculation in the AI model, in which the
+(personal) data represented in the form of parameters influences the
+calculation result. Does this calculation constitute processing of these data
+within the meaning of Article 4 No. 2 GDPR, even if the calculation result,
+i.e., the output of the AI model, is not personal?</p>
+</blockquote>
+<p>Yes.</p>
+<p>Personal data goes into the model. The model is made out of, among other things,
+personal data, memorized verbatim. This personal data gets used every time the
+model is queried. I don't know how you could possibly argue that this does not
+constitute, by definition, processing of personal data.</p>
+<p>AI vendors have argued that the data inside of an LLM is very obfuscated, so
+it's not <em>really</em> used, and therefore it doesn't count. This makes not sense to
+me. First, all the empirical evidence around memorization and extraction attacks
+shows that this obfuscation is clearly not a reliable security or privacy
+control. Second, if this were true, then it would be possible to remove that
+data from the training set without hurting the model's performance — exactly the
+opposite of what the current scientific consensus suggests.</p>
+<blockquote>
+<p><strong>5.</strong> Do you already have experience with methods that estimate the amount
+and type of personal data memorized, or whether the AI model used contains
+personal data of a specific individual (e.g., privacy attacks/PII extraction
+attacks, etc.)? If so, how do you assess their informative value and possible
+limitations?</p>
+</blockquote>
+<p>My experience with this mainly includes reviewing reports and scientific papers
+from people who performed such audits. My two major takeaways from this line of
+work are as follows:</p>
+<ol>
+<li>Memorization is a critical component of how AI models operate, grows with the
+   size and complexity of the model, and nothing suggests that it is going to go
+   away in future generations of models.</li>
+<li>Attacks keep getting better over time, so this kind of work can only ever
+   tell us that a model has memorized <em>at least</em> this much personal data. One
+   should always assume that a better attack could come around and show higher
+   amounts of memorization and extraction.</li>
+</ol>
+<blockquote>
+<p><strong>6.</strong> What is the amount of personal memorized data in AI models you know (as
+a percentage and total amount of training data)?</p>
+</blockquote>
+<p>I understand where this question is coming from, but it's not the right way to
+look at the problem. There's no way to clearly define what constitutes "personal
+data" in a massive unstructured dataset, and measure this in a meaningful way.</p>
+<p>I also don't think that such a quantified framing is appropriate to evaluate
+privacy risk. If you fail to protect 0.01% of people whose data appears in a
+Web-scale dataset, you're putting half a million people at risk. That's bad!
+Further, harms are not uniformly distributed: privacy risk that feels acceptable
+for most people can translate to severe real-world harm for vulnerable
+populations and outliers. This is another reason why I advocate for manual
+audits and engagement with diverse stakeholders, instead of trying to compute
+average scores.</p>
+<blockquote>
+<p><strong>7.</strong> How do you proceed if a person exercises their right to access, rectify
+or erase their personal data in the AI model?</p>
+</blockquote>
+<p>If a person exercises their right to access for an AI model you've trained, you
+should be able to tell them where their information appears in the training
+data, and send them a copy of this data. Doing a keyword search on large
+datasets is a solved problem, so this should be the minimum expected: this might
+not catch all the personal data from this person, but it's at least a similar
+approach than e.g. search engines or archiving services implement. You should
+also tell them that their data may have been memorized by the AI model, though
+this may be difficult to know for sure.</p>
+<p>If a person exercises their right to erasure, you should first do the same thing
+as with the right of access: tell them where their information appears in the
+training data. This way, they can take appropriate steps to remove it going
+forward. Then, in future model training runs, you should take steps to avoid
+using this person's data (even if it still appears somewhere in the Web
+corpus — they might not have succeeded in removing it on their own), for example
+using keyword-based filters.</p>
+<p>This is not a perfect answer: their data might still have been memorized by the
+model, and if that model's weights are public, that data is now on the public
+record. This is not great, and is one of the (many) reasons why current
+practices around LLM training are ethically problematic. But the fact that you
+can't get a perfect solution for this problem does not mean that we should give
+up on trying to uphold data subjects' fundamental rights whenever feasible.</p>
+<p>There's an additional layer to data erasure. LLMs can return information about
+people when queried. This information might be accurate, or get some details
+wrong, or be completely made up. People should be able to ask that it doesn't
+happen, and that LLMs do not return information about them when queried. The
+right approach here is twofold. First, one can take inspiration from the way
+search engines handle data removal requests, and implement these solutions in
+the "retrieval" step of retrieval-augmented generation. Second, one can use
+reinforcement learning to encourage LLMs to treat "this person is in the
+training data but has exercised their right to erasure" in the same way as "this
+person does not appear in the training data". This will inevitably be an
+imperfect approach, but is probably the best one can do.</p>
+<p>If a person exercises their right to rectification, it makes more sense to treat
+it as a right to access request, and offer the possibility to exercise their
+right to erasure instead. Maintaining a list of changes to the original training
+data to rectify personal information would be very complex (what to do when the
+original data changes?) and brittle (what if new data about this person arises
+in the training data at a later point?). And letting people influence what LLMs
+say about them would open major areas for abuse.</p>
+<blockquote>
+<p><strong>8.</strong> From your perspective, are there other aspects that play a role in the
+protection of personal data in AI models?</p>
+</blockquote>
+<p>Interpreting what the law says into technical requirements is an interesting and
+fun intellectual exercise. But it can feel a bit pointless when organizations
+act like they can do whatever they want as long as they use publicly available
+data. There is nothing in the text nor the intent of the GDPR to exclude
+publicly available data from compliance obligations. Quite the opposite, in
+fact: there are both regulatory texts and case law that describe how existing
+stores of public data (like search engines or the Internet Archive) should
+operate. LLM providers should not get a pass simply because they added
+additional layers of math and engineering complexity! But they certainly act
+like they do, be it when it comes to privacy or copyright issues.</p>
+<p>The way to fix that is not by changing the law or publishing additional
+clarification documents — it's by significantly ramping up enforcement,
+increasing the number of investigations and the severity of fines. Using all
+that personal data indiscriminately to train massive models without any real
+compliance story nor any regard for people's fundamental rights… That was never
+really acceptable to begin with. I find it disappointing that regulators seem to
+be trying to retroactively make it work within existing legislative frameworks,
+as opposed to focusing on enforcing the law. I hope this changes, and that we
+see stricter enforcement actions going forward.</p>
+<hr>
+<p><small>Thanks to Aleatha Parker-Wood, Antoine Amarilli, Conan Dooley, and Daniel
+Simmons-Marengo for their helpful feedback on earlier versions of this
+post.</small></p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20250811,
+  title = &#123;Answering the BfDI's questions on personal data in LLMs},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/bfdi-consultation-ai.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2025},
+  month = &#123;08}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="hiding-nemo.html">← previous</a>
+    </li>
+    <li>
+      <a href="five-hard-lessons.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

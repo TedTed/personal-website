@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Differential privacy in practice (easy version) - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Differential privacy in practice (easy version) - Ted is writing things" />
+  <meta property="twitter:title" content="Differential privacy in practice (easy version) - Ted is writing things" />
+  <meta name="description" property="og:description" content="How to add differentially private magic to your statistics, in the easy cases: counts, sums, averages, histograms…" />
+  <meta property="twitter:description" content="How to add differentially private magic to your statistics, in the easy cases: counts, sums, averages, histograms…" />
+  <meta property="summary" content="How to add differentially private magic to your statistics, in the easy cases: counts, sums, averages, histograms…" />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/differential-privacy-in-practice.html" />
+  <link rel="prev" href="part-time-phd.html" />
+  <link rel="next" href="personal-open-access-policy.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="part-time-phd.html">← previous</a>
+ —     <a href="personal-open-access-policy.html">next →</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./differential-privacy-in-practice.html">Differential privacy in practice (easy version)</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2018-11-22T00:00:00+01:00">
+      2018-11-22
+    </time>
+    <small>&mdash; updated
+      <time datetime="2019-02-20T00:00:00+01:00">
+        2019-02-20
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p><small>
+<span class='notlettrine'>T</span>his post is part of a <a href="friendly-intro-to-differential-privacy.html">series on differential
+privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to see the other
+articles!</p>
+<p></small></p>
+<hr>
+<p><span class='lettrine'>P</span><strong>reviously</strong>, we saw that differential privacy
+was <a href="differential-privacy-awesomeness.html">pretty awesome</a>, and we looked at the <a href="differential-privacy-in-more-detail.html">formal definition</a>. Now, how do we
+obtain it in practice? Let's start with the basics.</p>
+<h1 id="counting-unique-users">Counting unique users <a name="counting-unique-users"></a></h1>
+<p>Suppose you have a database, and you want to publish how many people in there
+satisfy a given condition. Say, how many have green eyes? Even if you have many
+people in your database, you can't just publish the true answer. Let's take a
+moment to understand why. </p>
+<p>With differential privacy, we assume that the attacker knows <em>almost all
+elements</em>. They only have uncertainty about their target. Say they want to know
+whether their target has green eyes. If you output the real number <span class="math">\(k\)</span>, they can
+compare it with the number of people with green eyes among the people they know.
+If it's <span class="math">\(k-1\)</span>, then the target has green eyes. If it's <span class="math">\(k\)</span>, then the target does
+not.</p>
+<p>So, what do we do? We compute the exact answer, and we add <em>noise</em>. This noise
+will come from a probability distribution called the <a href="https://en.wikipedia.org/wiki/Laplace_distribution"><em>Laplace
+distribution</em></a>. This distribution has a parameter, its <em>scale</em>, which
+determines how "flat" it is. It looks like this:</p>
+<p><center>
+<img alt="Graph showing a Laplace distribution with scale 1/ln(3), centered on 0" src="https://desfontain.es/blog/images/laplace-ln-3.svg">
+</center></p>
+<p>So, to get <span class="math">\(\varepsilon\)</span>-differential privacy, we pick a random value according
+to <span class="math">\(\text{Laplace}(1/\varepsilon)\)</span>, and we add this noise to the real value. Why
+does it work? Let's look at the distribution of the number we return, depending
+on whether the true count is <span class="math">\(k=1000\)</span> (blue line, the target doesn't have green
+eyes) or <span class="math">\(k=1001\)</span> (yellow line, the target has green eyes).</p>
+<p><center>
+<img alt="Graph showing two Laplace distributions with scale 1/ln(3), centered on 1000 and 1001" src="https://desfontain.es/blog/images/two-laplace-ln-3.svg">
+</center> </p>
+<p>Let's say the real number is <span class="math">\(k=1001\)</span>, and after adding noise, we published
+<span class="math">\(1003\)</span>. Let's put ourselves in the attacker's shoes. What's the likelihood that
+the original number was <span class="math">\(1001\)</span> vs. <span class="math">\(1000\)</span>? The hypothesis "<span class="math">\(k=1001\)</span>" is a bit
+more likely: generating a noise of <span class="math">\(2\)</span> is more likely than a noise of <span class="math">\(3\)</span>. How
+much more likely? It turns out that the <em>ratio</em> between these likelihoods is…
+<span class="math">\(e^\varepsilon\)</span>! So the <a href="differential-privacy-in-more-detail.html#definition">ratio of probabilities</a> of differential privacy
+is satisfied.</p>
+<p>This works no matter what the output is: the ratio will always be between
+<span class="math">\(e^\varepsilon\)</span> and <span class="math">\(e^{-\varepsilon}\)</span>. If you want to double-check, you can
+either verify it on the graph, or do the <a href="https://en.wikipedia.org/wiki/Laplace_distribution">math</a>.</p>
+<h1 id="counting-things">Counting things <a name="counting-things"></a></h1>
+<p>OK, so counting unique users was pretty easy. Counting things must also be
+straightforward, right? Let's say you have a database of suggestions that people
+sent to your company using a feedback form. You want to publish the number of
+suggestions you received on a given day. Meanwhile, the attacker wants to get an
+idea of how many complaints their target published.</p>
+<p>What's different about the previous scenario? Can't we just add noise picked
+from <span class="math">\(\text{Laplace}(1/\varepsilon)\)</span> and get <span class="math">\(\varepsilon\)</span>-differential privacy?
+There's a catch: what if someone sent more than one complaint during one day?
+Let's say someone was super unhappy and sent <em>five</em> complaints. The other 1000
+customers sent one complaint each. The influence of this one disgruntled
+customer will be larger than before. The two distributions now look like this:</p>
+<p><center>
+<img alt="Graph showing two Laplace distribution with scale 1/ln(3), centered on 1000 and 1005" src="https://desfontain.es/blog/images/two-laplace-ln-3-interval-5.svg">
+</center></p>
+<p>The difference between the curves is much larger than before. Their ratio is at
+most <span class="math">\(e^{5\varepsilon}\)</span>, so using a parameter of <span class="math">\(1/\varepsilon\)</span> only gives
+<span class="math">\(5\varepsilon\)</span>-differential privacy. To fix this, we need to add more noise. How
+much more? It depends on the <em>maximum contribution</em> of one individual user. If
+the maximum amount of complaints in one day is 5, you must add 5 times the
+amount of noise. In this example, using <span class="math">\(\text{Laplace}(5/\varepsilon)\)</span> would
+give you <span class="math">\(\varepsilon\)</span>-differential privacy.</p>
+<p><a name="laplace"></a>
+<center>
+<img alt="Graph showing two Laplace distribution with scale 5/ln(3), centered on 1000 and 1005" src="https://desfontain.es/blog/images/two-laplace-5-ln-3.svg">
+</center></p>
+<p>Note that you can't fully automate this process: you need to know what the
+largest contribution can be. A human, with some knowledge over the process, must
+make a judgment call. In our case, this could be "users won't post more than
+five complaints per day".</p>
+<p>What happens if that judgment call is wrong, and a user later decides to post 10
+complaints in one day? To preserve the desired level of privacy, you need to
+<em>clamp</em> all values to the estimated maximum. In other words, for this outlier
+user, you would only count 5 complaints in the non-noisy sum. </p>
+<p>This process can introduce unexpected bias in the data. So, be careful when
+estimating the largest contribution! If clamping only happens very rarely, you
+should be fine.</p>
+<h1 id="summing-or-averaging-numbers">Summing or averaging numbers</h1>
+<p>Let's say each of your users gives your customer service a rating, between -10
+and 10. You want to release the average rating. Computing an average is pretty
+much the same as computing a sum — add all ratings, then divide by the number of
+users<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. So, what do we do to the sum to achieve differential privacy?</p>
+<p>Among all rating options, we only have to consider the worst possible case. How
+far can the two noise curves be from each other? If the values are all between
+-10 and 10, the greatest possible difference is <span class="math">\(10-(-10)=20\)</span>. It happens when
+the attacker tries to determine whether a user voted -10 or 10.</p>
+<p>Like in the previous example, you have to add noise of <span class="math">\(Laplace(20/\varepsilon)\)</span>
+to get <span class="math">\(\varepsilon\)</span>-differential privacy. And just as before, you need to check
+that each value is between your theoretical minimum and maximum. If you find an
+anomalous value, e.g. lower than the minimum, you need to <em>clamp</em> it to the
+minimum before adding it to the sum.</p>
+<p>In some cases, estimating these minimum or maximum values is difficult. For
+example, if you're computing the average salary in a large group of people, how
+should you estimate the upper salary limit? I don't see that problem as a
+usability flaw of differential privacy. Rather, it suggests that averages are
+not a meaningful metric in the presence of outliers. Removing these outliers is
+a good idea for both accuracy and privacy :-)</p>
+<h1 id="releasing-many-things-at-once">Releasing many things at once <a name="many-things"></a></h1>
+<p>OK. What if you don't want to release only one statistic, but many of them? Can
+you add noise to each of them and be fine? Well… it depends. The main question
+you have to ask yourself is: <em>what is the maximum influence of one individual</em>?
+There are two distinct possibilities.</p>
+<h2 id="statistics-are-about-different-people">Statistics are about different people</h2>
+<p>Suppose you want to release the number of users you have depending on their age
+ranges: 20-29, 30-39, 40-49, etc. <a name="histogram"></a></p>
+<p>Each user will have an influence in at most <em>one</em> of these categories. Either
+someone is in a given age range, either they're in another one. This situation
+often appears when you're trying to release a <em>histogram</em>:</p>
+<p><center>
+<img alt="Histogram of fake data showing a number of people by age range" src="https://desfontain.es/blog/images/histogram.svg">
+</center></p>
+<p>When you're in this case, you can safely add Laplace noise of scale
+<span class="math">\(1/\varepsilon\)</span> to each bucket count. There is no problematic interaction
+between buckets. Releasing the entire histogram is still
+<span class="math">\(\varepsilon\)</span>-differentially private.</p>
+<p><center>
+<img alt="Noised version of the previous histogram, some bars have changed slightly" src="https://desfontain.es/blog/images/noised-histogram.svg">
+</center></p>
+<p>Pretty easy, right? Note that this histogram looks a bit weird: the counts are
+not integers, and one count ended up being negative! We can make it a bit less
+suspicious, by rounding all counts and replacing all negative numbers by 0.</p>
+<p><center>
+<img alt="&quot;Cleaned&quot; version of the previous histogram, all values are now positive integers" src="https://desfontain.es/blog/images/cleaned-noised-histogram.svg">
+</center></p>
+<p><a name="post-processing"></a>This type of <em>post-processing</em> is allowed, thanks
+to a nifty property of differential property. If you take differentially private
+data, and make it go through a fixed transformation, you still get differential
+privacy<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>. Convenient!</p>
+<h2 id="one-person-is-in-multiple-statistics">One person is in multiple statistics <a name="multiple-statistics"></a></h2>
+<p>OK, what if you're releasing multiple statistics, but this time, they might all
+be about the same user? Let's say that you want to publish how many of your
+users…</p>
+<ul>
+<li>are younger than 35;</li>
+<li>are using an iOS device;</li>
+<li>are colorblind;</li>
+<li>have started using your app less than a month ago.</li>
+</ul>
+<p>The same user could be in all those categories! In this scenario, you can't add
+Laplace noise of scale <span class="math">\(1/\varepsilon\)</span> to each count and get
+<span class="math">\(\varepsilon\)</span>-differential privacy. Instead, you have to consider each count as
+a separate data release. Thus, if you have <span class="math">\(C\)</span> different counts, you have to add
+Laplace noise of scale <span class="math">\(C/\varepsilon\)</span> to each of them. Each independent release
+will be <span class="math">\(\varepsilon/C\)</span>-differentially private. And we can now use the
+<a href="differential-privacy-awesomeness.html#composition">composition</a> property of differential privacy! This allows us to conclude that
+the entire release is <span class="math">\(\varepsilon\)</span>-differentially private.</p>
+<p>This works for any kind of statistics, not just unique counts. Want to release
+several pieces of information? Count the maximum influence of one single person,
+and "split" your <span class="math">\(\varepsilon\)</span> between each data release. This <span class="math">\(\varepsilon\)</span> is
+called your <em>privacy budget</em>: you choose <span class="math">\(\varepsilon_1\)</span>, …, <span class="math">\(\varepsilon_C\)</span>
+whose sum is <span class="math">\(\varepsilon\)</span>, and you release the <span class="math">\(i\)</span>-th statistic with
+<span class="math">\(\varepsilon_i\)</span>-differential privacy. This solution is more flexible than simply
+using <span class="math">\(\varepsilon/C\)</span>-differential privacy on each statistic. If one statistic
+is more important, or more sensitive to noise, you can attribute more budget for
+it. The larger the budget portion, the lower the noise. Of course, you will have
+to add more noise to the other values.</p>
+<h1 id="traps-to-avoid">Traps to avoid</h1>
+<p>The mechanisms we saw today are pretty straightforward. But anonymization is
+full of traps: there are still a number of things that can go wrong.</p>
+<ul>
+<li>When summing or averaging numbers, <em>clamping</em> them to the minimum and maximum
+  is essential. Otherwise, all guarantees fly out the window.</li>
+<li>Pay attention how you implement this clamping in practice. Special values like
+  <code>NaN</code> can lead to surprising behavior.</li>
+<li>Of course, you're not allowed to cheat. You have to choose your privacy
+  strategy in advance, then apply it, and release the noisy data. You can't
+  double-check that it's accurate enough. Otherwise, you skew the randomness,
+  and you lose the privacy guarantees.</li>
+<li>When releasing histograms, it's important to choose each category <em>in
+  advance</em>. If you have to look at your data to know what your categories are,
+  you have to use more subtle methods. </li>
+</ul>
+<p>This last point is often a problem in practice. For example, say that you want
+to count how many times each word was used in customer complaints. You can't
+make a definite word list: people could use words that you didn't predict, or
+make typos. In that case, the technique I described for histograms doesn't work. </p>
+<p>Why doesn't it work? How to fix this? All this, and more, in the <a href="almost-differential-privacy.html">next article</a>!
+Or you can also head over to the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> of this blog post
+series to pick what to read next.</p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:1">
+<p>If you want to be extra pedantic, you might also want to add noise to your
+  total number of users. That depends on the flavor of definition that you
+  choose. I'm not going to that level of detail here, and you probably shouldn't
+  either.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>If you're wondering why this is true, here's a super short proof. If
+  there was a post-processing function that would break the differential privacy
+  property… The attacker could run it too, and distinguish between two outcomes.
+  But it's impossible, because differential privacy forbids it :-)&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20181122,
+  title = &#123;Differential privacy in practice (easy version)},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/differential-privacy-in-practice.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2018},
+  month = &#123;11}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="part-time-phd.html">← previous</a>
+    </li>
+    <li>
+      <a href="personal-open-access-policy.html">next →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

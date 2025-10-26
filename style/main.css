@@ -1,0 +1,156 @@
+body {
+    font-family: Monospace;
+    background-color: black;
+    color: white;
+    text-align: center;
+    margin: 0;
+    overflow-y: scroll;
+}
+
+/* Adapting the menu colors to the dark theme. */
+
+#menuGlobal {
+    font-size: 1.1em;
+}
+
+#menuGlobal td {
+    border-color: white;
+    background: #424242;
+}
+
+#menuGlobal, #menuGlobal a {
+    color: #ccc;
+}
+
+#menuGlobal a:hover, #menuGlobal a:active {
+    color: white;
+}
+
+/
+
+a {
+    text-decoration: underline;
+    color: #e0f8fa;
+}
+a:hover {
+    text-decoration: none;
+    color: #e0f8fa;
+}
+a:visited {
+    text-decoration: underline;
+    color: #c3f2f6;
+}
+
+
+#chargement
+{
+    font-size: 1.4em;
+}
+
+#barreHaut
+{
+    padding-top: 7px;
+    font-size: 1.2em;
+}
+
+
+#carte
+{
+    position: relative;
+    z-index: 1;
+    font-size: 1.2em;
+}
+
+#menu
+{
+    /*
+    width: 50%;
+    height: 50%;
+    overflow: auto;
+    margin: auto;
+    position:absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    */
+    background-color: #171717;
+    position: absolute;
+    display: none;
+    top: 10%;
+    z-index: 42;
+    font-size: 1.2em;
+}
+
+#joueur
+{
+    background-color: white;
+    color: black;
+}
+
+#inventaire
+{
+    position: relative;
+    z-index:1;
+    font-size: 1.2em;
+}
+
+#footer
+{
+    font-size: 1em;
+    color: white;
+}
+
+
+.blue
+{
+    color: blue;
+}
+
+.lightblue
+{
+    color: #8afeff;
+}
+
+.gray
+{
+    color: gray;
+}
+
+.lightgray
+{
+    color: #c2b3ba;
+}
+
+.red
+{
+    color: red;
+}
+
+.brown
+{
+    color: #a35714;
+}
+
+.lightbrown
+{
+    color: #c6a886;
+}
+
+.yellow
+{
+    color: yellow;
+}
+
+.green
+{
+    color: green;
+}
+
+.purple
+{
+    color: purple;
+}
+
+
+#bugs
+{
+    font-family: Arial, Verdana;
+}

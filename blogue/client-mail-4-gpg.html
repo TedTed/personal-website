@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Gérer ses mails en local : étape 4, tout chiffrer avec GPG ! - Ted écrit des trucs</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="archives.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blogue/" type="application/rss+xml" rel="alternate" title="Ted écrit des trucs - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Gérer ses mails en local : étape 4, tout chiffrer avec GPG ! - Ted écrit des trucs" />
+  <meta property="twitter:title" content="Gérer ses mails en local : étape 4, tout chiffrer avec GPG ! - Ted écrit des trucs" />
+  <meta name="description" property="og:description" content="On rend notre client mail capable de recevoir et d'envoyer des messages chiffrés." />
+  <meta property="twitter:description" content="On rend notre client mail capable de recevoir et d'envoyer des messages chiffrés." />
+  <meta property="summary" content="On rend notre client mail capable de recevoir et d'envoyer des messages chiffrés." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blogue/client-mail-4-gpg.html" />
+  <link rel="prev" href="client-mail-0-introduction.html" />
+  <link rel="next" href="que-font-les-thesards-en-maths.html" />
+  <style type="text/css">
+    <!--
+        span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Aller vers le contenu" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+              ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+              <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious-fr.html"> Présentation <img src="../flag-france.gif" alt=""/></a>
+          <a href="../serious.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-france.gif" alt=""/>
+          <a href="../blog/index.html"><img src="../flag-uk.png" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recettes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="feed.xml">rss</a> —
+            <a href="archives.html">archives</a>
+          </span>
+          <span class="droite">
+            <a href="offlineimap-mbsync.html"
+                 title="Passer d'OfflineIMAP à isync/mbsync">← précédent</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted écrit des trucs</span>
+      </a></h1>
+      Sur des sujets en lien avec la vie privée, ou parfois pas.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./client-mail-4-gpg.html">Gérer ses mails en local : étape 4, tout chiffrer avec GPG !</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2014-06-25T00:00:00+02:00">
+      2014-06-25
+    </time>
+    <small>&mdash; modifié le
+      <time datetime="2015-04-27T00:00:00+02:00">
+        2015-04-27
+      </time>
+    </small>
+  </footer>
+  <div>
+    <p>Ce billet fait partie d'une série d'articles présentant la façon dont je gère
+mes mails en local. Si vous êtes arrivés là sans lire l'introduction, c'est
+probablement une bonne idée de commencer par le début =)</p>
+<ul>
+<li>Étape 0 : <a href="client-mail-0-introduction.html">Introduction</a></li>
+<li>Étape 1 : <a href="client-mail-1-offlineimap.html">Synchronisation IMAP avec
+  OfflineIMAP</a></li>
+<li>Étape 2 : <a href="client-mail-2-msmtp.html">Envoi d'e-mails avec msmtp et msmtpq</a></li>
+<li>Étape 3 : <a href="client-mail-3-mutt.html">Configuration de mutt</a></li>
+<li>Étape 3 bis : <a href="client-mail-3bis-mutt.html">Dose supplémentaire de mutt</a></li>
+<li>Étape 4 : Chiffrement et signature avec PGP ← vous êtes ici !</li>
+</ul>
+<hr>
+<p><span class='lettrine'>N</span><strong>otre</strong> configuration, jusqu'ici, n'est pas très
+sécurisée. Le problème principal est que tous nos mots de passe sont stockés en
+clair sur le disque dur : si quelqu'un y a accès, il peut non seulement lire nos
+mails mais il a un accès direct à notre serveur IMAP et SMTP, tant qu'on ne
+change pas la configuration. On pourrait rétorquer que si l'on fait attention,
+on peut faire en sorte que personne n'ait un accès à la machine ; et dans la
+majorité des situations, avec quelques précautions évidentes - verrouiller
+l'écran de son laptop dès qu'on s'en éloigne, etc. - c'est un argument qui se
+tient. Le problème, c'est que si le disque dur est non chiffré et que quelqu'un
+a un accès physique et prolongé à la machine (par exemple, si on vous l'a volé,
+ou que vous l'avez laissé sans surveillance pendant un temps suffisamment long
+pour laisser le temps à un attaquant de lancer un Live CD), les données seront
+compromises (et l'attaque peut très bien ne laisser quasiment aucune trace).</p>
+<p>Pour résoudre ce problème grave, on va installer GPG (Gnu Private Guard) et
+modifier notre configuration pour planquer les données sensibles. Ça sera par
+ailleurs une excellente occasion pour se servir du même logiciel pour signer
+électroniquement les mails qu'on envoie, et les chiffrer quand c'est possible.</p>
+<p>Si vous n'avez jamais entendu parler d'OpenPGP (le protocole implémenté par
+GnuPG) et que vous ne savez pas du tout ce que c'est qu'une paire de clés
+publique/privée, c'est probablement une bonne idée d'aller lire quelques
+ressources sur le sujet (par exemple, la 
+<a href="https://fr.wikipedia.org/wiki/Cryptographie_asym%C3%A9trique">page Wikipédia</a>
+consacrée au principe de la cryptographie asymétrique). Dans toute la suite, je
+vais supposer que vous comprenez les notions de clé privée, clé publique, et que
+vous comprenez l'idée de base que l'on va implémenter ici.</p>
+<h1 id="premiers-pas">Premiers pas</h1>
+<h2 id="installation">Installation</h2>
+<p>Pour l'installation, on installe GnuPG, ainsi qu'un autre paquet dont on va
+détailler l'utilité plus tard. La commande qui invoque le logiciel est <code>gpg</code>
+mais le nom du paquet est gnupg :</p>
+<div class="highlight"><pre><span></span><code>aptitude install gnupg gnupg-agent pinentry-gtk2
+</code></pre></div>
+
+<p>Ensuite, il faut se créer (au minimum) une paire clé publique / clé secrète si
+l'on veut pouvoir chiffrer quoi que ce soit. Lancez donc la commande :</p>
+<div class="highlight"><pre><span></span><code>gpg --gen-key
+</code></pre></div>
+
+<p>et laissez-vous guider. Les choix par défaut sont en général très bien (même si
+je pense que ça ne coûte pas grand-chose de toujours sélectionner la taille de
+clé la plus grande disponible). On va vous demander une phrase de passe,
+évidemment, parce que si la clé secrète (qui se trouve sur votre disque dur)
+n'est pas elle-même chiffrée, quelqu'un qui vous vole votre disque dur pourra la
+lire et déchiffrer ce qu'il veut avec. Inutile de préciser qu'il faut choisir
+une phrase de passe solide, je recommande pour ça la 
+<a href="https://xkcd.com/936/">méthode XKCD</a> (pour les non-anglophones : quelques (au
+moins quatre) mots aléatoires de la langue française les uns à la suite des
+autres - comme <code>correctchevalbatterieagrafe</code> - forment un mot de passe à la fois
+plus sûr et plus facile à retenir qu'un truc rempli de transformations bizarres
+comme <code>Tr0ub4doUr&amp;3</code>).</p>
+<p>On a notre paire de clés, disons que son identifiant est EA627AA3. On peut
+s'amuser à chiffrer et déchiffrer des documents :</p>
+<div class="highlight"><pre><span></span><code>echo &quot;Encryptons joyeusement un fichier inutile&quot; &gt; inutile.txt
+cat inutile.txt
+gpg --encrypt -r EA627AA3 --armor inutile.txt
+cat document.txt.asc
+gpg --decrypt document.txt.asc
+</code></pre></div>
+
+<p>mais je ne m'étendrais pas sur l'étendue des possibilités de GPG ; ce tutoriel
+cherche juste à expliquer comment se servir en pratique de GPG pour augmenter la
+sécurité de sa configuration. Si vous voulez des informations plus détaillées,
+vous pouvez allez jeter un œil du côté de la
+<a href="https://www.gnupg.org/gph/fr/manual.html">documentation officielle</a>, qui est à
+la fois complète et très lisible (et en français).</p>
+<h2 id="configuration">Configuration</h2>
+<p>GnuPG requiert une quantité assez minime de configuration. Par contre, par
+défaut, il va vous demander votre phrase de passe dès qu'il essaie d'accéder à
+vos clés : en pratique, dès que vous envoyez un mail signé, que vous recevez un
+mail chiffré, ou qu'il tente de déchiffrer un fichier - donc, tout le temps.</p>
+<p>Pour que ça ne soit pas trop pénible, on utilise gpg-agent, qui nécessite un peu
+plus de configuration. Commencez par décommenter la ligne contenant <code>use-agent</code>
+dans le dossier <code>~/.gnupg/gpg.conf</code> (si ce fichier n'existe pas, lancez <code>gpg</code>
+dans un terminal, puis appuyez sur <code>Ctrl-D</code>).</p>
+<p>Puis, créez et éditez le fichier <code>~/.gnupg/gpg-agent.conf</code>, et entrez-y les
+lignes suivantes :</p>
+<div class="highlight"><pre><span></span><code>pinentry-program /usr/bin/pinentry-gtk-2
+default-cache-ttl 43200
+max-cache-ttl 43200
+</code></pre></div>
+
+<p>en remplaçant <code>43200</code> par le temps, en secondes, pendant lequel vous voulez que
+gpg-agent se souvienne de votre phrase de passe (donc la fréquence à laquelle il
+va vous la redemander). Ici, toutes les 12 heures. Pour vérifiez que ça
+fonctionne, lancez la commande suivante dans un terminal :</p>
+<div class="highlight"><pre><span></span><code>eval &quot;$(gpg-agent --daemon)&quot;
+</code></pre></div>
+
+<p>et lancez une commande qui nécessite votre phrase de passe (par exemple,
+chiffrez un fichier quelconque); vous allez pouvoir constater que c'est
+gpg-agent qui s'occupe de vous la demander et que si vous faites ça plusieurs
+fois de suite, il l'aura gardé en mémoire entre deux fois consécutives.</p>
+<h1 id="ne-pas-stocker-ses-mots-de-passe-en-clair">Ne pas stocker ses mots de passe en clair</h1>
+<p>On a pour l'instant des mots de passe en clair dans les configurations de msmtp,
+et de OfflineIMAP. À la place, on va plutôt les stocker dans des fichiers à
+part, qui seront chiffrés. Commencez par créer un répertoire où vous voulez dans
+votre système (<code>~/.mdp</code>, par exemple), c'est là que l'on va les mettre.</p>
+<h2 id="msmtp">msmtp</h2>
+<p>Dans la configuration de msmtp, pour l'instant, on a une ligne qui ressemble à :</p>
+<div class="highlight"><pre><span></span><code>password gungjbhyqunirorraorggre
+</code></pre></div>
+
+<p>supprimez cette ligne, et copiez le mot de passe dans <code>~/.mdp/msmtp</code>, par
+exemple. Il faut que ce fichier contienne votre mot de passe et <em>rien d'autre</em> :
+pas d'espace ni de retour à la ligne. Chiffrez ce fichier, et supprimez-le de
+façon sécurisée :</p>
+<div class="highlight"><pre><span></span><code>cd ~/.mdp/msmtp
+gpg --encrypt -r EA627AA3 --armor msmtp
+shred -z -v msmtp
+</code></pre></div>
+
+<p>maintenant, à la place de la ligne qui contenait votre mot de passe, ajoutez la
+ligne :</p>
+<div class="highlight"><pre><span></span><code>passwordeval gpg --batch -d --use-agent --yes /home/votreidentifiant/.mdp/msmtp.gpg 2&gt;/dev/null
+</code></pre></div>
+
+<p>(évidemment, en changeant « votreidentifiant » par votre nom d'utilisateur).
+Vous êtes en train de lui dire « pour trouver le mot de passe, exécute la
+commande suivante » au lieu de directement « voilà le mot de passe ». À chaque
+fois qu'il va avoir besoin du mot de passe, il va déchiffrer le fichier
+<code>~/.mdp/msmtp.gpg</code>, en utilisant gpg-agent pour ne pas vous demander votre mot
+de passe si il s'en souvient.</p>
+<p>Votre mot de passe SMTP n'est donc plus disponible en clair sur votre disque
+dur, mais mis à part un mot de passe que vous devez rentrer régulièrement (à
+intervalles que vous choisissez), rien n'a changé dans l'utilisation quotidienne
+de msmtp. Si vous utilisez msmtp avec plusieurs comptes différents, n'oubliez
+pas de créer un fichier par mot de passe et de faire les modifications partout,
+bien sûr.</p>
+<h2 id="offlineimap">OfflineIMAP</h2>
+<p>Pour OfflineIMAP, on va faire essentiellement la même chose. Seulement, le
+fichier de configuration n'a pas d'option aussi simple que le <code>passwordeval</code> de
+msmtp, mais permet à la place d'utiliser un script Python. Téléchargez donc 
+<a href=".offlineimap.py">le fichier suivant</a>, enregistrez-le quelque part (par exemple,
+comme <code>~/.offlineimap.py</code>), et rectifiez la ligne contenant <code>votreidentifiant</code>.</p>
+<p>Puis, dans le fichier de configuration d'OfflineIMAP (<code>~/.offlineimaprc</code>),
+ajoutez la ligne</p>
+<div class="highlight"><pre><span></span><code>pythonfile = ~/.offlineimap.py
+</code></pre></div>
+
+<p>dans la section <code>[general]</code>, puis remplacez la ligne <code>remotepass</code> par :</p>
+<div class="highlight"><pre><span></span><code>remotepass = mailpasswd(&quot;offlineimap&quot;)
+</code></pre></div>
+
+<p>en supposant que, de façon similaire à tout à l'heure, vous aviez stocké votre
+mot de passe dans le fichier <code>~/.mdp/offlineimap.gpg</code>. Choisissez des noms plus
+spécifiques si vous gérez plusieurs comptes à la fois, et stockez autant de mots
+de passe que vous voulez de la même façon.</p>
+<h2 id="cron-fait-des-siennes">Cron fait des siennes</h2>
+<p>Si vous êtes arrivés jusque là, tout devrait normalement bien marcher… Sauf
+cron. En effet, on utilise gpg-agent pour mettre la phrase de passe de la clé
+GPG en cache, gpg-agent a besoin de variables d'environnements pour fonctionner,
+et cron n'a pas accès aux mêmes variables d'environnements que vous. Ça engendre
+des situations qui sont un cauchemar à débugger, mais voilà la solution que j'ai
+fini par trouver après avoir sué sang et eau pour faire marcher l'automatisation
+de tout ça.</p>
+<p>Éditez le fichier de configuration de cron avec <code>crontab -e</code>. Commencez par y
+ajouter, au tout début, la ligne :</p>
+<div class="highlight"><pre><span></span><code>DISPLAY=:0
+</code></pre></div>
+
+<p>pour que lorsque gpg-agent aura oublié votre phrase de passe GPG, il sache sur
+quel écran afficher sa petite fenêtre qui va vous la demander. Ensuite, pour
+chacune des lignes où vous invoquez soit offlineimap, soit msmtp (ou
+msmtp-queue), ajoutez au début de la commande :</p>
+<div class="highlight"><pre><span></span><code><span class="o">.</span><span class="w"> </span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">votreidentifiant</span><span class="o">/.</span><span class="n">gpg</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">info</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">export</span><span class="w"> </span><span class="n">GPG_AGENT_INFO</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+</code></pre></div>
+
+<p>par exemple, la commande d'OfflineIMAP de quelques articles en arrière était :</p>
+<div class="highlight"><pre><span></span><code>*/2 <span class="gs">* *</span> * * /usr/bin/offlineimap &gt; /dev/null 2&gt; /dev/null
+</code></pre></div>
+
+<p>et elle va devenir :</p>
+<div class="highlight"><pre><span></span><code><span class="o">*/</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">votreidentifiant</span><span class="o">/.</span><span class="n">gpg</span><span class="o">-</span><span class="n">agent</span><span class="o">-</span><span class="n">info</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">export</span><span class="w"> </span><span class="n">GPG_AGENT_INFO</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">offlineimap</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="nb nb-Type">null</span><span class="w"> </span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="nb nb-Type">null</span>
+</code></pre></div>
+
+<p>(mais vous feriez mieux, dans un premier temps, de remplacer les <code>/dev/null</code> par
+des emplacements où vous pouvez lire les messages que renvoie la commande, pour
+pouvoir débugger en cas de problème).</p>
+<p>Et comme ça, ça devrait fonctionner - on utilise un fichier créé par gpg-agent
+qui contient la variable d'environnement qu'il faut, ce qui permet aux futurs
+appels à gpg de savoir où trouver (ou demander) la phrase de passe.</p>
+<h1 id="chiffrez-et-signez-vos-messages">Chiffrez et signez vos messages</h1>
+<p>Passons aux choses sérieuses : on va utiliser notre jolie paire de clés pour
+signer tous les messages envoyés via mutt, et chiffrer ceux qui sont possibles.
+Déjà, si vous avez des amis qui utilisent GPG, c'est le moment d'aller ajouter
+leurs clés publiques dans votre trousseau :</p>
+<div class="highlight"><pre><span></span><code>gpg --search-keys lenomdevotrepote
+</code></pre></div>
+
+<p>(suivez les instructions pour les ajouter à votre trousseau) et d'exporter la
+vôtre sur le serveur officiel de GnuPG :</p>
+<div class="highlight"><pre><span></span><code><span class="nv">gpg</span><span class="w"> </span><span class="o">--</span><span class="k">send</span><span class="o">-</span><span class="nv">keys</span><span class="w"> </span><span class="nv">EA627AA3</span>
+</code></pre></div>
+
+<p>remplacez bien sûr ici et dans toute la suite EA627AA3 par l'identifiant de
+votre clé.</p>
+<p>Dans le fichier de configuration de mutt, ajoutez une ligne du style <code>source
+~/.mutt/gpg</code> pour mettre dans un même fichier tout ce qui concerne GPG (et si
+vous comptez utilisez plusieurs clés différentes plus plusieurs comptes
+différents, faites plusieurs fichiers, et sourcez-les au bon endroit). </p>
+<p>Dans le fichier en question, glissez donc tout un tas de commandes compliquées
+pour dire quelles commandes utiliser : mutt connaît le principe d'OpenPGP, mais
+est prévu pour pouvoir utiliser n'importe quel logiciel qui parle le même
+protocole. Du coup, il faut lui indiquer à la main toutes les commandes de
+chiffrement, de déchiffrement, de signature, etc. En pratique, recopiez tout
+ça : à part l'identifiant de la clé, vous n'avez rien à changer.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Commandes à utiliser avec gpg</span>
+<span class="nb">set</span> <span class="n">pgp_decode_command</span><span class="o">=</span><span class="s2">&quot;gpg --no-verbose --batch --output - </span><span class="si">%f</span><span class="s2">&quot;</span>
+<span class="nb">set</span> <span class="n">pgp_verify_command</span><span class="o">=</span><span class="s2">&quot;gpg --no-verbose --batch --output - --verify </span><span class="si">%s</span><span class="s2"> </span><span class="si">%f</span><span class="s2">&quot;</span>
+<span class="nb">set</span> <span class="n">pgp_decrypt_command</span><span class="o">=</span><span class="s2">&quot;gpg --no-verbose --batch --output - </span><span class="si">%f</span><span class="s2">&quot;</span>
+<span class="nb">set</span> <span class="n">pgp_sign_command</span><span class="o">=</span><span class="s2">&quot;gpg --no-verbose --batch --output - --armor --detach-sign --textmode %?a?-u </span><span class="si">%a</span><span class="s2">? </span><span class="si">%f</span><span class="s2">&quot;</span>
+<span class="nb">set</span> <span class="n">pgp_clearsign_command</span><span class="o">=</span><span class="s2">&quot;gpg --no-verbose --batch --output - --armor --textmode --clearsign %?a?-u </span><span class="si">%a</span><span class="s2">? </span><span class="si">%f</span><span class="s2">&quot;</span>
+<span class="nb">set</span> <span class="n">pgp_encrypt_only_command</span><span class="o">=</span><span class="s2">&quot;/usr/lib/mutt/pgpewrap gpg --batch --quiet --no-verbose --output - --encrypt --textmode --armor --always-trust --encrypt-to 0xEA627AA3 -- -r </span><span class="si">%r</span><span class="s2"> -- </span><span class="si">%f</span><span class="s2">&quot;</span>
+<span class="nb">set</span> <span class="n">pgp_encrypt_sign_command</span><span class="o">=</span><span class="s2">&quot;/usr/lib/mutt/pgpewrap gpg --batch --quiet --no-verbose --textmode --output - --encrypt --sign %?a?-u </span><span class="si">%a</span><span class="s2">? --armor --always-trust --encrypt-to 0xEA627AA3 -- -r </span><span class="si">%r</span><span class="s2"> -- </span><span class="si">%f</span><span class="s2">&quot;</span>
+<span class="nb">set</span> <span class="n">pgp_import_command</span><span class="o">=</span><span class="s2">&quot;gpg --no-verbose --import -v </span><span class="si">%f</span><span class="s2">&quot;</span>
+<span class="nb">set</span> <span class="n">pgp_export_command</span><span class="o">=</span><span class="s2">&quot;gpg --no-verbose --export --armor </span><span class="si">%r</span><span class="s2">&quot;</span>
+<span class="nb">set</span> <span class="n">pgp_verify_key_command</span><span class="o">=</span><span class="s2">&quot;gpg --no-verbose --batch --fingerprint --check-sigs </span><span class="si">%r</span><span class="s2">&quot;</span>
+<span class="nb">set</span> <span class="n">pgp_list_pubring_command</span><span class="o">=</span><span class="s2">&quot;gpg --no-verbose --batch --with-colons --list-keys </span><span class="si">%r</span><span class="s2">&quot;</span> 
+<span class="nb">set</span> <span class="n">pgp_list_secring_command</span><span class="o">=</span><span class="s2">&quot;gpg --no-verbose --batch --with-colons --list-secret-keys </span><span class="si">%r</span><span class="s2">&quot;</span> 
+<span class="nb">set</span> <span class="n">pgp_good_sign</span><span class="o">=</span><span class="s2">&quot;^gpg: Good signature from&quot;</span>
+</code></pre></div>
+
+<p>Ensuite vient la « vraie » configuration. Dans l'ordre, on va indiquer :</p>
+<ul>
+<li>qu'on utilise gpg-agent,</li>
+<li>la clé qu'on utilise pour signer, </li>
+<li>qu'on veut signer tous les messages sortants,</li>
+<li>qu'on chiffre automatiquement les réponses à des messages signés (parce que
+    quand on sait que quelqu'un signe ses mails, on va pouvoir chiffrer les
+    messages qu'on lui envoie), </li>
+<li>qu'on chiffre aussi automatiquement les réponses à des messages chiffrés,</li>
+<li>et qu'on souhaite vérifier la signature de tous les messages reçus (ce qui, en
+    supposant que vos contacts protègent suffisamment bien leurs clés secrètes,
+    garantit que personne n'est en train d'usurper leur identité).</li>
+</ul>
+<!-- -->
+
+<div class="highlight"><pre><span></span><code>set pgp_use_gpg_agent
+set pgp_sign_as=0xEA627AA3
+set crypt_autosign
+set crypt_replyencrypt
+set crypt_replysignencrypted
+set crypt_verify_sig
+</code></pre></div>
+
+<p>Voilà un bon début, et ça peut même vous suffire. Sachez quand même que certains
+clients de messagerie (notamment des vieuuux Outlook) n'aiment pas recevoir des
+messages signés, et n'affichent qu'une erreur lorsqu'ils en reçoivent (ce qui
+est incroyablement stupide, vu qu'une signature n'est rien de plus qu'un petit
+fichier texte joint à chaque mail, mais bon). Dans ce cas, on peut avoir envie
+de rajouter des hooks du genre :</p>
+<div class="highlight"><pre><span></span><code><span class="n">send</span><span class="o">-</span><span class="n">hook</span><span class="w"> </span><span class="s1">&#39;~t @vetagro-sup\.fr&#39;</span><span class="w"> </span><span class="ss">&quot;set crypt_autosign=no&quot;</span>
+</code></pre></div>
+
+<p>dans la configuration de mutt. Notez que si vous mettez la ligne précédente
+telle quelle et que vous envoyez un mail à un des destinataires concernés par le
+hook, l'option <code>crypt_autosign</code> vaudra <code>no</code> pour toute la suite de cette
+exécution de mutt. Il faut donc ajouter, <em>avant</em> la ligne précédente, un hook
+qui remet l'option dans son état désiré :</p>
+<div class="highlight"><pre><span></span><code>send-hook . &quot;set crypt_autosign=yes&quot;
+</code></pre></div>
+
+<p>Si après, ponctuellement, vous avez envie de ne pas signer un mail (ou de le
+chiffrer, ou de façon générale de changer les paramètres sur un mail envoyé),
+c'est la touche <code>p</code> qui permet de faire ça, juste avant l'envoi d'un message.</p>
+<p>À part ça, il manque une fonctionnalité pourtant assez naturelle : le fait de
+chiffrer automatiquement les messages lorsqu'on a la clé publique du
+destinataire dans son trousseau. Il n'y a pas d'option pour ça, donc j'utilise
+un hack très crade : un script qui génère automatiquement un fichier de
+configuration mutt avec des lignes du type :</p>
+<div class="highlight"><pre><span></span><code><span class="n">send</span><span class="o">-</span><span class="n">hook</span><span class="w"> </span><span class="ss">&quot;!~l ~t machin\\.truc@bidule\\.wat&quot;</span><span class="w"> </span><span class="ss">&quot;set pgp_autoencrypt pgp_autosign&quot;</span>
+</code></pre></div>
+
+<p>pour chaque adresse <code>machin.truc@bidule.wat</code> présente dans le trousseau. Le
+script est trouvable <a href="generate_pgp_auto.sh">par ici</a>, et pour l'utiliser, il
+suffit de le rendre exécutable, de l'exécuter et de sourcer le fichier obtenu
+dans la configuration de mutt (il s'appelle par défaut <code>pgp_auto</code>). Vous pouvez
+aller jeter un œil au code du script si ça vous amuse, c'est du beau sed bien
+violent. Lancez le script à nouveau de temps en temps, lorsque votre trousseau
+grossit (demandez à cron de le faire une fois par semaine, par exemple).</p>
+<h1 id="considerations-de-securite">Considérations de sécurité</h1>
+<p>Vous avez peut-être l'impression que vous avez fait dépendre plusieurs de vos
+mots de passe d'un mot de passe unique, ce qui n'a pas vraiment l'air
+d'améliorer la sécurité du système. C'est une remarque qui n'est pas totalement
+infondée, c'est pourquoi la phrase de passe GPG est <em>extrêmement importante</em>, et
+doit donc être solide et n'être stockée à aucun endroit du système (si il y a
+<em>un</em> mot de passe que vous devriez retenir par cœur et ne recopier nulle part,
+c'est celui-ci).</p>
+<p>Néanmoins, maintenant, si on vous vole votre disque ou qu'on pirate votre
+ordinateur, l'attaquant n'a pas un accès direct aux mots de passe de vos comptes
+de messagerie - et si votre phrase de passe GPG est bonne, il ne pourra pas
+disposer des ressources matérielles nécessaires pour les trouver (ça lui est
+totalement impossible sans votre phrase de passe). Vous me direz « mais
+gpg-agent retient mon mot de passe, donc il doit bien être quelque part… » :
+vous avez raison, mais gpg-agent stocke ce mot de passe dans la RAM : dès que
+votre ordinateur est éteint, il disparaît en quelques secondes (à moins de
+plonger ladite RAM dans de 
+l'<a href="https://en.wikipedia.org/wiki/Cold_boot_attack">azote liquide</a> - mais ça
+paraît raisonnable de supposer que le risque est minime). Pas de problème à ce
+niveau-là non plus, donc !</p>
+<p>Si vous voulez faire les choses jusqu'au bout et suivre les conseils avancés des
+professionnels de la sécurité des systèmes d'information, <a href="https://help.riseup.net/en/security/message-security/openpgp/gpg-best-practices">cette
+page</a>
+(en anglais) répertorie les pratiques à adopter pour limiter les risques au
+maximum.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>C'est à peu près tout, je crois. Et comme je ne crois pas avoir raté quoi que ce
+soit de majeur, j'imagine que ça conclut cette série sur la gestion locale de
+ses mails avec des outils légers, bien conçus et configurables à l'infini ; le
+tout avec une bonne couche de sécurité. N'hésitez pas à m'envoyer corrections et
+suggestions pour améliorer cette série de tutoriels !</p>
+<p><sup>Au risque de me répéter d'article en article, un grand merci à
+<a href="http://a3nm.net/">a3nm</a> pour ses remarques et suggestions ayant permis de
+compléter et d'améliorer ce billet.</sup></p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Citez cet article!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>L'entrée BibTeX a été copiée dans votre presse-papiers.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblogue20140625,
+  title = &#123;Gérer ses mails en local : étape 4, tout chiffrer avec GPG !},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blogue/client-mail-4-gpg.html}},
+  note = &#123;Ted écrit des trucs (blog personnel)},
+  year = &#123;2014},
+  month = &#123;06}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="client-mail-0-introduction.html">← précédent</a>
+    </li>
+    <li>
+      <a href="que-font-les-thesards-en-maths.html">suivant →</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">haut de page</a></li>
+    <li><a href="index.html">accueil</a></li>
+    <li><a href="archives.html">archives</a></li>
+  </ul>
+</nav>
+
+      <div class="feedback">
+        Tout ce que je raconte ici sont mes opinions personnelles, pas celles de
+        mon employeur.
+        <br>
+        Je suis toujours ravi de recevoir des réactions, critiques, questions,
+        ou autres commentaires sur ce que j'écris. Envoyez-moi ce qui vous
+        chante à <span class="baddirection">se.niatnofsed@neimad</span>.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          par 
+          <a rel="dct:publisher" href="http://desfontain.es/serious-fr.html">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="Je pense que le concept de propriété intellectuelle n'a aucun sens. Le contenu de ce blog est dans le domaine public."/>
+          </a>
+          &mdash;
+          mis en orbite par <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

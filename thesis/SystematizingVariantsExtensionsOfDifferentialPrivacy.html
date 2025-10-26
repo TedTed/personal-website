@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+  <title>Lowering the cost of anonymization</title>
+
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <link rel="contents" href="index.html" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="twitter:title" content="Lowering the cost of anonymization" />
+  <meta name="twitter:description" content="Damien Desfontaines' PhD thesis, in HTML format" />
+
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="../style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="../style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="../style/pygments.css" type="text/css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  <!-- tex4ht-specific things -->
+  <meta content="TeX4ht (https://tug.org/tex4ht/)" name="generator">
+  <link rel="stylesheet" href="index.css" type="text/css" />
+  <link rel="stylesheet" href="../style/mathjax-chtml.css" type="text/css" />
+  <style type="text/css">
+    <!--
+      span.next { display:none; }
+      div.crosslinks { display:none; }
+      article > div table,th,td {
+        border: none;
+      }
+      article > div h2:before {
+        display: none;
+        content: none;
+      }
+      article > div h3:before {
+        display: none;
+        content: none;
+      }
+      article tr:nth-child(even) {
+        background: #EEE;
+      }
+      article tr:nth-child(odd) {
+        background: #FFF;
+      }
+      article > div p.noindent {
+        text-indent: 0;
+      }
+      article > div p.indent {
+        text-indent: 2em;
+      }
+      .t1xsssl-x-x-95{
+        font-style: normal;
+      }
+      .t1xss-x-x-95{
+        font-style: italic;
+      }
+      div.footnotes{
+        border-top: solid 1px black;
+        border-bottom: none;
+        padding-bottom: 1ex;
+        padding-top: 0.5ex;
+        margin-right: 0;
+        margin-top: 2ex;
+        font-style: normal;
+        font-size: 105%;
+      }
+      article > div div.footnotes p.indent {
+        text-indent: 0;
+      }
+      article > div figure.float:not(.tabular):not(.caption) {
+        text-align: left;
+      }
+      .t1xtt-x-x-109 {
+        font-size: 90%;
+      }
+      article > div dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+      }
+      article > div dt {
+        grid-column-start: 1;
+      }
+      article > div dd {
+        grid-column-start: 2;
+      }
+      article > div dd p {
+        margin: 0;
+      }
+    -->
+  </style>
+
+  <link ref="prev" href="DifferentialPrivacy.html" />
+  <link ref="next" href="PreliminariesDefining.html" />
+
+  <style type="text/css">
+    <!--
+      span.baddirection { unicode-bidi:bidi-override; direction: rtl; }
+    -->
+  </style>
+</head>
+<body>
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="/serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="/serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/privacy/index.html">Blog <img src="flag-uk.png" alt=""/></a>
+          <a href="/blog/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="/Recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <!-- no submenu for the thesis -->
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Lowering the cost of anonymization</span>
+      </a></h1>
+      a PhD thesis
+    </header>
+    <nav>
+      <ul class="nav">
+        <li><a href="DifferentialPrivacy.html">← previous</a></li>
+        <li><a href="DefiningAnonymization.html#SystematizingVariantsExtensionsOfDifferentialPrivacy.html">up</a></li>
+        <li><a href="PreliminariesDefining.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <article id="contenu">
+      <div>
+
+
+  <!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="DifferentialPrivacy.html">LINKPREV</a><a href="DefiningAnonymization.html#SystematizingVariantsExtensionsOfDifferentialPrivacy.html">LINKUP</a><a href="PreliminariesDefining.html">LINKNEXT</a></p></div>
+  <h3 class="sectionHead" id="systematizing-variants-extensions-of-differential-privacy-u-ding-"><span class="titlemark">2.2</span>&nbsp;&nbsp;<a id="x15-360002.2"></a>Systematizing variants &amp; extensions of differential privacy <span class="bbding-10x-x-109">✿</span></h3> <!-- l. 2 --><p class="noindent"><a id="survey"></a> </p> <!-- l. 4 --><p class="indent">
+Since the original introduction of differential privacy, many variants and extensions have been
+proposed to adapt it to different contexts or assumptions. These new definitions enable practitioners to
+get privacy guarantees, even in cases that the original DP definition does not cover well. This happens
+in a variety of scenarios: the noise mandated by DP can be too large and force the data custodian to
+consider a weaker alternative, the risk model might be inappropriate for certain use cases, or the context
+might require the data owner to make stronger statements on what information the privacy mechanism
+can reveal.
+</p><!-- l. 14 --><p class="indent">  Figure&nbsp;<a href="#-accumulated-number-of-papers-which-are-introducing-dp-variants-or-extensions-line-and-the-exact-number-of-these-definitions-bar">2.7<!-- tex4ht:ref: fig:timeline  --></a> shows the prevalence of this phenomenon: approximately <span class="t1xi-x-x-109">225 </span>different
+notions<span class="footnote-mark"><a href="#fn2x2" id="fn2x2-bk"><sup class="textsuperscript">2</sup></a></span><a id="x15-36001f2"></a>,
+inspired by DP, were defined in the last 15 years. As we show in Figure&nbsp;<a href="#-accumulated-number-of-papers-which-are-introducing-dp-variants-or-extensions-line-and-the-exact-number-of-these-definitions-bar">2.7<!-- tex4ht:ref: fig:timeline  --></a>, this phenomenon does not
+seem to slow down over time. These definitions can be <span class="t1xi-x-x-109">extensions </span>or <span class="t1xi-x-x-109">variants </span>of DP. An extension
+encompasses the original DP notion as a special case, while a variant changes some aspect, typically to
+weaken or strengthen the original definition.
+</p>
+  <figure class="figure"> 
+
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+<!-- l. 24 --><p class="noindent" id="-accumulated-number-of-papers-which-are-introducing-dp-variants-or-extensions-line-and-the-exact-number-of-these-definitions-bar"><img alt="    Number of novel definitions
+2222222205112222220000000000505000&amp;#x00111112000000068024680678  " src="index6x.svg">
+<a id="x15-36003r7"></a>
+</p>
+<figcaption class="caption"><span class="id"> <span class="t1xsc-">F<span class="small-caps">igure</span></span><span class="t1xsc-">&nbsp;2.7:&nbsp;</span></span><span class="content"><span class="t1xr-">Accumulated number of papers which are introducing DP variants or extensions (line)
+           and the exact number of these definitions (bar).</span>                                 </span></figcaption><!-- tex4ht:label?: x15-36003r7  -->
+                                                                                
+                                                                                
+  </figure>
+<!-- l. 63 --><p class="indent">  With so many definitions, it is difficult for new practitioners to get an overview of this research area.
+Many definitions have similar goals, so it is also challenging to understand which are appropriate to use
+in which context. These difficulties also affect experts: a number of definitions have been defined
+independently multiple times (often with identical meaning but different names, or identical names but
+different meanings). Finally, variants are often introduced without a comparison to related
+notions.
+</p><!-- l. 71 --><p class="indent">  In this section, we attempt to solve these problems by systematizing the scientific literature on
+variants and extensions of differential privacy. We propose a unified and comprehensive taxonomy of
+these variants and extensions, providing short explanations of the intuition, use cases and basic
+properties of each. By categorizing these definitions, we attempt to simplify the understanding of
+existing variants and extensions, and of the relations between them. We hope to make it easier
+for new practitioners to understand whether their use case needs an alternative definition,
+and if so, which existing notions are the most appropriate, and what their basic properties
+are.
+</p><!-- l. 81 --><p class="indent">  We define seven <span class="t1xi-x-x-109">dimensions</span>: these are ways in which the original definition of DP can be modified or
+extended. We list variants and extensions that belong to each dimension, and we highlight
+representative definitions for each. Whenever possible, we compare these definitions and establish a
+partial ordering between the strengths of different notions. Furthermore, for each definition, we specify
+whether it satisfies Kifer et al.’s <span class="t1xi-x-x-109">privacy axioms</span>&nbsp;[<a id="x15-36004"></a><a href="bibliography.html#cite.0@kifer2010towards">225</a><a id="x15-36005"></a>, <a href="bibliography.html#cite.0@kifer2012axiomatic">226</a>] (post-processing and convexity), and
+whether they are composable.
+</p><!-- l. 90 --><p class="indent">  This section is organized as follows. </p>
+     <ul class="itemize1">
+     <li class="itemize">In  Section&nbsp;<a href="PreliminariesDefining.html#preliminaries-u-ding-">2.2.1<!-- tex4ht:ref: sec:pre  --></a>,  we  introduce  our  dimensions  along  which  DP  can  be  modified,  we
+     present basic properties of privacy definitions, we define how definitions can relate to each
+     other, and explain our methodology for this literature review.
+     </li>
+     <li class="itemize">In the following 7 sections (Sections&nbsp;<a href="QuantificationOfPrivacyLossQ.html#quantification-of-privacy-loss-q">2.2.2<!-- tex4ht:ref: sec:q  --></a> to&nbsp;<a href="ComputationalPowerC.html#computational-power-c">2.2.8<!-- tex4ht:ref: sec:c  --></a>), we introduce our dimensions, and
+     list and compare the corresponding definitions.
+     </li>
+     <li class="itemize">In  Section&nbsp;<a href="SummarizingTable.html#summarizing-table">2.2.9<!-- tex4ht:ref: sec:sum  --></a>,  we  summarize  the  results  from  the  previous  sections  into  a  table,
+     showing the corresponding properties with proofs, and list the known relations.
+     </li>
+     <li class="itemize">In Section&nbsp;<a href="RelatedWorkDefining.html#related-work-u-ding-">2.2.10<!-- tex4ht:ref: sec:related  --></a>, we mention related concepts and definitions which were considered out
+     of scope for this work, and review the related literature.</li></ul>
+                                                                                
+                                                                                
+
+
+
+
+
+
+
+
+
+
+                                                                                
+                                                                                
+  <div class="footnotes"><a id="x15-36002x2"></a>
+     <!-- l. 16 --><p class="indent">    <span class="footnote-mark"><a href="#fn2x2-bk" id="fn2x2"><sup class="textsuperscript">2</sup></a></span><span class="t1xr-x-x-90">We count all the definitions which are presented as “new” in the papers introducing them.</span></p>                                  </div>
+<!-- l. 1 --><div class="crosslinks"><p class="noindent"><a href="DifferentialPrivacy.html">LINKPREV</a><a href="DefiningAnonymization.html#SystematizingVariantsExtensionsOfDifferentialPrivacy.html">LINKUP</a><a href="PreliminariesDefining.html">LINKNEXT</a></p></div>
+   
+ 
+
+
+      </div>
+    </article>
+    <nav>
+      <ul class="nav">
+        <li><a href="DifferentialPrivacy.html">← previous</a></li>
+        <li><a href="DefiningAnonymization.html#SystematizingVariantsExtensionsOfDifferentialPrivacy.html">up</a></li>
+        <li><a href="PreliminariesDefining.html">next →</a></li>
+      </ul>
+      <ul>
+        <li><a href="#menuGlobal">back to top</a></li>
+        <li><a href="index.html">table of contents</a></li>
+      </ul>
+    </nav>
+    <div class="feedback">
+      All opinions here are my own, not my employers.
+      <br>
+        I'm always glad to get feedback! If you'd like to contact me, please do so via
+        e-mail (<span class="baddirection">se.niatnofsed@neimad</span>) or Twitter
+        (<a href="https://twitter.com/TedOnPrivacy">@TedOnPrivacy</a>).
+    </div>
+    <footer>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        <br />
+        by
+        <a rel="dct:publisher" href="http://desfontain.es">
+          <span property="dct:title">Damien Desfontaines</span>
+        </a>
+        &mdash;
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0">
+          <img src="../by-nc.png" style="border-style: none;" alt="CC BY-NC 4.0" title="This thesis was licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license."/>
+        </a>
+        &mdash;
+        compiled from L<sup>A</sup>T<sub>E</sub>X using
+        <a href="https://tug.org/tex4ht/">tex4ht</a>,
+        <a href="https://github.com/michal-h21/make4ht">make4ht</a>,
+        and <a href="/privacy/latex-to-html.html">a lot of pain</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
