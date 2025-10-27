@@ -5423,7 +5423,7 @@ adaptive algorithms. I even got some experts to help me. But even with their
 help, it seems like my problem is impossible to solve. The noise is just too
 bad.&lt;/p&gt;
 &lt;p&gt;Unless… well, unless I use, like, an epsilon of 30 or anything. But sadly, I
-understand the &lt;a href="https://desfontain.es/privacy/differential-privacy-in-more-detail.html"&gt;explanation of what epsilon
+understand the &lt;a href="differential-privacy-in-more-detail.html"&gt;explanation of what epsilon
 means&lt;/a&gt;!
 Kind of. I know that large privacy parameters are basically providing
 meaningless protection! So why would I even bother, if the best I can do is a
@@ -5525,7 +5525,7 @@ here. It’s still largely uncharted territory.&lt;/p&gt;
 practical attacks. Maybe it’s because it protects against worst-case attackers,
 and real attackers are weaker than this? In which case, modeling more realistic
 attackers seems worthwhile, maybe to gain a deeper theoretical understanding of
-the advantage they can get. This idea is not new; we actually &lt;a href="https://desfontain.es/privacy/partial-knowledge.html"&gt;tried to do
+the advantage they can get. This idea is not new; we actually &lt;a href="partial-knowledge.html"&gt;tried to do
 exactly that&lt;/a&gt; during my
 PhD, but formalizing it and obtaining convincing results seems surprisingly
 difficult. There’s probably a lot more to be done there.&lt;/p&gt;
@@ -6613,7 +6613,7 @@ compare it on two samples from this distribution.&lt;/p&gt;
       &lt;/clipPath&gt;
       &lt;image clip-path="url(#p.1)" fill="#000" width="777.0"
       height="354.0" x="0.0" y="0.0" preserveAspectRatio="none"
-         xlink:href="https://desfontain.es/privacy/images/data.png"/&gt;
+         xlink:href="https://desfontain.es/blog/images/data.png"/&gt;
     &lt;/g&gt;
     &lt;path fill="#f6cd4c"
     d="m896.73236 350.73334l0 0c-1.8811646 -14.366974 4.295044 -28.589386 15.907898 -36.63217c11.612793 -8.042786 26.62555 -8.495392 38.667786 -1.165802l0 0c4.265686 -8.353546 12.073242 -14.121094 21.060913 -15.558044c8.987732 -1.4369812 18.099976 1.6253662 24.580444 8.260803l0 0c3.63385 -7.573883 10.768982 -12.662537 18.873474 -13.460297c8.104492 -0.79776 16.031372 2.808319 20.967773 9.538605l0 0c6.5650635 -8.02829 17.010254 -11.408508 26.815918 -8.67807c9.805664 2.7304382 17.210571 11.081177 19.010498 21.438751l0 0c8.043335 2.2800598 14.743286 8.076294 18.368774 15.891113c3.6254883 7.8148193 3.8209229 16.881653 0.53564453 24.85788l0 0c7.92041 10.712921 9.773071 24.987793 4.8669434 37.497467c-4.90625 12.509644 -15.834351 21.374664 -28.706177 23.286804c-0.09082031 11.740753 -6.286621 22.513947 -16.19934 28.167084c-9.912842 5.653137 -21.994629 5.3034973 -31.588745 -0.9141846l0 0c-4.086426 14.061615 -15.588745 24.40799 -29.537292 26.569153c-13.948547 2.1611633 -27.842834 -4.2503357 -35.680054 -16.464508l0 0c-9.606812 6.0204163 -21.134155 7.7546997 -31.98169 4.8116455c-10.847595 -2.9430542 -20.101624 -10.315521 -25.674622 -20.454315l0 0c-9.816895 1.1938782 -19.308533 -4.091919 -23.76416 -13.23407c-4.4556274 -9.142151 -2.9268188 -20.194489 3.8277588 -27.671783l0 0c-8.756958 -5.3563843 -13.225281 -15.9852295 -11.074951 -26.344025c2.1503906 -10.358765 10.432129 -18.100159 20.526672 -19.187317z"
@@ -6631,7 +6631,7 @@ compare it on two samples from this distribution.&lt;/p&gt;
       &lt;/clipPath&gt;
       &lt;image clip-path="url(#p.2)" fill="#000" width="777.0"
       height="354.0" x="0.0" y="0.0" preserveAspectRatio="none"
-         xlink:href="https://desfontain.es/privacy/images/data.png"/&gt;
+         xlink:href="https://desfontain.es/blog/images/data.png"/&gt;
     &lt;/g&gt;
     &lt;path fill="#db4437"
     d="m959.42914 190.68767l32.897644 -32.897644l32.897583 32.897644l-16.448792 0l0 94.3307l16.448792 0l-32.897583 32.897644l-32.897644 -32.897644l16.448792 0l0 -94.3307z"
@@ -6946,7 +6946,7 @@ compare it on two samples from this distribution.&lt;/p&gt;
       &lt;/clipPath&gt;
       &lt;image clip-path="url(#p.3)" fill="#000" width="275.0"
       height="252.0" x="0.0" y="0.0" preserveAspectRatio="none"
-         xlink:href="https://desfontain.es/privacy/images/magic.gif"/&gt;
+         xlink:href="https://desfontain.es/blog/images/magic.gif"/&gt;
     &lt;/g&gt;
     &lt;path fill="#000000" fill-opacity="0.0"
     d="m574.15094 307.6451l154.99207 0l0 142.02911l-154.99207 0z"
@@ -6958,7 +6958,7 @@ compare it on two samples from this distribution.&lt;/p&gt;
       &lt;/clipPath&gt;
       &lt;image clip-path="url(#p.4)" fill="#000" width="275.0"
       height="252.0" x="0.0" y="0.0" preserveAspectRatio="none"
-         xlink:href="https://desfontain.es/privacy/images/magic.gif"/&gt;
+         xlink:href="https://desfontain.es/blog/images/magic.gif"/&gt;
     &lt;/g&gt;
   &lt;/g&gt;
 &lt;/svg&gt;
@@ -13325,7 +13325,7 @@ we meant "the probabilities are close".&lt;/p&gt;
          x="0"
          y="0"
          preserveAspectRatio="none"
-         xlink:href="https://desfontain.es/privacy/images/quiestce.jpeg"
+         xlink:href="https://desfontain.es/blog/images/quiestce.jpeg"
          id="image4046"
          style="fill:#000000" /&gt;
     &lt;/g&gt;
@@ -13352,7 +13352,7 @@ we meant "the probabilities are close".&lt;/p&gt;
          x="0"
          y="0"
          preserveAspectRatio="none"
-         xlink:href="https://desfontain.es/privacy/images/quiestce.jpeg"
+         xlink:href="https://desfontain.es/blog/images/quiestce.jpeg"
          id="image4055"
          style="fill:#000000" /&gt;
     &lt;/g&gt;
@@ -13414,7 +13414,7 @@ we meant "the probabilities are close".&lt;/p&gt;
          x="0"
          y="0"
          preserveAspectRatio="none"
-         xlink:href="https://desfontain.es/privacy/images/magic.gif"
+         xlink:href="https://desfontain.es/blog/images/magic.gif"
          id="image4080"
          style="fill:#000000" /&gt;
     &lt;/g&gt;
@@ -13500,7 +13500,7 @@ we meant "the probabilities are close".&lt;/p&gt;
          x="0"
          y="0"
          preserveAspectRatio="none"
-         xlink:href="https://desfontain.es/privacy/images/magic.gif"
+         xlink:href="https://desfontain.es/blog/images/magic.gif"
          id="image4080-3"
          style="fill:#000000" /&gt;
     &lt;/g&gt;
@@ -13967,7 +13967,7 @@ output.&lt;/p&gt;
          x="0"
          y="0"
          preserveAspectRatio="none"
-         xlink:href="https://desfontain.es/privacy/images/quiestce.jpeg"
+         xlink:href="https://desfontain.es/blog/images/quiestce.jpeg"
          id="image4046"
          style="fill:#000000" /&gt;
     &lt;/g&gt;
@@ -14211,7 +14211,7 @@ doing some unspecified ✨ magic ✨.&lt;/p&gt;
          x="0"
          y="0"
          preserveAspectRatio="none"
-         xlink:href="https://desfontain.es/privacy/images/quiestce.jpeg"
+         xlink:href="https://desfontain.es/blog/images/quiestce.jpeg"
          id="image4046"
          style="fill:#000000" /&gt;
     &lt;/g&gt;
@@ -14302,7 +14302,7 @@ doing some unspecified ✨ magic ✨.&lt;/p&gt;
          x="0"
          y="0"
          preserveAspectRatio="none"
-         xlink:href="https://desfontain.es/privacy/images/magic.gif"
+         xlink:href="https://desfontain.es/blog/images/magic.gif"
          id="image4080-3"
          style="fill:#000000" /&gt;
     &lt;/g&gt;
@@ -14432,7 +14432,7 @@ the first place.&lt;/p&gt;
          x="0"
          y="0"
          preserveAspectRatio="none"
-         xlink:href="https://desfontain.es/privacy/images/quiestce.jpeg"
+         xlink:href="https://desfontain.es/blog/images/quiestce.jpeg"
          id="image4046"
          style="fill:#000000" /&gt;
     &lt;/g&gt;
@@ -14459,7 +14459,7 @@ the first place.&lt;/p&gt;
          x="0"
          y="0"
          preserveAspectRatio="none"
-         xlink:href="https://desfontain.es/privacy/images/quiestce.jpeg"
+         xlink:href="https://desfontain.es/blog/images/quiestce.jpeg"
          id="image4055"
          style="fill:#000000" /&gt;
     &lt;/g&gt;
@@ -14521,7 +14521,7 @@ the first place.&lt;/p&gt;
          x="0"
          y="0"
          preserveAspectRatio="none"
-         xlink:href="https://desfontain.es/privacy/images/magic.gif"
+         xlink:href="https://desfontain.es/blog/images/magic.gif"
          id="image4080"
          style="fill:#000000" /&gt;
     &lt;/g&gt;
@@ -14607,7 +14607,7 @@ the first place.&lt;/p&gt;
          x="0"
          y="0"
          preserveAspectRatio="none"
-         xlink:href="https://desfontain.es/privacy/images/magic.gif"
+         xlink:href="https://desfontain.es/blog/images/magic.gif"
          id="image4080-3"
          style="fill:#000000" /&gt;
     &lt;/g&gt;
