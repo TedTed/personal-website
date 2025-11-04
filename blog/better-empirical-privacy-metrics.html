@@ -97,6 +97,11 @@
     <time datetime="2025-04-07T00:00:00+02:00">
       2025-04-07
     </time>
+    <small>&mdash; updated
+      <time datetime="2025-11-04T00:00:00+01:00">
+        2025-11-04
+      </time>
+    </small>
   </footer>
   <div>
     <p><small>
@@ -221,11 +226,11 @@ guesses which canaries are included&quot;; there is also an arrow from the canar
 box to this adversary box. Finally, an arrow goes from the adversary box to an
 &quot;Attack success score&quot; box." src="https://desfontain.es/blog/images/one-run-privacy-auditing.svg">
 </center></p>
-<p>The authors show that both experiments are essentially equivalent. This method
-was developed in the context of membership inference attacks for machine
-learning models, but the exact same idea can be used for synthetic data. We
-believe that this is fundamentally the right approach to measuring empirical
-privacy risk.</p>
+<p>The authors show that a successful attack in this setting translates to a
+successful attack in the traditional setting. This method was developed in the
+context of membership inference attacks for machine learning models, but the
+exact same idea can be used for synthetic data. We believe that this is
+fundamentally the right approach to measuring empirical privacy risk.</p>
 <p>Using this framework is not enough to build empirical privacy metrics for
 synthetic data: we also need to <em>instantiate</em> this framework. More precisely, we
 need to answer the following questions.</p>
@@ -383,6 +388,14 @@ severe limitations on what attacks can be modeled, and how generic these privacy
 metrics can be. The main way we could obtain successful attacks in this model
 was with attacks exploiting specific behavior of the synthetic data generation
 method under test.</p>
+<p></small></p>
+<hr>
+<p><small></p>
+<p>I'm grateful to Amit Keinan for pointing me to
+<a href="https://arxiv.org/abs/2503.07199">this recent paper</a>, which led me to revise
+parts of this post. This work shows some fundamental limitations of one-run
+auditing: there might be attacks that work in the traditional setting and cannot
+be captured by a one-run empirical measurement.</p>
 <p></small></p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
