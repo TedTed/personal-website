@@ -214,10 +214,10 @@ pas, mais il reste quand même pas trop sûr. Son niveau d’incertitude a dimin
 mais pas de beaucoup. Dans ce cas, on peut se dire : « C’est OK, on a pas trop
 fait fuiter de données ».&lt;/p&gt;
 &lt;p&gt;&lt;center&gt;
-&lt;img alt="Un diagrame avec, au centre un gros emoji d'étincelles. En haut à gauche, un
-emoji de biceps étiqueté &amp;quot;Robuste: résiste à toute attaque présente ou future&amp;quot;.
-En haut à droite, un emoji du signe plus, étiqueté &amp;quot;Composable: on peut publier
-plusieurs jeux de données&amp;quot;. En bas à gauche, un emoji de loupe étiqueté
+&lt;img alt="Une diapositive avec, au centre un gros emoji d'étincelles. En haut à gauche,
+un emoji de biceps étiqueté &amp;quot;Robuste: résiste à toute attaque présente ou
+future&amp;quot;. En haut à droite, un emoji du signe plus, étiqueté &amp;quot;Composable: on peut
+publier plusieurs jeux de données&amp;quot;. En bas à gauche, un emoji de loupe étiqueté
 &amp;quot;Transparent: pas de sécurité par l'obscurité&amp;quot;. En bas à droite, un emoji de
 personne méditant avec les jambes croisées, étiqueté &amp;quot;Flexible: compatible avec
 la plupart des opérations." src="https://desfontain.es/blogue/images/cnil-24-11.png"&gt;
@@ -377,7 +377,8 @@ plus de données qu’avant, 250 millions au total (et des centaines de milliers
 plus chaque jour). On a aussi pu réduire le seuil auquel on publie des
 statistiques par un facteur 10, alors même qu’on a une définition
 d’anonymisation plus robuste.&lt;/p&gt;
-&lt;p&gt;Pour plus d'infos, vous pouvez consulter l'&lt;a href="https://tmlt.io/wmf"&gt;étude de cas&lt;/a&gt;
+&lt;p&gt;Pour plus d'infos, vous pouvez consulter
+l'&lt;a href="https://www.tmlt.io/casestudy/revealing-wikipedia-usage-data-while-protecting-privacy"&gt;étude de cas&lt;/a&gt;
 que j'ai écrit à propos de ce project.&lt;/p&gt;
 &lt;p&gt;À propos d’anonymisation plus robuste. Comme je suis invité par la CNIL, je me
 suis dit que ça valait peut-être le coup de finir par un sujet peut-être un peu
