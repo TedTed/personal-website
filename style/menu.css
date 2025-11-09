@@ -5,7 +5,7 @@
 {
     border: none;
     margin: auto;
-    min-width: 520px;
+    /*min-width: 520px;*/
     max-width: 800px;
     text-align: center;
     font-size: 1.1em;
@@ -85,3 +85,12 @@
 {
     padding: 3px;
 }
+
+/* Reverse style to avoid e-mail mining bots. Original idea by Seb Sauvage
+ * (http://sebsauvage.net/), or at least, that's where I found it. */
+span.baddirection 
+{ 
+    unicode-bidi:bidi-override; 
+    direction: rtl; 
+}
+
