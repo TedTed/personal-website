@@ -1,5 +1,298 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2025-11-04T00:00:00+01:00</updated><entry><title>Tell me what to write</title><link href="https://desfontain.es/blog/tell-me-what-to-write.html" rel="alternate"></link><published>2025-09-29T00:00:00+02:00</published><updated>2025-09-29T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2025-09-29:/blog/tell-me-what-to-write.html</id><summary type="html">&lt;p&gt;A short note encouraging you to tell me what you would like to read about in this blog.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;It&lt;/strong&gt; is always a delight when people I just meet tell me that they've found my
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2025-11-19T00:00:00+01:00</updated><entry><title>Mapping ISO standards to modern privacy attacks</title><link href="https://desfontain.es/blog/iso-standards-privacy-attacks.html" rel="alternate"></link><published>2025-11-19T00:00:00+01:00</published><updated>2025-11-19T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2025-11-19:/blog/iso-standards-privacy-attacks.html</id><summary type="html">&lt;p&gt;ISO standards on privacy attacks are not great, but some organizations still want to use them. Can we interpret them in a principled way?&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;ISO&lt;/strong&gt;&lt;sup id="fnref:iso"&gt;&lt;a class="footnote-ref" href="#fn:iso"&gt;1&lt;/a&gt;&lt;/sup&gt; is an organization that publishes &lt;em&gt;standards&lt;/em&gt;: documents that
+describe how to do things in a systematic, repeatable way across organizations.
+Some of these standards are very widely used, like &lt;a href="https://en.wikipedia.org/wiki/ISO/IEC_27001"&gt;ISO 27001&lt;/a&gt; in
+cybersecurity. Existing ISO standards related to privacy, on the other hand,
+have not seen widespread adoption. The consensus among the privacy professionals
+I know is that they're too abstract and process-oriented to be that useful in
+practice.&lt;/p&gt;
+&lt;p&gt;Still, some organizations use them as part of their privacy and compliance
+program. This is especially true for large companies in heavily-regulated
+industries, like banking or insurance. ISO is a well-known organization, so
+being able to point at one of their standards and say "this is what we're doing"
+has a lot of value. For that reason, since I've started my &lt;a href="https://hiding-nemo.com"&gt;independent
+consultancy&lt;/a&gt;, I've been asked about these standards a few times. There are
+two that are directly related to my area of expertise.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.iso.org/standard/69373.html"&gt;ISO 20889&lt;/a&gt; defines de-identification, re-identification, and lists a bunch of
+  de-identification techniques and privacy measurement models.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.iso.org/standard/71677.html"&gt;ISO 27559&lt;/a&gt; is more recent and more focused: it's specifically about evaluating
+  re-identification risk.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I don't have a very high opinion of these standards&lt;sup id="fnref:oa"&gt;&lt;a class="footnote-ref" href="#fn:oa"&gt;2&lt;/a&gt;&lt;/sup&gt;. ISO 20889 has a very
+"kitchen sink" vibe, listing everything and not really recommending anything in
+particular. ISO 27559 is a little better, especially when it comes to defining
+processes around privacy risk evaluation. But the way it suggests measuring
+privacy risk, with thresholds based on "probability of re-identification", does
+not spark joy. You can quantify information gain in a principled way, but
+probabilities and thresholds as described in the standard are largely
+meaningless.&lt;/p&gt;
+&lt;p&gt;Still. Could we get the compliance benefits of using ISO standards, while
+measuring privacy in a meaningful way? I think so. The standards do not require
+quantifying risk in a very specific way: the probabilities above are only a
+suggestion. And I think we can map the attack models listed in the standards to
+principled approaches from the literature. Let's take a look.&lt;/p&gt;
+&lt;h1 id="attack-models"&gt;Attack models&lt;/h1&gt;
+&lt;p&gt;To model privacy attacks on a dataset, ISO 20889 lists five different goals that
+the attacker can have&lt;sup id="fnref:ordering"&gt;&lt;a class="footnote-ref" href="#fn:ordering"&gt;3&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;A &lt;em&gt;data membership attack&lt;/em&gt; attempts to determine whether a specific
+   individual was included in the dataset.&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;prosecutor attack&lt;/em&gt; attempts to re-identify a record belonging to a
+   specific individual.&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;marketer attack&lt;/em&gt; attempts to re-identify as many people as possible in the
+   data.&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;journalist attack&lt;/em&gt; attempts to find the individual associated with a given
+   record in the dataset.&lt;/li&gt;
+&lt;li&gt;An &lt;em&gt;inference attack&lt;/em&gt; attempts to deduce a sensitive attribute based on the
+   value of other attributes.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;ISO 27559 also defines distinct attack settings. These are not about the goals
+of the attacker, but rather about what they know.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The attacker is trying to find information about a specific individual, and
+   they know that their target is in the data.&lt;/li&gt;
+&lt;li&gt;The attacker does not know whether their target is in the data.&lt;/li&gt;
+&lt;li&gt;The attacker does not have a specific target; rather, they are interested in
+   reidentifying as many people as possible in the data.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;It also suggests to compute two distinct kinds of risk: the &lt;em&gt;maximum risk&lt;/em&gt;, for
+the most re-identifiable person in the data, and the &lt;em&gt;average risk&lt;/em&gt;, across all
+the people in the data.&lt;/p&gt;
+&lt;p&gt;Let's put all this in a neat diagram:&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="A diagram with three columns, each containing a title and multiple boxes. The
+left one is labeled &amp;quot;ISO 20889 attacker goals&amp;quot; and has five boxes containing
+&amp;quot;Data membership attack&amp;quot;, &amp;quot;Prosecutor attack&amp;quot;, &amp;quot;Marketer attack&amp;quot;, &amp;quot;Journalist
+attack&amp;quot;, and &amp;quot;Inference attack&amp;quot;. The
+middle one is labeled &amp;quot;ISO 27559 attack settings&amp;quot; and has three boxes containing
+&amp;quot;Specific target, known to be present in the data&amp;quot;, &amp;quot;Specific target, without
+knowing whether they are present in the data&amp;quot;, and &amp;quot;Targeting as many people at
+once as possible&amp;quot;. The right one is labeled &amp;quot;ISO 27559 risk model&amp;quot;, and has two
+boxes labeled &amp;quot;Maximal/outlier risk&amp;quot; and &amp;quot;Average
+risk&amp;quot;." src="https://desfontain.es/blog/images/iso-reidentifiability-concepts.svg"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;OK, so these are five types of goals, three settings, and two methods of
+computing risk. Does it mean we have to evaluate 30 different scores? I don't
+think so, because a lot of possible combinations don't make sense. Here is my
+approach to interpreting these high-level goals into meaningful ways to quantify
+privacy risk.&lt;/p&gt;
+&lt;h1 id="data-membership-attacks"&gt;Data membership attacks&lt;/h1&gt;
+&lt;p&gt;The idea of a data membership attack is simple: the attacker is trying to figure
+out whether their target is in included in the sensitive dataset. The setting of
+such an attack is clear: the attacker does not know whether their target is in
+the data. The whole point is to figure it out!&lt;/p&gt;
+&lt;p&gt;This kind of attack corresponds exactly to what is called a &lt;em&gt;membership
+inference attack&lt;/em&gt; in the academic community. It's widely studied in machine
+learning contexts, and a lot of work has gone into finding principled ways of
+quantifying the success of such attacks. A common way to do so is to plot a
+trade-off curve between false positives and false negatives:&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="Four curves plotting the True Positive Rate against the False Positive Rate of
+a membership inference attack against four ML
+models" src="https://desfontain.es/blog/images/tpr-vs-fpr.png" width="80%"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;small&gt;An example taken from &lt;a href="https://arxiv.org/abs/2112.03570"&gt;this paper&lt;/a&gt;,
+which also gives a good explanation of how to quantify the success of membership
+inference attacks in a principled way.
+&lt;/small&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;The trade-off curve helps us understand that not all attackers have the same
+goal: they can either make a guess on many targets and be wrong on a fraction of
+them, or focus on the targets for which their certainty is highest. This maps
+quite nicely with the distinction between maximum risk and average risk from
+ISO 27559!&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;To measure the average risk, we can attack many data points sampled from the
+  original distribution, and compute the overall success rate.&lt;/li&gt;
+&lt;li&gt;To measure the maximum risk, we can instead look at the attacker's success
+  rate if we allow them to only focus on the most-certain records.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;To get a more complete picture of the risk, we can also look at the attacker's
+success rate on specific subpopulations.&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="The same diagram as before, with a few boxes highlighted: &amp;quot;Data membership
+attack&amp;quot;, &amp;quot;Specific target, without knowing whether they are present in the
+data&amp;quot;, &amp;quot;Maximal/outlier risk&amp;quot;, and &amp;quot;Average risk&amp;quot;. Underneath, the entire
+diagram is labeled &amp;quot;Covered by membership inference attacks from the privacy
+literature&amp;quot;." src="https://desfontain.es/blog/images/iso-reidentifiability-data-membership-attacks.svg"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;h1 id="prosecutor-attacks"&gt;Prosecutor attacks &lt;a name="prosecutor"&gt;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;In a prosecutor attack, the goal is to find the record associated with a
+specific individual. This assumes that the attacker knows that their target is
+in the dataset, and is trying to find out which record is associated with them.
+But there's another hidden assumption there: that the output data is composed of
+records, and that there is a one-to-one correspondence between real records and
+output records. This doesn't quite make sense for statistics, or synthetic data.
+How can we interpret this kind of attack to more generic kinds of outputs?&lt;/p&gt;
+&lt;p&gt;It's worth taking a step back and wonder what the attacker is actually trying to
+do. If I know that you are in a dataset, and I know some information about you,
+and the dataset &lt;em&gt;only&lt;/em&gt; contains the information I already know about you, then…
+There is not much left to protect. Finding your record may be a "successful"
+attack, but it's not a meaningful one: I haven't learned anything!. Instead,
+privacy risk becomes concrete if I learn something &lt;em&gt;new&lt;/em&gt; about you, like the
+value of one previously-unknown sensitive attribute.&lt;/p&gt;
+&lt;p&gt;There are attacks in the literature that match this idea. They are called
+&lt;em&gt;attribute inference attacks&lt;/em&gt;: the goal is for an attacker with some prior
+knowledge about their target to learn something new about them. Quantifying
+those rigorously is a little trickier than for data membership attacks: we need
+to be careful to compare success rates to good baselines. But again, there is
+principled prior work on this, see e.g. the privacy game introduced in
+&lt;a href="https://arxiv.org/abs/2504.18497"&gt;this paper&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Just like data membership attacks, prosecutor attacks can target either a random
+person in the dataset, or focus on specific subpopulations, or look at the
+records that are most at risk (often outliers). My understanding from the
+wording of ISO 20889 is that prosecutor attacks should focus on the most
+vulnerable people in the dataset, so that's what I would do.&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="The same diagram as before, with different boxes highlighted: &amp;quot;Prosecutor
+attacks&amp;quot;, &amp;quot;Specific target, without knowing whether they are present in the
+data&amp;quot;, and &amp;quot;Maximal/outlier risk&amp;quot;. Underneath, the entire diagram is labeled
+&amp;quot;Covered by membership inference attacks from the privacy
+literature&amp;quot;." src="https://desfontain.es/blog/images/iso-reidentifiability-prosecutor-attacks.svg"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;h1 id="marketer-attacks"&gt;Marketer attacks &lt;a name="marketer"&gt;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;The goal of a marketer attack is to re-identify as many individuals as possible.
+This has a straightforward parallel to reconstruction attacks, like the one ran
+by the &lt;a href="us-census-reconstruction-attack.html"&gt;U.S. Census Bureau&lt;/a&gt;: the idea is to attempt to retrieve as much
+as the original data as possible, and link it with an auxiliary dataset to
+augment it. This seems like the most natural way to interpret the ISO standard:
+run a similar attack to try and emulate what a marketer would want to do, for
+example to augment their own data.&lt;/p&gt;
+&lt;p&gt;How to quantify the success of a reconstruction attack? One possibility is to
+take the approach from &lt;a href="https://arxiv.org/abs/2211.03128"&gt;this paper&lt;/a&gt;: have the attacker output a &lt;em&gt;ranked&lt;/em&gt;
+list of reconstructed records, where the records at the beginning of the list
+are those that the attacker is most confident about. This way, we can look not
+just at the total fraction of correct guesses, but also at the success rate of
+an attacker who only targets the most vulnerable records.&lt;/p&gt;
+&lt;p&gt;One problem with this approach is that reconstructing records is not always a
+clear privacy issue. Consider the example from my &lt;a href="us-census-reconstruction-attack.html"&gt;article about the Census
+attack&lt;/a&gt;. If an attacker guesses "there is a white male aged 30" in a
+geographic area full of young white people, they will probably be correct, but
+that's not a privacy issue! It's the same problem as before: we need to
+distinguish inferences about &lt;em&gt;specific people&lt;/em&gt; from inferences about the overall
+data distribution.&lt;/p&gt;
+&lt;p&gt;One possibility is to run re-identification attacks using auxiliary datasets,
+like the Census did. Unfortunately, this is very difficult to do in practice.
+We'd have to think about about what kind of auxiliary data an attacker could
+have, then try to obtain or simulate such data before we even try to build an
+attack. It's a lot of work, and it's also brittle: if our assumptions about the
+attacker are a little bit wrong, our measure of risk might be completely off.&lt;/p&gt;
+&lt;p&gt;Instead, I would suggest using the same method as for prosecutor attacks, and
+run attribute inference attacks from the privacy literature. This is consistent
+with the wording in ISO 20889, in which the only difference between two types of
+attacks seems to be the way to quantify risk: marketer attacks are clearly
+concerned about average-case risk, and are only successful if &lt;em&gt;many&lt;/em&gt; records can
+be successfully attacked, not just a few outliers.&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="The same diagram as before, with different boxes highlighted: &amp;quot;Marketer
+attacks&amp;quot;, &amp;quot;Targeting as many people at once as possible&amp;quot;, and &amp;quot;Average risk&amp;quot;.
+Underneath, the entire diagram is labeled &amp;quot;Same as for prosecutor attacks, but
+quantifying average
+risk&amp;quot;." src="https://desfontain.es/blog/images/iso-reidentifiability-marketer-attacks.svg"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;h1 id="journalist-attacks"&gt;Journalist attacks&lt;/h1&gt;
+&lt;p&gt;The idea of journalist attacks is to go the "reverse direction" from prosecutor
+attacks: instead of taking one real person and figuring out which record they
+match in the dataset, take one record in the dataset and match it to a real
+person. This may be a little confusing, because re-identification attacks that
+use an auxiliary dataset (like the &lt;a href="us-census-reconstruction-attack.html"&gt;Census attack&lt;/a&gt;) are essentially
+doing both things at once. So how can we interpret this goal?&lt;/p&gt;
+&lt;p&gt;One option is to take inspiration from the concept of &lt;em&gt;singling out&lt;/em&gt;, mentioned
+in the GDPR as one of the ways to determine &lt;a href="https://gdpr-info.eu/recitals/no-26/"&gt;whether data is anonymous&lt;/a&gt;.
+Intuitively, if you can isolate one record from the original dataset, it seems
+like an indication that something is a little suspicious. I am aware of two
+notions in the literature that attempt to capture this goal.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;One of the metrics from the &lt;a href="https://arxiv.org/abs/2211.10459"&gt;Anonymeter&lt;/a&gt; framework, called
+  &lt;em&gt;Singling Out&lt;/em&gt;, takes a natural approach: the attacker guesses predicates, and
+  wins when a predicate captures a single person in the dataset. However, it has
+  some conceptual flaws: it is specific to one kind of data release (synthetic
+  data) and attack (targeting outlier attribute values), and there is no link
+  between this metric and formal privacy notions. So it's hard to trust whether
+  this score gives accurate information: the metric may suggest that there is a
+  privacy issue even though the mechanism is safe.&lt;/li&gt;
+&lt;li&gt;Another one is &lt;a href="https://arxiv.org/abs/1904.06009"&gt;PSO security&lt;/a&gt;. It has the kind of conceptual solidity
+  that we're looking for: it has a well-defined attacker with a clear threat
+  model. It also has a conceptual link with &lt;a href="friendly-intro-to-differential-privacy.html"&gt;differential privacy&lt;/a&gt;: a DP
+  mechanism is also PSO secure, with some conversion between parameters.
+  However, there's no easy way to check or disprove whether a mechanism is PSO
+  secure, so I don't know of any practical way to convert it into an empirical
+  privacy metric.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This is not a great state of affairs, and I hope it improves! This is one area
+in which unifying theory and practice really seems worthwhile. It would be nice
+to have a empirical privacy metric that captures the notion of singling out,
+but with robust theoretical foundations.&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="The same diagram as before, with only &amp;quot;Journalist attacks&amp;quot; highlighted. The
+entire diagram is labeled &amp;quot;Ideally, a notion that captures singling out. Sadly,
+no great options
+today…&amp;quot;." src="https://desfontain.es/blog/images/iso-reidentifiability-journalist-attacks.svg"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;h1 id="inference-attacks"&gt;Inference attacks&lt;/h1&gt;
+&lt;p&gt;Inference attacks as defined by ISO 20889 seem to capture the kind of attack
+that &lt;a href="l-diversity.html"&gt;&lt;em&gt;l&lt;/em&gt;-diversity&lt;/a&gt; is supposed to protect against: a
+situation where records are protected with &lt;a href="k-anonymity"&gt;&lt;em&gt;k&lt;/em&gt;-anonymity&lt;/a&gt;, but all
+records in a group have the same sensitive attribute. The reasoning goes: an
+attacker could then learn a sensitive attribute associated with someone, even if
+they don't re-identify them.&lt;/p&gt;
+&lt;p&gt;However, translating this idea to data releases protected with other techniques
+is not straightforward. To interpret it in a more generic way, we have two
+options:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;We can say that running attribute inference attacks covers this risk model.
+  This is a little awkward, because we're then using the same method to quantify
+  risk from both &lt;a href="#prosecutor"&gt;prosecutor&lt;/a&gt;/&lt;a href="#marketer"&gt;marketer&lt;/a&gt; attacks and
+  inference attacks.&lt;/li&gt;
+&lt;li&gt;We can also take this opportunity to, again, point out the fundamental
+  difference between learning inferences about &lt;em&gt;individuals&lt;/em&gt; or about
+  &lt;em&gt;populations&lt;/em&gt;, and argue that the latter should &lt;em&gt;not&lt;/em&gt; be a privacy goal.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The latter option is my personal favorite, because the implicit threat model
+from &lt;em&gt;l&lt;/em&gt;-diversity does not clearly distinguish between the two. Say that in a
+dataset, everyone from a certain population (e.g. people who live next to a
+chemical plant) shares a sensitive attribute (e.g. gets cancer). Then, knowing
+that someone lives there allow you to learn something &lt;em&gt;more&lt;/em&gt; about this person
+(they are more at risk of cancer). But this is true regardless of whether this
+person is in the dataset. So it doesn't make sense to quantify the privacy of
+the dataset based on that fact!&lt;/p&gt;
+&lt;p&gt;So this may be a controversial one to end on: I would suggest &lt;em&gt;not&lt;/em&gt; attempting
+to capture "inference attacks" from ISO 20889 with a privacy metric. But this
+seems like the right choice, especially since ISO 27559 goes in the same
+direction: the more recent standard focuses only on re-identifiability risks,
+not on inference. I don't know what happened behind the scenes, but this
+omission feels deliberate. I can't imagine that an organization would get in
+trouble for performing principled privacy evaluation according to the first
+three or four attack models, and not consider statistical inference as a risk.&lt;/p&gt;
+&lt;h1 id="conclusion"&gt;Conclusion&lt;/h1&gt;
+&lt;p&gt;In privacy risk analysis, there is still a huge gap between principled
+approaches from academic work, and requirements of practical use cases. We
+privacy experts have a lot of work to do to try and bridge that gap! But even
+when the requirements seem somewhat absurd, like working with questionable
+standards, we can still find ways of addressing them in a meaningful, principled
+way, and achieve solid outcomes.&lt;/p&gt;
+&lt;p&gt;If your organization could benefit from a robust approach to quantifying and
+controlling re-identification risk, &lt;a href="https://hiding-nemo.com"&gt;hit me up&lt;/a&gt;! I would be happy to help
+you provide strong and meaningful privacy guarantees to your users, and give
+solid arguments to your legal &amp;amp; compliance folks during your next audit or
+contract negotiation.&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id="fn:iso"&gt;
+&lt;p&gt;An acronym that stands for &lt;em&gt;International Standardization Organization&lt;/em&gt;,
+except &lt;a href="https://en.wikipedia.org/wiki/International_Organization_for_Standardization#Name_and_abbreviations"&gt;no it doesn't&lt;/a&gt;.&amp;#160;&lt;a class="footnote-backref" href="#fnref:iso" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:oa"&gt;
+&lt;p&gt;The fact that they are not open access, and in fact very expensive, is
+also pretty ridiculous.&amp;#160;&lt;a class="footnote-backref" href="#fnref:oa" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:ordering"&gt;
+&lt;p&gt;They are listed here in a different order than in the standard, to
+align with the flow of the rest of the blog post.&amp;#160;&lt;a class="footnote-backref" href="#fnref:ordering" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content><category term="misc"></category></entry><entry><title>Tell me what to write</title><link href="https://desfontain.es/blog/tell-me-what-to-write.html" rel="alternate"></link><published>2025-09-29T00:00:00+02:00</published><updated>2025-09-29T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2025-09-29:/blog/tell-me-what-to-write.html</id><summary type="html">&lt;p&gt;A short note encouraging you to tell me what you would like to read about in this blog.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;It&lt;/strong&gt; is always a delight when people I just meet tell me that they've found my
 blog useful. Earlier this month, I met a few readers at the &lt;a href="https://eodsummit.com"&gt;Eyes-Off Data
 Summit&lt;/a&gt;, and I got to hear from a few of them something like: "Have you
 considered writing about topic X?"&lt;/p&gt;
@@ -9877,7 +10170,7 @@ small fraction of the statistics were used in the attack (6.2 billion out of 150
 billion). Swapping was not enough to prevent accurate reconstruction.&lt;/p&gt;
 &lt;p&gt;At first glance, that result looks pretty scary. But let's take a step back: how
 bad is it really? What does this 46% number actually tell us?&lt;/p&gt;
-&lt;h1 id="how-bad-is-reconstruction"&gt;How bad is reconstruction?&lt;/h1&gt;
+&lt;h1 id="how-bad-is-reconstruction"&gt;How bad is reconstruction? &lt;a name="how-bad"&gt;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Imagine that a given Census block has a particularly homogeneous population: out
 of 100 habitants, 95 all self-identify as White, and are evenly distributed
 between the ages of 20 and 39&lt;sup id="fnref:homogeneous"&gt;&lt;a class="footnote-ref" href="#fn:homogeneous"&gt;3&lt;/a&gt;&lt;/sup&gt;. The other 5% of people in this
