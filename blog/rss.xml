@@ -64,13 +64,12 @@ the people in the data.&lt;/p&gt;
 &lt;img alt="A diagram with three columns, each containing a title and multiple boxes. The
 left one is labeled &amp;quot;ISO 20889 attacker goals&amp;quot; and has five boxes containing
 &amp;quot;Data membership attack&amp;quot;, &amp;quot;Prosecutor attack&amp;quot;, &amp;quot;Marketer attack&amp;quot;, &amp;quot;Journalist
-attack&amp;quot;, and &amp;quot;Inference attack&amp;quot;. The
-middle one is labeled &amp;quot;ISO 27559 attack settings&amp;quot; and has three boxes containing
-&amp;quot;Specific target, known to be present in the data&amp;quot;, &amp;quot;Specific target, without
-knowing whether they are present in the data&amp;quot;, and &amp;quot;Targeting as many people at
-once as possible&amp;quot;. The right one is labeled &amp;quot;ISO 27559 risk model&amp;quot;, and has two
-boxes labeled &amp;quot;Maximal/outlier risk&amp;quot; and &amp;quot;Average
-risk&amp;quot;." src="images/iso-reidentifiability-concepts.svg"&gt;
+attack&amp;quot;, and &amp;quot;Inference attack&amp;quot;. The middle one is labeled &amp;quot;ISO 27559 attack
+settings&amp;quot; and has three boxes containing &amp;quot;Specific target, known to be present
+in the data&amp;quot;, &amp;quot;Specific target, without knowing whether they are present in the
+data&amp;quot;, and &amp;quot;Targeting as many people at once as possible&amp;quot;. The right one is
+labeled &amp;quot;ISO 27559 risk model&amp;quot;, and has two boxes labeled &amp;quot;Maximal/outlier risk&amp;quot;
+and &amp;quot;Average risk&amp;quot;." src="images/iso-reidentifiability-concepts.svg"&gt;
 &lt;/center&gt;&lt;/p&gt;
 &lt;p&gt;OK, so these are five types of goals, three settings, and two methods of
 computing risk. Does it mean we have to evaluate 30 different scores? I don't

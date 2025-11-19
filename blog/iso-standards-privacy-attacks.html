@@ -25,7 +25,10 @@
   <meta name="description" property="og:description" content="ISO standards on privacy attacks are not great, but some organizations still want to use them. Can we interpret them in a principled way?" />
   <meta property="twitter:description" content="ISO standards on privacy attacks are not great, but some organizations still want to use them. Can we interpret them in a principled way?" />
   <meta property="summary" content="ISO standards on privacy attacks are not great, but some organizations still want to use them. Can we interpret them in a principled way?" />
-  <meta name="twitter:card" content="summary"/>
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/iso-reidentifiability-concepts.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/iso-reidentifiability-concepts.png" />
+  <meta property="twitter:image:alt" content="A diagram with three columns, each containing a title and multiple boxes. The left one is labeled "ISO 20889 attacker goals" and has five boxes containing "Data membership attack", "Prosecutor attack", "Marketer attack", "Journalist attack", and "Inference attack". The middle one is labeled "ISO 27559 attack settings" and has three boxes containing "Specific target, known to be present in the data", "Specific target, without knowing whether they are present in the data", and "Targeting as many people at once as possible". The right one is labeled "ISO 27559 risk model", and has two boxes labeled "Maximal/outlier risk" and "Average risk"." />
   <link rel="canonical" href="https://desfontain.es/blog/iso-standards-privacy-attacks.html" />
   <link rel="prev" href="tell-me-what-to-write.html" />
 </head>
@@ -154,13 +157,12 @@ the people in the data.</p>
 <img alt="A diagram with three columns, each containing a title and multiple boxes. The
 left one is labeled &quot;ISO 20889 attacker goals&quot; and has five boxes containing
 &quot;Data membership attack&quot;, &quot;Prosecutor attack&quot;, &quot;Marketer attack&quot;, &quot;Journalist
-attack&quot;, and &quot;Inference attack&quot;. The
-middle one is labeled &quot;ISO 27559 attack settings&quot; and has three boxes containing
-&quot;Specific target, known to be present in the data&quot;, &quot;Specific target, without
-knowing whether they are present in the data&quot;, and &quot;Targeting as many people at
-once as possible&quot;. The right one is labeled &quot;ISO 27559 risk model&quot;, and has two
-boxes labeled &quot;Maximal/outlier risk&quot; and &quot;Average
-risk&quot;." src="images/iso-reidentifiability-concepts.svg">
+attack&quot;, and &quot;Inference attack&quot;. The middle one is labeled &quot;ISO 27559 attack
+settings&quot; and has three boxes containing &quot;Specific target, known to be present
+in the data&quot;, &quot;Specific target, without knowing whether they are present in the
+data&quot;, and &quot;Targeting as many people at once as possible&quot;. The right one is
+labeled &quot;ISO 27559 risk model&quot;, and has two boxes labeled &quot;Maximal/outlier risk&quot;
+and &quot;Average risk&quot;." src="images/iso-reidentifiability-concepts.svg">
 </center></p>
 <p>OK, so these are five types of goals, three settings, and two methods of
 computing risk. Does it mean we have to evaluate 30 different scores? I don't
