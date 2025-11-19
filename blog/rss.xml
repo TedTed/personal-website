@@ -70,7 +70,7 @@ middle one is labeled &amp;quot;ISO 27559 attack settings&amp;quot; and has thre
 knowing whether they are present in the data&amp;quot;, and &amp;quot;Targeting as many people at
 once as possible&amp;quot;. The right one is labeled &amp;quot;ISO 27559 risk model&amp;quot;, and has two
 boxes labeled &amp;quot;Maximal/outlier risk&amp;quot; and &amp;quot;Average
-risk&amp;quot;." src="https://desfontain.es/blog/images/iso-reidentifiability-concepts.svg"&gt;
+risk&amp;quot;." src="images/iso-reidentifiability-concepts.svg"&gt;
 &lt;/center&gt;&lt;/p&gt;
 &lt;p&gt;OK, so these are five types of goals, three settings, and two methods of
 computing risk. Does it mean we have to evaluate 30 different scores? I don't
@@ -90,7 +90,7 @@ trade-off curve between false positives and false negatives:&lt;/p&gt;
 &lt;p&gt;&lt;center&gt;
 &lt;img alt="Four curves plotting the True Positive Rate against the False Positive Rate of
 a membership inference attack against four ML
-models" src="https://desfontain.es/blog/images/tpr-vs-fpr.png" width="80%"&gt;&lt;/p&gt;
+models" src="images/tpr-vs-fpr.png" width="80%"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;small&gt;An example taken from &lt;a href="https://arxiv.org/abs/2112.03570"&gt;this paper&lt;/a&gt;,
 which also gives a good explanation of how to quantify the success of membership
 inference attacks in a principled way.
@@ -114,7 +114,7 @@ success rate on specific subpopulations.&lt;/p&gt;
 attack&amp;quot;, &amp;quot;Specific target, without knowing whether they are present in the
 data&amp;quot;, &amp;quot;Maximal/outlier risk&amp;quot;, and &amp;quot;Average risk&amp;quot;. Underneath, the entire
 diagram is labeled &amp;quot;Covered by membership inference attacks from the privacy
-literature&amp;quot;." src="https://desfontain.es/blog/images/iso-reidentifiability-data-membership-attacks.svg"&gt;
+literature&amp;quot;." src="images/iso-reidentifiability-data-membership-attacks.svg"&gt;
 &lt;/center&gt;&lt;/p&gt;
 &lt;h1 id="prosecutor-attacks"&gt;Prosecutor attacks &lt;a name="prosecutor"&gt;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;In a prosecutor attack, the goal is to find the record associated with a
@@ -148,7 +148,7 @@ vulnerable people in the dataset, so that's what I would do.&lt;/p&gt;
 attacks&amp;quot;, &amp;quot;Specific target, without knowing whether they are present in the
 data&amp;quot;, and &amp;quot;Maximal/outlier risk&amp;quot;. Underneath, the entire diagram is labeled
 &amp;quot;Covered by membership inference attacks from the privacy
-literature&amp;quot;." src="https://desfontain.es/blog/images/iso-reidentifiability-prosecutor-attacks.svg"&gt;
+literature&amp;quot;." src="images/iso-reidentifiability-prosecutor-attacks.svg"&gt;
 &lt;/center&gt;&lt;/p&gt;
 &lt;h1 id="marketer-attacks"&gt;Marketer attacks &lt;a name="marketer"&gt;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;The goal of a marketer attack is to re-identify as many individuals as possible.
@@ -188,7 +188,7 @@ be successfully attacked, not just a few outliers.&lt;/p&gt;
 attacks&amp;quot;, &amp;quot;Targeting as many people at once as possible&amp;quot;, and &amp;quot;Average risk&amp;quot;.
 Underneath, the entire diagram is labeled &amp;quot;Same as for prosecutor attacks, but
 quantifying average
-risk&amp;quot;." src="https://desfontain.es/blog/images/iso-reidentifiability-marketer-attacks.svg"&gt;
+risk&amp;quot;." src="images/iso-reidentifiability-marketer-attacks.svg"&gt;
 &lt;/center&gt;&lt;/p&gt;
 &lt;h1 id="journalist-attacks"&gt;Journalist attacks&lt;/h1&gt;
 &lt;p&gt;The idea of journalist attacks is to go the "reverse direction" from prosecutor
@@ -227,7 +227,7 @@ but with robust theoretical foundations.&lt;/p&gt;
 &lt;img alt="The same diagram as before, with only &amp;quot;Journalist attacks&amp;quot; highlighted. The
 entire diagram is labeled &amp;quot;Ideally, a notion that captures singling out. Sadly,
 no great options
-today…&amp;quot;." src="https://desfontain.es/blog/images/iso-reidentifiability-journalist-attacks.svg"&gt;
+today…&amp;quot;." src="images/iso-reidentifiability-journalist-attacks.svg"&gt;
 &lt;/center&gt;&lt;/p&gt;
 &lt;h1 id="inference-attacks"&gt;Inference attacks&lt;/h1&gt;
 &lt;p&gt;Inference attacks as defined by ISO 20889 seem to capture the kind of attack
