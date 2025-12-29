@@ -1,5 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2025-11-19T00:00:00+01:00</updated><entry><title>Mapping ISO standards to modern privacy attacks</title><link href="https://desfontain.es/blog/iso-standards-privacy-attacks.html" rel="alternate"></link><published>2025-11-19T00:00:00+01:00</published><updated>2025-11-19T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2025-11-19:/blog/iso-standards-privacy-attacks.html</id><summary type="html">&lt;p&gt;ISO standards on privacy attacks are not great, but some organizations still want to use them. Can we interpret them in a principled way?&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;ISO&lt;/strong&gt;&lt;sup id="fnref:iso"&gt;&lt;a class="footnote-ref" href="#fn:iso"&gt;1&lt;/a&gt;&lt;/sup&gt; is an organization that publishes &lt;em&gt;standards&lt;/em&gt;: documents that
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2025-12-19T00:00:00+01:00</updated><entry><title>Favorite reads of 2025</title><link href="https://desfontain.es/blog/favorite-reads-2025.html" rel="alternate"></link><published>2025-12-19T00:00:00+01:00</published><updated>2025-12-19T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2025-12-19:/blog/favorite-reads-2025.html</id><summary type="html">&lt;p&gt;A list of the books that I particularly enjoyed reading this year.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;Every&lt;/strong&gt; year, I post on social media about the books I most enjoyed that year.
+For 2025, I'm writing a blog post instead, so this is a bit more permanent. The
+following list is not ordered or ranked in any way.&lt;/p&gt;
+&lt;h4 id="ammonite-by-nicola-griffith"&gt;Ammonite, by Nicola Griffith&lt;/h4&gt;
+&lt;p&gt;An anthropologist is sent on a mission on a planet colonized by humans centuries
+ago, but where all males were wiped out by a strange disease. The women, though,
+seem to thrive, generation after generation…&lt;/p&gt;
+&lt;p&gt;I loved this novel, thought-provoking and beautiful in a way that I found very
+similar to the work of Ursula K. Le Guin (one of my all-time favorite authors).
+I still think about elements of it months later.&lt;/p&gt;
+&lt;h4 id="cackle-by-rachel-harrison"&gt;Cackle, by Rachel Harrison&lt;/h4&gt;
+&lt;p&gt;A woman moves to a small town, and makes friend with a somewhat strange person.
+She seems weirdly well-known among the town folks. Or do they fear her? She
+seems nice enough…&lt;/p&gt;
+&lt;p&gt;You can see where this is going a quarter of the way through but it's still a
+very fun, and reasonably light, little novel.&lt;/p&gt;
+&lt;h4 id="notre-dame-du-nil-by-scholastique-mukasonga"&gt;Notre-Dame du Nil, by Scholastique Mukasonga&lt;/h4&gt;
+&lt;p&gt;(Read in the original French, the English title is &lt;em&gt;Our Lady of the Nile&lt;/em&gt;.)&lt;/p&gt;
+&lt;p&gt;The novel follows a few students of a catholic school for girls in Rwanda, at a
+time of increasing ethnic tensions that eventually led to the genocide against
+the Tutsi. Written with a disarming simplicity, with teenage characters that
+ring true.&lt;/p&gt;
+&lt;p&gt;An excellent commentary on colonialism and ethnic violence weaved in a
+beautiful and fascinating teenage story.&lt;/p&gt;
+&lt;h4 id="zen-and-the-art-of-motorcycle-maintenance-by-robert-m-pirsig"&gt;Zen and the Art of Motorcycle Maintenance, by Robert M. Pirsig&lt;/h4&gt;
+&lt;p&gt;Weird and fascinating mix between a travel story, philosophical essays, and a
+mystery about a fragmented mind. This book is a classic among a specific kind of
+nerdy audience; its theses on quality and the deeper meaning of maintenance work
+resonate a lot today.&lt;/p&gt;
+&lt;p&gt;Absolutely worth a read. I get why this has such an enthusiastic fan base. I
+still regularly think about it months later, and it actually changed the way I
+approach certain parts of life, like choosing and taking care of my tools. (And
+by tools, I mostly mean kitchen utensils.)&lt;/p&gt;
+&lt;h4 id="translation-state-by-ann-leckie"&gt;Translation State, by Ann Leckie&lt;/h4&gt;
+&lt;p&gt;A science-fiction novel difficult to describe in just a few words! One of the
+protagonists is assigned to a meaningless and mostly hopeless mission (tracking
+down someone who disappeared two centuries prior). The second one is an adoptee
+with weirdly violent tendencies, that suddenly becomes the center of attraction
+of a particularly enthusiastic cultural group. The third is a weird sort of
+alien, growing up in a crèche learning how to pretend to be human, occasionally
+vivisecting and devouring the other "kids". And of course, their stories become
+intertwined in unexpected ways…&lt;/p&gt;
+&lt;p&gt;Weird and wonderful. I love everything Ann Leckie writes, but I think this book
+is one of her best — I think enjoyed it as much as her debut novel, Ancillary
+Justice, which was an absolute masterpiece.&lt;/p&gt;
+&lt;h4 id="well-prescribe-you-a-cat-by-syou-ishida"&gt;We'll prescribe you a cat, by Syou Ishida&lt;/h4&gt;
+&lt;p&gt;An adorable Japanese novel about a strange mental health clinic that prescribes
+cats to people. The patients are initially a little nonplussed but obviously,
+the prescriptions are working wonderfully, often in very… indirect ways.&lt;/p&gt;
+&lt;p&gt;This is a short and easy read, essentially guaranteed to improve your mood.
+Lovely ending.&lt;/p&gt;
+&lt;h4 id="borne-by-jeff-vandermeer"&gt;Borne, by Jeff VanderMeer&lt;/h4&gt;
+&lt;p&gt;In a dystopian / biopunk / post-apocalyptic urban setting, a scavenger stumbles
+upon a… thing, which might be a plant, or a piece of biotech, or maybe a kind of
+sea anemone or other strange animal. This is a weird starting point, and then it
+gets weirder, fast. (The giant flying bear definitely helps.)&lt;/p&gt;
+&lt;p&gt;Extremely original in a messed up way. Hard to put it down. Gift it to your
+weirder friends.&lt;/p&gt;
+&lt;h4 id="the-thursday-murder-club-by-richard-osman"&gt;The Thursday Murder Club, by Richard Osman&lt;/h4&gt;
+&lt;p&gt;A group of old people in a retirement village meet weekly to try and solve cold
+cases for fun… until an actual murder happens right next door. Both the story
+and its characters are very good at not taking each other too seriously, so this
+makes for a very fun read.&lt;/p&gt;
+&lt;p&gt;I enjoyed the story and its colorful cast of elderly characters, but the witty
+writing is really what makes this book special — it's probably the novel that
+made me laugh the most this year.&lt;/p&gt;
+&lt;h4 id="yellowface-by-r-f-kuang"&gt;Yellowface, by R. F. Kuang&lt;/h4&gt;
+&lt;p&gt;The protagonist, a white author who didn't really make it as a writer, is friend
+with a Chinese-American author who is &lt;em&gt;way&lt;/em&gt; more successful than her. The friend
+unexpectedly dies, and the protagonist steals her latest unpublish manuscript to
+pass off as her own. This is her first major bad decision, and it's very, &lt;em&gt;very&lt;/em&gt;
+far from the last. In the process, the novel also offers exceedingly sharp
+commentary on racism, social media, and the publishing industry.&lt;/p&gt;
+&lt;p&gt;I started reading this book in the morning and absolutely could not put it down,
+finishing it a few hours later and skipping lunch in the process. It was like
+watching a car crash in slow motion, in the best of ways. (This is a very normal
+metaphor.)&lt;/p&gt;
+&lt;h4 id="a-sorceress-comes-to-call-by-t-kingfisher"&gt;A Sorceress Comes to Call, by T. Kingfisher&lt;/h4&gt;
+&lt;p&gt;Somewhere between a fairy tale, a romance novel, and a horror story. A teenage
+girl lives alone with her abusive mother, who uses powerful magic to get an
+absolute level of control over her daughter. And she has to follow along when
+her sorceress mother decides to make a move to find herself a new husband…&lt;/p&gt;
+&lt;p&gt;I absolutely love what Kingfisher is doing with the fairy tale genre, in
+particular when she's weaving darker elements into the story. This novel, with
+its wonderful and awfully realistic depiction of this controlling mother, is no
+exception.&lt;/p&gt;
+&lt;h4 id="everything-for-everyone-by-me-obrien-and-eman-abdelhadi"&gt;Everything for Everyone, by M.E. O'Brien and Eman Abdelhadi&lt;/h4&gt;
+&lt;p&gt;A couple of academics — or the closest thing there is to it — are writing a oral
+history of the New York Commune, by interviewing people who lived there during
+the revolutionary events that took place there between 2052 and 2072. Each
+chapter interviews a different person and focuses on a different aspect of the
+global revolution that ended capitalism, and the efforts to build a better
+society afterwards.&lt;/p&gt;
+&lt;p&gt;I love novels that imagine radically different ways humans could live together.
+This one is not only beautifully written (it made me cry a couple of times!),
+but it's also very well-researched, and doesn't shy away from considering the
+darker aspects of violent uprisings and society building. Even if you don't
+connect with this book as much as I did, it certainly won't leave you
+indifferent.&lt;/p&gt;</content><category term="misc"></category></entry><entry><title>Mapping ISO standards to modern privacy attacks</title><link href="https://desfontain.es/blog/iso-standards-privacy-attacks.html" rel="alternate"></link><published>2025-11-19T00:00:00+01:00</published><updated>2025-11-19T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2025-11-19:/blog/iso-standards-privacy-attacks.html</id><summary type="html">&lt;p&gt;ISO standards on privacy attacks are not great, but some organizations still want to use them. Can we interpret them in a principled way?&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;ISO&lt;/strong&gt;&lt;sup id="fnref:iso"&gt;&lt;a class="footnote-ref" href="#fn:iso"&gt;1&lt;/a&gt;&lt;/sup&gt; is an organization that publishes &lt;em&gt;standards&lt;/em&gt;: documents that
 describe how to do things in a systematic, repeatable way across organizations.
 Some of these standards are very widely used, like &lt;a href="https://en.wikipedia.org/wiki/ISO/IEC_27001"&gt;ISO 27001&lt;/a&gt; in
 cybersecurity. Existing ISO standards related to privacy, on the other hand,
