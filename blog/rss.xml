@@ -1,5 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2025-12-29T00:00:00+01:00</updated><entry><title>Favorite reads of 2025</title><link href="https://desfontain.es/blog/favorite-reads-2025.html" rel="alternate"></link><published>2025-12-29T00:00:00+01:00</published><updated>2025-12-29T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2025-12-29:/blog/favorite-reads-2025.html</id><summary type="html">&lt;p&gt;A list of the books that I particularly enjoyed reading this year.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;Every&lt;/strong&gt; year, I post on social media about the books I most enjoyed that year.
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-01-08T00:00:00+01:00</updated><entry><title>On "simplifying" GDPR's definition of personal data</title><link href="https://desfontain.es/blog/digital-omnibus-personal-data-definition.html" rel="alternate"></link><published>2026-01-08T00:00:00+01:00</published><updated>2026-01-08T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-01-08:/blog/digital-omnibus-personal-data-definition.html</id><summary type="html">&lt;p&gt;I don't think it's a great idea to redefine what counts as anonymized data according to GDPR, like the European Commission is currently proposing. Here's why.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;Last&lt;/strong&gt; November, the European Commission published a proposal named "Digital
+Omnibus", to change and clarify multiple regulations. You can find the full text
+of the proposal &lt;a href="https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-regulation-proposal"&gt;here&lt;/a&gt;, and a summary in their &lt;a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2718"&gt;press release&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;One of the proposed changes concerns the definition of personal data under
+&lt;a href="https://en.wikipedia.org/wiki/General_Data_Protection_Regulation"&gt;GDPR&lt;/a&gt;. It's a critical definition, because if something is &lt;em&gt;not&lt;/em&gt; personal data,
+then the GDPR doesn't apply. So classifying something as not personal data — for
+example, by applying robust anonymization methods — essentially gives
+organizations a "get-out-of-data-protection-compliance-obligations" card.&lt;/p&gt;
+&lt;p&gt;In this blog post, I want to make a simple point: this change would not lead to
+the desired goal of making it simpler for organizations to comply with data
+protection law. It would make it more difficult for organizations to achieve
+a good compliance posture, and more likely that they need expert help as part of
+their compliance programs. This would be great news for &lt;a href="https://hiding-nemo.com"&gt;my business&lt;/a&gt;! But I
+don't think it would lead to great outcomes for society.&lt;/p&gt;
+&lt;p&gt;Currently, data is considered personal data if it relates to an identified &lt;strong&gt;or
+identifiable&lt;/strong&gt; person. The definition doesn't depend on &lt;em&gt;who&lt;/em&gt; holds a piece of
+data. This suggests that if someone, somewhere, can take that data and figure
+out the specific person it relates to, then this is personal data. And if you're
+the one holding such data, then you have to treat it carefully, and comply with
+a bunch of GDPR obligations.&lt;/p&gt;
+&lt;p&gt;The Digital Omnibus proposes to change this, to make that definition depend on
+who is holding the data. Say I give you some data, and I have a way of mapping
+each record in that data to a specific person. But I don't tell you how I can do
+it. You have no clear way of identifying the person it relates to. You could
+make the case that this data is anonymous &lt;em&gt;for you&lt;/em&gt;, and avoid having to comply
+with all the annoying GDPR rules.&lt;/p&gt;
+&lt;p&gt;This changes an &lt;em&gt;absolute&lt;/em&gt; definition into a &lt;em&gt;relative&lt;/em&gt; one. If you want to
+categorize data as anonymized, you have to consider all the &lt;em&gt;other&lt;/em&gt; data and
+capabilities that your organization has. Different organizations might classify
+data differently. Worse, changes in context (like your company merging with
+another company, or launching a new product generating new data) might change
+whether you can consider a dataset as anonymized. Already, this seems like this
+doesn't achieve the "simplification" goal: the criterion gets more complex, and
+more likely to change over time.&lt;/p&gt;
+&lt;p&gt;But with this change, companies will be able to classify more of their data as
+anonymized, even if other organizations could re-identify it. This can be very
+valuable&lt;sup id="fnref:valuable"&gt;&lt;a class="footnote-ref" href="#fn:valuable"&gt;1&lt;/a&gt;&lt;/sup&gt;: it would allows companies to keep data for longer, use it
+for secondary purposes, possibly re-share it, and so on. So we should expect
+companies to try to use this new determination for more of the data they hold.&lt;/p&gt;
+&lt;p&gt;Because the criterion is more complicated, this would require more work, and
+this work would require more specific expertise. That's why this would be great
+news for &lt;a href="https://hiding-nemo.com"&gt;my independent consultancy&lt;/a&gt;: doing re-identification analysis and
+designing anonymization schemes is exactly the kind of service I provide to my
+clients. More demand would translate to more business and higher rates.&lt;/p&gt;
+&lt;p&gt;However, I fear that that besides privacy consultancies like mine, only big
+companies would benefit from this change. Large organizations have lots of data,
+want to do many different things with it, and have money to invest into making
+it possible. It makes sense for them to hire people like me to help them pass
+the new anonymization bar while keeping as much data value as possible.&lt;/p&gt;
+&lt;p&gt;Smaller organizations, by contrast, typically don't have very mature privacy
+programs, and they have a lot less data. How will their behavior change if the
+new definition of personal data is adopted? I can foresee two likely outcomes.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;They might not change anything. Keep things simple, use a conservative,
+   "absolute" approach to anonymization. This does not change the status quo,
+   but means that larger companies can increase their competitive advantage over
+   smaller players.&lt;/li&gt;
+&lt;li&gt;They might try to adopt the new definition, but will be likely to make the
+   determination without the necessary expertise, leading to increased privacy
+   and compliance risk. Incorrectly categorizing some data as anonymized is
+   already a common occurence: people convince themselves that the redaction
+   scheme they just made up is robust, and make privacy claims that don't stand
+   up to scrutiny. Making the definition more complex and less strict can only
+   make this problem worse.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Neither outcome seems like an improvement to me.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;small&gt; For a more in-depth analysis of the proposed changes in the Digital
+Omnibus, I recommend &lt;a href="https://edri.org/our-work/why-the-digital-omnibus-puts-gdpr-and-eprivacy-at-risk/"&gt;this report&lt;/a&gt; report by EDRi, a collective of civil
+and human rights organizations from across Europe. &lt;/small&gt;&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id="fn:valuable"&gt;
+&lt;p&gt;From a business perspective, not for end users. (There is a lot to
+say about the consequences of the proposed changes for end users, but this
+is not the point I'm making in this post.)&amp;#160;&lt;a class="footnote-backref" href="#fnref:valuable" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content><category term="misc"></category></entry><entry><title>Favorite reads of 2025</title><link href="https://desfontain.es/blog/favorite-reads-2025.html" rel="alternate"></link><published>2025-12-29T00:00:00+01:00</published><updated>2025-12-29T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2025-12-29:/blog/favorite-reads-2025.html</id><summary type="html">&lt;p&gt;A list of the books that I particularly enjoyed reading this year.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;Every&lt;/strong&gt; year, I post on social media about the books I most enjoyed that year.
 For 2025, I'm writing a blog post instead, so this is a bit more permanent. The
 following list is not ordered or ranked in any way.&lt;/p&gt;
 &lt;h4 id="ammonite-by-nicola-griffith"&gt;Ammonite, by Nicola Griffith&lt;/h4&gt;
