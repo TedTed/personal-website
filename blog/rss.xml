@@ -12,7 +12,7 @@ quantification&amp;quot; with a teacher
 emoji." src="images/three-kinds-of-privacy-auditing.svg"&gt;
 &lt;/center&gt;&lt;/p&gt;
 &lt;h1 id="verifying-compliance-processes"&gt;Verifying compliance processes&lt;/h1&gt;
-&lt;p&gt;Say you're talking to someone primarily working on &lt;em&gt;compliance&lt;/em&gt;. For them, a
+&lt;p&gt;Say you're talking to someone primarily working on compliance. For them, a
 "privacy audit" is likely going to be about &lt;em&gt;independent checking of processes&lt;/em&gt;.
 An external person will come to an organization and ask a bunch of questions
 about how they're handling personal data and complying with applicable data
@@ -29,10 +29,12 @@ have a solid understanding of data protection law, and be good at navigating
 complex organizations.&lt;/p&gt;
 &lt;p&gt;The auditor will compare the answers against a list of things they should check
 for. They will produce a document describing all the things they checked, and
-the problems they identified. The organization then gets to say "an independent
-third-party verified that we are doing all the right things" to regulators or
-potential business partners. Conceptually, it is similar to a &lt;a href="https://en.wikipedia.org/wiki/Financial_audit"&gt;financial
+the problems they identified. Conceptually, it is similar to a &lt;a href="https://en.wikipedia.org/wiki/Financial_audit"&gt;financial
 audit&lt;/a&gt; or security audits like &lt;a href="https://en.wikipedia.org/wiki/ISO/IEC_27001"&gt;ISO 27001&lt;/a&gt; certifications.&lt;/p&gt;
+&lt;p&gt;Sometimes, the auditor is hired by the organization, so they can then say "a
+third-party verified that we are doing all the right things" to regulators or
+potential business partners. Other times, the auditor is hired by a regulatory
+body as part of an ongoing investigation.&lt;/p&gt;
 &lt;h1 id="attacking-a-technical-system"&gt;Attacking a technical system&lt;/h1&gt;
 &lt;p&gt;If you're talking to someone whose job title includes something "privacy &lt;a href="https://en.wikipedia.org/wiki/Red_team"&gt;red
 teaming&lt;/a&gt;", the answer will be different. For them, a privacy audit is
@@ -55,9 +57,9 @@ examples.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;p&gt;This has some overlap with the previous kind of privacy audit, but it is more
 concerned about identifying practical risks than demonstrating compliance. It's
-primarily a hands-on exercise, so it's typically done by technical folks. Some
-tech companies an in-house privacy red team, while compliance-oriented privacy
-audits are more typically performed by independent third parties.&lt;/p&gt;
+primarily a hands-on exercise, so it's typically done by technical folks. This
+kind of privacy audit is typically run by an in-house privacy red team, or by a
+vendor providing this type of service.&lt;/p&gt;
 &lt;p&gt;You can read more about privacy red teaming in &lt;a href="https://www.privacyengineer.ch/the-why-and-how-of-an-emerging-privacy-practice/"&gt;this blog post&lt;/a&gt;.&lt;/p&gt;
 &lt;h1 id="measuring-the-privacy-loss-of-an-algorithm"&gt;Measuring the privacy loss of an algorithm&lt;/h1&gt;
 &lt;p&gt;If you're talking to a researcher focusing on &lt;a href="friendly-intro-to-differential-privacy.html"&gt;differential privacy&lt;/a&gt;,
@@ -91,7 +93,7 @@ areas of focus (like compliance or UX design), I would be happy to recommend
 someone.&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;&lt;small&gt;Thanks to &lt;a href="https://kjamistan.com/"&gt;Katharine Jarmul&lt;/a&gt; for suggesting the
-topic of this blog post.&lt;/small&gt;&lt;/p&gt;
+topic of this blog post and providing valuable feedback on its drafts.&lt;/small&gt;&lt;/p&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
