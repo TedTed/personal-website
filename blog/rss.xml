@@ -1,5 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-01-13T00:00:00+01:00</updated><entry><title>Three kinds of “privacy auditing”</title><link href="https://desfontain.es/blog/privacy-auditing-terminology.html" rel="alternate"></link><published>2026-01-13T00:00:00+01:00</published><updated>2026-01-13T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-01-13:/blog/privacy-auditing-terminology.html</id><summary type="html">&lt;p&gt;What academics call “privacy auditing” has little to do with what industry folks call “auditing”. This may be confusing.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;When&lt;/strong&gt; someone tells you that their current project involves &lt;em&gt;privacy
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-02-03T00:00:00+01:00</updated><entry><title>Guest post: Balancing your dataset? Mind the privacy leaks!</title><link href="https://desfontain.es/blog/smote-and-mirrors.html" rel="alternate"></link><published>2026-02-03T00:00:00+01:00</published><updated>2026-02-03T00:00:00+01:00</updated><author><name>Georgi, Ganev and Desfontaines, Damien</name></author><id>tag:desfontain.es,2026-02-03:/blog/smote-and-mirrors.html</id><summary type="html">&lt;p&gt;Why SMOTE, a popular data augmentation technique, exposes your sensitive data.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;small&gt;
+&lt;span class='notlettrine'&gt;T&lt;/span&gt;his blog post is written by
+&lt;a href="https://ganevgv.github.io/"&gt;Georgi Ganev&lt;/a&gt;; I helped with editing and am
+delighted to host it here as a guest post. If you’d also like to contribute a
+post about your research to this blog, don’t hesitate to get in touch!
+&lt;/small&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;span class='lettrine'&gt;I&lt;/span&gt;&lt;strong&gt;magine&lt;/strong&gt; that you're building a machine
+learning classifier detecting a rare disease or financial fraud. Most of your
+data comes from healthy patients or legitimate transactions, while positive
+cases (i.e., the presence of disease or fraud) are few and far between. When you
+evaluate your model, you notice something worrying: performance is much worse on
+these rare cases. The model struggles precisely where mistakes are most costly.
+This is a common problem in real-world datasets, where some classes (or
+combinations of features) are severely underrepresented.&lt;/p&gt;
+&lt;p&gt;What should you do then? A widely used solution is &lt;a href="https://arxiv.org/abs/1106.1813"&gt;SMOTE&lt;/a&gt; (Synthetic Minority
+Over-sampling Technique), a data augmentation method that creates synthetic
+examples of the rare class to “balance” the dataset before training the
+classifier. SMOTE is a go-to tool for fixing imbalanced datasets: simple,
+flexible, built into most ML stacks, and widely trusted — including in
+industries handling sensitive personal data.&lt;/p&gt;
+&lt;h1 id="how-smote-works"&gt;How SMOTE works&lt;/h1&gt;
+&lt;p&gt;SMOTE does not invent new minority data from scratch. Instead, it reuses what is
+already there. The process works like this:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Select a real underrepresented/minority record randomly (red cross in black
+   circle).&lt;/li&gt;
+&lt;li&gt;Find its k (here k=3) nearest minority neighbors (red crosses in black dotted
+   circles).&lt;/li&gt;
+&lt;li&gt;Select one of these neighbors randomly (remaining red cross in black dotted
+   circle).&lt;/li&gt;
+&lt;li&gt;Create a synthetic record by interpolating between the two records: pick a
+   point at a random proportion along the line connecting them (orange dot on
+   orange line).&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="Four-step illustration of the SMOTE method, showing how a new synthetic record is created between a selected real record and one of its nearby neighbors." src="images/smote-diagram.png"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;Do this many times, and your dataset looks “balanced”, with more points in
+previously sparse regions corresponding to underrepresented/minority groups.&lt;/p&gt;
+&lt;p&gt;Note that every synthetic point is an interpolation between real individuals in
+the original data. Given that SMOTE is widely used on sensitive data, it makes
+sense to ask: &lt;strong&gt;does this lead to real-world privacy risks&lt;/strong&gt;? As we show in a
+&lt;a href="https://arxiv.org/abs/2510.15083"&gt;new paper&lt;/a&gt;, recently accepted at &lt;a href="https://iclr.cc/"&gt;ICLR 2026&lt;/a&gt;, the answer is yes:
+privacy attacks can uncover which records are synthetic, and even reconstruct
+real data points. Let’s see how they work!&lt;/p&gt;
+&lt;h1 id="distinguishing-between-real-and-fake-records"&gt;Distinguishing between real and fake records&lt;/h1&gt;
+&lt;p&gt;First, &lt;strong&gt;we can easily and quickly distinguish between real and fake-generated
+records&lt;/strong&gt; using a conceptually simple yet powerful attack, called DistinSMOTE.
+This is bad news: it means that if someone gains access to a SMOTE-augmented
+dataset (e.g., internal analysts or data scientists), they can expose the
+original sensitive individuals.&lt;/p&gt;
+&lt;p&gt;How does it work? We saw earlier that SMOTE generates synthetic points by
+drawing straight lines between real minority data points. Therefore, the real
+points lie at the ends of these lines, while the synthetic points lie strictly
+in between.&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="Diagram illustrating the DistinSMOTE idea, with records at the ends of lines
+labeled as real and records in the middle labeled as
+synthetic." src="images/distinsmote-diagram.png"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;DistinSMOTE exploits this geometric structure to iteratively identify these
+interpolation patterns, and perfectly separates real from synthetic records,
+achieving &lt;strong&gt;100% precision and 100% recall&lt;/strong&gt;. Here’s a demo on a toy,
+two-dimensional dataset: it shows synthetic records being detected along lines,
+and removed over time until only real records remain.&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="Animated demonstration of DistinSMOTE on a two-dimensional toy dataset,
+showing synthetic records being detected along lines (and removed over time)
+until only real records remain." src="images/distinsmote-animated.gif" width="80%"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;So, sharing the augmented dataset is clearly not a great idea. But what if we
+only share the synthetic data? This must be better for the privacy of the real
+sensitive records — after all, synthetic data is supposed to be more
+privacy-friendly.&lt;/p&gt;
+&lt;h1 id="reconstructing-real-records"&gt;Reconstructing real records&lt;/h1&gt;
+&lt;p&gt;Unfortunately, this intuition is wrong. Following a similar but more ambitious
+approach, called ReconSMOTE, &lt;strong&gt;we can reverse-engineer the original real data&lt;/strong&gt;.
+This means that if someone has access to SMOTE-generated data alone, they can
+reconstruct the original sensitive records and expose their privacy.&lt;/p&gt;
+&lt;p&gt;Again, the attack uses the fact that SMOTE-generated points lie on straight line
+segments between real data points. By identifying where these segments
+intersect, we can recover the locations of the real records.&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="Diagram illustrating the ReconSMOTE idea, with three or more synthetic records
+defining a line, and the intersection of those lines corresponds to a
+(reconstructed) real record." src="images/reconsmote-diagram.png"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;ReconSMOTE iteratively identifies the line segments and their intersections,
+allowing it to recover the original minority records with 100% precision (no
+false positives) and recall approaching 100% for realistically imbalanced
+datasets — for example, with ratios of 1:20 or higher. Here’s a demo on the same
+toy dataset: first, lines formed by three or more synthetic records are
+identified…&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="Animated demonstration of ReconSMOTE on a two-dimensional toy dataset:
+detection of lines formed by three or more synthetic
+records." src="images/reconsmote-animated-1.gif" width="80%"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;… then their intersections are identified to reconstruct real records.&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="Animated demonstration of ReconSMOTE on a two-dimensional toy dataset:
+identification of the intersections of previously-detected lines to reconstruct
+real records" src="images/reconsmote-animated-2.gif" width="80%"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;Clearly, practitioners should avoid using SMOTE in privacy-sensitive settings.
+But what about AI researchers — are they aware of SMOTE’s privacy risks?&lt;/p&gt;
+&lt;h1 id="smote-is-used-as-a-privacy-baseline"&gt;SMOTE is used as a privacy baseline&lt;/h1&gt;
+&lt;p&gt;Perhaps surprisingly, SMOTE is commonly used by AI researchers as a privacy
+baseline when evaluating synthetic data generation models. In fact, several
+papers published at top-tier AI conferences (e.g., &lt;a href="https://arxiv.org/abs/2209.15421"&gt;TabDDPM&lt;/a&gt; [ICML'23], &lt;a href="https://arxiv.org/abs/2310.09656"&gt;Tabsyn&lt;/a&gt;
+[ICLR'24], &lt;a href="https://arxiv.org/abs/2405.17724"&gt;ClavaDDPM&lt;/a&gt; [NeurIPS'24], &lt;a href="https://arxiv.org/abs/2410.20626"&gt;TabDiff&lt;/a&gt; [ICLR,’25], &lt;a href="https://arxiv.org/abs/2312.10431"&gt;CDTD&lt;/a&gt; [ICLR,'25],
+etc.) compare their proposed diffusion models against SMOTE and use this
+comparison to argue that their methods are privacy-preserving.&lt;/p&gt;
+&lt;p&gt;These works typically follow a similar evaluation workflow:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Propose a new diffusion model, not explicitly designed for privacy-sensitive
+   settings.&lt;/li&gt;
+&lt;li&gt;Evaluate privacy using an &lt;a href="https://desfontain.es/blog/bad-ugly-good-maybe.html"&gt;empirical privacy metric&lt;/a&gt; such as
+   distance to closest record (DCR), and observe that this metric looks better
+   on the new diffusion model than on SMOTE.&lt;/li&gt;
+&lt;li&gt;Conclude that the proposed diffusion model is therefore “privacy-preserving”.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This workflow has several fundamental limitations. Prior work has already shown
+that empirical metrics like DCR are &lt;a href="https://arxiv.org/abs/2312.05114"&gt;inadequate privacy measures&lt;/a&gt; and,
+more importantly, &lt;a href="https://arxiv.org/abs/2505.01524"&gt;do not correlate&lt;/a&gt; with more robust approaches for empirical
+privacy measures, like &lt;a href="https://desfontain.es/blog/better-empirical-privacy-metrics.html"&gt;membership inference attacks&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In our new paper, we show that the situation is even worse, and that SMOTE is
+dramatically less private than previously recognized. This directly undermines
+step 2 of the workflow above. If a model appears slightly more (or slightly
+less) “private” than a baseline that is itself clearly non-private, and this
+comparison is made using a flawed privacy metric, what meaningful conclusion can
+actually be drawn? Likely none.&lt;/p&gt;
+&lt;h1 id="takeaways"&gt;Takeaways&lt;/h1&gt;
+&lt;p&gt;Until now, SMOTE was widely assumed to be safe from a privacy perspective,
+mainly because simple checks like “can I tell real from fake?” or “how close is
+a synthetic record to its closest real record (e.g., using DCR)?” did not reveal
+obvious leakage.&lt;/p&gt;
+&lt;p&gt;We show this assumption is wrong, and that SMOTE is fundamentally non-private:
+its interpolation process inherently involves privacy leakage, even when
+implemented perfectly. &lt;/p&gt;
+&lt;p&gt;Worse, it puts minority records disproportionately at risk: the very samples
+SMOTE aims to amplify and make more representative are the most exposed. If
+SMOTE is used in regulated or sensitive environments, leakage is not a
+hypothetical — it is real and measurable.&lt;/p&gt;
+&lt;p&gt;Our work not only shows that SMOTE is a flawed privacy baseline, but is also an
+important reminder that naive  privacy metrics like DCR are misleading and
+should not be used to validate other generative models.&lt;/p&gt;
+&lt;p&gt;For more details about the attacks and their practical impact, you can refer to
+the &lt;a href="https://arxiv.org/abs/2510.15083"&gt;full paper&lt;/a&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;small&gt;Note: To be clear, SMOTE is still perfectly fine in non-private settings.
+  It is fast and intuitive, so it is great for prototyping/testing ideas,
+  debugging pipelines, or teaching ML concepts. For internal-only experiments
+  where privacy is not a concern, it is still one of the easiest ways to handle
+  imbalanced datasets and generate synthetic data. The risk only comes when
+  SMOTE-augmented/generated data involves sensitive populations and/or leaves
+  the secure environment.&lt;/small&gt;&lt;/p&gt;</content><category term="misc"></category></entry><entry><title>Three kinds of “privacy auditing”</title><link href="https://desfontain.es/blog/privacy-auditing-terminology.html" rel="alternate"></link><published>2026-01-13T00:00:00+01:00</published><updated>2026-01-13T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-01-13:/blog/privacy-auditing-terminology.html</id><summary type="html">&lt;p&gt;What academics call “privacy auditing” has little to do with what industry folks call “auditing”. This may be confusing.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;When&lt;/strong&gt; someone tells you that their current project involves &lt;em&gt;privacy
 auditing&lt;/em&gt;, what do you think they're actually doing?&lt;/p&gt;
 &lt;p&gt;The answer depends on whom you ask. There are (at least!) three groups of people
 using this term, and they mean very different things.&lt;/p&gt;
