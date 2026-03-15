@@ -12127,7 +12127,7 @@ long enough already.&lt;/p&gt;
 tackles a much simpler problem: what do you do when you try using differential
 privacy on your data, but the results aren't accurate enough?&lt;/p&gt;
 &lt;hr&gt;
-&lt;p&gt;&lt;small&gt;Thanks to Anthony Caruso, Antoine Amarilli, Frank McSherry, for their
+&lt;p&gt;&lt;small&gt;Thanks to Anthony Caruso, Antoine Amarilli, and Frank McSherry for their
 helpful comments on earlier versions of this post.&lt;/small&gt;&lt;/p&gt;
 &lt;script type="text/javascript"&gt;
 var button = document.getElementById('toggleMath');
