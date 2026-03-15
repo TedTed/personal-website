@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-02-19T00:00:00+01:00</updated><entry><title>Research post: Privacy in theory, bugs in practice</title><link href="https://desfontain.es/blog/privacy-bugs.html" rel="alternate"></link><published>2026-02-19T00:00:00+01:00</published><updated>2026-02-19T00:00:00+01:00</updated><author><name>Erb, David and Fitzsimons, Jack and Desfontaines, Damien</name></author><id>tag:desfontain.es,2026-02-19:/blog/privacy-bugs.html</id><summary type="html">&lt;p&gt;Findings a bunch of bugs in differential privacy libraries using a new approach to privacy auditing.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;small&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-03-15T00:00:00+01:00</updated><entry><title>Research post: Privacy in theory, bugs in practice</title><link href="https://desfontain.es/blog/privacy-bugs.html" rel="alternate"></link><published>2026-02-19T00:00:00+01:00</published><updated>2026-02-19T00:00:00+01:00</updated><author><name>Erb, David and Fitzsimons, Jack and Desfontaines, Damien</name></author><id>tag:desfontain.es,2026-02-19:/blog/privacy-bugs.html</id><summary type="html">&lt;p&gt;Findings a bunch of bugs in differential privacy libraries using a new approach to privacy auditing.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;small&gt;
 &lt;span class='notlettrine'&gt;T&lt;/span&gt;his blog post is written by
 &lt;a href="https://daviderb.de/"&gt;David Erb&lt;/a&gt; and &lt;a href="https://www.linkedin.com/in/jack-f-300810122/"&gt;Jack
 Fitzsimons&lt;/a&gt;; I helped with the
@@ -11890,7 +11890,7 @@ the one described in this blog, let me know!&lt;/p&gt;
     (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;</content><category term="misc"></category></entry><entry><title>The magic of Gaussian noise</title><link href="https://desfontain.es/blog/gaussian-noise.html" rel="alternate"></link><published>2020-11-15T00:00:00+01:00</published><updated>2021-03-17T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2020-11-15:/blog/gaussian-noise.html</id><summary type="html">&lt;p&gt;Why is Gaussian noise a popular choice to make statistics and machine learning models differentially private?&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;small&gt;
+&lt;/script&gt;</content><category term="misc"></category></entry><entry><title>The magic of Gaussian noise</title><link href="https://desfontain.es/blog/gaussian-noise.html" rel="alternate"></link><published>2020-11-15T00:00:00+01:00</published><updated>2026-03-15T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2020-11-15:/blog/gaussian-noise.html</id><summary type="html">&lt;p&gt;Why is Gaussian noise a popular choice to make statistics and machine learning models differentially private?&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;small&gt;
 &lt;span class='notlettrine'&gt;T&lt;/span&gt;his post is part of a &lt;a href="friendly-intro-to-differential-privacy.html"&gt;series on differential
 privacy&lt;/a&gt;. Check out the &lt;a href="friendly-intro-to-differential-privacy.html"&gt;table of contents&lt;/a&gt; to see the other
 articles!&lt;/p&gt;
@@ -11938,13 +11938,14 @@ Assume that we're adding noise to a simple count, of sensitivity &lt;span class=
 compares the Laplace noise needed to get &lt;span class="math"&gt;\(\varepsilon=1\)&lt;/span&gt;, and Gaussian noise
 needed to get &lt;span class="math"&gt;\(\varepsilon=1\)&lt;/span&gt; and &lt;span class="math"&gt;\(\delta=10^{-5}\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;center&gt;
-&lt;img alt="Graph showing a Laplace distribution with scale 1/ln(3) and a Gaussian distribution of standard deviation 3.426, both centered on 0" src="https://desfontain.es/blog/images/laplace-gaussian-ln-3.svg"&gt;
+&lt;img alt="Graph showing a Laplace distribution with scale 1 and a Gaussian distribution of standard deviation 3.73, both centered on 0" src="https://desfontain.es/blog/images/laplace-gaussian-1.svg"&gt;
 &lt;/center&gt;&lt;/p&gt;
 &lt;p&gt;Despite its weaker privacy guarantees, the Gaussian distribution is much
-flatter. Its standard deviation is over 3.4, while Laplace's is less than 1.3.
+flatter. Its standard deviation is about 3.7, while Laplace's is about 1.4.
 Thus, much more noise will need to be added, and analysts care a lot about
-minimizing the noise. Why, then, would Gaussian noise be a good option? The answer
-is simple: because it gets better when you're publishing a lot of statistics.&lt;/p&gt;
+minimizing the noise. Why, then, would Gaussian noise be a good option? The
+answer is simple: because it gets better when you're publishing a lot of
+statistics.&lt;/p&gt;
 &lt;h1 id="from-one-to-many-statistics"&gt;From one to many statistics&lt;/h1&gt;
 &lt;p&gt;In most of our &lt;a href="differential-privacy-in-practice.html"&gt;previous examples&lt;/a&gt;, we assumed that each individual
 appeared in a &lt;em&gt;single&lt;/em&gt; statistic. This case is common, for example when
@@ -12126,8 +12127,8 @@ long enough already.&lt;/p&gt;
 tackles a much simpler problem: what do you do when you try using differential
 privacy on your data, but the results aren't accurate enough?&lt;/p&gt;
 &lt;hr&gt;
-&lt;p&gt;&lt;small&gt;Thanks to [Frank McSherry] and [Antoine Amarilli] for their helpful
-comments.&lt;/small&gt;&lt;/p&gt;
+&lt;p&gt;&lt;small&gt;Thanks to Anthony Caruso, Antoine Amarilli, Frank McSherry, for their
+helpful comments on earlier versions of this post.&lt;/small&gt;&lt;/p&gt;
 &lt;script type="text/javascript"&gt;
 var button = document.getElementById('toggleMath');
 var defaultButton = 'show me the scary math';

@@ -90,8 +90,8 @@
       2020-11-15
     </time>
     <small>&mdash; updated
-      <time datetime="2021-03-17T00:00:00+01:00">
-        2021-03-17
+      <time datetime="2026-03-15T00:00:00+01:00">
+        2026-03-15
       </time>
     </small>
   </footer>
@@ -144,13 +144,14 @@ Assume that we're adding noise to a simple count, of sensitivity <span class="ma
 compares the Laplace noise needed to get <span class="math">\(\varepsilon=1\)</span>, and Gaussian noise
 needed to get <span class="math">\(\varepsilon=1\)</span> and <span class="math">\(\delta=10^{-5}\)</span>.</p>
 <p><center>
-<img alt="Graph showing a Laplace distribution with scale 1/ln(3) and a Gaussian distribution of standard deviation 3.426, both centered on 0" src="https://desfontain.es/blog/images/laplace-gaussian-ln-3.svg">
+<img alt="Graph showing a Laplace distribution with scale 1 and a Gaussian distribution of standard deviation 3.73, both centered on 0" src="https://desfontain.es/blog/images/laplace-gaussian-1.svg">
 </center></p>
 <p>Despite its weaker privacy guarantees, the Gaussian distribution is much
-flatter. Its standard deviation is over 3.4, while Laplace's is less than 1.3.
+flatter. Its standard deviation is about 3.7, while Laplace's is about 1.4.
 Thus, much more noise will need to be added, and analysts care a lot about
-minimizing the noise. Why, then, would Gaussian noise be a good option? The answer
-is simple: because it gets better when you're publishing a lot of statistics.</p>
+minimizing the noise. Why, then, would Gaussian noise be a good option? The
+answer is simple: because it gets better when you're publishing a lot of
+statistics.</p>
 <h1 id="from-one-to-many-statistics">From one to many statistics</h1>
 <p>In most of our <a href="differential-privacy-in-practice.html">previous examples</a>, we assumed that each individual
 appeared in a <em>single</em> statistic. This case is common, for example when
@@ -332,8 +333,8 @@ long enough already.</p>
 tackles a much simpler problem: what do you do when you try using differential
 privacy on your data, but the results aren't accurate enough?</p>
 <hr>
-<p><small>Thanks to [Frank McSherry] and [Antoine Amarilli] for their helpful
-comments.</small></p>
+<p><small>Thanks to Anthony Caruso, Antoine Amarilli, Frank McSherry, for their
+helpful comments on earlier versions of this post.</small></p>
 <script type="text/javascript">
 var button = document.getElementById('toggleMath');
 var defaultButton = 'show me the scary math';
