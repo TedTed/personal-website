@@ -28,7 +28,7 @@
   <meta property="twitter:image" content="https://desfontain.es/blog/images/simple-dp-diagram.png" />
   <meta property="twitter:image:alt" content="A simple diagram representing the intuition behind differential privacy." />
   <link rel="canonical" href="https://desfontain.es/blog/" />
-  <link rel="prev" href="smote-and-mirrors.html" />
+  <link rel="prev" href="privacy-bugs.html" />
 </head>
 
 <body id="index" class="home">
@@ -63,7 +63,7 @@
             <a href="posts.html">archives</a>
           </span>
           <span class="droite">
-    <a href="smote-and-mirrors.html">← previous</a>
+    <a href="privacy-bugs.html">← previous</a>
           </span>
         </td>
       </tr>
@@ -81,232 +81,63 @@
 <article>
   <header>
   <h1>
-    <a href="./privacy-bugs.html">Research post: Privacy in theory, bugs in practice</a>
+    <a href="./cliopatra.html">Research highlight: Cliopatra: Extracting Private Information from LLM Insights</a>
   </h1>
   </header>
   <footer>
-    <time datetime="2026-02-19T00:00:00+01:00">
-      2026-02-19
+    <time datetime="2026-03-18T00:00:00+01:00">
+      2026-03-18
     </time>
   </footer>
   <div>
-    <p><small>
-<span class='notlettrine'>T</span>his blog post is written by
-<a href="https://daviderb.de/">David Erb</a> and <a href="https://www.linkedin.com/in/jack-f-300810122/">Jack
-Fitzsimons</a>; I helped with the
-editing. It is based on our paper <a href="https://arxiv.org/abs/2602.17454">Privacy in Theory, Bugs in Practice:
-Grey-Box Auditing of Differential Privacy Libraries</a> by Tudor Cebere,
-David Erb, myself, Aurélien Bellet, and Jack Fitzsimons. This work has recently
-been accepted to <a href="https://petsymposium.org/2026/">PETS 2026</a> and the code is
-available as an <a href="https://github.com/ObliviousAI/dp-recorder">open-source Python
-package</a>.
-</small></p>
+    <p><strong>When</strong> Anthropic came up with a new "<a href="https://www.anthropic.com/research/clio">privacy-preserving analysis
+system</a>" to gain insights into AI use, and didn't use any <a href="friendly-intro-to-differential-privacy">provably robust
+notion</a> to back up their privacy claims, I was mildly surprised. Surely they
+have both the money and the scientific maturity level to do better?</p>
+<p>But Clio, the system in question, sounded relatively reasonable, with multiple
+layers of risk mitigation built-in. Maybe adding differential privacy would have
+been overkill. I also didn't want to publicly criticize their approach in the
+absence of demonstrated real-world risk. So I didn't comment on their approach.</p>
+<p>Fast forward to last week, and a new paper: <a href="https://arxiv.org/abs/2603.09781">Cliopatra: Extracting Private
+Information from LLM Insights</a>, by Meenatchi Sundaram Muthu Selva
+Annamalai, Emiliano De Cristofaro, and Peter Kairouz. The authors show that with
+carefully designed attacks on Clio, they can <strong>bypass all the layers of ad hoc
+mitigation</strong>, and <strong>successfully extract users' medical histories</strong>.</p>
+<p><center>
+<a href="images/cliopatra.png"><img alt="An overview of Cliopatra, which injects &quot;poison chats&quot; to deduce unknown
+medical conditions based on known medical
+conditions." src="images/cliopatra.png"></a>
+</center></p>
+<p>This is a new take on an old attack. We've known for decades that
+<a href="k-anonymity"><em>k</em>-anonymity</a> is vulnerable to active attacks. Here, this is
+combined with prompt injection to encourage the LLM "summarizer" to actually
+include information from unique records. Perhaps more surprisingly, the authors
+find that some defensive layers are simply ineffective: the "LLM auditors"
+systematically report low privacy risk, and entirely fail to detect the attacks.</p>
+<p>This work is the newest example of something we see over and over: it's very
+easy to convince oneself that some ad hoc privacy protections are more effective
+than they actually are. In the <a href="https://arxiv.org/abs/2412.13678v1">original Anthropic paper</a>, the authors
+only estimate that Clio may be vulnerable to "PII persistence" and "group
+privacy violations", missing the potential for data poisining attacks entirely.</p>
+<p>The attack paper ends on another interesting takeaway: the authors run their
+attacks on <a href="https://research.google/blog/a-differentially-private-framework-for-gaining-insights-into-ai-chatbot-use/">Urania</a>, an alternative system built by Google to solve the
+same problem. The main difference is that Urania uses <a href="friendly-intro-to-differential-privacy">differential privacy</a>
+to protect the original data. Similarly to what we observe in other contexts,
+this translates to much higher level of empirical risk mitigation — even with
+large privacy budgets like <span class="math">\(\varepsilon=25\)</span>.</p>
+<p>This story underscores a major difference in how we treat poorly-justified
+claims about privacy compared to security claims. If someone comes up with a new
+cryptographic protocol and doesn't provide a robust security analysis with
+well-defined attacker assumptions, we simply don't take them seriously. We
+should hold "privacy-preserving" systems to the same standard, and demand
+carefully delineated attacker models and a comprensive privacy analysis.
+Differential privacy may not always be necessary, but people should at least
+explain why they think provably robust approaches are not needed.</p>
 <hr>
-<p><span class='lettrine'>H</span><strong>ere's</strong> something that happens a lot with
-differential privacy.</p>
-<p>You design a pipeline. You pick your primitives carefully: Laplace here,
-Gaussian there, an exponential mechanism for selection. You compose them using
-an accountant. You check the math. Everything looks right. You ship it.</p>
-<p>Then someone finds a bug, and your <span class="math">\(\varepsilon\)</span> was a lie.</p>
-<p>The frustrating part is that these bugs are rarely in the mechanisms
-themselves<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. Rather, they're often in the glue: a sensitivity calculated from
-uncensored data instead of clipped data, a noise scale that accidentally depends
-on the dataset, a loop counter derived from a private quantity. The kind of
-thing that doesn't crash, doesn't produce obviously wrong results, and doesn't
-show up in any output you'd think to inspect.</p>
-<p>So how do you catch these? Ideally, the same way you catch other bugs: with
-tests. In our <a href="https://arxiv.org/abs/2602.17454">new paper</a>, we built a tool that does exactly this. It can
-run in a <a href="https://en.wikipedia.org/wiki/Continuous_integration">CI pipeline</a>,
-integrates with <a href="https://docs.pytest.org/en/stable/">pytest</a>, and found <strong>13
-previously unknown privacy violations across 12 widely used open-source DP
-libraries</strong>. This post explains how it works.</p>
-<h1 id="why-existing-approaches-dont-quite-fit">Why existing approaches don't quite fit</h1>
-<p>Two main research directions exist for catching differential privacy bugs.</p>
-<p><em>Distributional auditing</em> treats the pipeline as a black box: run it on
-neighboring datasets, collect output samples, try to distinguish the
-distributions. This is conceptually clean, and there's been a lot of <a href="https://arxiv.org/abs/2506.16666">excellent
-work</a> on making it practical. But for a
-complex pipeline with high-dimensional outputs and many composed mechanisms, the
-number of samples you need grows fast. <a href="https://arxiv.org/abs/1806.06427">Prior
-work</a> showed that verifying privacy with
-black-box access is computationally intractable in general. And even when the
-test <em>does</em> detect a violation, it only tells you "something is wrong
-somewhere", not <em>where</em>.</p>
-<p><em>Formal verification</em> goes the other direction: prove at compile time that the
-code satisfies DP. Systems like
-<a href="https://dl.acm.org/doi/10.1145/2429069.2429113">Fuzz</a> and
-<a href="https://dl.acm.org/doi/10.1145/3360598">Duet</a> can do this. The catch is that
-you have to rewrite your pipeline in a specialized language with a restricted
-type system — a non-starter for most teams working in Python.</p>
-<p>What we want is something in between: a tool that finds bugs in <em>real code</em>,
-written in <em>real languages</em>, and runs in CI alongside your other tests.</p>
-<h1 id="the-key-structural-observation">The key structural observation</h1>
-<p>Let's take a step back and look at what a DP pipeline actually looks like.
-Almost always, it's a chain:</p>
-<p><center><em>pre-processing → DP primitive → post-processing → DP primitive →
-…</em></center></p>
-<p>The pre-processing computes a query on the data. The primitive adds calibrated
-noise. The post-processing is some deterministic transformation of the noisy
-output, which is often also the pre-processing for the next primitive. This is
-how DP is <em>designed</em> to work: you build complex functionality by composing
-simple mechanisms with known privacy guarantees, ideally from trusted
-implementations like <a href="https://docs.opendp.org/">OpenDP</a>.</p>
-<p>If you trust the Laplace mechanism, re-testing it on every run tells you nothing
-new. The bugs live in the <em>integration layer</em>: the code that computes the query,
-determines the sensitivity, chooses the noise scale, and passes everything to
-the primitive. And that code is supposed to be data-independent (aside from the
-query input itself), with the query's influence bounded by the declared
-sensitivity.</p>
-<p>So instead of auditing the full pipeline's output distribution, we can check two
-simpler conditions.</p>
-<ol>
-<li>
-<p><em>Invariance.</em> Everything outside the DP primitives (the control flow, the
-   parameters, the post-processing, etc.) must be identical when we switch from
-   dataset <span class="math">\(D\)</span> to a neighboring dataset <span class="math">\(D'\)</span>, provided we hold the primitives'
-   outputs fixed.</p>
-</li>
-<li>
-<p><em>Sensitivity.</em> The inputs fed to each primitive on <span class="math">\(D\)</span> and <span class="math">\(D'\)</span> must differ
-   by at most the declared sensitivity: <span class="math">\(|q(D) - q(D')| \le \Delta\)</span>.</p>
-</li>
-</ol>
-<p>If both conditions hold and the primitives are correctly implemented, the
-pipeline is DP. If either fails, we've found a bug — and we know exactly which
-primitive call or processing step triggered it.</p>
-<h1 id="record-and-replay">Record and replay</h1>
-<p>Here's how we check those conditions in practice. We call the approach
-<em>Re:cord-play</em>, and it needs only two executions of the pipeline.</p>
-<p><center><img alt="A diagram explaining how Re:cord-play works, with two parallel paths
-&quot;Pre-processing&quot; → &quot;Mechanism call&quot; → &quot;Post-processing&quot;, one for Record with
-dataset D and the other for Replay with dataset D', with additional labels the
-four comparisons between both executions: &quot;Check invariance&quot;, &quot;Check
-sensitivity&quot;, &quot;Freeze output&quot;, and &quot;Check
-invariance&quot;." src="images/record-play.svg"></center></p>
-<p>In the <em>record phase</em>, we run the pipeline on dataset <span class="math">\(D\)</span>. Every time a DP
-primitive is called, a hook logs what mechanism was called, its parameters
-(noise scale and declared sensitivity), the input query value <span class="math">\(q(D)\)</span>, the PRNG
-state, and the exact output.</p>
-<p>In the <em>replay phase</em>, we run the pipeline on a neighboring dataset <span class="math">\(D'\)</span>. But
-when a primitive is called, instead of executing it, the hook does three things.
-First, it checks that the mechanism type and parameters match the recorded
-trace: if not, it means that the control flow or parameters depend on the data,
-and that's a bug. Second, it logs the new input <span class="math">\(q(D')\)</span>. Third, and this is the
-key move, it <em>returns the recorded output from the first phase</em>.</p>
-<p>Why freeze the output? Consider a pipeline with two primitives. After the first,
-some post-processing feeds into the second. If we let the first primitive
-produce different outputs on <span class="math">\(D\)</span> and <span class="math">\(D'\)</span> (the inputs differ, so the outputs
-will too), the post-processing will diverge. When the second primitive is
-called, we might see different parameters, but that's just because the first
-primitive's output was different, not because of a data-dependent bug. By
-freezing outputs, we eliminate this source of divergence. Any remaining
-difference between the two runs is a real bug.</p>
-<p>After replay, we compare the logged inputs. If (|q(D) - q(D')| &gt; \Delta) for
-any primitive call, the declared sensitivity was wrong.</p>
-<p>Let me make this concrete. Suppose your pipeline computes a noisy scaled count.
-In the record phase on <span class="math">\(D = {0,0,0}\)</span> with a multiplier of 2, the hook logs:
-<code>mechanism = Laplace</code>, <code>sensitivity = 1</code>, <code>input = 6</code>, <code>output = 6.8</code>. In the
-replay phase on <span class="math">\(D' = {0,0,0,0}\)</span>, the input becomes <code>8</code>. The distance <code>|8-6|=2</code>
-exceeds the declared sensitivity of <code>1</code>. Bug found, and we know it's at the
-first Laplace call.</p>
-<h1 id="what-about-untrusted-primitives">What about untrusted primitives?</h1>
-<p>Everything above assumes the primitives themselves are correct. That's
-reasonable if you're using a vetted library, but what if you've written a custom
-mechanism?</p>
-<p>We extended the framework to handle this with <em>Re:cord-play-sample</em>. Once
-Re:cord-play gives us the trace, we know the exact inputs each primitive
-received. We can treat each primitive <em>individually</em> as a black box: run it many
-times on both inputs, estimate a <a href="privacy-loss-random-variable.html">privacy loss
-distribution</a> from
-the samples, and compose across all primitives to get an end-to-end
-<span class="math">\((\varepsilon,\delta)\)</span> bound.</p>
-<p>Remember the tractability problem with black-box auditing? It came from auditing
-the <em>entire pipeline</em>, with its high-dimensional, composed output. Here, we're
-auditing each primitive in isolation. It's just like auditing the Laplace
-mechanism with one-dimensional output, we only need a few thousand samples. The
-structural decomposition from Re:cord-play makes this feasible.</p>
-<p>You can also mix and match: use the analytical privacy loss distribution for
-trusted primitives (from, say, <a href="https://github.com/google/differential-privacy/tree/main/python/dp_accounting">Google's accounting
-library</a>),
-and empirical estimates only for custom ones.</p>
-<h1 id="what-we-found">What we found</h1>
-<p>We audited 12 of the most widely used open-source DP libraries and found 13
-previously unknown privacy violations. Here are some highlights.</p>
-<p>In <a href="https://github.com/opendp/smartnoise-sdk">SmartNoise SDK</a>, the covariance
-estimator declares a sensitivity based on <em>censored</em> data, but computes the
-covariance on the <em>original, uncensored</em> data. The function creates a variable
-<code>newdata</code> by sanitizing the input, then proceeds to use <code>data</code> instead of
-<code>newdata</code> in the actual computation. The declared sensitivity can be arbitrarily
-smaller than the true one.</p>
-<p>In <a href="https://github.com/vanderschaarlab/synthcity">Synthcity</a> (PrivBayes), the
-output of the exponential mechanism is used to index into a <em>private, un-noised</em>
-list, and the result controls a public <code>if</code> statement. The execution path leaks
-which item was selected and what its private score was.</p>
-<p>In <a href="https://github.com/IBM/differential-privacy-library">Diffprivlib</a>, the
-linear regression sensitivity uses <code>bounds_X[0][i]</code> twice instead of taking the
-max of <code>bounds_X[0][i]</code> and <code>bounds_X[1][i]</code>. A copy-paste bug: the lower bound
-appears where the upper bound should be.</p>
-<p>In <a href="https://opacus.ai/">Opacus</a>, the <code>expected_batch_size</code> is derived from
-<code>len(data_loader.dataset)</code>, which is private under the add-or-remove adjacency
-model (the one Opacus assumes via Poisson subsampling). This was <a href="https://github.com/pytorch/opacus/issues/571">reported over
-two years ago</a> and remains
-unpatched.</p>
-<p>The point isn't to embarrass anyone: these are subtle bugs, and the teams behind
-these libraries are skilled, very often including the authors of the original
-research. The point is that this class of bug is <em>endemic</em>, and manual review
-doesn't catch them reliably.</p>
-<p>On the flip side: every audit in the paper targeted a framework we had no
-insider knowledge of, and took us only a few days to do all of them. Applying
-the tool to our own code took hours. If you've ever tried to manually verify a
-DP pipeline against its specification, you'll appreciate the difference.</p>
-<h1 id="limitations">Limitations</h1>
-<p>It's important to be aware of what our testing framework can and can't do.</p>
-<p>It's a <em>testing tool</em>, not a <em>verifier</em>. A clean run means no bugs were found
-for the specific pair of neighboring datasets we tested. A bug that only
-triggers on certain data might be missed. This is the standard test coverage
-problem, the same limitation as any unit test. The tool also has a few other
-limitations.</p>
-<ul>
-<li>It requires PRNG control. This is easy to do in Python, but won't work with
-  hardware RNGs such as OpenDP’s Rust interfaces, or in distributed computation
-  engines like the one used in Tumult Analytics.</li>
-<li>It assumes sequential composition: it can't exploit parallel composition for
-  tighter accounting unless it happens within a single mechanism.</li>
-<li>It doesn't explain root causes: for example, if it flags a sensitivity
-  violation, you still have to figure out <em>why</em> the pre-processing failed.</li>
-</ul>
-<p>We found that a few patterns kept showing up across bugs. A surprising number of
-issues bugs came from confusion about whether the pipeline uses
-<a href="differential-privacy-glossary.html#add-or-remove">add-of-remove</a> or
-<a href="differential-privacy-glossary.html#replace-one">replace-one</a> as a neighboring
-relation. With add-or-remove, the dataset <em>size</em> is private, and you can't use
-<code>len(dataset)</code> in your parameters. And almost every library broke when we fed
-<span class="math">\(\pm\infty\)</span> or NaN into it: NaN bypasses standard clipping checks because
-comparisons with NaN return false. Google's DP library was the only one that
-handled these correctly across the board.</p>
-<h1 id="whats-next-for-the-framework">What’s next for the framework?</h1>
-<p>Several of the libraries we audited have since agreed to integrate these tests
-into their CI, which is fantastic. This matters more than the bug count: the
-point is to make these checks a routine part of how DP code is maintained, not a
-one-off audit.</p>
-<p>On the technical side, our audit also found cases where libraries used private
-variables in branch conditions and loop bounds, leaking information without
-accounting for it. Re:cord-play catches these when they cause observable
-divergence between runs, but it can miss subtler cases. We're looking into
-static taint analysis to flag data-dependent control flow automatically, without
-needing a second execution at all.</p>
-<p>The framework is <a href="https://github.com/ObliviousAI/dp-recorder">open source</a>. If
-you maintain a DP library, or rely on one, try running it. If you have ideas for
-improving it, contributions are welcome!</p>
-<div class="footnote">
-<hr>
-<ol>
-<li id="fn:1">
-<p>Though floating-point issues are a <a href="https://www.tmlt.io/resources/tiny-bits-matter-precision-based-attacks-on-differential-privacy">separate circle of
-hell</a>, so issues can also occur there.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
-</li>
-</ol>
-</div>
+<p>Thinking of deploying a privacy-preserving analytics system to the real world?
+Let's chat! My independent consultancy, <a href="https://hiding-nemo.com">Hiding Nemo</a>, specializes in
+helping organizations unlock data value, with a principled approach to risk
+analysis and mitigation.</p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -379,13 +210,13 @@ hell</a>, so issues can also occur there.&#160;<a class="footnote-backref" href=
 </div>
 
 <script type="text/javascript">
-var bibtexdetails = `@misc{desfontainesblog20260219,
-  title = &#123;Research post: Privacy in theory, bugs in practice},
-  author = &#123;Erb, David and Fitzsimons, Jack and Desfontaines, Damien},
-  howpublished = {\\url{https://desfontain.es/blog/privacy-bugs.html}},
+var bibtexdetails = `@misc{desfontainesblog20260318,
+  title = &#123;Research highlight: Cliopatra: Extracting Private Information from LLM Insights},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/cliopatra.html}},
   note = &#123;Ted is writing things (personal blog)},
   year = &#123;2026},
-  month = &#123;02}
+  month = &#123;03}
 }`
 // We need to use textarea for the tag containing code so we can select it to
 // copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
@@ -410,7 +241,7 @@ button.addEventListener('click', function (event) {
 <nav>
   <ul class="nav">
     <li>
-      <a href="smote-and-mirrors.html">← previous</a>
+      <a href="privacy-bugs.html">← previous</a>
     </li>
   </ul>
   <ul>

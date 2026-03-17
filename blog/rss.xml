@@ -1,5 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-03-15T00:00:00+01:00</updated><entry><title>Research post: Privacy in theory, bugs in practice</title><link href="https://desfontain.es/blog/privacy-bugs.html" rel="alternate"></link><published>2026-02-19T00:00:00+01:00</published><updated>2026-02-19T00:00:00+01:00</updated><author><name>Erb, David and Fitzsimons, Jack and Desfontaines, Damien</name></author><id>tag:desfontain.es,2026-02-19:/blog/privacy-bugs.html</id><summary type="html">&lt;p&gt;Findings a bunch of bugs in differential privacy libraries using a new approach to privacy auditing.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;small&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-03-18T00:00:00+01:00</updated><entry><title>Research highlight: Cliopatra: Extracting Private Information from LLM Insights</title><link href="https://desfontain.es/blog/cliopatra.html" rel="alternate"></link><published>2026-03-18T00:00:00+01:00</published><updated>2026-03-18T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-03-18:/blog/cliopatra.html</id><summary type="html">&lt;p&gt;The price of not using robust notions when building "privacy-preserving" analytics systems&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;When&lt;/strong&gt; Anthropic came up with a new "&lt;a href="https://www.anthropic.com/research/clio"&gt;privacy-preserving analysis
+system&lt;/a&gt;" to gain insights into AI use, and didn't use any &lt;a href="friendly-intro-to-differential-privacy"&gt;provably robust
+notion&lt;/a&gt; to back up their privacy claims, I was mildly surprised. Surely they
+have both the money and the scientific maturity level to do better?&lt;/p&gt;
+&lt;p&gt;But Clio, the system in question, sounded relatively reasonable, with multiple
+layers of risk mitigation built-in. Maybe adding differential privacy would have
+been overkill. I also didn't want to publicly criticize their approach in the
+absence of demonstrated real-world risk. So I didn't comment on their approach.&lt;/p&gt;
+&lt;p&gt;Fast forward to last week, and a new paper: &lt;a href="https://arxiv.org/abs/2603.09781"&gt;Cliopatra: Extracting Private
+Information from LLM Insights&lt;/a&gt;, by Meenatchi Sundaram Muthu Selva
+Annamalai, Emiliano De Cristofaro, and Peter Kairouz. The authors show that with
+carefully designed attacks on Clio, they can &lt;strong&gt;bypass all the layers of ad hoc
+mitigation&lt;/strong&gt;, and &lt;strong&gt;successfully extract users' medical histories&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;a href="images/cliopatra.png"&gt;&lt;img alt="An overview of Cliopatra, which injects &amp;quot;poison chats&amp;quot; to deduce unknown
+medical conditions based on known medical
+conditions." src="images/cliopatra.png"&gt;&lt;/a&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;This is a new take on an old attack. We've known for decades that
+&lt;a href="k-anonymity"&gt;&lt;em&gt;k&lt;/em&gt;-anonymity&lt;/a&gt; is vulnerable to active attacks. Here, this is
+combined with prompt injection to encourage the LLM "summarizer" to actually
+include information from unique records. Perhaps more surprisingly, the authors
+find that some defensive layers are simply ineffective: the "LLM auditors"
+systematically report low privacy risk, and entirely fail to detect the attacks.&lt;/p&gt;
+&lt;p&gt;This work is the newest example of something we see over and over: it's very
+easy to convince oneself that some ad hoc privacy protections are more effective
+than they actually are. In the &lt;a href="https://arxiv.org/abs/2412.13678v1"&gt;original Anthropic paper&lt;/a&gt;, the authors
+only estimate that Clio may be vulnerable to "PII persistence" and "group
+privacy violations", missing the potential for data poisining attacks entirely.&lt;/p&gt;
+&lt;p&gt;The attack paper ends on another interesting takeaway: the authors run their
+attacks on &lt;a href="https://research.google/blog/a-differentially-private-framework-for-gaining-insights-into-ai-chatbot-use/"&gt;Urania&lt;/a&gt;, an alternative system built by Google to solve the
+same problem. The main difference is that Urania uses &lt;a href="friendly-intro-to-differential-privacy"&gt;differential privacy&lt;/a&gt;
+to protect the original data. Similarly to what we observe in other contexts,
+this translates to much higher level of empirical risk mitigation — even with
+large privacy budgets like &lt;span class="math"&gt;\(\varepsilon=25\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;This story underscores a major difference in how we treat poorly-justified
+claims about privacy compared to security claims. If someone comes up with a new
+cryptographic protocol and doesn't provide a robust security analysis with
+well-defined attacker assumptions, we simply don't take them seriously. We
+should hold "privacy-preserving" systems to the same standard, and demand
+carefully delineated attacker models and a comprensive privacy analysis.
+Differential privacy may not always be necessary, but people should at least
+explain why they think provably robust approaches are not needed.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Thinking of deploying a privacy-preserving analytics system to the real world?
+Let's chat! My independent consultancy, &lt;a href="https://hiding-nemo.com"&gt;Hiding Nemo&lt;/a&gt;, specializes in
+helping organizations unlock data value, with a principled approach to risk
+analysis and mitigation.&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="misc"></category></entry><entry><title>Research post: Privacy in theory, bugs in practice</title><link href="https://desfontain.es/blog/privacy-bugs.html" rel="alternate"></link><published>2026-02-19T00:00:00+01:00</published><updated>2026-02-19T00:00:00+01:00</updated><author><name>Erb, David and Fitzsimons, Jack and Desfontaines, Damien</name></author><id>tag:desfontain.es,2026-02-19:/blog/privacy-bugs.html</id><summary type="html">&lt;p&gt;Findings a bunch of bugs in differential privacy libraries using a new approach to privacy auditing.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;small&gt;
 &lt;span class='notlettrine'&gt;T&lt;/span&gt;his blog post is written by
 &lt;a href="https://daviderb.de/"&gt;David Erb&lt;/a&gt; and &lt;a href="https://www.linkedin.com/in/jack-f-300810122/"&gt;Jack
 Fitzsimons&lt;/a&gt;; I helped with the
