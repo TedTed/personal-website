@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-03-18T00:00:00+01:00</updated><entry><title>Research highlight: Cliopatra: Extracting Private Information from LLM Insights</title><link href="https://desfontain.es/blog/cliopatra.html" rel="alternate"></link><published>2026-03-18T00:00:00+01:00</published><updated>2026-03-18T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-03-18:/blog/cliopatra.html</id><summary type="html">&lt;p&gt;The price of not using robust notions when building "privacy-preserving" analytics systems&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;When&lt;/strong&gt; Anthropic came up with a new "&lt;a href="https://www.anthropic.com/research/clio"&gt;privacy-preserving analysis
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-03-18T00:00:00+01:00</updated><entry><title>Research highlight: Cliopatra: Extracting Private Information from LLM Insights</title><link href="https://desfontain.es/blog/cliopatra.html" rel="alternate"></link><published>2026-03-18T00:00:00+01:00</published><updated>2026-03-18T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-03-18:/blog/cliopatra.html</id><summary type="html">&lt;p&gt;The price of not using robust notions when building “privacy-preserving” analytics systems&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;When&lt;/strong&gt; Anthropic came up with a new "&lt;a href="https://www.anthropic.com/research/clio"&gt;privacy-preserving analysis
 system&lt;/a&gt;" to gain insights into AI use, and didn't use any &lt;a href="friendly-intro-to-differential-privacy"&gt;provably robust
 notion&lt;/a&gt; to back up their privacy claims, I was mildly surprised. Surely they
 have both the money and the scientific maturity level to do better?&lt;/p&gt;
@@ -15,7 +15,7 @@ carefully designed attacks on Clio, they can &lt;strong&gt;bypass all the ad hoc
 mitigations&lt;/strong&gt;, and &lt;strong&gt;successfully extract users' medical histories&lt;/strong&gt;&lt;sup id="fnref:caveat"&gt;&lt;a class="footnote-ref" href="#fn:caveat"&gt;1&lt;/a&gt;&lt;/sup&gt;,
 in a way that provides &lt;strong&gt;100% attacker certainty&lt;/strong&gt; for some records.&lt;/p&gt;
 &lt;p&gt;&lt;center&gt;
-&lt;a href="images/cliopatra.png"&gt;&lt;img alt="An overview of Cliopatra, which injects &amp;quot;poison chats&amp;quot; to deduce unknown
+&lt;a href="images/cliopatra.png"&gt;&lt;img alt="An overview of Cliopatra, which injects “poison chats” to deduce unknown
 medical conditions based on known medical
 conditions." src="images/cliopatra.png"&gt;&lt;/a&gt;
 &lt;/center&gt;&lt;/p&gt;
