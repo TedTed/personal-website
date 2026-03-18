@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
   <link rel="contents" href="posts.html" />
   <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
@@ -98,17 +99,19 @@ have both the money and the scientific maturity level to do better?</p>
 layers of risk mitigation built-in. Maybe adding differential privacy would have
 been overkill. I also didn't want to publicly criticize their approach in the
 absence of demonstrated real-world risk. So I didn't comment on their approach.</p>
+<p>You can probably guess where this is going.</p>
 <p>Fast forward to last week, and a new paper: <a href="https://arxiv.org/abs/2603.09781">Cliopatra: Extracting Private
 Information from LLM Insights</a>, by Meenatchi Sundaram Muthu Selva
 Annamalai, Emiliano De Cristofaro, and Peter Kairouz. The authors show that with
-carefully designed attacks on Clio, they can <strong>bypass all the layers of ad hoc
-mitigation</strong>, and <strong>successfully extract users' medical histories</strong>.</p>
+carefully designed attacks on Clio, they can <strong>bypass all the ad hoc
+mitigations</strong>, and <strong>successfully extract users' medical histories</strong><sup id="fnref:caveat"><a class="footnote-ref" href="#fn:caveat">1</a></sup>,
+in a way that provides <strong>100% attacker certainty</strong> for some records.</p>
 <p><center>
 <a href="images/cliopatra.png"><img alt="An overview of Cliopatra, which injects &quot;poison chats&quot; to deduce unknown
 medical conditions based on known medical
 conditions." src="images/cliopatra.png"></a>
 </center></p>
-<p>This is a new take on an old attack. We've known for decades that
+<p>This is a new and clever take on an old attack. We've known for decades that
 <a href="k-anonymity"><em>k</em>-anonymity</a> is vulnerable to active attacks. Here, this is
 combined with prompt injection to encourage the LLM "summarizer" to actually
 include information from unique records. Perhaps more surprisingly, the authors
@@ -118,26 +121,50 @@ systematically report low privacy risk, and entirely fail to detect the attacks.
 easy to convince oneself that some ad hoc privacy protections are more effective
 than they actually are. In the <a href="https://arxiv.org/abs/2412.13678v1">original Anthropic paper</a>, the authors
 only estimate that Clio may be vulnerable to "PII persistence" and "group
-privacy violations", missing the potential for data poisining attacks entirely.</p>
-<p>The attack paper ends on another interesting takeaway: the authors run their
-attacks on <a href="https://research.google/blog/a-differentially-private-framework-for-gaining-insights-into-ai-chatbot-use/">Urania</a>, an alternative system built by Google to solve the
-same problem. The main difference is that Urania uses <a href="friendly-intro-to-differential-privacy">differential privacy</a>
-to protect the original data. Similarly to what we observe in other contexts,
-this translates to much higher level of empirical risk mitigation — even with
-large privacy budgets like <span class="math">\(\varepsilon=25\)</span>.</p>
+privacy violations", missing the potential for data poisoning attacks entirely.</p>
+<p>The attack paper ends on another interesting takeaway. The authors run their
+attacks on <a href="https://research.google/blog/a-differentially-private-framework-for-gaining-insights-into-ai-chatbot-use/">Urania</a>, an alternative system built by Google to address
+the same use cases, but that uses <a href="friendly-intro-to-differential-privacy">differential privacy</a> to protect the user
+conversations. Similarly to what we observe in other contexts, this translates
+to much higher level of empirical risk mitigation — even with large privacy
+budgets like <span class="math">\(\varepsilon=25\)</span> (apparently necessary to get a reasonable level of
+utility).</p>
 <p>This story underscores a major difference in how we treat poorly-justified
 claims about privacy compared to security claims. If someone comes up with a new
 cryptographic protocol and doesn't provide a robust security analysis with
 well-defined attacker assumptions, we simply don't take them seriously. We
 should hold "privacy-preserving" systems to the same standard, and demand
-carefully delineated attacker models and a comprensive privacy analysis.
+carefully delineated attacker models and a comprehensive privacy analysis.
 Differential privacy may not always be necessary, but people should at least
-explain why they think provably robust approaches are not needed.</p>
+explain why they think provably robust approaches are not needed<sup id="fnref:note"><a class="footnote-ref" href="#fn:note">2</a></sup>.</p>
+<p>Maybe some day, we'll get there?</p>
 <hr>
 <p>Thinking of deploying a privacy-preserving analytics system to the real world?
 Let's chat! My independent consultancy, <a href="https://hiding-nemo.com">Hiding Nemo</a>, specializes in
 helping organizations unlock data value, with a principled approach to risk
 analysis and mitigation.</p>
+<hr>
+<p><small>I'm grateful to Meenatchi Sundaram Muthu Selva Annamalai, Emiliano De
+Cristofaro, and Peter Kairouz for their helpful feedback on earlier versions of
+this post.</small></p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:caveat">
+<p>In lab conditions — no production system nor real user data was
+targeted in the experiments.&#160;<a class="footnote-backref" href="#fnref:caveat" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:note">
+<p>Note that DP may not even actually be needed for Clio in practice!
+They're not sharing the data publicly, probably (?) have reasonable
+information security &amp; data governance practices, and perform a sampling
+step which likely provides some risk mitigation. But the privacy analysis
+doesn't rely on any of that. It presents the design of Clio as inherently
+privacy-preserving, suggesting that it would still be safe when deployed in
+a more permissive context.&#160;<a class="footnote-backref" href="#fnref:note" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
