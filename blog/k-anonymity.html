@@ -585,11 +585,11 @@ understand, so it has been quickly adopted by the healthcare community for their
 data anonymization needs. As a result, there has been a <em>lot</em> of research on how
 to transform a dataset into a <span class="math">\(k\)</span>-anonymous table.</p>
 <p>The problem of finding an <em>optimal</em> strategy for <span class="math">\(k\)</span>-anonymity is <a href="https://en.wikipedia.org/wiki/NP-hardness">NP-hard</a>, for
-basically any reasonable definition of optimality. <a href="https://desfontain.es/PDFs/PhD/OnTheComplexityOfOptimalKAnonymity.pdf">This paper<sup>
+basically any reasonable definition of optimality. <a href="https://people.csail.mit.edu/rrw/kanon-pods04.pdf">This paper<sup>
 (pdf)</sup></a> presents a few such results, if you're interested in this
 kind of thing ^^</p>
 <p>A list of approximation algorithms for the optimal <span class="math">\(k\)</span>-anonymization problem can
-be found in <a href="https://desfontain.es/PDFs/PhD/PublishingDataFromElectronicHealthRecordsWhilePreservingPrivacyASurveyOfAlgorithms.pdf">this paper<sup> (pdf)</sup></a> (Table 4, page 11). 18
+be found in <a href="https://www.sciencedirect.com/science/article/pii/S1532046414001403?via%3Dihub">this paper<sup> (pdf)</sup></a> (Table 4, page 11). 18
 different algorithms are listed, and I don't even think the list is exhaustive!
 The paper contains many links to the original papers, and to some comparisons
 between methods. Sadly, there is no unified benchmark to know how all these
@@ -610,7 +610,7 @@ website. I've tried most of them, only to get convinced that none of them really
 reached the point of being a usable product. <a href="http://cs.utdallas.edu/dspl/cgi-bin/toolbox/index.php">UTD Anonymization Toolbox</a> is
 probably the only one worth a look: it requires to use the command-line and
 impractical configuration files to work, but it implements a local
-generalization algorithm (the first of its kind, named <a href="https://desfontain.es/PDFs/PhD/MondrianMultidimensionalKANonymity.pdf">Mondrian<sup>
+generalization algorithm (the first of its kind, named <a href="https://personal.utdallas.edu/~muratk/courses/privacy08f_files/MultiDim.pdf">Mondrian<sup>
 (pdf)</sup></a>, a very cool technique with better utility preservation
 than global generalization algorithms).</p>
 <p>On the commercial side, I've only heard of a toolkit developed by the consulting
