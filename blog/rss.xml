@@ -1,5 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-03-18T00:00:00+01:00</updated><entry><title>Research highlight: Cliopatra: Extracting Private Information from LLM Insights</title><link href="https://desfontain.es/blog/cliopatra.html" rel="alternate"></link><published>2026-03-18T00:00:00+01:00</published><updated>2026-03-18T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-03-18:/blog/cliopatra.html</id><summary type="html">&lt;p&gt;The price of not using robust notions when building “privacy-preserving” analytics systems&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;When&lt;/strong&gt; Anthropic came up with a new "&lt;a href="https://www.anthropic.com/research/clio"&gt;privacy-preserving analysis
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-04-29T00:00:00+02:00</updated><entry><title>Notes from Dagstuhl: biomedical data sharing</title><link href="https://desfontain.es/blog/dagstuhl-biomedical-data-sharing.html" rel="alternate"></link><published>2026-04-29T00:00:00+02:00</published><updated>2026-04-29T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-04-29:/blog/dagstuhl-biomedical-data-sharing.html</id><summary type="html">&lt;p&gt;I learned a ton about data sharing and privacy issues in the biomedical field, here are some of my takeaways.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;Last&lt;/strong&gt; February, I had the privilege to participate to a &lt;a href="https://www.dagstuhl.de/en/seminars/dagstuhl-seminars"&gt;Dagstuhl
+seminar&lt;/a&gt; about privacy for &lt;a href="https://www.dagstuhl.de/en/seminars/seminar-calendar/seminar-details/26082"&gt;biomedical data sharing&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="A picture of the participants to Dagstuhl seminar 26082, posing on an outdoor
+stairway, under the bright sunlight." src="https://desfontain.es/blog/images/dagstuhl-2026.jpg" width="80%"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;I know quite a bit about privacy, but very little about the biomedical field, so
+it was a fantastic opportunity to learn more about this space. This blog post is
+a semi-random list of things I learned.&lt;/p&gt;
+&lt;h1 id="differential-privacy-is-hardly-ever-used"&gt;Differential privacy is hardly ever used&lt;/h1&gt;
+&lt;p&gt;A quick look at the &lt;a href="https://registry.opendp.org/deployments-registry/"&gt;DP deployment
+registry&lt;/a&gt; is enough to make
+this point pretty obvious: formal approaches to privacy haven't seen major
+deployments in the biomedical space. This may seem surprising: access to
+sensitive data is a major pain point for healthcare research, and robust
+anonymization technology sounds like a natural solution. Why has there been so
+little adoption compared to other fields?&lt;/p&gt;
+&lt;p&gt;Some reasons I heard will sound very familiar to any DP practitioner.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Nobody understands it. People described meetings where they try to explain the
+  intuition behind DP, and see their audience go blank. In comparison, it's
+  apparently much easier for non-technical folks to understand (the very basics
+  of) &lt;a href="https://en.wikipedia.org/wiki/Secure_multi-party_computation"&gt;multi-party computation&lt;/a&gt;
+  or &lt;a href="https://en.wikipedia.org/wiki/Federated_learning"&gt;federated learning&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;The idea of adding noise to data is often a non-starter: data truthfulness is
+  too central to the scientific culture among healthcare researchers. People
+  prefer ad hoc techniques like generalization or suppression, even if they
+  severely impact utility, because at least they can rely on the data "not
+  lying to them".&lt;/li&gt;
+&lt;li&gt;Attacks are not compelling. There's a strong perception that DP protects
+  against unrealistic attackers, which aren't very relevant to biomedical data
+  sharing settings.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This pushback isn't focused solely on DP — any protection mechanism that bring
+significant utility loss is met with harsh criticism. One participant recounted
+a job interview where they were talking about typical anonymization measures,
+and someone asked them: "Do you hate science?!"&lt;/p&gt;
+&lt;p&gt;The majority of seminar participants thought that the last point — attacks not
+being super compelling — was largely valid. There aren't many high-profile
+failures of anonymization in the medical domain. The existing ones are all
+"obviously terrible" (as in: the data was extremely poorly protected). This
+creates the sense that if you do something reasonable, even if it's not super
+principled, this is probably good enough. The argument goes: It this wasn't the
+case, then we would hear about anonymization failures a lot more often. As
+someone succinctly put it: "Where are the bodies?"&lt;/p&gt;
+&lt;h1 id="controlled-access-repositories-are-all-the-rage"&gt;Controlled access repositories are all the rage&lt;/h1&gt;
+&lt;p&gt;Instead of trying to reach very strong privacy guarantees by anonymizing the
+data, sensitive data access solutions primarily rely on risk-based approaches.
+The main solution is to deploy &lt;em&gt;controlled access repositories&lt;/em&gt;, which are
+becoming widespread in the biomedical domain. These are systems where the data
+curator gives researchers access to the data, under specific conditions, with
+many different kinds of risk mitigation measures. Here are some examples.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Registration and pre-approval of research projects.&lt;/li&gt;
+&lt;li&gt;Contractual measures, like &lt;a href="https://privacy.stanford.edu/other-resources/data-use-agreement-dua-faqs"&gt;data use
+  agreements&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Prohibitions against data download — all analyses must happen on a cloud
+  platform maintained by the organization sharing the data.&lt;/li&gt;
+&lt;li&gt;Logging and monitoring of all actions taken by researchers on the data.&lt;/li&gt;
+&lt;li&gt;Disclosure avoidance practices, like generalization and suppression, to make
+  sure the data isn't too easy to re-identify.&lt;/li&gt;
+&lt;li&gt;Clear consequences for data misuse.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Such systems are not a panacea. For example, sensitive data from the UK Biobank
+was inadvertently published &lt;a href="https://biobank.rocher.lc/"&gt;dozens of times&lt;/a&gt;, and even ended up &lt;a href="https://www.theguardian.com/technology/2026/apr/23/private-health-records-uk-biobank-chinese-website-alibaba"&gt;for
+sale on Alibaba&lt;/a&gt;. But what I heard suggested that the solution to this
+kind of issue won't be "add more anonymization", but rather "establish better
+data governance practices".&lt;/p&gt;
+&lt;p&gt;Controlled access repositories also bring complicated questions, in particular
+around financial sustainability. Maintaining them and making them compliant with
+all existing regulations is a massively complex and expensive endeavor. So in
+many cases, large cloud providers (GCP, Azure, etc.) are building the
+infrastructure, and heavily subsidizing it for initial use cases. Of course,
+this creates dangerous lock-in effects: if (or when) Google or Microsoft decides
+to hike up the price of these services, healthcare institutions will find
+themselves in a very difficult negotiating position.&lt;/p&gt;
+&lt;h1 id="risk-mitigation-frameworks-are-more-mature-than-in-other-industries"&gt;Risk mitigation frameworks are more mature than in other industries&lt;/h1&gt;
+&lt;p&gt;To enable data sharing while providing an adequate level of risk mitigation, the
+biomedical community uses conceptual frameworks that reflect a high level of
+organizational maturity. One example is the &lt;a href="https://fivesafes.org/"&gt;Five
+Safes&lt;/a&gt;, used to reason holistically about data sharing
+systems. Such tools aren't (to my knowledge) typically being used in the areas
+I'm more familiar with, like the tech industry. It's too bad — learning about
+how the biomedical field reasons about privacy risk holistically made me think
+of ways to potentially adopt it in my work.&lt;/p&gt;
+&lt;p&gt;One reason I like it is that it covers concerns that anonymization methods don't
+really address, like data misuse. In a recent example, a dataset containing
+&lt;a href="https://abcdstudy.org/"&gt;medical data from 20,000 children&lt;/a&gt; was used by fringe "researchers" to
+publish &lt;a href="https://www.nytimes.com/2026/01/24/us/children-genetics-race-science.html"&gt;race science papers&lt;/a&gt;. This is a very bad scenario, but this has
+very little with whether individual participants can be re-identified.&lt;/p&gt;
+&lt;p&gt;Healthcare institutions will also often have documented standards describing how
+to anonymize data, depending on exposure, sensitivity, context, and so on. Even
+though these guidelines aren't using provably robust methods, their very
+existence is a sign of organizational maturity. It brings consistency and
+traceability across multiple data sharing or publication use cases. How many
+institutions outside the medical domain have something comparable?&lt;/p&gt;
+&lt;p&gt;This maturity doesn't stop at anonymization practices. For example, I heard
+people describe well-defined guidelines for how to handle data breaches by
+employees. Privacy officers classify privacy violations in fixed categories,
+depending on whether the offense is inadvertent, malicious, and performed at
+scale, and each category comes with different disciplinary measures.&lt;/p&gt;
+&lt;!--
+- *Inadvertent, non-malicious.* Someone mistakenly copies data in the wrong
+  place, or shares some data without realizing its sensitivity. The employee
+  will get a warning, and will have to complete further training.
+- *On purpose, non-malicious.* A colleague has been admitted to the hospital
+  because of a health issue, and to find out which room he's in, it's easier to
+  look at confidential files rather than going through the proper channels. This
+  leads to a formal warning to not do this again.
+- *On purpose, malicious.* Someone looks at their ex-partner's patient file to
+  use in divorce proceedings. This is a fireable offence.
+- *On purpose, malicious, at scale.* Someone looks up a list of social security
+  numbers as part of a fraud scheme. This is not only a fireable offence, but
+  will also be reported to law enforcement.
+--&gt;
+
+&lt;h1 id="privacy-can-be-a-convenient-excuse-not-to-publish-data"&gt;Privacy can be a convenient excuse not to publish data&lt;/h1&gt;
+&lt;p&gt;I heard from multiple people that institutions have often multiple reasons to
+not publish data, unrelated to privacy concerns. Fear of embarrassment is a big
+one. For example, a hospital might be hesitant to publish anonymized data data
+about cancer patient, by fear that the data shows that this hospital has worse
+patient outcomes than its competitors. Nobody will admit this out loud, though!&lt;/p&gt;
+&lt;p&gt;This is where "privacy concerns" come in. They can be a very convenient,
+principled-looking rationale for not publishing data. Stakeholders often hide
+behind this excuse: rather than saying "we're afraid of bad PR", they say "we're
+concerned about patient privacy". This can lead to frustrating situations for
+anonymization practitioners: they come up with clever technical ways of solving
+the privacy problem, only to realize much later that this wasn't the real
+blocker to data publication.&lt;/p&gt;
+&lt;h1 id="ai-is-bringing-mostly-chaos-and-some-opportunities"&gt;AI is bringing mostly chaos, and some opportunities&lt;/h1&gt;
+&lt;p&gt;Everyone is trying to figure out how to adapt to a new world, where LLMs are
+used by people every step of the way.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Patients are coming to consultations with a preconceived idea of what to
+  expect, because they asked ChatGPD first. They're putting their test results
+  straight into an LLM and asking it to interpret the results. They're asking it
+  for second opinions after seeing a doctor. &lt;/li&gt;
+&lt;li&gt;Automated transcription services are now widespread for patient consultations.
+  An institution I heard of went from "we ask patients to opt in", to "we tell
+  patients and allow them to opt out", to "we don't tell patients unless they
+  ask (and then allow them to opt out)", in just a few years.&lt;/li&gt;
+&lt;li&gt;Doctors are also regularly using LLMs for medical queries, in a similar way
+  than they use search engines. Institutions who forbade LLM use saw many of
+  their employees use their personal devices and accounts to do it anyway.&lt;/li&gt;
+&lt;li&gt;Researchers are relying on AI agents to help with coding tasks and data
+  analysis. Data custodians are anticipating a future where AI agents perform
+  such tasks with less and less supervision. This raises complex data protection
+  questions — how to model the risk of such data accesses?&lt;/li&gt;
+&lt;li&gt;I heard of an interesting project where an LLM was used to audit people's
+  behavior in controlled access respositories and flag suspicious data usage
+  patterns. It seemed to me like an interesting use case, because the other
+  solutions —  ixed detection rules or manual audits — have severe limitations
+  in practice.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Everyone agrees that organizations need to think strategically about AI use.
+Currently, institutions are mostly launching a few pilots, and reacting to
+people's behavior. This is clearly not forward-thinking enough, but nobody knows
+how to actually formulate a good strategy, since nobody can really predict where
+the field is going…&lt;/p&gt;</content><category term="misc"></category></entry><entry><title>Research highlight: Cliopatra: Extracting Private Information from LLM Insights</title><link href="https://desfontain.es/blog/cliopatra.html" rel="alternate"></link><published>2026-03-18T00:00:00+01:00</published><updated>2026-03-18T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-03-18:/blog/cliopatra.html</id><summary type="html">&lt;p&gt;The price of not using robust notions when building “privacy-preserving” analytics systems&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;When&lt;/strong&gt; Anthropic came up with a new "&lt;a href="https://www.anthropic.com/research/clio"&gt;privacy-preserving analysis
 system&lt;/a&gt;" to gain insights into AI use, and didn't use any &lt;a href="friendly-intro-to-differential-privacy"&gt;provably robust
 notion&lt;/a&gt; to back up their privacy claims, I was mildly surprised. Surely they
 have both the money and the scientific maturity level to do better?&lt;/p&gt;
