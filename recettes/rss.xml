@@ -1,5 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Les bonnes recettes de Ted</title><link href="https://desfontain.es/recettes-new/" rel="alternate"></link><link href="https://desfontain.es/recettes-new/rss.xml" rel="self"></link><id>https://desfontain.es/recettes-new/</id><updated>2026-05-04T00:00:00+02:00</updated><entry><title>Ramequins fondants au chocolat</title><link href="https://desfontain.es/recettes-new/ramequins-fondants-au-chocolat.html" rel="alternate"></link><published>2026-05-04T00:00:00+02:00</published><updated>2026-05-04T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-05-04:/recettes-new/ramequins-fondants-au-chocolat.html</id><summary type="html">&lt;p&gt;Pour 4 personnes :&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Les bonnes recettes de Ted</title><link href="https://desfontain.es/recettes-new/" rel="alternate"></link><link href="https://desfontain.es/recettes-new/rss.xml" rel="self"></link><id>https://desfontain.es/recettes-new/</id><updated>2026-05-10T00:00:00+02:00</updated><entry><title>Sorbet au chocolat noir</title><link href="https://desfontain.es/recettes-new/sorbet-au-chocolat.html" rel="alternate"></link><published>2026-05-10T00:00:00+02:00</published><updated>2026-05-10T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-05-10:/recettes-new/sorbet-au-chocolat.html</id><summary type="html">&lt;p&gt;Pour un petit litre de sorbet :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;550mL d'eau&lt;/li&gt;
+&lt;li&gt;200g de sucre&lt;/li&gt;
+&lt;li&gt;75g de cacao en poudre non sucré&lt;/li&gt;
+&lt;li&gt;170g de bon chocolat noir&lt;/li&gt;
+&lt;li&gt;Une demi-cuillère à café d'extrait de vanille&lt;/li&gt;
+&lt;li&gt;Une pincée de sel&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;Couper le chocolat en bouts assez fins.&lt;/li&gt;
+&lt;li&gt;Mélanger 375mL d'eau avec le sucre, le cacao en …&lt;/li&gt;&lt;/ol&gt;</summary><content type="html">&lt;p&gt;Pour un petit litre de sorbet :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;550mL d'eau&lt;/li&gt;
+&lt;li&gt;200g de sucre&lt;/li&gt;
+&lt;li&gt;75g de cacao en poudre non sucré&lt;/li&gt;
+&lt;li&gt;170g de bon chocolat noir&lt;/li&gt;
+&lt;li&gt;Une demi-cuillère à café d'extrait de vanille&lt;/li&gt;
+&lt;li&gt;Une pincée de sel&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;Couper le chocolat en bouts assez fins.&lt;/li&gt;
+&lt;li&gt;Mélanger 375mL d'eau avec le sucre, le cacao en poudre, et le sel dans une
+   casserole à bords assez hauts. Porter à ébullition à feu fort en mélangeant
+   avec un fouet régulièrement. Quand ça commence à bouillir, fouetter en
+   continu pendant 45 secondes, puis enlever du feu.&lt;/li&gt;
+&lt;li&gt;Ajouter le chocolat et mélanger jusqu'à ce que ça soit fondu, puis ajouter
+   l'extrait de vanille. Transférer le mélange dans un mixeur, et mixer pendant
+   une bonne quinzaine de secondes (oui, ça paraît étrange car le mélange a déjà
+   l'air liquide, mais ça a apparemment une grosse influence sur la texture du
+   sorbet).&lt;/li&gt;
+&lt;li&gt;Laisser refroidir entièrement au frigo (disons, 8h minimum), puis passer à la
+   sorbetière, et mettre le résultat au congélateur au moins quelques heures
+   avant dégustation.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Remarque : comme pour les &lt;a href="sorbets.html"&gt;sorbets aux fruits&lt;/a&gt;, la qualité des
+ingrédients a une influence majeure sur le résultat, donc il ne faut pas hésiter
+à utiliser du très bon chocolat.&lt;/p&gt;</content><category term="misc"></category><category term="dessert"></category><category term="tech"></category><category term="glace"></category><category term="vege"></category></entry><entry><title>Ramequins fondants au chocolat</title><link href="https://desfontain.es/recettes-new/ramequins-fondants-au-chocolat.html" rel="alternate"></link><published>2026-05-04T00:00:00+02:00</published><updated>2026-05-04T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-05-04:/recettes-new/ramequins-fondants-au-chocolat.html</id><summary type="html">&lt;p&gt;Pour 4 personnes :&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;160g de chocolat noir&lt;/li&gt;
 &lt;li&gt;35g de beurre&lt;/li&gt;
@@ -2773,29 +2810,4 @@ poêle à feu moyen, avec un peu d'huile d'olive.&lt;/li&gt;
 &lt;li&gt;Sortir les têtes d'ail et vérifier qu'elles sont bien moelleuses. Lancer la cuisson des pâtes, et faire chauffer la crème au fond d'une casserole.&lt;/li&gt;
 &lt;li&gt;Pendant ce temps, éplucher et presser les deux gousses d'ail crues, presser le citron pour récupérer environ 30mL de jus, récupérer les gousses d'ail rôties avec les doigts puis les écraser à la fourchette, laver puis émincer la ciboulette, et tout mélanger dans un bol avec la sauce soja et le piment. Saler un peu et poivrer généreusement.&lt;/li&gt;
 &lt;li&gt;Lorsque les pâtes sont presques cuites, récupérer un verre d'eau de cuisson, les égoutter, puis finir de les cuire avec la sauce et le verre d'eau de cuisson. Servir dès qu'il n'y a plus de liquide au fond de la casserole, avec un peu de parmesan ou d'emmental râpé, et un peu plus de poivre.&lt;/li&gt;
-&lt;/ol&gt;</content><category term="misc"></category><category term="vege"></category><category term="plat"></category><category term="minimaliste"></category><category term="photo"></category><category term="rapide"></category><category term="pate"></category></entry><entry><title>Pâtes aux aubergines</title><link href="https://desfontain.es/recettes-new/pates-aux-aubergines.html" rel="alternate"></link><published>2025-10-05T00:00:00+02:00</published><updated>2025-10-05T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2025-10-05:/recettes-new/pates-aux-aubergines.html</id><summary type="html">&lt;p&gt;Pour trois personnes :&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Deux aubergines&lt;/li&gt;
-&lt;li&gt;25cl de crème fraîche&lt;/li&gt;
-&lt;li&gt;Entre 300 et 500g de pâtes suivant la faim des gens&lt;/li&gt;
-&lt;li&gt;Une cuillère à soupe de curry (ou de vadouvan)&lt;/li&gt;
-&lt;li&gt;(Facultatif) Un peu de coriandre fraîche&lt;/li&gt;
-&lt;li&gt;Sel, poivre, huile d'olive&lt;/li&gt;
-&lt;/ul&gt;
-&lt;ol&gt;
-&lt;li&gt;Éplucher les aubergines et les couper en tout petits bouts — je …&lt;/li&gt;&lt;/ol&gt;</summary><content type="html">&lt;p&gt;Pour trois personnes :&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Deux aubergines&lt;/li&gt;
-&lt;li&gt;25cl de crème fraîche&lt;/li&gt;
-&lt;li&gt;Entre 300 et 500g de pâtes suivant la faim des gens&lt;/li&gt;
-&lt;li&gt;Une cuillère à soupe de curry (ou de vadouvan)&lt;/li&gt;
-&lt;li&gt;(Facultatif) Un peu de coriandre fraîche&lt;/li&gt;
-&lt;li&gt;Sel, poivre, huile d'olive&lt;/li&gt;
-&lt;/ul&gt;
-&lt;ol&gt;
-&lt;li&gt;Éplucher les aubergines et les couper en tout petits bouts — je fais des mini-cubes avec une mandoline, mais je suppose qu'on peut aussi simplement râper les aubergines.&lt;/li&gt;
-&lt;li&gt;Les faire revenir à feu moyen-doux dans une poêle, avec de l'huile d'olive, les épices, du sel et du poivre. Laisser à couvert
-jusqu'à ce que ça réduise bien, environ une demi-heure.&lt;/li&gt;
-&lt;li&gt;Ajouter la crème fraîche, mélanger mettre à feu doux et à découvert. Simultanément, faire cuire les pâtes. Servir ensemble et chaud, parsemé par exemple de coriandre fraîche.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Remarque : ces proportions marchent mal en France, où la crème fraîche se compte par 20cl. En remplaçant les proportions par une grosse aubergine et 20cl de crème, ça devrait faire assez de sauce pour deux bons mangeurs.&lt;/p&gt;</content><category term="misc"></category><category term="vege"></category><category term="ete"></category><category term="plat"></category><category term="minimaliste"></category><category term="facile"></category><category term="photo"></category><category term="pate"></category></entry></feed>
+&lt;/ol&gt;</content><category term="misc"></category><category term="vege"></category><category term="plat"></category><category term="minimaliste"></category><category term="photo"></category><category term="rapide"></category><category term="pate"></category></entry></feed>
