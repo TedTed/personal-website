@@ -1,5 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-04-29T00:00:00+02:00</updated><entry><title>Notes from Dagstuhl: biomedical data sharing</title><link href="https://desfontain.es/blog/dagstuhl-biomedical-data-sharing.html" rel="alternate"></link><published>2026-04-29T00:00:00+02:00</published><updated>2026-04-29T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-04-29:/blog/dagstuhl-biomedical-data-sharing.html</id><summary type="html">&lt;p&gt;I learned a ton about data sharing and privacy issues in the biomedical field, here are some of my takeaways.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;Last&lt;/strong&gt; February, I had the privilege to participate to a &lt;a href="https://www.dagstuhl.de/en/seminars/dagstuhl-seminars"&gt;Dagstuhl
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-05-18T00:00:00+02:00</updated><entry><title>Guest post: Goodbye (ε,δ), hello μ: Reporting privacy guarantees in machine learning</title><link href="https://desfontain.es/blog/reporting-privacy-guarantees-in-machine-learning.html" rel="alternate"></link><published>2026-05-18T00:00:00+02:00</published><updated>2026-05-18T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-05-18:/blog/reporting-privacy-guarantees-in-machine-learning.html</id><summary type="html">&lt;p&gt;Why is Gaussian DP a much better compact representation of privacy guarantees than (ε,δ)-DP.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;small&gt;
+&lt;span class='notlettrine'&gt;T&lt;/span&gt;his blog post is written by
+&lt;a href="https://kulyny.ch"&gt;Bogdan Kulynych&lt;/a&gt;; I helped with editing and am
+excited to host it here as a guest post. If you’d also like to contribute a
+post about your research to this blog, don’t hesitate to get in touch!
+&lt;/small&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;span class='lettrine'&gt;&lt;strong&gt;A&lt;/strong&gt;&lt;/span&gt; Gaussian mechanism with &lt;span class="math"&gt;\(\varepsilon=6\)&lt;/span&gt; can
+be &lt;em&gt;less&lt;/em&gt; private than one with &lt;span class="math"&gt;\(\varepsilon=8\)&lt;/span&gt;. How could this be? This fact
+points to a problem with how we currently report privacy guarantees in
+privacy-preserving machine learning. In this blog post, we explain the issue,
+and propose one possible way of fixing it.&lt;/p&gt;
+&lt;h1 id="the-problem-with-varepsilon"&gt;The problem with &lt;span class="math"&gt;\(\varepsilon\)&lt;/span&gt;&lt;/h1&gt;
+&lt;p&gt;The standard way of reporting
+&lt;a href="friendly-intro-to-differential-privacy.html"&gt;differential privacy&lt;/a&gt; guarantees
+is to use the pair of parameters &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt; for a small &lt;span class="math"&gt;\(\delta\)&lt;/span&gt;.
+The community has developed some intuitions and informal conventions, e.g.,
+&lt;span class="math"&gt;\(\varepsilon&amp;lt;10\)&lt;/span&gt; is generally considered OK in machine learning applications.
+But this convention has a big issue.&lt;/p&gt;
+&lt;p&gt;Often, we want to analyze the privacy risk of the mechanism in terms of
+standard attacks such as
+&lt;a href="better-empirical-privacy-metrics.html"&gt;membership inference&lt;/a&gt;. This is
+useful, both to communicate the privacy guarantees to stakeholders and to
+&lt;a href="privacy-auditing-terminology.html"&gt;audit the privacy guarantees&lt;/a&gt;. But
+only knowing a single pair &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt; is not enough to characterize
+the success of such attacks.&lt;/p&gt;
+&lt;p&gt;Let us illustrate why that is, using optimal membership inference attacks. To
+quantify the attack success, we draw the &lt;em&gt;trade-off curve&lt;/em&gt; between the False
+Positive Rate (FPR) — how often the attacker incorrectly guesses that their
+target is in the data — and the False Negative Rate (FNR) — how often the
+attacker incorrectly guesses that their target is &lt;em&gt;not&lt;/em&gt; in the data — of the
+best possible attack. By doing this with an optimal attack, we know that  the
+FPR and FNR of any other attack must be &lt;em&gt;higher&lt;/em&gt;: the trade-off curve is a lower
+bound on error rates of all possible membership inference attacks. &lt;/p&gt;
+&lt;p&gt;As an example, consider a Gaussian mechanism that is &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt;-DP
+with &lt;span class="math"&gt;\(\varepsilon=2\)&lt;/span&gt; and &lt;span class="math"&gt;\(\delta=10^{-5}\)&lt;/span&gt;. If we pretend that these parameters
+are the only thing we know about the mechanism (and ignore the fact that it’s a
+Gaussian mechanism), we get the following trade-off curve:  &lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="A plot with the x axis showing possible attack false-positive rates (FPR), between 0 to 1, and y axis showing possible false-negative rates (FNR), also between 0 and 1. The plot shows a trade-off curve as a piecewise linear function with two segments, starting at (0, 1), passing approximately (0.12, 0.12), and (1, 0). The point (0, 0) is marked as corresponding to a hypothetical perfect attack. The points on the off-diagonal where FNR is 1 - FPR are marked as corresponding to trivial attacks." src="images/tradeoff-curve-epsilon-delta.svg" width="80%"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;This guarantee seems quite weak: the attacker can achieve a True Positive Rate
+(TPR) close to 90% (i.e., FNR of around 10%) at FPR of about 10%, which is a
+fairly strong attack! Differentially private mechanisms, however, satisfy an
+infinite set of &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt;-DP guarantees. As all of them are
+simultaneously valid, we get a much more precise version by combining the
+trade-off curves (shown in blue next) from all the &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt;-DP
+pairs (shown for several pairs as solid grey lines):&lt;/p&gt;
+&lt;p&gt;&lt;img alt="The plot with FPR on the x axis and FNR on the y axis shows a smooth trade-off curve going from (0, 1) via approximately (0.4, 0.4) to (1, 0). The plot also shows several piecewise linear trade-off functions corresponding to different (ε,δ)-DP guarantees of the Gaussian mechanism, all below the smooth trade-off curve." src="images/tradeoff-curves-multiple-pairs.svg" width="80%"&gt;&lt;/p&gt;
+&lt;p&gt;This is the “real” trade-off curve of our Gaussian mechanism&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;. We can compute
+it almost exactly for many practical algorithms, including
+&lt;a href="differential-privacy-glossary.html#dp-sgd"&gt;DP-SGD&lt;/a&gt;&lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2"&gt;2&lt;/a&gt;&lt;/sup&gt;. As we can see, the
+mechanism turns out to be &lt;em&gt;much&lt;/em&gt; more private than what we would assume if we
+only knew that it satisfies &lt;span class="math"&gt;\(\varepsilon=2\)&lt;/span&gt; at &lt;span class="math"&gt;\(\delta=10^{-5}\)&lt;/span&gt;. Note that both
+plots show the same mechanism with the same parameters, only different analyses
+of it.&lt;/p&gt;
+&lt;p&gt;In other words, reporting the privacy guarantees with just &lt;span class="math"&gt;\(\varepsilon\)&lt;/span&gt; and
+&lt;span class="math"&gt;\(\delta\)&lt;/span&gt; loses a lot of information: the standard practice makes us
+underestimate the protection we get from DP. It also complicates mechanism
+comparisons: if we compare two guarantees using their &lt;span class="math"&gt;\(\varepsilon\)&lt;/span&gt; when the
+&lt;span class="math"&gt;\(\delta\)&lt;/span&gt; values differ, we might get the wrong idea of which one is more
+private. For instance, a Gaussian mechanism that satisfies &lt;span class="math"&gt;\(\varepsilon=6\)&lt;/span&gt; at
+&lt;span class="math"&gt;\(\delta=10^{-5}\)&lt;/span&gt; is &lt;em&gt;less&lt;/em&gt; private than a Gaussian mechanism that satisfies
+&lt;span class="math"&gt;\(\varepsilon=8\)&lt;/span&gt; at &lt;span class="math"&gt;\(\delta=10^{-9}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;h1 id="gaussian-dp-to-the-rescue"&gt;Gaussian DP to the rescue&lt;/h1&gt;
+&lt;p&gt;It seems that we have to pick one of two poisons. Either we report a single,
+compact, &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt; pair while sacrificing the ability to
+characterize the privacy risk and compare mechanism precisely… or we report the
+entire trade-off curve, e.g., using a big table of FNR and FPR values, which is
+difficult to understand and communicate. Can we do better?&lt;/p&gt;
+&lt;p&gt;It turns out that for many mechanisms in machine learning, we can avoid this
+dilemma by using
+&lt;a href="https://dongjs.github.io/2020/01/15/Privacy.html"&gt;Gaussian differential privacy&lt;/a&gt;.
+This is the main recommendation we make in our recent position paper at IEEE
+SatML 2026 conference, &lt;a href="https://arxiv.org/abs/2503.10945"&gt;Gaussian DP for Reporting Differential Privacy
+Guarantees in Machine Learning&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;Gaussian differential privacy (GDP) is a variant of differential privacy that is
+specifically tailored to the Gaussian mechanism, and can characterize its
+trade-off curve above &lt;em&gt;exactly&lt;/em&gt; using just a single number &lt;span class="math"&gt;\(\mu\)&lt;/span&gt;. This &lt;span class="math"&gt;\(\mu\)&lt;/span&gt; has
+a nice interpretation: if a mechanism satisfies &lt;span class="math"&gt;\(\mu\)&lt;/span&gt;-GDP, then membership
+inference attacks are at least as hard as distinguishing two unit-variance
+Gaussians that are &lt;span class="math"&gt;\(\mu\)&lt;/span&gt; units apart, e.g., &lt;span class="math"&gt;\(\mathcal{N}(0,1)\)&lt;/span&gt; and
+&lt;span class="math"&gt;\(\mathcal{N}(\mu,1)\)&lt;/span&gt;, based on a single observation:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="The plot shows two probability density functions, both having the same bell-curve shapes, but shifted horizontally. The first bell curve is centered at 0, corresponding to standard normal distribution. The second bell curve is centered at μ, corresponding to a unit-variance Gaussian distribution N(μ, 1)." src="images/gdp-definition.svg" width="80%"&gt;&lt;/p&gt;
+&lt;h1 id="how-well-does-this-work"&gt;How well does this work&lt;/h1&gt;
+&lt;p&gt;As it turns out, the privacy guarantees of most algorithms in privacy-preserving
+machine learning can be very precisely characterized with GDP. This is because
+many such algorithms, like the standard DP-SGD, consist of compositions of
+simpler mechanisms, and these tend to work well with GDP&lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3"&gt;3&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;For a concrete illustration, here are three trade-off curves of a DP-SGD
+instance: one that we obtain via exact computation, one obtained via Gaussian
+DP, and one that corresponds to a single &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt; pair:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="The plot with FPR on the x axis and FNR on the y axis shows three trade-off curves. The first two trade-off curves, an exact one and one corresponding to μ = 1.57 GDP, are smooth, are almost indistinguishable, and go from (1, 0) via approximately (0.18, 0.18) to (1, 0). The third one, corresponding to (ε = 8, δ = 10-5)-DP, is piecewise linear with two segments, and looks almost like a straight angle, going from (1, 0) via approximately (0, 0) to (1, 0)." src="images/dp-sgd-tradeoff-curves.svg" width="80%"&gt;&lt;/p&gt;
+&lt;p&gt;As we can see, GDP fits this instance of DP-SGD very well, whereas the
+&lt;span class="math"&gt;\((\varepsilon, \delta)\)&lt;/span&gt; guarantee is extremely lossy. This works similarly in
+many real-world instantiations.&lt;/p&gt;
+&lt;p&gt;For some specific algorithms, however, GDP might not fit the exact trade-off
+curve as well. Luckily, we can always evaluate how accurately a representation
+(e.g., a specific &lt;span class="math"&gt;\(\mu\)&lt;/span&gt;) matches the optimal trade-off curve, using a metric
+called &lt;em&gt;regret&lt;/em&gt;&lt;sup id="fnref:4"&gt;&lt;a class="footnote-ref" href="#fn:4"&gt;4&lt;/a&gt;&lt;/sup&gt;. When regret is smaller than 1%, for most practical
+purposes, we might just ignore the imprecision. For instance, the regret of
+using GDP to describe the exact trade-off curve of the mechanism in the plot
+just above is 0.1%, whereas the regret of using a single pair
+&lt;span class="math"&gt;\((\varepsilon=8,\delta=10^{-5})\)&lt;/span&gt; is 21%.&lt;/p&gt;
+&lt;p&gt;We provide a new Python package
+&lt;a href="https://github.com/interpretable-dp/gdpnum/"&gt;gdpnum&lt;/a&gt; as part of the
+&lt;a href="https://interpretable-dp.org"&gt;Interpretable DP&lt;/a&gt; suite of tools that enables
+researchers and practitioners to obtain a GDP guarantee and estimate its regret.
+Fun fact: in some cases, GDP characterizes the privacy guarantees of DP-SGD more
+precisely (with lower regret) than &lt;span class="math"&gt;\(\varepsilon\)&lt;/span&gt;-DP characterizes the
+guarantees of the Laplace mechanism!&lt;/p&gt;
+&lt;p&gt;As a caveat, there is a great variety of algorithms used in privacy-preserving
+machine learning and statistics. Although GDP is going to be a good choice for
+DP-SGD, algorithms based on the Gaussian mechanism, or other algorithms that
+consist of many compositions of simpler building blocks, it is not always the
+best choice. Some algorithms, such as the Randomized Response, cannot be
+precisely represented by GDP. Others, such as Report-Noisy-Max — a key component
+in a family of algorithms called PATE — currently lack known general
+characterizations in terms of trade-off-curves.&lt;/p&gt;
+&lt;h1 id="takeaways"&gt;Takeaways&lt;/h1&gt;
+&lt;p&gt;In our &lt;a href="https://arxiv.org/abs/2503.10945"&gt;position paper&lt;/a&gt;, we encourage the
+researchers and practitioners to report a compact guarantee when it is precise,
+i.e., when its regret is low, and we show that, for many instances in
+privacy-preserving machine learning, GDP provides a very precise and compact
+guarantee.  Reporting it solves the disadvantages of the standard convention of
+reporting a single &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt; pair: we can correctly compare
+different algorithms by their &lt;span class="math"&gt;\(\mu\)&lt;/span&gt; value, and we can easily map this value to
+the entire trade-off curve, which enables us to precisely characterize the
+privacy risks in terms of attack success rates.&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;This trade-off curve is exactly what the notion of
+  &lt;a href="https://dongjs.github.io/2020/01/15/Privacy.html"&gt;&lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP&lt;/a&gt; captures.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;See &lt;a href="https://arxiv.org/abs/2407.02191"&gt;Attack-Aware Noise Calibration for Differential Privacy&lt;/a&gt;
+  for the algorithm and our
+  &lt;a href="https://github.com/interpretable-dp/riskcal"&gt;riskcal&lt;/a&gt; Python package for
+  practical implementations.&amp;#160;&lt;a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:3"&gt;
+&lt;p&gt;This phenomenon is related to, but &lt;em&gt;different from&lt;/em&gt;, a
+  &lt;a href="https://eprint.iacr.org/2018/820"&gt;well-known&lt;/a&gt;
+  &lt;a href="https://dongjs.github.io/2020/01/15/Privacy.html"&gt;central limit result&lt;/a&gt;
+  that states that the privacy guarantees of a sufficiently large number of
+  compositions of any mechanism converge to those of a Gaussian mechanism.
+  In contrast to this asymptotic analysis, in the position paper and this
+  blog post we only talk about correct, non-asymptotic, GDP guarantees.&amp;#160;&lt;a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:4"&gt;
+&lt;p&gt;See &lt;a href="https://arxiv.org/abs/2406.08918"&gt;Beyond the Calibration Point: Mechanism Comparison in Differential Privacy&lt;/a&gt;
+  for more details.&amp;#160;&lt;a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="misc"></category></entry><entry><title>Notes from Dagstuhl: biomedical data sharing</title><link href="https://desfontain.es/blog/dagstuhl-biomedical-data-sharing.html" rel="alternate"></link><published>2026-04-29T00:00:00+02:00</published><updated>2026-04-29T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-04-29:/blog/dagstuhl-biomedical-data-sharing.html</id><summary type="html">&lt;p&gt;I learned a ton about data sharing and privacy issues in the biomedical field, here are some of my takeaways.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;Last&lt;/strong&gt; February, I had the privilege to participate to a &lt;a href="https://www.dagstuhl.de/en/seminars/dagstuhl-seminars"&gt;Dagstuhl
 seminar&lt;/a&gt; about privacy for &lt;a href="https://www.dagstuhl.de/en/seminars/seminar-calendar/seminar-details/26082"&gt;biomedical data sharing&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;center&gt;
 &lt;img alt="A picture of the participants to Dagstuhl seminar 26082, posing on an outdoor

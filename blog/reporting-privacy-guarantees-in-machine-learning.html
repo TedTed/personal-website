@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html dir="ltr" xml:lang="en" lang="en">
 <head>
-    <title>Ted is writing things</title>
+    <title>Guest post: Goodbye (ε,δ), hello μ: Reporting privacy guarantees in machine learning - Ted is writing things</title>
   <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
   <meta name="author" content="Damien Desfontaines" />
   <meta name="twitter:creator" content="@TedOnPrivacy" />
@@ -21,14 +21,16 @@
   <link rel="manifest" href="/site.webmanifest">
   <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
 
-  <meta name="title" property="og:title" content="Ted is writing things" />
-  <meta name="description" property="og:description" content="Damien Desfontaines' blog, mostly focused on privacy, research, and privacy research." />
-  <meta property="summary" content="Damien Desfontaines' blog, mostly focused on privacy, research, and privacy research." />
+  <meta name="title" property="og:title" content="Guest post: Goodbye (ε,δ), hello μ: Reporting privacy guarantees in machine learning - Ted is writing things" />
+  <meta property="twitter:title" content="Guest post: Goodbye (ε,δ), hello μ: Reporting privacy guarantees in machine learning - Ted is writing things" />
+  <meta name="description" property="og:description" content="Why is Gaussian DP a much better compact representation of privacy guarantees than (ε,δ)-DP." />
+  <meta property="twitter:description" content="Why is Gaussian DP a much better compact representation of privacy guarantees than (ε,δ)-DP." />
+  <meta property="summary" content="Why is Gaussian DP a much better compact representation of privacy guarantees than (ε,δ)-DP." />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/simple-dp-diagram.png" />
-  <meta property="twitter:image" content="https://desfontain.es/blog/images/simple-dp-diagram.png" />
-  <meta property="twitter:image:alt" content="A simple diagram representing the intuition behind differential privacy." />
-  <link rel="canonical" href="https://desfontain.es/blog/" />
+  <meta name="image" property="og:image" content="https://desfontain.es/blog/images/tradeoff-curve-epsilon-delta.png" />
+  <meta property="twitter:image" content="https://desfontain.es/blog/images/tradeoff-curve-epsilon-delta.png" />
+  <meta property="twitter:image:alt" content="A plot with the x axis showing possible attack false-positive rates (FPR), between 0 to 1, and y axis showing possible false-negative rates (FNR), also between 0 and 1. The plot shows a trade-off curve as a piecewise linear function with two segments, starting at (0, 1), passing approximately (0.12, 0.12), and (1, 0). The point (0, 0) is marked as corresponding to a hypothetical perfect attack. The points on the off-diagonal where FNR is 1 - FPR are marked as corresponding to trivial attacks." />
+  <link rel="canonical" href="https://desfontain.es/blog/reporting-privacy-guarantees-in-machine-learning.html" />
   <link rel="prev" href="dagstuhl-biomedical-data-sharing.html" />
 </head>
 
@@ -79,7 +81,7 @@
       On privacy, research, and privacy research.
     </header>
 
-<article>
+<article id="contenu">
   <header>
   <h1>
     <a href="./reporting-privacy-guarantees-in-machine-learning.html">Guest post: Goodbye (ε,δ), hello μ: Reporting privacy guarantees in machine learning</a>
