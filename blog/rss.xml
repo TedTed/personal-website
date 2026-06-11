@@ -45,7 +45,7 @@ these techniques.&lt;/p&gt;
   value.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Some of these techniques, when combined, achieve a definition called
-&lt;a href="friendly-intro-to-differential-privacy.html"&gt;differential privacy&lt;/a&gt; ("DP"). This
+&lt;a href="friendly-intro-to-differential-privacy.html"&gt;differential privacy&lt;/a&gt;. This
 definition has a lot of &lt;a href="differential-privacy-awesomeness.html"&gt;nice fundamental
 properties&lt;/a&gt; and is widely considered the
 gold standard of privacy protection among scientists. To achieve it, scientists
