@@ -1,0 +1,3207 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="fr" lang="fr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Les bonnes recettes de Ted (triées par date)</title>
+    <meta name="author" content="Damien Desfontaines" />
+    <meta name="twitter:creator" content="@TedOnPrivacy" />
+    <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../style/serious.css" />
+    <link rel="stylesheet" href="../style/recettes.css" />
+    <link rel="stylesheet" href="../style/menu.css" />
+    <link rel="icon" href="images/favicon.ico" sizes="any">
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="manifest" href="images/site.webmanifest">
+    </head>
+  <body>
+    <div id="menuGlobal">
+        <table>
+            <tr>
+            <td>
+                <a href="../index.html">
+                    ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+                    <img src="../flag-uk.png" alt=""/>
+                </a>
+            </td>
+            <td>
+                <a href="../serious-fr.html"> À propos <img src="../flag-france.gif" alt=""/></a>
+                <a href="../serious.html"><img src="../flag-uk.png" alt=""/></a>
+            <td>
+                <a href="../blogue/index.html">Blog <img src="../flag-france.gif" alt=""/></a>
+                <a href="../privacy/index.html"><img src="../flag-uk.png" alt=""/></a>
+            </td>
+            <td id="menuCourant">
+                Recettes <img src="../flag-france.gif" alt=""/>
+            </td>
+            </tr>
+            <tr id="sousMenu">
+                <td colspan="4">
+                    <div class="center">
+                        <a href="index.html">Recettes par type</a> — 
+                        <a href="archives.html">Recettes par date</a> — 
+                        <a href="rss.xml">Flux RSS</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="contenu">
+      <h1>Miam&nbsp;!</h1>
+      <p>Toutes les recettes de mon site, triées par date d'ajout (les plus
+      récentes en premier). Notez que je n'ai commencé à enregistrer la date
+      d'ajout de mes recettes que fin 2025, donc toutes mes recettes antérieures
+      sont simplement triées par ordre alphabétique.</p>
+      <p>Si vous préférez filtrer les recettes par type, allez plutôt sur
+      <a href="index.html">la page principale</a>.</p>
+
+      <h2>Recettes</h2>
+      <div id="recettes" class="recettes">
+      </div>
+
+    <script>
+      // Get the list of recipes
+      const recipes = [];
+      recipes.push({
+        url: "haricots-verts-grilles-sichuanais.html",
+        title: "Haricots verts grill\u00e9s sichuanais",
+        tags: ['accompagnement', 'roti', 'vege'],
+        image: "HaricotsVertsGrillesSichuanais.jpg",
+        image_alt: "Haricots verts grill\u00e9s sichuanais avec du riz",
+      });
+      recipes.push({
+        url: "salade-patates-asperges-lentilles.html",
+        title: "Salade de patates, asperges, et lentilles",
+        tags: ['entree', 'plat', 'salade', 'roti', 'vege', 'facile'],
+        image: "SaladePatatesAspergesLentilles.jpg",
+        image_alt: "Salade de patates, asperges, et lentilles",
+      });
+      recipes.push({
+        url: "mapo-tofu.html",
+        title: "Mapo tofu",
+        tags: ['plat', 'poele', 'wok', 'boeuf'],
+        image: "MapoTofu.jpg",
+        image_alt: "Mapo tofu avec des pakcho\u00ef po\u00eal\u00e9s et du riz",
+      });
+      recipes.push({
+        url: "nouilles-udon-sautees-aux-champignons.html",
+        title: "Nouilles udon saut\u00e9es aux champignons",
+        tags: ['plat', 'pate', 'poele', 'wok', 'vege', 'rapide'],
+        image: "NouillesUdonAuxChampignons.jpg",
+        image_alt: "Un bol de nouilles udon saut\u00e9es aux champignons",
+      });
+      recipes.push({
+        url: "riz-frit-au-kimchi.html",
+        title: "Riz frit au kimchi",
+        tags: ['plat', 'risotto', 'poele', 'wok', 'vege', 'rapide'],
+      });
+      recipes.push({
+        url: "sorbet-au-chocolat.html",
+        title: "Sorbet au chocolat noir",
+        tags: ['dessert', 'tech', 'glace', 'vege'],
+        image: "SorbetAuChocolat.jpg",
+        image_alt: "Sorbet au chocolat",
+      });
+      recipes.push({
+        url: "ramequins-fondants-au-chocolat.html",
+        title: "Ramequins fondants au chocolat",
+        tags: ['dessert', 'autre', 'vege', 'facile', 'rapide'],
+        image: "RamequinFondantAuChocolat.jpg",
+        image_alt: "Ramequin fondant au chocolat",
+      });
+      recipes.push({
+        url: "crevettes-sous-vide-au-citron.html",
+        title: "Crevettes sous vide au citron",
+        tags: ['plat', 'tech apero', 'vide', 'mer', 'facile', 'rapide'],
+        image: "CrevettesSousVideAuCitronPureeChouFleurEpinards.jpg",
+        image_alt: "Crevettes sous vide au citron pos\u00e9es sur un lit de pur\u00e9e de choux-fleurs et d\u0027\u00e9pinards.",
+      });
+      recipes.push({
+        url: "cookies-avoine-raisins.html",
+        title: "Cookies aux flocons d\u0027avoine et aux raisins",
+        tags: ['dessert', 'biscuit', 'vege'],
+        image: "CookiesAvoineRaisins.jpg",
+        image_alt: "Cookies aux flocons d\u0027avoine et aux raisins pos\u00e9s sur une grille.",
+      });
+      recipes.push({
+        url: "gateau-pistache-grenade.html",
+        title: "G\u00e2teau pistache-grenade",
+        tags: ['dessert', 'gateau', 'vege'],
+        image: "GateauPistacheGrenade.jpg",
+        image_alt: "Un g\u00e2teau \u00e0 la pistache et \u00e0 la grenade sur une assiette blanche. Le bord est brun, l\u0027int\u00e9rieur vert, et le g\u00e2teau est parsem\u00e9 de graines de grenade et de pistaches grossi\u00e8rement hach\u00e9es.",
+      });
+      recipes.push({
+        url: "gateau-cookie-chocolat-noisette.html",
+        title: "G\u00e2teau-cookie chocolat-noisette",
+        tags: ['dessert', 'gateau', 'vege'],
+      });
+      recipes.push({
+        url: "soupe-de-potiron-roti.html",
+        title: "Soupe de potiron r\u00f4ti",
+        tags: ['entree', 'plat', 'soupe', 'puree', 'tarte', 'roti', 'hiver', 'vege'],
+        image: "SoupeDePotironRoti.jpg",
+        image_alt: "Un bol de soupe de potiron r\u00f4ti, avec des",
+      });
+      recipes.push({
+        url: "soupe-de-carottes-caramelisees.html",
+        title: "Soupe de carottes caram\u00e9lis\u00e9es",
+        tags: ['entree', 'plat', 'soupe', 'hiver', 'materiel'],
+        image: "SoupeDeCarottesCaramelisees.jpg",
+        image_alt: "Soupe de carottes caram\u00e9lis\u00e9es",
+      });
+      recipes.push({
+        url: "gateau-moelleux-au-potiron.html",
+        title: "G\u00e2teau moelleux au potiron",
+        tags: ['hiver', 'dessert', 'materiel', 'gateau'],
+        image: "GateauMoelleuxAuPotironGlacageBeurreNoisette.jpg",
+        image_alt: "G\u00e2teau moelleux au potiron avec un gla\u00e7age au beurre noisette",
+      });
+      recipes.push({
+        url: "mixed-spice.html",
+        title: "Mixed spice (m\u00e9lange d\u0027\u00e9pices anglais pour desserts)",
+        tags: ['vege', 'rapide', 'minimaliste', 'tech'],
+      });
+      recipes.push({
+        url: "brownie-americain.html",
+        title: "Brownie am\u00e9ricain",
+        tags: ['minimaliste', 'facile', 'gateau', 'photo', 'dessert'],
+        image: "BrownieAmericain.jpg",
+        image_alt: "Brownie am\u00e9ricain",
+      });
+      recipes.push({
+        url: "gnocchis-rotis-aux-champignons.html",
+        title: "Gnocchis r\u00f4tis aux champignons",
+        tags: ['vege', 'roti', 'minimaliste', 'facile', 'photo', 'rapide'],
+        image: "GnocchisRotisAuxChampignons.jpg",
+        image_alt: "Gnocchis r\u00f4tis aux champignons",
+      });
+      recipes.push({
+        url: "pates-a-l-ail-noir.html",
+        title: "P\u00e2tes \u00e0 l\u0027ail noir",
+        tags: ['vege', 'plat', 'minimaliste', 'photo', 'pate'],
+        image: "PatesALAilNoir.jpg",
+        image_alt: "Spaghettis \u00e0 l\u0027ail noir",
+      });
+      recipes.push({
+        url: "riz-mexicain-au-cuiseur-a-riz.html",
+        title: "Riz mexicain au cuiseur \u00e0 riz",
+        tags: ['vege', 'plat', 'risotto', 'materiel', 'photo', 'cuiseur'],
+        image: "CrevettesSousVideALEspagnoleRizMexicain.jpg",
+        image_alt: "Crevettes sous vide \u00e0 l\u0027espagnole, riz mexicain",
+      });
+      recipes.push({
+        url: "tarte-tomate-moutarde.html",
+        title: "Tarte \u00e0 la tomate et \u00e0 la moutarde",
+        tags: ['vege', 'tarte', 'plat', 'minimaliste', 'entree', 'photo'],
+        image: "TarteTomateMoutarde.jpg",
+        image_alt: "Tarte \u00e0 la tomate et \u00e0 la moutarde",
+      });
+      recipes.push({
+        url: "marrons-chauds.html",
+        title: "Marrons chauds",
+        tags: ['vege', 'minimaliste', 'apero', 'entree', 'facile', 'rapide'],
+      });
+      recipes.push({
+        url: "houmous-de-courgette.html",
+        title: "Houmous de courgette",
+        tags: ['vege', 'ete', 'dip', 'entree', 'materiel', 'facile', 'photo'],
+        image: "HoumousDeCourgette.jpg",
+        image_alt: "Houmous de courgette",
+      });
+      recipes.push({
+        url: "ail-frit.html",
+        title: "Ail frit",
+        tags: ['vege', 'rapide', 'materiel', 'tech'],
+      });
+      recipes.push({
+        url: "aioli.html",
+        title: "A\u00efoli",
+        tags: ['vege', 'dip', 'jaune', 'entree', 'materiel', 'rapide'],
+      });
+      recipes.push({
+        url: "baba-ganousch.html",
+        title: "Baba ganousch",
+        tags: ['vege', 'ete', 'dip', 'entree', 'materiel', 'photo'],
+        image: "BabaGanousch.jpg",
+        image_alt: "Baba ganousch",
+      });
+      recipes.push({
+        url: "bechamel.html",
+        title: "B\u00e9chamel",
+        tags: ['vege', 'materiel', 'facile', 'rapide', 'tech'],
+      });
+      recipes.push({
+        url: "beignets-de-pommes.html",
+        title: "Beignets aux pommes",
+        tags: ['photo', 'dessert', 'materiel', 'autre'],
+        image: "BeignetsDePomme.jpg",
+        image_alt: "Beignets de pomme",
+      });
+      recipes.push({
+        url: "biscuit-roule-a-la-confiture.html",
+        title: "Biscuit roul\u00e9 \u00e0 la confiture",
+        tags: ['photo', 'dessert', 'materiel', 'gateau'],
+        image: "BiscuitRouleALaConfiture.jpg",
+        image_alt: "Biscuit roul\u00e9 \u00e0 la confiture",
+      });
+      recipes.push({
+        url: "biscuits-aux-tomates-sechees.html",
+        title: "Biscuits aux tomates s\u00e9ch\u00e9es",
+        tags: ['vege', 'apero', 'entree', 'materiel', 'facile', 'photo'],
+        image: "BiscuitsAuxTomatesSechees.jpg",
+        image_alt: "Biscuits au tomates s\u00e9ch\u00e9es",
+      });
+      recipes.push({
+        url: "biscuits-craqueles-au-citron.html",
+        title: "Biscuits craquel\u00e9s au citron",
+        tags: ['photo', 'dessert', 'materiel', 'biscuit'],
+        image: "BiscuitsCraquelesAuCitron.jpg",
+        image_alt: "Biscuits craquel\u00e9s au citron",
+      });
+      recipes.push({
+        url: "biscuits-gateaux-citron-pavot.html",
+        title: "Biscuits-g\u00e2teaux citron-pavot",
+        tags: ['dessert', 'materiel', 'biscuit'],
+      });
+      recipes.push({
+        url: "boulettes-de-poulet-aux-carottes.html",
+        title: "Boulettes de poulet aux carottes",
+        tags: ['plat', 'poele', 'poulet', 'materiel'],
+      });
+      recipes.push({
+        url: "buche-a-la-poire.html",
+        title: "B\u00fbche \u00e0 la poire",
+        tags: ['photo', 'dessert', 'materiel', 'gateau'],
+        image: "BucheALaPoire.jpg",
+        image_alt: "B\u00fbche \u00e0 la poire",
+      });
+      recipes.push({
+        url: "cake-au-citron.html",
+        title: "Cake au citron",
+        tags: ['minimaliste', 'facile', 'gateau', 'photo', 'dessert'],
+        image: "CakeAuCitron.jpg",
+        image_alt: "Carrot cake",
+      });
+      recipes.push({
+        url: "capres-frites.html",
+        title: "C\u00e2pres frites",
+        tags: ['vege', 'facile', 'materiel', 'photo', 'rapide', 'tech'],
+        image: "SoupeDeHaricotsBlancsEtCapresFrites.jpg",
+        image_alt: "C\u00e2pres frites et leur huile en garniture d\u0027une soupe de haricots blancs",
+      });
+      recipes.push({
+        url: "celeri-rave-a-l-orange.html",
+        title: "C\u00e9leri-rave entier \u00e0 l\u0027orange",
+        tags: ['vege', 'hiver', 'mijote', 'plat', 'materiel', 'photo'],
+        image: "CeleriRaveALOrange.jpg",
+        image_alt: "C\u00e9leri-rave \u00e0 l\u0027orange avec de la semoule",
+      });
+      recipes.push({
+        url: "celeri-remoulade.html",
+        title: "C\u00e9leri r\u00e9moulade",
+        tags: ['vege', 'salade', 'hiver', 'accompagnement', 'entree', 'facile', 'materiel', 'photo', 'rapide'],
+        image: "CeleriRemouladeQuicheSaumonEpinards.jpg",
+        image_alt: "C\u00e9leri r\u00e9moulade et quiche saumon-\u00e9pinards",
+      });
+      recipes.push({
+        url: "cerises-a-l-anglaise.html",
+        title: "Cerises \u00e0 l\u0027anglaise",
+        tags: ['dessert', 'autre', 'materiel', 'facile', 'rapide'],
+      });
+      recipes.push({
+        url: "chili-con-carne-facile.html",
+        title: "Chili con carne super facile",
+        tags: ['plat', 'mijote', 'facile', 'minimaliste'],
+      });
+      recipes.push({
+        url: "choucroute.html",
+        title: "Choucroute garnie familiale",
+        tags: ['porc', 'plat', 'mijote', 'materiel', 'photo'],
+        image: "ChoucrouteGarnie.jpg",
+        image_alt: "Choucroute garnie",
+      });
+      recipes.push({
+        url: "club-mate-maison.html",
+        title: "Club-mate fait maison",
+        tags: ['boisson', 'materiel', 'facile'],
+      });
+      recipes.push({
+        url: "confitures.html",
+        title: "Confitures",
+        subtitle: "recette canonique",
+        tags: ['vege', 'confiture', 'minimaliste'],
+      });
+      recipes.push({
+        url: "cookies-au-matcha.html",
+        title: "Cookies au matcha",
+        tags: ['dessert', 'materiel', 'biscuit'],
+      });
+      recipes.push({
+        url: "coq-au-vin.html",
+        title: "Coq au vin",
+        tags: ['veau', 'volaille', 'mijote', 'plat', 'minimaliste'],
+      });
+      recipes.push({
+        url: "coq-au-vin-rose.html",
+        title: "Coq au vin ros\u00e9",
+        tags: ['volaille', 'mijote', 'plat', 'minimaliste', 'poulet', 'photo'],
+        image: "CoqAuVinRoseGratinDauphinois.jpg",
+        image_alt: "Coq au vin ros\u00e9 et gratin dauphinois",
+      });
+      recipes.push({
+        url: "coulis-de-framboises.html",
+        title: "Coulis de framboises",
+        tags: ['vege', 'materiel', 'facile', 'rapide', 'tech'],
+      });
+      recipes.push({
+        url: "creme-anglaise.html",
+        title: "Cr\u00e8me anglaise",
+        tags: ['jaune', 'dessert', 'materiel', 'autre'],
+      });
+      recipes.push({
+        url: "creme-caramel.html",
+        title: "Cr\u00e8me caramel",
+        tags: ['jaune', 'materiel', 'autre', 'photo', 'dessert'],
+        image: "CremeCaramel.jpg",
+        image_alt: "Petit pot de cr\u00e8me caramel",
+      });
+      recipes.push({
+        url: "creme-chocolat-matcha.html",
+        title: "Cr\u00e8me chocolat-matcha",
+        tags: ['jaune', 'dessert', 'materiel', 'autre'],
+      });
+      recipes.push({
+        url: "creme-d-ail-nouveau.html",
+        title: "Cr\u00e8me d\u0027ail nouveau",
+        tags: ['vege', 'dip', 'entree', 'materiel', 'facile', 'photo'],
+        image: "CremeDAilNouveau.jpg",
+        image_alt: "Cr\u00e8me d\u0027ail nouveau",
+      });
+      recipes.push({
+        url: "creme-d-avocat-aux-amandes.html",
+        title: "Cr\u00e8me d\u0027avocat aux amandes",
+        tags: ['vege', 'dip', 'entree', 'facile', 'materiel', 'photo', 'rapide'],
+        image: "CremeDAvocatAuxAmandes.jpg",
+        image_alt: "Cr\u00e8me d\u0027avocat aux amandes",
+      });
+      recipes.push({
+        url: "crepes-familiales.html",
+        title: "Cr\u00eapes familiales",
+        tags: ['vege', 'brunch', 'materiel', 'autre', 'photo', 'dessert'],
+        image: "Crepes.jpg",
+        image_alt: "Cr\u00eape avec des poivrons po\u00eal\u00e9s au miel",
+      });
+      recipes.push({
+        url: "crevettes-a-la-diabla.html",
+        title: "Camarones a la diabla",
+        subtitle: "crevettes mexicaines",
+        tags: ['poele', 'plat', 'materiel', 'photo', 'mer'],
+        image: "CrevettesALaDiabla.jpg",
+        image_alt: "Camarones a la diabla avec du riz mexicain",
+      });
+      recipes.push({
+        url: "crevettes-sous-vide-a-lespagnole.html",
+        title: "Crevettes sous vide \u00e0 l\u0027espagnole",
+        tags: ['plat', 'vide', 'materiel', 'photo', 'mer'],
+        image: "CrevettesSousVideALEspagnoleRizMexicain.jpg",
+        image_alt: "Crevettes sous vide \u00e0 l\u0027espagnole, riz mexicain",
+      });
+      recipes.push({
+        url: "curry-de-pois-chiches-noix-de-cajou-epinards.html",
+        title: "Curry de pois chiches aux \u00e9pinards",
+        tags: ['vege', 'mijote', 'plat', 'materiel', 'photo'],
+        image: "CurryPoisChichesCajouEpinards.jpg",
+        image_alt: "Curry de pois chiches aux noix de cajou et \u00e9pinards",
+      });
+      recipes.push({
+        url: "dinde-panee.html",
+        title: "Dinde pan\u00e9e",
+        tags: ['poele', 'volaille', 'plat', 'minimaliste', 'jaune'],
+      });
+      recipes.push({
+        url: "echalotes-frites.html",
+        title: "\u00c9chalotes frites",
+        tags: ['vege', 'rapide', 'materiel', 'tech'],
+      });
+      recipes.push({
+        url: "falafels.html",
+        title: "Falafels",
+        tags: ['vege', 'poele', 'plat', 'materiel', 'photo'],
+        image: "Falafels.jpg",
+        image_alt: "Falafels",
+      });
+      recipes.push({
+        url: "filet-mignon-sauge-romarin.html",
+        title: "Filet mignon \u00e0 la sauge et au romarin",
+        tags: ['plat', 'porc', 'mijote', 'materiel'],
+      });
+      recipes.push({
+        url: "financiers.html",
+        title: "Financiers",
+        tags: ['dessert', 'blanc', 'materiel', 'biscuit'],
+      });
+      recipes.push({
+        url: "flan-de-courgette.html",
+        title: "Flan de courgettes",
+        tags: ['vege', 'tarte', 'ete', 'plat', 'entree', 'materiel', 'photo'],
+        image: "FlanDeCourgettes.jpg",
+        image_alt: "Flan de courgettes",
+      });
+      recipes.push({
+        url: "gaspacho.html",
+        title: "Gaspacho",
+        tags: ['vege', 'soupe', 'ete', 'plat', 'entree', 'materiel', 'photo'],
+        image: "Gaspacho.jpg",
+        image_alt: "Gaspacho",
+      });
+      recipes.push({
+        url: "gaspacho-de-pasteque.html",
+        title: "Gaspacho de past\u00e8que",
+        tags: ['vege', 'soupe', 'plat', 'entree', 'materiel', 'photo'],
+        image: "GaspachoDePasteque.jpg",
+        image_alt: "Gaspacho de past\u00e8que",
+      });
+      recipes.push({
+        url: "gateau-a-l-orange-sans-gluten.html",
+        title: "G\u00e2teau \u00e0 l\u0027orange",
+        subtitle: "sans gluten",
+        tags: ['dessert', 'materiel', 'gateau'],
+      });
+      recipes.push({
+        url: "gateau-a-la-pistache.html",
+        title: "G\u00e2teau \u00e0 la pistache",
+        subtitle: "sans gluten",
+        tags: ['jaune', 'materiel', 'gateau', 'photo', 'dessert'],
+        image: "GateauALaPistache.jpg",
+        image_alt: "G\u00e2teau \u00e0 la pistache",
+      });
+      recipes.push({
+        url: "gateau-aux-pommes.html",
+        title: "G\u00e2teau aux pommes",
+        tags: ['gateau', 'facile', 'materiel', 'photo', 'dessert'],
+        image: "GateauAuxPommes.jpg",
+        image_alt: "G\u00e2teau aux pommes",
+      });
+      recipes.push({
+        url: "gateau-fondant-au-potiron.html",
+        title: "G\u00e2teau fondant au potiron",
+        tags: ['hiver', 'dessert', 'materiel', 'gateau'],
+      });
+      recipes.push({
+        url: "gateau-vapeur-aux-raisins.html",
+        title: "G\u00e2teau \"vapeur\" aux raisins",
+        tags: ['dessert', 'facile', 'gateau', 'materiel', 'photo', 'cuiseur', 'rapide'],
+        image: "GateauVapeurAuxRaisins.jpg",
+        image_alt: "G\u00e2teau-vapeur aux raisins",
+      });
+      recipes.push({
+        url: "gelee-de-raisins.html",
+        title: "Gel\u00e9e de raisins",
+        tags: ['vege', 'confiture', 'materiel'],
+      });
+      recipes.push({
+        url: "gratin-de-courgettes.html",
+        title: "Gratin de courgettes",
+        tags: ['ete', 'plat', 'accompagnement', 'materiel', 'facile', 'puree', 'photo'],
+        image: "GratinDeCourgettes.jpg",
+        image_alt: "Gratin de courgettes",
+      });
+      recipes.push({
+        url: "gratin-nuage-de-chou-fleur.html",
+        title: "Gratin-nuage de chou-fleur",
+        tags: ['hiver', 'plat', 'accompagnement', 'materiel', 'puree'],
+      });
+      recipes.push({
+        url: "hachis-parmentier-vegetarien.html",
+        title: "Hachis parmentier v\u00e9g\u00e9tarien",
+        tags: ['vege', 'hiver', 'roti', 'materiel', 'photo'],
+        image: "HachisParmentierVegetarien.jpg",
+        image_alt: "Hachis parmentier v\u00e9g\u00e9tarien",
+      });
+      recipes.push({
+        url: "haricots-blancs-confits-au-citron.html",
+        title: "Haricots blancs confits au citron",
+        tags: ['vege', 'plat', 'ete', 'confit', 'facile', 'materiel', 'photo', 'rapide'],
+        image: "HaricotsBlancsConfitsAuCitron.jpg",
+        image_alt: "Haricots blancs confits au citron",
+      });
+      recipes.push({
+        url: "haricots-rouges-confits-en-chili.html",
+        title: "Haricots rouges confits en chili",
+        tags: ['vege', 'plat', 'confit', 'facile', 'materiel', 'photo', 'rapide'],
+      });
+      recipes.push({
+        url: "houmous.html",
+        title: "Houmous facile",
+        tags: ['vege', 'dip', 'entree', 'materiel', 'facile', 'photo'],
+        image: "Houmous.jpg",
+        image_alt: "Houmous",
+      });
+      recipes.push({
+        url: "kimchi.html",
+        title: "Kimchi",
+        tags: ['vege', 'hiver', 'accompagnement', 'apero', 'entree', 'materiel', 'poisson', 'photo'],
+        image: "Kimchi.jpg",
+        image_alt: "Kimchi",
+      });
+      recipes.push({
+        url: "lasagnes-de-champignons-epices.html",
+        title: "Lasagnes de champignons \u00e9pic\u00e9s",
+        tags: ['plat', 'photo', 'materiel', 'pate'],
+        image: "LasagneDeChampignonsEpices.jpg",
+        image_alt: "Lasagnes de champignons \u00e9pic\u00e9s",
+      });
+      recipes.push({
+        url: "latkes.html",
+        title: "Latkes",
+        subtitle: "galettes juives de pomme de terre",
+        tags: ['photo', 'vege', 'brunch', 'materiel'],
+        image: "Latke.jpg",
+        image_alt: "Latke",
+      });
+      recipes.push({
+        url: "legumes-d-ete-confits-au-four.html",
+        title: "L\u00e9gumes d\u0027\u00e9t\u00e9 confits au four",
+        tags: ['vege', 'plat', 'ete', 'accompagnement', 'minimaliste', 'confit', 'facile', 'photo', 'rapide'],
+        image: "LegumesDEteConfitsAuFour.jpg",
+        image_alt: "L\u00e9gumes d\u0027\u00e9t\u00e9 confits au four",
+      });
+      recipes.push({
+        url: "legumes-farcis.html",
+        title: "L\u00e9gumes farcis",
+        tags: ['porc', 'roti', 'materiel', 'facile', 'photo'],
+        image: "LegumesFarcis.jpg",
+        image_alt: "L\u00e9gumes farcis",
+      });
+      recipes.push({
+        url: "marmelade-d-oranges-ameres.html",
+        title: "Marmelade d\u0027oranges am\u00e8res",
+        tags: ['photo', 'vege', 'confiture', 'minimaliste'],
+        image: "MarmeladeDOrangeAmeres.jpg",
+        image_alt: "Marmelade d\u0027oranges am\u00e8res",
+      });
+      recipes.push({
+        url: "marmelade-de-citrons.html",
+        title: "Marmelade de citrons",
+        tags: ['vege', 'confiture', 'minimaliste'],
+      });
+      recipes.push({
+        url: "mayonnaise.html",
+        title: "Mayonnaise",
+        tags: ['vege', 'dip', 'jaune', 'minimaliste', 'entree', 'photo', 'rapide'],
+        image: "Mayonnaise.jpg",
+        image_alt: "Mayonnaise",
+      });
+      recipes.push({
+        url: "meringue-italienne.html",
+        title: "Meringue italienne",
+        tags: ['vege', 'blanc', 'materiel', 'tech'],
+      });
+      recipes.push({
+        url: "meringues.html",
+        title: "Meringues",
+        tags: ['dessert', 'blanc', 'facile', 'materiel', 'photo', 'rapide', 'biscuit'],
+        image: "Meringues.jpg",
+        image_alt: "Meringues",
+      });
+      recipes.push({
+        url: "mousse-au-chocolat.html",
+        title: "Mousse au chocolat",
+        tags: ['dessert', 'materiel', 'autre'],
+      });
+      recipes.push({
+        url: "mousse-de-poires.html",
+        title: "Mousse de poires",
+        tags: ['dessert', 'materiel', 'autre'],
+      });
+      recipes.push({
+        url: "noix-caramelisees.html",
+        title: "Noix caram\u00e9lis\u00e9es",
+        subtitle: "fa\u00e7on f\u00eate foraine",
+        tags: ['vege', 'minimaliste', 'biscuits'],
+      });
+      recipes.push({
+        url: "oeufs-brouilles-fabuleux.html",
+        title: "\u0152ufs brouill\u00e9s fabuleux",
+        tags: ['photo', 'vege', 'brunch', 'minimaliste'],
+        image: "OeufsBrouilles.jpg",
+        image_alt: "Tartines d\u0027\u0153ufs brouill\u00e9s avec concombre, cresson et oignons frais",
+      });
+      recipes.push({
+        url: "oeufs-florentine.html",
+        title: "\u0152ufs Florentine",
+        tags: ['vege', 'jaune', 'brunch', 'materiel', 'photo'],
+        image: "OeufFlorentine.jpg",
+        image_alt: "\u0152uf Florentine",
+      });
+      recipes.push({
+        url: "oeufs-poches-sous-vide.html",
+        title: "\u0152ufs poch\u00e9s sous vide",
+        tags: ['vide', 'brunch', 'facile', 'materiel', 'rapide'],
+      });
+      recipes.push({
+        url: "oignons-farcis-vegetariens.html",
+        title: "Oignons farcis v\u00e9g\u00e9tariens",
+        tags: ['vege', 'hiver', 'roti', 'materiel', 'photo'],
+        image: "OignonsFarcisVegetariens.jpg",
+        image_alt: "Oignons farcis v\u00e9g\u00e9tariens",
+      });
+      recipes.push({
+        url: "omelette-aux-champignons.html",
+        title: "Omelette aux champignons",
+        subtitle: "ou \u00e0 autre chose",
+        tags: ['vege', 'plat', 'minimaliste', 'brunch', 'photo'],
+        image: "OmeletteAuxChampignons.jpg",
+        image_alt: "Omelette aux champignons",
+      });
+      recipes.push({
+        url: "omelette-espagnole.html",
+        title: "Omelette espagnole",
+        tags: ['vege', 'plat', 'brunch', 'materiel', 'photo'],
+        image: "OmeletteEspagnole.jpg",
+        image_alt: "Omelette espagnole",
+      });
+      recipes.push({
+        url: "oranges-confites.html",
+        title: "Oranges confites",
+        subtitle: "ou citrons confits",
+        tags: ['vege', 'minimaliste', 'photo', 'dessert', 'biscuit'],
+        image: "CitronsConfits.jpg",
+        image_alt: "Citrons confits",
+      });
+      recipes.push({
+        url: "orangettes.html",
+        title: "Orangettes",
+        tags: ['vege', 'dessert', 'minimaliste', 'biscuit'],
+      });
+      recipes.push({
+        url: "pain-de-poisson.html",
+        title: "Pain de poisson",
+        tags: ['minimaliste', 'apero', 'entree', 'poisson', 'photo'],
+        image: "PainDePoisson.jpg",
+        image_alt: "Pain de poisson",
+      });
+      recipes.push({
+        url: "pain-perdu.html",
+        title: "Pain perdu",
+        tags: ['vege', 'dessert', 'minimaliste', 'brunch', 'facile', 'autre', 'photo', 'rapide'],
+        image: "TresseAuBeurrePerdue.jpg",
+        image_alt: "Pain perdu avec de la tresse au beurre, fraises parfaites",
+      });
+      recipes.push({
+        url: "pancakes.html",
+        title: "Pancakes",
+        tags: ['vege', 'brunch', 'materiel', 'facile', 'photo'],
+        image: "Pancakes.jpg",
+        image_alt: "Pancakes",
+      });
+      recipes.push({
+        url: "pancakes-a-la-banane.html",
+        title: "Pancakes \u00e0 la banane du voyageur",
+        tags: ['vege', 'brunch', 'rapide', 'materiel'],
+      });
+      recipes.push({
+        url: "pasta-e-fagioli.html",
+        title: "Pasta e Fagioli",
+        subtitle: "soupe de p\u00e2tes et de haricots",
+        tags: ['vege', 'hiver', 'plat', 'materiel', 'photo', 'pate'],
+        image: "PastaEFagioli.jpg",
+        image_alt: "Pasta e Fagioli",
+      });
+      recipes.push({
+        url: "pate-d-amandes.html",
+        title: "P\u00e2te d\u0027amandes",
+        tags: ['vege', 'materiel', 'facile', 'photo', 'tech'],
+        image: "FruitsDeguises.jpg",
+        image_alt: "Fruits d\u00e9guis\u00e9s",
+      });
+      recipes.push({
+        url: "pate-de-champignons.html",
+        title: "P\u00e2t\u00e9 de champignons",
+        tags: ['vege', 'dip', 'entree', 'materiel', 'facile', 'photo'],
+        image: "PateDeChampignons.jpg",
+        image_alt: "P\u00e2t\u00e9 de champignons",
+      });
+      recipes.push({
+        url: "pates-a-l-ail-caramelise-et-aux-epinards.html",
+        title: "P\u00e2tes \u00e0 l\u0027ail caram\u00e9lis\u00e9 et aux \u00e9pinards",
+        tags: ['vege', 'plat', 'materiel', 'facile', 'photo', 'pate'],
+        image: "PatesALAilCarameliseEtAuxEpinards.jpg",
+        image_alt: "P\u00e2tes \u00e0 l\u0027ail caram\u00e9lis\u00e9 et aux \u00e9pinards",
+      });
+      recipes.push({
+        url: "pates-a-l-ail-roti.html",
+        title: "P\u00e2tes \u00e0 l\u0027ail r\u00f4ti",
+        tags: ['vege', 'plat', 'minimaliste', 'photo', 'rapide', 'pate'],
+        image: "PatesALAilRoti.jpg",
+        image_alt: "Spaghettis \u00e0 l\u0027ail r\u00f4ti",
+      });
+      recipes.push({
+        url: "pates-aux-aubergines.html",
+        title: "P\u00e2tes aux aubergines",
+        tags: ['vege', 'ete', 'plat', 'minimaliste', 'facile', 'photo', 'pate'],
+        image: "PatesAuxAubergines.jpg",
+        image_alt: "Tagliatelles aux aubergines",
+      });
+      recipes.push({
+        url: "pesto-a-l-ail-des-ours.html",
+        title: "Pesto \u00e0 l\u0027ail des ours",
+        tags: ['vege', 'plat', 'facile', 'materiel', 'photo', 'rapide', 'pate'],
+        image: "PestoALAilDesOurs.jpg",
+        image_alt: "Pesto \u00e0 l\u0027ail des ours",
+      });
+      recipes.push({
+        url: "pesto-de-ciboulail.html",
+        title: "Pesto de ciboulail",
+        tags: ['vege', 'plat', 'facile', 'materiel', 'photo', 'rapide', 'pate'],
+        image: "GnocchisPestoDeCiboulail.jpg",
+        image_alt: "Gnocchis au pesto de ciboulail",
+      });
+      recipes.push({
+        url: "pesto-de-roquette.html",
+        title: "Pesto de roquette",
+        tags: ['vege', 'plat', 'materiel', 'facile', 'rapide', 'pate'],
+      });
+      recipes.push({
+        url: "pesto-rouge.html",
+        title: "Pesto rouge",
+        tags: ['vege', 'dip', 'entree', 'facile', 'materiel', 'photo', 'rapide'],
+        image: "PestoRouge.jpg",
+        image_alt: "Pesto rouge avec des crudit\u00e9s",
+      });
+      recipes.push({
+        url: "pesto-vegetalien.html",
+        title: "Pesto v\u00e9g\u00e9talien",
+        tags: ['vege', 'plat', 'materiel', 'facile', 'photo', 'pate'],
+        image: "PestoVegetalien.jpg",
+        image_alt: "PestoVegetalien",
+      });
+      recipes.push({
+        url: "petit-bonhomme-en-pain-depices.html",
+        title: "Petits bonshommes en pain d\u0027\u00e9pices",
+        tags: ['dessert', 'materiel', 'biscuit'],
+      });
+      recipes.push({
+        url: "pissaladiere.html",
+        title: "Pissaladi\u00e8re",
+        subtitle: "v\u00e9g\u00e9tarienne ou non",
+        tags: ['vege', 'tarte', 'plat', 'minimaliste', 'apero', 'entree'],
+      });
+      recipes.push({
+        url: "pois-chiches-coco.html",
+        title: "Pois chiches coco",
+        tags: ['vege', 'mijote', 'plat', 'materiel', 'photo'],
+        image: "PoisChichesCoco.jpg",
+        image_alt: "Pois chiches coco",
+      });
+      recipes.push({
+        url: "pois-chiches-confits.html",
+        title: "Pois chiches confits",
+        subtitle: "et leur sauce",
+        tags: ['vege', 'plat', 'confit', 'materiel', 'facile', 'photo'],
+        image: "PoisChichesConfits.jpg",
+        image_alt: "Pois chiches confits (et leur sauce)",
+      });
+      recipes.push({
+        url: "portal-cake.html",
+        title: "Portal cake",
+        tags: ['photo', 'dessert', 'materiel', 'gateau'],
+        image: "PortalCake.jpg",
+        image_alt: "Portal cake",
+      });
+      recipes.push({
+        url: "puree-de-carottes.html",
+        title: "Pur\u00e9e de carottes",
+        tags: ['plat', 'accompagnement', 'minimaliste', 'facile', 'puree', 'photo', 'rapide'],
+        image: "RotiDePorcDeDijon.jpg",
+        image_alt: "R\u00f4ti de port de Dijon et pur\u00e9e de carottes",
+      });
+      recipes.push({
+        url: "puree-de-chou-vert.html",
+        title: "Pur\u00e9e de chou vert",
+        tags: ['hiver', 'plat', 'accompagnement', 'materiel', 'facile', 'puree'],
+      });
+      recipes.push({
+        url: "puree-de-panais.html",
+        title: "Pur\u00e9e de panais",
+        tags: ['plat', 'accompagnement', 'minimaliste', 'facile', 'puree', 'photo'],
+        image: "RagoutLentillesChampignons.jpg",
+        image_alt: "Rago\u00fbt de lentilles aux champignons sur pur\u00e9e de panais",
+      });
+      recipes.push({
+        url: "puree-fenouil-aneth.html",
+        title: "Pur\u00e9e de fenouils \u00e0 l\u0027aneth",
+        tags: ['ete', 'plat', 'accompagnement', 'materiel', 'facile', 'puree', 'photo'],
+        image: "PureeFenouilsAneth.jpg",
+        image_alt: "Pur\u00e9e de fenouils \u00e0 l\u0027aneth, version gratin\u00e9e",
+      });
+      recipes.push({
+        url: "rillettes-de-sardine.html",
+        title: "Rillettes de sardine",
+        tags: ['apero', 'entree', 'materiel', 'facile', 'photo', 'rapide'],
+        image: "RillettesDeSardine.jpg",
+        image_alt: "Rillettes de sardine",
+      });
+      recipes.push({
+        url: "risotto-de-marrons.html",
+        title: "Risotto de marrons",
+        tags: ['vege', 'veau', 'accompagnement', 'minimaliste'],
+      });
+      recipes.push({
+        url: "risotto-tout-vert.html",
+        title: "Risotto tout vert",
+        tags: ['vege', 'plat', 'risotto', 'materiel', 'photo'],
+        image: "AspergesRisotto.jpg",
+        image_alt: "Asperges r\u00f4ties et risotto tout vert",
+      });
+      recipes.push({
+        url: "rosti.html",
+        title: "R\u00f6sti",
+        subtitle: "galette suisse de pomme de terre",
+        tags: ['vege', 'accompagnement', 'brunch', 'materiel', 'photo'],
+        image: "Rosti.jpg",
+        image_alt: "R\u00f6sti",
+      });
+      recipes.push({
+        url: "salade-de-quinoa-avocats-grenade.html",
+        title: "Salade de quinoa avocats-grenade",
+        tags: ['salade', 'accompagnement', 'minimaliste', 'entree', 'mer'],
+      });
+      recipes.push({
+        url: "shakshuka.html",
+        title: "Shakshuka",
+        subtitle: "\u0153ufs au plat tunisiens",
+        tags: ['vege', 'plat', 'minimaliste', 'brunch', 'facile', 'photo', 'rapide'],
+        image: "Shakshuka.jpg",
+        image_alt: "Shakshuka",
+      });
+      recipes.push({
+        url: "soupe-d-hiver-au-jambon.html",
+        title: "Soupe d\u0027hiver au jambon",
+        tags: ['soupe', 'plat', 'entree', 'materiel', 'facile'],
+      });
+      recipes.push({
+        url: "soupe-lentilles-aubergines.html",
+        title: "Soupe lentilles-aubergines",
+        tags: ['vege', 'soupe', 'ete', 'plat', 'entree', 'materiel', 'photo'],
+        image: "SoupeLentillesAubergines.jpg",
+        image_alt: "Soupe lentilles-aubergines",
+      });
+      recipes.push({
+        url: "soupe-mexicaine-aux-champignons.html",
+        title: "Soupe mexicaine aux champignons",
+        tags: ['vege', 'soupe', 'plat', 'entree', 'materiel', 'photo'],
+        image: "SoupeMexicaineAuxChampignons.jpg",
+        image_alt: "Soupe mexicaine aux champignons",
+      });
+      recipes.push({
+        url: "soupe-verte-de-paques.html",
+        title: "Soupe verte de P\u00e2ques",
+        subtitle: "\u00ab\u00a0Gr\u00fcendonnschtigsoppe\u00a0\u00bb",
+        tags: ['vege', 'soupe', 'hiver', 'plat', 'jaune', 'entree', 'materiel', 'photo'],
+        image: "SoupeVerteDePaques.jpg",
+        image_alt: "Soupe verte de P\u00e2ques",
+      });
+      recipes.push({
+        url: "steaks-a-lechalote.html",
+        title: "Steaks \u00e0 l\u0027\u00e9chalote",
+        tags: ['poele', 'plat', 'minimaliste', 'boeuf', 'rapide'],
+      });
+      recipes.push({
+        url: "steaks-aux-champignons.html",
+        title: "Steaks aux champignons",
+        tags: ['boeuf', 'poele', 'plat', 'minimaliste'],
+      });
+      recipes.push({
+        url: "tapenade.html",
+        title: "Tapenade",
+        tags: ['vege', 'dip', 'entree', 'materiel', 'photo'],
+        image: "Tapenade.jpg",
+        image_alt: "Tapenade",
+      });
+      recipes.push({
+        url: "tarte-a-l-ananas.html",
+        title: "Tarte \u00e0 l\u0027ananas",
+        tags: ['jaune', 'blanc', 'materiel', 'gateau', 'photo', 'dessert'],
+        image: "TarteALAnanas.jpg",
+        image_alt: "Tarte \u00e0 l\u0027ananas",
+      });
+      recipes.push({
+        url: "tarte-au-citron.html",
+        title: "Tarte au citron",
+        tags: ['blanc', 'materiel', 'gateau', 'photo', 'dessert'],
+        image: "TarteAuCitron.jpg",
+        image_alt: "Une part de tarte au citron",
+      });
+      recipes.push({
+        url: "tarte-poire-frangipane.html",
+        title: "Tarte poire-frangipane",
+        tags: ['photo', 'dessert', 'materiel', 'gateau'],
+        image: "TartePoireFrangipane.jpg",
+        image_alt: "Tarte poires-frangipane",
+      });
+      recipes.push({
+        url: "tarte-tatin.html",
+        title: "Tarte Tatin",
+        tags: ['rapide', 'minimaliste', 'gateau', 'photo', 'dessert'],
+        image: "TarteTatin.jpg",
+        image_alt: "Tarte Tatin",
+      });
+      recipes.push({
+        url: "tuiles-aux-amandes.html",
+        title: "Tuiles aux amandes",
+        tags: ['dessert', 'blanc', 'materiel', 'biscuit'],
+      });
+      recipes.push({
+        url: "veloute-de-carottes-aux-cacahuetes.html",
+        title: "Velout\u00e9 de carottes aux cacahu\u00e8tes",
+        tags: ['vege', 'soupe', 'plat', 'entree', 'facile', 'materiel', 'photo', 'rapide'],
+        image: "VelouteDeCarottesAuxCacahuetes.jpg",
+        image_alt: "Velout\u00e9 de carottes aux cacahu\u00e8tes",
+      });
+      recipes.push({
+        url: "veloute-de-chou-fleur.html",
+        title: "Velout\u00e9 de chou-fleur",
+        tags: ['vege', 'soupe', 'hiver', 'plat', 'entree', 'facile', 'materiel', 'photo', 'rapide'],
+        image: "VelouteDeChouFleur.jpg",
+        image_alt: "Velout\u00e9 de chou-fleur",
+      });
+      recipes.push({
+        url: "visitandines.html",
+        title: "Visitandines",
+        subtitle: "madeleines \u00e0 la noix de coco",
+        tags: ['blanc', 'materiel', 'photo', 'dessert', 'biscuit'],
+        image: "Visitandines.jpg",
+        image_alt: "Visitandines",
+      });
+      recipes.push({
+        url: "carrot-cake.html",
+        title: "Carrot cake",
+        tags: ['minimaliste', 'facile', 'gateau', 'photo', 'dessert'],
+        image: "CarrotCake.jpg",
+        image_alt: "Carrot cake",
+      });
+      recipes.push({
+        url: "nouilles-de-riz-sautees.html",
+        title: "Nouilles de riz saut\u00e9es",
+        tags: ['vege', 'plat', 'wok', 'minimaliste', 'photo', 'pate'],
+        image: "NouillesDeRizSautees.jpg",
+        image_alt: "Nouilles de riz saut\u00e9es",
+      });
+      recipes.push({
+        url: "risotto-aux-courgettes-et-citron.html",
+        title: "Risotto aux courgettes et au citron",
+        tags: ['vege', 'ete', 'plat', 'minimaliste', 'risotto', 'photo'],
+        image: "RisottoAuxCourgettesEtCitron.jpg",
+        image_alt: "Risotto aux courgettes et au citron",
+      });
+      recipes.push({
+        url: "steaks-flambes-au-poivre.html",
+        title: "Steaks flamb\u00e9s au poivre",
+        tags: ['poele', 'plat', 'minimaliste', 'photo', 'boeuf', 'rapide'],
+        image: "SteakFlambeAuPoivre.jpg",
+        image_alt: "Steak flamb\u00e9 au poivre, patates r\u00f4ties, haricots vers",
+      });
+      recipes.push({
+        url: "sables-familiaux.html",
+        title: "Sabl\u00e9s familiaux",
+        tags: ['minimaliste', 'facile', 'photo', 'dessert', 'biscuit'],
+        image: "Sables.jpg",
+        image_alt: "Sabl\u00e9s",
+      });
+      recipes.push({
+        url: "sauce-hollandaise-sous-vide.html",
+        title: "Sauce hollandaise sous vide",
+        tags: ['vege', 'vide', 'jaune', 'facile', 'materiel', 'rapide', 'tech'],
+      });
+      recipes.push({
+        url: "aubergines-marinees.html",
+        title: "Aubergines marin\u00e9es",
+        tags: ['vege', 'grill', 'ete', 'plat', 'facile', 'photo'],
+        image: "AuberginesMarinees.jpg",
+        image_alt: "Aubergines marin\u00e9es en train de griller",
+      });
+      recipes.push({
+        url: "jaunes-d-oeufs-seches-au-sel.html",
+        title: "Jaunes d\u0027\u0153ufs s\u00e9ch\u00e9s au sel",
+        tags: ['vege', 'minimaliste', 'jaune', 'facile', 'photo', 'tech'],
+        image: "JaunesDOeufsSechesAuSel.jpg",
+        image_alt: "Jaunes d\u0027\u0153ufs s\u00e9ch\u00e9s au sel",
+      });
+      recipes.push({
+        url: "kouign-amann.html",
+        title: "Kouign-amann",
+        tags: ['photo', 'dessert', 'minimaliste', 'gateau'],
+        image: "KouignAmann.jpg",
+        image_alt: "Kouign-amann",
+      });
+      recipes.push({
+        url: "risotto-minute-a-la-chinoise.html",
+        title: "Risotto-minute \u00e0 la chinoise",
+        tags: ['vege', 'plat', 'risotto', 'materiel', 'photo', 'rapide'],
+        image: "RisottoMinuteALaChinoise.jpg",
+        image_alt: "Risotto-minute \u00e0 la chinoise",
+      });
+      recipes.push({
+        url: "sorbets.html",
+        title: "Sorbets",
+        subtitle: "recette canonique",
+        tags: ['photo', 'materiel', 'dessert', 'glace'],
+        image: "SorbetsFraiseFramboise.jpg",
+        image_alt: "Sorbets \u00e0 la fraise, \u00e0 la framboise, et glace au chocolat",
+      });
+      recipes.push({
+        url: "soupe-a-l-oignon.html",
+        title: "Soupe \u00e0 l\u0027oignon",
+        tags: ['vege', 'soupe', 'plat', 'minimaliste', 'entree', 'photo'],
+        image: "SoupeALOignon.jpg",
+        image_alt: "Soupe \u00e0 l\u0027oignon",
+      });
+      recipes.push({
+        url: "aiguillettes-de-poulet-aux-mandarines.html",
+        title: "Aiguillettes de poulet aux mandarines",
+        tags: ['poele', 'plat', 'minimaliste', 'facile', 'poulet', 'photo', 'rapide'],
+        image: "AiguillettesDePouletAuxMandarines.jpg",
+        image_alt: "Aiguillettes de poulet aux mandarines",
+      });
+      recipes.push({
+        url: "ezogelin.html",
+        title: "Ezogelin",
+        subtitle: "soupe de lentilles turque",
+        tags: ['vege', 'soupe', 'plat', 'minimaliste', 'entree', 'facile', 'photo', 'rapide'],
+        image: "Ezogelin.jpg",
+        image_alt: "Ezogelin",
+      });
+      recipes.push({
+        url: "soupe-de-tomates.html",
+        title: "Soupe de tomates",
+        tags: ['vege', 'soupe', 'plat', 'minimaliste', 'entree'],
+      });
+      recipes.push({
+        url: "gnocchis.html",
+        title: "Gnocchis",
+        tags: ['photo', 'materiel', 'accompagnement'],
+      });
+      recipes.push({
+        url: "oignons-caramelises.html",
+        title: "Oignons caram\u00e9lis\u00e9s",
+        tags: ['photo', 'vege', 'minimaliste', 'tech'],
+        image: "OignonsCaramelises.jpg",
+        image_alt: "Oignons caram\u00e9lis\u00e9s",
+      });
+      recipes.push({
+        url: "pates-alla-norma.html",
+        title: "P\u00e2tes alla Norma",
+        tags: ['vege', 'ete', 'plat', 'minimaliste', 'photo', 'pate'],
+        image: "PatesAllaNorma.jpg",
+        image_alt: "P\u00e2tes alla Norma",
+      });
+      recipes.push({
+        url: "lasagnes-saumon-poireaux.html",
+        title: "Lasagnes saumon-poireaux",
+        tags: ['hiver', 'plat', 'minimaliste', 'poisson', 'photo', 'pate'],
+        image: "LasagnesSaumonPoireaux.jpg",
+        image_alt: "Lasagne saumon-poireaux",
+      });
+      recipes.push({
+        url: "vanillekipferl.html",
+        title: "Vanillekipferl",
+        subtitle: "biscuits de No\u00ebl autrichiens",
+        tags: ['minimaliste', 'jaune', 'photo', 'dessert', 'biscuit'],
+        image: "Vanillekipferl.jpg",
+        image_alt: "Vanillekipferl",
+      });
+      recipes.push({
+        url: "citrons-givres.html",
+        title: "Citrons givr\u00e9s",
+        tags: ['glace', 'blanc', 'materiel', 'photo', 'dessert'],
+        image: "CitronGivre.jpg",
+        image_alt: "Citron givr\u00e9",
+      });
+      recipes.push({
+        url: "limonade-americaine.html",
+        title: "Limonade am\u00e9ricaine",
+        tags: ['boisson', 'facile', 'minimaliste'],
+      });
+      recipes.push({
+        url: "risotto-au-fenouil-et-citron.html",
+        title: "Risotto au fenouil et citron",
+        tags: ['vege', 'ete', 'plat', 'minimaliste', 'risotto', 'photo'],
+        image: "RisottoAuFenouilEtCitron.jpg",
+        image_alt: "Risotto au fenouil et citron",
+      });
+      recipes.push({
+        url: "salade-de-chou.html",
+        title: "Salade de chou",
+        tags: ['vege', 'salade', 'hiver', 'accompagnement', 'minimaliste', 'entree', 'facile', 'photo', 'rapide'],
+        image: "SaladeDeChou.jpg",
+        image_alt: "Salade de chou",
+      });
+      recipes.push({
+        url: "glacage-au-beurre-noisette.html",
+        title: "Gla\u00e7age au beurre noisette",
+        tags: ['photo', 'vege', 'minimaliste', 'tech'],
+        image: "GateauMoelleuxAuPotironGlacageBeurreNoisette.jpg",
+        image_alt: "G\u00e2teau moelleux au potiron avec un gla\u00e7age au beurre noisette",
+      });
+      recipes.push({
+        url: "grog.html",
+        title: "Grog am\u00e9lior\u00e9",
+        tags: ['boisson', 'rapide', 'facile', 'minimaliste'],
+      });
+      recipes.push({
+        url: "chou-fleur-buffalo.html",
+        title: "Chou-fleur buffalo",
+        tags: ['vege', 'hiver', 'roti', 'minimaliste', 'photo'],
+        image: "ChouFleurBuffalo.jpg",
+        image_alt: "Chou-fleur buffalo",
+      });
+      recipes.push({
+        url: "gateau-anglais-aux-epices.html",
+        title: "G\u00e2teau anglais aux \u00e9pices",
+        tags: ['minimaliste', 'dessert', 'facile', 'gateau'],
+      });
+      recipes.push({
+        url: "gnocchis-rotis-aux-brocolis.html",
+        title: "Gnocchis r\u00f4tis aux brocolis",
+        tags: ['vege', 'hiver', 'roti', 'minimaliste', 'facile', 'photo', 'rapide'],
+        image: "GnocchisRotisAuxBrocolis.jpg",
+        image_alt: "Gnocchis r\u00f4tis aux brocolis",
+      });
+      recipes.push({
+        url: "oie-rotie-aux-epices.html",
+        title: "Oie r\u00f4tie aux \u00e9pices",
+        tags: ['volaille', 'roti', 'minimaliste'],
+      });
+      recipes.push({
+        url: "jus-de-pomme-chaud.html",
+        title: "Jus de pomme chaud",
+        tags: ['boisson', 'facile', 'minimaliste'],
+      });
+      recipes.push({
+        url: "gratin-au-potiron-et-aux-noix.html",
+        title: "Gratin aux potiron et aux noix",
+        tags: ['hiver', 'accompagnement', 'plat', 'minimaliste', 'puree', 'photo'],
+        image: "GratinCerfHerisson.jpg",
+        image_alt: "Steak de cerf flamb\u00e9 \u00e0 l\u0027Armagnac, patate-h\u00e9risson, gratin aux potiron et aux nois",
+      });
+      recipes.push({
+        url: "patates-herisson.html",
+        title: "Patates-h\u00e9risson",
+        tags: ['photo', 'accompagnement', 'minimaliste'],
+        image: "GratinCerfHerisson.jpg",
+        image_alt: "Steak de cerf flamb\u00e9 \u00e0 l\u0027Armagnac, patate-h\u00e9risson, gratin aux potiron et aux nois",
+      });
+      recipes.push({
+        url: "steaks-de-cerf-flambes-a-l-armagnac.html",
+        title: "Steaks de cerf flamb\u00e9s \u00e0 l\u0027Armagnac",
+        tags: ['gibier', 'poele', 'plat', 'minimaliste', 'photo', 'rapide'],
+        image: "GratinCerfHerisson.jpg",
+        image_alt: "Steak de cerf flamb\u00e9 \u00e0 l\u0027Armagnac, patate-h\u00e9risson, gratin aux potiron et aux noix",
+      });
+      recipes.push({
+        url: "brioche-aux-pralines.html",
+        title: "Brioche aux pralines",
+        tags: ['photo', 'dessert', 'materiel', 'gateau'],
+        image: "BriocheAuxPralines.jpg",
+        image_alt: "Brioche aux pralines",
+      });
+      recipes.push({
+        url: "panzanella.html",
+        title: "Panzanella classique",
+        subtitle: "salade de pain italienne",
+        tags: ['vege', 'salade', 'accompagnement', 'minimaliste', 'entree', 'photo'],
+        image: "Panzanella.jpg",
+        image_alt: "Panzanella",
+      });
+      recipes.push({
+        url: "patates-au-four-divines.html",
+        title: "Patates au four divines",
+        tags: ['photo', 'rapide', 'accompagnement', 'minimaliste'],
+        image: "SteakFlambeAuPoivre.jpg",
+        image_alt: "Steak flamb\u00e9 au poivre, patates r\u00f4ties, haricots vers",
+      });
+      recipes.push({
+        url: "pate-brisee.html",
+        title: "P\u00e2te bris\u00e9e",
+        tags: ['vege', 'minimaliste', 'facile', 'photo', 'tech'],
+        image: "PateBrisee.jpg",
+        image_alt: "P\u00e2te bris\u00e9e",
+      });
+      recipes.push({
+        url: "quiche-lorraine.html",
+        title: "Quiche lorraine",
+        tags: ['tarte', 'plat', 'minimaliste', 'entree', 'facile', 'photo'],
+        image: "QuicheLorraine.jpg",
+        image_alt: "Quiche lorraine",
+      });
+      recipes.push({
+        url: "quiche-saumon-epinards.html",
+        title: "Quiche saumon-\u00e9pinards",
+        tags: ['tarte', 'plat', 'minimaliste', 'entree', 'facile', 'poisson', 'photo'],
+        image: "CeleriRemouladeQuicheSaumonEpinards.jpg",
+        image_alt: "C\u00e9leri r\u00e9moulade et quiche saumon-\u00e9pinards",
+      });
+      recipes.push({
+        url: "risotto-aux-asperges.html",
+        title: "Risotto aux asperges",
+        tags: ['vege', 'plat', 'minimaliste', 'risotto', 'photo'],
+        image: "RisottoAuxAsperges.jpg",
+        image_alt: "Risotto aux asperges et asperges r\u00f4ties",
+      });
+      recipes.push({
+        url: "tarte-boeuf-courgettes.html",
+        title: "Tarte b\u0153uf-courgettes",
+        tags: ['tarte', 'ete', 'plat', 'minimaliste', 'entree', 'photo', 'boeuf'],
+        image: "TarteBoeufCourgettes.jpg",
+        image_alt: "Tarte b\u0153uf-courgettes",
+      });
+      recipes.push({
+        url: "panzanella-concombre-saumon.html",
+        title: "Panzanella au concombre et saumon",
+        tags: ['salade', 'ete', 'accompagnement', 'minimaliste', 'entree', 'poisson', 'photo'],
+        image: "PanzanellaConcombreSaumon.jpg",
+        image_alt: "Panzanella au concombre et saumon",
+      });
+      recipes.push({
+        url: "panzanella-d-hiver.html",
+        title: "Panzanella d\u0027hiver",
+        tags: ['vege', 'salade', 'hiver', 'accompagnement', 'minimaliste', 'entree'],
+      });
+      recipes.push({
+        url: "buche-chocolat-cointreau-oranges-confites.html",
+        title: "B\u00fbche au chocolat noir, Cointreau, et oranges confites",
+        tags: ['photo', 'dessert', 'minimaliste', 'gateau'],
+        image: "BucheChocolatCointreauOrangesConfites.jpg",
+        image_alt: "B\u00fbche au chocolat noir, Cointreau, et oranges confites",
+      });
+      recipes.push({
+        url: "sorbet-poire-riesling-gingembre.html",
+        title: "Sorbet poire, riesling et gingembre",
+        tags: ['photo', 'materiel', 'dessert', 'glace'],
+        image: "SorbetPoireRieslingGingembreBrownieMiso.jpg",
+        image_alt: "Une assiette avec deux boules de sorbet et une tranche de brownie saupoudr\u00e9 de sucre glace",
+      });
+      recipes.push({
+        url: "salade-de-chou-fleur-roti.html",
+        title: "Salade de chou-fleur r\u00f4ti, sauce au s\u00e9same",
+        tags: ['vege', 'salade', 'hiver', 'accompagnement', 'minimaliste', 'entree', 'facile'],
+      });
+      recipes.push({
+        url: "soupe-a-l-ail-des-ours.html",
+        title: "Soupe \u00e0 l\u0027ail des ours",
+        tags: ['vege', 'soupe', 'plat', 'minimaliste', 'entree'],
+      });
+      recipes.push({
+        url: "cake-marbre-matcha-noisettes.html",
+        title: "Cake marbr\u00e9 matcha-noisettes",
+        tags: ['photo', 'dessert', 'minimaliste', 'gateau'],
+        image: "CakeMarbreMatchaNoisettes.jpg",
+        image_alt: "Cake marbr\u00e9 matcha-noisettes",
+      });
+      recipes.push({
+        url: "nouilles-chinoises-vite-fait.html",
+        title: "Nouilles chinoises vite fait",
+        tags: ['vege', 'plat', 'minimaliste', 'facile', 'photo', 'rapide', 'pate'],
+        image: "NouillesChinoisesViteFait.jpg",
+        image_alt: "Nouilles chinoises vite fait",
+      });
+      recipes.push({
+        url: "porc-marine-a-la-coreenne.html",
+        title: "Porc marin\u00e9 \u00e0 la cor\u00e9enne",
+        tags: ['grill', 'porc', 'plat', 'materiel', 'facile', 'rapide'],
+      });
+      recipes.push({
+        url: "asperges-roties.html",
+        title: "Asperges r\u00f4ties",
+        tags: ['accompagnement', 'minimaliste', 'facile', 'photo', 'rapide'],
+        image: "AspergesRisotto.jpg",
+        image_alt: "Asperges r\u00f4ties et risotto tout vert",
+      });
+      recipes.push({
+        url: "pates-miso.html",
+        title: "P\u00e2tes miso",
+        tags: ['vege', 'plat', 'minimaliste', 'facile', 'photo', 'rapide', 'pate'],
+        image: "PatesMiso.jpg",
+        image_alt: "P\u00e2tes miso",
+      });
+      recipes.push({
+        url: "tajine-de-legumes-au-citron.html",
+        title: "Tajine de l\u00e9gumes au citron",
+        tags: ['vege', 'hiver', 'mijote', 'plat', 'minimaliste', 'photo'],
+        image: "TajineDeLegumesAuCitron.jpg",
+        image_alt: "Tajine de l\u00e9gumes au citron, avec du couscous",
+      });
+      recipes.push({
+        url: "tajine-de-legumes-parfume.html",
+        title: "Tajine de l\u00e9gumes parfum\u00e9",
+        tags: ['vege', 'mijote', 'plat', 'materiel', 'photo'],
+        image: "TajineDeLegumesParfume.jpg",
+        image_alt: "Tajine de l\u00e9gumes parfum\u00e9, avec du couscous",
+      });
+      recipes.push({
+        url: "porc-marine-tout-simple.html",
+        title: "Porc marin\u00e9 tout simple",
+        tags: ['grill', 'porc', 'plat', 'materiel', 'facile', 'rapide'],
+      });
+      recipes.push({
+        url: "tarte-tatin-poivrons-aubergines.html",
+        title: "Tarte Tatin poivrons-aubergines",
+        tags: ['vege', 'tarte', 'ete', 'plat', 'minimaliste', 'entree', 'photo'],
+        image: "TarteTatinPoivronsAubergines.jpg",
+        image_alt: "Tarte tatin poivrons-aubergines",
+      });
+      recipes.push({
+        url: "salade-de-chou-fleur-pistache-et-grenade.html",
+        title: "Salade de chou-fleur, pistaches et grenade",
+        tags: ['vege', 'salade', 'hiver', 'accompagnement', 'minimaliste', 'entree', 'photo'],
+        image: "SaladeDeChouFleur.jpg",
+        image_alt: "Salade de chou-fleur, pistaches et grenade",
+      });
+      recipes.push({
+        url: "cookies-noix-chocolat.html",
+        title: "Cookies noisettes-chocolat",
+        tags: ['photo', 'dessert', 'minimaliste', 'biscuit'],
+        image: "CookiesNoisettesChocolat.jpg",
+        image_alt: "Cookies noisettes-chocolat",
+      });
+      recipes.push({
+        url: "dutch-baby.html",
+        title: "Dutch baby",
+        subtitle: "gros pancake au four",
+        tags: ['vege', 'brunch', 'facile', 'materiel', 'photo', 'rapide'],
+        image: "DutchBaby.jpg",
+        image_alt: "Dutch baby",
+      });
+      recipes.push({
+        url: "gateau-de-noix.html",
+        title: "G\u00e2teau de noix",
+        tags: ['minimaliste', 'facile', 'gateau', 'photo', 'dessert'],
+        image: "GateauDeNoix.jpg",
+        image_alt: "G\u00e2teau de noix",
+      });
+      recipes.push({
+        url: "glace-a-la-noix.html",
+        title: "Glace \u00e0 la noix",
+        tags: ['glace', 'jaune', 'materiel', 'photo', 'dessert'],
+        image: "GlaceALaNoix.jpg",
+        image_alt: "Glace \u00e0 la noix et g\u00e2teau de noixflamb\u00e9es",
+      });
+      recipes.push({
+        url: "glace-au-chocolat-indecente.html",
+        title: "Glace au chocolat ind\u00e9cente",
+        tags: ['glace', 'jaune', 'materiel', 'photo', 'dessert'],
+        image: "GlaceChocolat.jpg",
+        image_alt: "Glace au chocolat et bananes flamb\u00e9es",
+      });
+      recipes.push({
+        url: "pates-chingaderinara.html",
+        title: "P\u00e2tes chingaderinara",
+        tags: ['vege', 'plat', 'minimaliste', 'facile', 'photo', 'rapide', 'pate'],
+        image: "PatesChingaderinara.jpg",
+        image_alt: "P\u00e2tes chingaderinara",
+      });
+      recipes.push({
+        url: "pates-cremeuses-aux-poireaux.html",
+        title: "P\u00e2tes cr\u00e9meuses aux poireaux",
+        tags: ['vege', 'hiver', 'plat', 'minimaliste', 'photo', 'pate'],
+        image: "PatesCremeusesAuxPoireaux.jpg",
+        image_alt: "P\u00e2tes cr\u00e9meuses aux poireaux",
+      });
+      recipes.push({
+        url: "stockbrot.html",
+        title: "Stockbrot",
+        subtitle: "torsade de pain \u00e0 la broche",
+        tags: ['photo', 'grill', 'plat', 'vege'],
+        image: "Stockbrot.jpg",
+        image_alt: "Stockbrot",
+      });
+      recipes.push({
+        url: "brioche-tressee.html",
+        title: "Brioche tress\u00e9e",
+        tags: ['photo', 'vege', 'brunch', 'materiel'],
+        image: "BriocheTressee.jpg",
+        image_alt: "Brioche tress\u00e9e",
+      });
+      recipes.push({
+        url: "carottes-au-lait-de-coco.html",
+        title: "Carottes mijot\u00e9es au lait de coco",
+        tags: ['vege', 'mijote', 'plat', 'minimaliste', 'facile'],
+      });
+      recipes.push({
+        url: "florentins.html",
+        title: "Florentins",
+        tags: ['photo', 'dessert', 'minimaliste', 'biscuit'],
+        image: "Florentins.jpg",
+        image_alt: "Florentins",
+      });
+      recipes.push({
+        url: "pintade-a-la-choucroute.html",
+        title: "Pintade \u00e0 la choucroute",
+        tags: ['volaille', 'mijote', 'plat', 'minimaliste', 'photo'],
+        image: "PintadeALaChoucroute.jpg",
+        image_alt: "Pintade \u00e0 la choucroute",
+      });
+      recipes.push({
+        url: "rohrnudeln.html",
+        title: "Rohrnudeln",
+        subtitle: "petits pains \u00e0 la confiture",
+        tags: ['jaune', 'materiel', 'gateau', 'photo', 'dessert'],
+        image: "Rohrnudeln.jpg",
+        image_alt: "Rohrnudeln",
+      });
+      recipes.push({
+        url: "saumon-aux-mandarines.html",
+        title: "Saumon aux mandarines",
+        tags: ['roti', 'minimaliste', 'facile', 'poisson', 'photo'],
+        image: "SaumonAuxMandarines.jpg",
+        image_alt: "Saumon aux mandarines pur\u00e9e de panais",
+      });
+      recipes.push({
+        url: "saumon-en-croute-de-noix.html",
+        title: "Saumon en cro\u00fbte de noix",
+        tags: ['roti', 'minimaliste', 'facile', 'poisson', 'photo'],
+        image: "SaumonEnCrouteDeNoix.jpg",
+        image_alt: "Saumon en cro\u00fbte de noix et pur\u00e9e de panais",
+      });
+      recipes.push({
+        url: "tartare-de-saumon.html",
+        title: "Tartare de saumon",
+        tags: ['salade', 'accompagnement', 'minimaliste', 'entree', 'facile', 'poisson', 'photo', 'rapide'],
+        image: "TartareDeSaumon.jpg",
+        image_alt: "Tartare de saumon",
+      });
+      recipes.push({
+        url: "tarte-aux-pommes.html",
+        title: "Tarte aux pommes",
+        tags: ['minimaliste', 'facile', 'gateau', 'photo', 'dessert'],
+        image: "TarteAuxPommes.jpg",
+        image_alt: "Tarte aux pommes",
+      });
+      recipes.push({
+        url: "gateau-aux-noisettes.html",
+        title: "G\u00e2teau aux noisettes",
+        tags: ['minimaliste', 'blanc', 'gateau', 'photo', 'dessert'],
+        image: "GateauxAuxNoisettes.jpg",
+        image_alt: "Petits g\u00e2teaux aux noisettes",
+      });
+      recipes.push({
+        url: "riz-mexicain.html",
+        title: "Riz mexicain",
+        tags: ['vege', 'plat', 'minimaliste', 'risotto', 'photo'],
+        image: "CrevettesALaDiabla.jpg",
+        image_alt: "Camarones a la diabla avec du riz mexicain",
+      });
+      recipes.push({
+        url: "pates-a-la-truffe.html",
+        title: "P\u00e2tes \u00e0 la truffe",
+        tags: ['plat', 'facile', 'pate', 'minimaliste'],
+      });
+      recipes.push({
+        url: "ragout-de-lentilles-aux-champignons.html",
+        title: "Rago\u00fbt de lentilles aux champignons",
+        tags: ['vege', 'mijote', 'plat', 'minimaliste', 'photo'],
+        image: "RagoutLentillesChampignons.jpg",
+        image_alt: "Rago\u00fbt de lentilles aux champignons sur pur\u00e9e de panais",
+      });
+      recipes.push({
+        url: "pintade-a-la-biere.html",
+        title: "Pintade \u00e0 la bi\u00e8re",
+        tags: ['volaille', 'hiver', 'mijote', 'plat', 'minimaliste', 'photo'],
+        image: "PintadeALaBiere.jpg",
+        image_alt: "Pintade \u00e0 la bi\u00e8re",
+      });
+      recipes.push({
+        url: "gaufres-de-pommes-de-terre.html",
+        title: "Gaufres de pommes de terre",
+        tags: ['vege', 'brunch', 'facile', 'materiel', 'rapide'],
+      });
+      recipes.push({
+        url: "lasagnes-truite-epinards.html",
+        title: "Lasagnes truite-\u00e9pinards",
+        tags: ['plat', 'minimaliste', 'poisson', 'photo', 'pate'],
+        image: "LasagnesTruiteEpinards.jpg",
+        image_alt: "Lasagnes truite-\u00e9pinards",
+      });
+      recipes.push({
+        url: "saumon-en-papillote-de-poires.html",
+        title: "Saumon en papillote de poires",
+        tags: ['roti', 'minimaliste', 'facile', 'poisson', 'photo'],
+        image: "SaumonEnPapilloteDePoires.jpg",
+        image_alt: "Saumon en papillote de poires",
+      });
+      recipes.push({
+        url: "steak-tartare.html",
+        title: "Steaks tartare",
+        tags: ['salade', 'accompagnement', 'minimaliste', 'jaune', 'entree', 'facile', 'photo', 'boeuf'],
+        image: "SteakTartare.jpg",
+        image_alt: "Steak tartare, po\u00eal\u00e9e de haricots et salade verte",
+      });
+      recipes.push({
+        url: "truffes-au-chocolat.html",
+        title: "Truffes de No\u00ebl au chocolat",
+        tags: ['minimaliste', 'jaune', 'photo', 'dessert', 'biscuit'],
+        image: "TruffesAuChocolat.jpg",
+        image_alt: "Truffes de No\u00ebl au chocolat",
+      });
+      recipes.push({
+        url: "papillotes-de-saumon-aux-poivrons-et-au-miel.html",
+        title: "Papillotes de saumon poivron-miel",
+        tags: ['ete', 'roti', 'minimaliste', 'facile', 'poisson', 'photo', 'rapide'],
+        image: "PapillotesDeSaumonPoivronsMiel.jpg",
+        image_alt: "Papillotes de saumon poivron-miel",
+      });
+      recipes.push({
+        url: "pates-nicoises.html",
+        title: "P\u00e2tes \u00e0 la ni\u00e7oise",
+        tags: ['plat', 'minimaliste', 'facile', 'poisson', 'photo', 'rapide', 'pate'],
+        image: "PatesNicoises.jpg",
+        image_alt: "Fusilloni \u00e0 la ni\u00e7oise",
+      });
+      recipes.push({
+        url: "saumon-au-champagne.html",
+        title: "Saumon au champagne",
+        tags: ['roti', 'minimaliste', 'facile', 'poisson', 'photo'],
+        image: "SaumonAuChampagne.jpg",
+        image_alt: "Saumon au champagne, pur\u00e9e de panais, et brocolis r\u00f4tis",
+      });
+      recipes.push({
+        url: "muffins-aux-fruits-secs.html",
+        title: "Muffins aux fruits secs",
+        tags: ['minimaliste', 'facile', 'dessert', 'biscuit'],
+      });
+      recipes.push({
+        url: "pamplemousses-au-miel.html",
+        title: "Pamplemousses au miel",
+        tags: ['dessert', 'minimaliste', 'facile', 'autre', 'photo', 'rapide'],
+        image: "PamplemousseAuMiel.jpg",
+        image_alt: "Pamplemousse au miel",
+      });
+      recipes.push({
+        url: "blanquette-de-veau.html",
+        title: "Blanquette de veau",
+        tags: ['photo', 'mijote', 'plat', 'minimaliste'],
+        image: "BlanquetteDeVeau.jpg",
+        image_alt: "Blanquette de veau",
+      });
+      recipes.push({
+        url: "oeufs-a-la-coque-au-beurre-miso.html",
+        title: "\u0152ufs \u00e0 la coque au beurre miso",
+        tags: ['vege', 'minimaliste', 'brunch', 'facile', 'photo'],
+        image: "OeufsALaCoqueAuBeurreMiso.jpg",
+        image_alt: "\u0152ufs \u00e0 la coque au beurre miso avec des asperges r\u00f4ties",
+      });
+      recipes.push({
+        url: "sauce-de-dinde.html",
+        title: "Sauce de dinde",
+        subtitle: "\u00ab\u00a0Turkey gravy\u00a0\u00bb",
+        tags: ['rapide', 'minimaliste', 'tech'],
+      });
+      recipes.push({
+        url: "bouillon-de-volaille.html",
+        title: "Bouillon de volaille",
+        tags: ['minimaliste', 'rapide', 'facile', 'tech'],
+      });
+      recipes.push({
+        url: "chou-rouge-doux-en-cuisson-lente.html",
+        title: "Chou rouge doux en cuisson lente",
+        tags: ['photo', 'materiel', 'hiver', 'accompagnement'],
+        image: "CerfPureeChouRouge.jpg",
+        image_alt: "Civet de cerf, chou rouge doux en cuisson lente, et pur\u00e9e de pommes de terre",
+      });
+      recipes.push({
+        url: "curry-d-aubergines-roties.html",
+        title: "Curry d\u0027aubergines r\u00f4ties",
+        tags: ['vege', 'ete', 'mijote', 'plat', 'minimaliste', 'photo'],
+        image: "CurryDAuberginesRoties.jpg",
+        image_alt: "Curry d\u0027aubergines r\u00f4ties",
+      });
+      recipes.push({
+        url: "boeuf-bourguignon.html",
+        title: "B\u0153uf bourguignon",
+        tags: ['mijote', 'plat', 'minimaliste', 'photo', 'boeuf'],
+        image: "BoeufBourguignon.jpg",
+        image_alt: "Boeuf bourguignon",
+      });
+      recipes.push({
+        url: "cake-chocolat-gingembre.html",
+        title: "Cake chocolat-gingembre",
+        tags: ['photo', 'dessert', 'minimaliste', 'gateau'],
+        image: "CakeChocolatGingembre.jpg",
+        image_alt: "Cake chocolat-gingembre",
+      });
+      recipes.push({
+        url: "feijoada.html",
+        title: "Feijoada",
+        tags: ['mijote', 'plat', 'minimaliste', 'porc', 'photo', 'boeuf'],
+        image: "Feijoada.jpg",
+        image_alt: "Feijoada",
+      });
+      recipes.push({
+        url: "sables-au-matcha.html",
+        title: "Sabl\u00e9s au matcha",
+        tags: ['photo', 'dessert', 'minimaliste', 'biscuit'],
+        image: "SablesAuMatcha.jpg",
+        image_alt: "Sabl\u00e9s au matcha",
+      });
+      recipes.push({
+        url: "sorbet-acai-mure.html",
+        title: "Sorbet a\u00e7ai-m\u00fbre",
+        tags: ['photo', 'materiel', 'dessert', 'glace'],
+        image: "SorbetAcaiMure.jpg",
+        image_alt: "Sorbet a\u00e7ai-m\u00fbre",
+      });
+      recipes.push({
+        url: "dinde-farcie-aux-pommes.html",
+        title: "Dinde farcie aux pommes",
+        tags: ['volaille', 'porc', 'roti', 'minimaliste'],
+      });
+      recipes.push({
+        url: "pates-aux-echalotes.html",
+        title: "P\u00e2tes aux \u00e9chalotes caram\u00e9lis\u00e9es",
+        tags: ['vege', 'plat', 'minimaliste', 'photo', 'pate'],
+        image: "PatesAuxEchalotes.jpg",
+        image_alt: "P\u00e2tes aux \u00e9chalotes caram\u00e9lis\u00e9es",
+      });
+      recipes.push({
+        url: "brownie-au-miso.html",
+        title: "Brownie au miso",
+        tags: ['minimaliste', 'facile', 'gateau', 'photo', 'dessert'],
+        image: "BrownieAuMiso.jpg",
+        image_alt: "Brownie au miso",
+      });
+      recipes.push({
+        url: "gateau-chocolat-sesame-noirs.html",
+        title: "G\u00e2teau au chocolat et s\u00e9same noirs",
+        tags: ['photo', 'dessert', 'materiel', 'gateau'],
+        image: "GateauChocolatSesameNoirs.jpg",
+        image_alt: "G\u00e2teau au chocolat et s\u00e9same noirs avec un gla\u00e7age au matcha",
+      });
+      recipes.push({
+        url: "gratin-haricots-champignons.html",
+        title: "Gratin de haricots verts aux champignons",
+        tags: ['vege', 'plat', 'accompagnement', 'minimaliste', 'facile', 'puree', 'photo'],
+        image: "GratinHaricotsChampignons.jpg",
+        image_alt: "Gratin de haricots verts aux champignons",
+      });
+      recipes.push({
+        url: "legumes-rotis.html",
+        title: "L\u00e9gumes r\u00f4tis",
+        tags: ['vege', 'roti', 'minimaliste', 'facile', 'photo', 'rapide'],
+        image: "LegumesAuFour.jpg",
+        image_alt: "L\u00e9gumes au four",
+      });
+      recipes.push({
+        url: "risotto-crevettes-petits-pois.html",
+        title: "Risotto citronn\u00e9 aux crevettes et petits pois",
+        tags: ['plat', 'minimaliste', 'risotto', 'photo', 'mer'],
+        image: "RisottoCrevettesPetitsPois.jpg",
+        image_alt: "Risotto citronn\u00e9 aux crevettes et petits pois",
+      });
+      recipes.push({
+        url: "mini-croissants-de-saucisse.html",
+        title: "Mini-croissants de saucisse",
+        tags: ['porc', 'minimaliste', 'apero', 'entree', 'facile', 'photo', 'rapide'],
+        image: "MiniCroissantsDeSaucisse.jpg",
+        image_alt: "Mini-croissants de saucisse",
+      });
+      recipes.push({
+        url: "curry-japonais-de-poulet.html",
+        title: "Curry japonais de poulet",
+        tags: ['mijote', 'plat', 'minimaliste', 'poulet', 'photo'],
+        image: "CurryJaponaisDePoulet.jpg",
+        image_alt: "Curry japonais de poulet",
+      });
+      recipes.push({
+        url: "curry-d-agneau.html",
+        title: "Curry d\u0027agneau",
+        tags: ['agneau', 'mijote', 'plat', 'minimaliste', 'facile', 'photo'],
+        image: "CurryDAgneau.jpg",
+        image_alt: "Curry d\u0027agneau",
+      });
+      recipes.push({
+        url: "curry-de-poulet-aux-fruits-exotiques.html",
+        title: "Curry de poulet aux fruits exotiques",
+        tags: ['mijote', 'plat', 'minimaliste', 'facile', 'poulet'],
+      });
+      recipes.push({
+        url: "tarte-a-la-rhubarbe.html",
+        title: "Tarte \u00e0 la rhubarbe",
+        tags: ['dessert', 'minimaliste', 'gateau'],
+      });
+      recipes.push({
+        url: "boeuf-mode.html",
+        title: "B\u0153uf mode",
+        tags: ['mijote', 'plat', 'minimaliste', 'facile', 'photo', 'boeuf'],
+        image: "BoeufMode.jpg",
+        image_alt: "Boeuf mode avec des coquillettes",
+      });
+      recipes.push({
+        url: "lasagnes-ail-des-ours-roquette.html",
+        title: "Lasagnes ail des ours \u0026 roquette",
+        tags: ['vege', 'hiver', 'plat', 'minimaliste', 'photo', 'pate'],
+        image: "LasagnesAilDesOursRoquette.jpg",
+        image_alt: "Lasagnes ail des ours \u0026 roquette",
+      });
+      recipes.push({
+        url: "poulet-au-cidre.html",
+        title: "Poulet au cidre",
+        tags: ['mijote', 'plat', 'minimaliste', 'poulet', 'photo'],
+        image: "PouletAuCidre.jpg",
+        image_alt: "Poulet au cidre avec des coquillettes",
+      });
+      recipes.push({
+        url: "poulet-coco.html",
+        title: "Poulet coco",
+        tags: ['poele', 'plat', 'minimaliste', 'facile', 'poulet', 'photo', 'rapide'],
+        image: "PouletCoco.jpg",
+        image_alt: "Poulet coco avec du riz",
+      });
+      recipes.push({
+        url: "saute-de-veau-au-porto.html",
+        title: "Saut\u00e9 de veau au porto",
+        tags: ['veau', 'mijote', 'plat', 'minimaliste', 'facile', 'photo'],
+        image: "SauteDeVeauAuPorto.jpg",
+        image_alt: "Saut\u00e9 de veau au porto avec du riz",
+      });
+      recipes.push({
+        url: "quiche-aux-poireaux.html",
+        title: "Quiche aux poireaux",
+        tags: ['vege', 'tarte', 'hiver', 'plat', 'minimaliste', 'entree', 'photo'],
+        image: "QuicheAuxPoireaux.jpg",
+        image_alt: "Quiche aux poireaux",
+      });
+      recipes.push({
+        url: "amaretti.html",
+        title: "Amaretti",
+        subtitle: "rochers aux amandes",
+        tags: ['dessert', 'minimaliste', 'blanc', 'facile', 'photo', 'rapide', 'biscuit'],
+        image: "Amaretti.jpg",
+        image_alt: "Amaretti",
+      });
+      recipes.push({
+        url: "artichauts-rotis.html",
+        title: "Artichauts r\u00f4tis",
+        tags: ['photo', 'vege', 'roti', 'minimaliste'],
+        image: "ArtichautRoti.jpg",
+        image_alt: "Artichaut r\u00f4ti",
+      });
+      recipes.push({
+        url: "axoa-de-veau.html",
+        title: "Axoa de veau",
+        tags: ['veau', 'ete', 'mijote', 'plat', 'minimaliste', 'photo'],
+        image: "AxoaDeVeau.jpg",
+        image_alt: "Axoa de veau",
+      });
+      recipes.push({
+        url: "bananes-flambees.html",
+        title: "Bananes flamb\u00e9es",
+        tags: ['vege', 'dessert', 'minimaliste', 'autre', 'photo', 'rapide'],
+        image: "BananesFlambees.jpg",
+        image_alt: "Bananes en train de flamber",
+      });
+      recipes.push({
+        url: "barbunya-pilaki.html",
+        title: "Barbunya Pilaki",
+        subtitle: "haricots borlotti \u00e0 la tomate",
+        tags: ['vege', 'mijote', 'plat', 'minimaliste', 'photo'],
+        image: "BarbunyaPilaki.jpg",
+        image_alt: "Barbunya Pilaki",
+      });
+      recipes.push({
+        url: "bibimbap.html",
+        title: "Bibimbap",
+        tags: ['poele', 'ete', 'plat', 'minimaliste', 'photo', 'boeuf'],
+        image: "Bibimbap.jpg",
+        image_alt: "Bibimbap",
+      });
+      recipes.push({
+        url: "blancs-de-poulet-farcis-a-la-sauge.html",
+        title: "Blancs de poulet farcis \u00e0 la sauge",
+        tags: ['poulet', 'roti', 'minimaliste'],
+      });
+      recipes.push({
+        url: "blechkuchen.html",
+        title: "Blechkuchen",
+        subtitle: "g\u00e2teau allemand aux fruits",
+        tags: ['photo', 'dessert', 'minimaliste', 'gateau'],
+        image: "Blechkuchen.jpg",
+        image_alt: "Blechkuchen",
+      });
+      recipes.push({
+        url: "bouchees-landaises.html",
+        title: "Bouch\u00e9es landaises",
+        tags: ['volaille', 'minimaliste', 'apero', 'entree', 'photo'],
+        image: "BoucheesLandaises.jpg",
+        image_alt: "Bouch\u00e9es landaises",
+      });
+      recipes.push({
+        url: "boudin-noir-aux-poires.html",
+        title: "Boudin noir aux poires",
+        tags: ['rapide', 'roti', 'facile', 'minimaliste'],
+      });
+      recipes.push({
+        url: "boulettes-de-viande-suedoises.html",
+        title: "Boulettes de viande \u00e0 la su\u00e9doise",
+        tags: ['poele', 'porc', 'plat', 'minimaliste', 'jaune', 'photo', 'boeuf'],
+        image: "BoulettesDeViandeSuedoises.jpg",
+        image_alt: "Boulettes de viande \u00e0 la su\u00e9doise",
+      });
+      recipes.push({
+        url: "bouligou.html",
+        title: "Bouligou",
+        tags: ['photo', 'dessert', 'minimaliste', 'autre'],
+        image: "Bouligou.jpg",
+        image_alt: "Bouligou",
+      });
+      recipes.push({
+        url: "brigadeiros.html",
+        title: "Brigadeiros",
+        subtitle: "bonbons br\u00e9siliens",
+        tags: ['photo', 'dessert', 'minimaliste', 'biscuit'],
+        image: "Brigadeiros.jpg",
+        image_alt: "Brigadeiros",
+      });
+      recipes.push({
+        url: "brotsuppe.html",
+        title: "Brotsuppe",
+        subtitle: "soupe de pain franconienne",
+        tags: ['vege', 'soupe', 'plat', 'minimaliste', 'jaune', 'entree'],
+      });
+      recipes.push({
+        url: "cabillaud-miel-soja.html",
+        title: "Cabillaud au miel et soja",
+        tags: ['poele', 'plat', 'minimaliste', 'poisson', 'photo', 'rapide'],
+        image: "CabillaudMielSoja.jpg",
+        image_alt: "Cabillaud au miel et soja, avec de la pur\u00e9e de patates douces",
+      });
+      recipes.push({
+        url: "cailles-au-porto-et-safran.html",
+        title: "Cailles au porto et safran",
+        tags: ['volaille', 'mijote', 'plat', 'minimaliste'],
+      });
+      recipes.push({
+        url: "cake-mangue-banane.html",
+        title: "Cake mangue-banane",
+        tags: ['dessert', 'minimaliste', 'gateau'],
+      });
+      recipes.push({
+        url: "cake-poivrons-merguez.html",
+        title: "Cake poivrons-merguez",
+        tags: ['tarte', 'ete', 'plat', 'minimaliste', 'entree', 'facile', 'photo', 'rapide'],
+        image: "CakePoivronsMerguez.jpg",
+        image_alt: "Cake poivrons-merguez",
+      });
+      recipes.push({
+        url: "canette-aux-fruits-exotiques.html",
+        title: "Canette aux fruits exotiques",
+        tags: ['volaille', 'porc', 'roti', 'minimaliste'],
+      });
+      recipes.push({
+        url: "carbonade-flamande.html",
+        title: "Carbonade flamande",
+        tags: ['mijote', 'plat', 'minimaliste', 'photo', 'boeuf'],
+        image: "CarbonadeFlamande.jpg",
+        image_alt: "Carbonade flamande avec de la pur\u00e9e patates/carottes",
+      });
+      recipes.push({
+        url: "carbonara-veritable.html",
+        title: "Carbonara v\u00e9ritable",
+        tags: ['plat', 'minimaliste', 'jaune', 'photo', 'rapide', 'pate'],
+        image: "Carbonara.jpg",
+        image_alt: "Spaghettis carbonara",
+      });
+      recipes.push({
+        url: "carrot-cake-vegan.html",
+        title: "Carrot cake, version v\u00e9g\u00e9talienne",
+        tags: ['dessert', 'minimaliste', 'gateau'],
+      });
+      recipes.push({
+        url: "cassoulet-vegetarien.html",
+        title: "Cassoulet v\u00e9g\u00e9tarien",
+        tags: ['vege', 'hiver', 'mijote', 'plat', 'minimaliste', 'photo'],
+        image: "CassouletVegetarien.jpg",
+        image_alt: "Cassoulet v\u00e9g\u00e9tarien",
+      });
+      recipes.push({
+        url: "caviar-d-aubergines.html",
+        title: "Caviar d\u0027aubergines",
+        tags: ['vege', 'ete', 'minimaliste', 'dip', 'entree', 'photo'],
+        image: "CaviarDAubergines.jpg",
+        image_alt: "Caviar d\u0027aubergines",
+      });
+      recipes.push({
+        url: "chili-vegetarien.html",
+        title: "Chili v\u00e9g\u00e9tarien",
+        tags: ['vege', 'hiver', 'ete', 'mijote', 'plat', 'facile', 'materiel', 'photo'],
+        image: "ChiliVegetarien.jpg",
+        image_alt: "Chili v\u00e9g\u00e9tarien",
+      });
+      recipes.push({
+        url: "chips-de-pommes.html",
+        title: "Chips de pommes",
+        tags: ['vege', 'minimaliste', 'apero', 'entree', 'facile'],
+      });
+      recipes.push({
+        url: "chips-magiques.html",
+        title: "Chips magiques",
+        tags: ['vege', 'minimaliste', 'apero', 'entree', 'facile'],
+      });
+      recipes.push({
+        url: "chou-blanc-au-beurre-de-genievre.html",
+        title: "Chou blanc au beurre de geni\u00e8vre",
+        tags: ['hiver', 'accompagnement', 'minimaliste'],
+      });
+      recipes.push({
+        url: "chou-rouge-cuit.html",
+        title: "Chou rouge mijot\u00e9",
+        tags: ['hiver', 'accompagnement', 'minimaliste'],
+      });
+      recipes.push({
+        url: "chutney-de-mangues.html",
+        title: "Chutney de mangues",
+        tags: ['vege', 'entree', 'minimaliste', 'dip'],
+      });
+      recipes.push({
+        url: "citrons-confits-au-sel.html",
+        title: "Citrons confits au sel",
+        tags: ['vege', 'minimaliste', 'facile', 'tech'],
+      });
+      recipes.push({
+        url: "civet-de-cerf.html",
+        title: "Civet de cerf",
+        tags: ['gibier', 'mijote', 'plat', 'minimaliste', 'photo'],
+        image: "CivetDeCerf.jpg",
+        image_alt: "Civet de cerf accompagn\u00e9 de tagliatelles aux myrtilles et d\u0027une petite portion d\u0027\u00e9pinards \u00e0 la cr\u00e8me",
+      });
+      recipes.push({
+        url: "civet-de-sanglier.html",
+        title: "Civet de sanglier",
+        tags: ['gibier', 'hiver', 'porc', 'mijote', 'plat', 'minimaliste'],
+      });
+      recipes.push({
+        url: "clafoutis-aux-kiwis.html",
+        title: "Clafoutis aux kiwis",
+        tags: ['photo', 'dessert', 'minimaliste', 'gateau'],
+        image: "ClafoutisAuxKiwis.jpg",
+        image_alt: "ClafoutisAuxKiwis",
+      });
+      recipes.push({
+        url: "clafoutis-aux-pommes.html",
+        title: "Clafoutis aux pommes",
+        tags: ['minimaliste', 'dessert', 'facile', 'gateau'],
+      });
+      recipes.push({
+        url: "compote-d-automne.html",
+        title: "Compote d\u0027automne",
+        tags: ['photo', 'dessert', 'minimaliste', 'autre'],
+        image: "CompoteDAutomne.jpg",
+        image_alt: "Compote d\u0027automne",
+      });
+      recipes.push({
+        url: "compote-pomme-rhubarbe.html",
+        title: "Compote pomme-rhubarbe en cuisson lente",
+        tags: ['photo', 'dessert', 'materiel', 'autre'],
+        image: "CompotePommeRhubarbe.jpg",
+        image_alt: "Compote pomme-rhubarbe",
+      });
+      recipes.push({
+        url: "confit-d-oignons.html",
+        title: "Confit d\u0027oignons",
+        tags: ['vege', 'minimaliste', 'dip', 'entree', 'facile'],
+      });
+      recipes.push({
+        url: "cotes-de-porc-provencales.html",
+        title: "C\u00f4tes de porc \u00e0 la proven\u00e7ale",
+        tags: ['ete', 'porc', 'mijote', 'plat', 'minimaliste', 'photo'],
+        image: "CotesDePorcProvencales.jpg",
+        image_alt: "C\u00f4tes de porc \u00e0 la proven\u00e7ale",
+      });
+      recipes.push({
+        url: "courgettes-au-four.html",
+        title: "Courgettes au four",
+        tags: ['ete', 'accompagnement', 'minimaliste', 'facile', 'rapide'],
+      });
+      recipes.push({
+        url: "courgettes-marinees.html",
+        title: "Courgettes marin\u00e9es",
+        tags: ['vege', 'grill', 'ete', 'plat', 'facile', 'materiel', 'photo'],
+        image: "CourgettesMarinees.jpg",
+        image_alt: "Courgettes marin\u00e9es grill\u00e9es",
+      });
+      recipes.push({
+        url: "creme-dessert-a-l-orange.html",
+        title: "Cr\u00e8me dessert \u00e0 l\u0027orange",
+        tags: ['jaune', 'dessert', 'minimaliste', 'autre'],
+      });
+      recipes.push({
+        url: "crevettes-miel-soja.html",
+        title: "Crevettes au miel et sauce soja",
+        tags: ['poele', 'plat', 'minimaliste', 'photo', 'mer'],
+        image: "CrevettesMielSoja.jpg",
+        image_alt: "Crevettes au miel et sauce soja, avec du riz et des brocolis r\u00f4tis",
+      });
+      recipes.push({
+        url: "crevettes-sauce-facon-facon.html",
+        title: "Crevettes sauce fa\u00e7on-fa\u00e7on",
+        tags: ['poele', 'plat', 'minimaliste', 'facile', 'photo', 'mer', 'rapide'],
+        image: "CrevettesSauceFaconFacon.jpg",
+        image_alt: "Crevettes sauce fa\u00e7on-fa\u00e7on",
+      });
+      recipes.push({
+        url: "croque-madame.html",
+        title: "Croque-madame",
+        tags: ['poele', 'plat', 'minimaliste', 'facile', 'photo', 'rapide'],
+        image: "CroqueMadame.jpg",
+        image_alt: "Croque-madame",
+      });
+      recipes.push({
+        url: "croziflette.html",
+        title: "Croziflette",
+        tags: ['porc', 'roti', 'minimaliste', 'facile', 'photo'],
+        image: "Croziflette.jpg",
+        image_alt: "Croziflette",
+      });
+      recipes.push({
+        url: "crumble-aux-abricots.html",
+        title: "Crumble",
+        subtitle: "aux abricots, par exemple",
+        tags: ['minimaliste', 'facile', 'gateau', 'photo', 'dessert'],
+        image: "CrumblePoireRhubarbe.jpg",
+        image_alt: "Crumble aux poires et \u00e0 la rhubarbe",
+      });
+      recipes.push({
+        url: "cupcakes-d-erable.html",
+        title: "Cupcakes d\u0027\u00e9rable",
+        tags: ['photo', 'dessert', 'minimaliste', 'biscuit'],
+      });
+      recipes.push({
+        url: "curry-de-courgettes.html",
+        title: "Curry de courgettes",
+        tags: ['vege', 'ete', 'mijote', 'plat', 'minimaliste', 'facile', 'photo', 'rapide'],
+        image: "CurryDeCourgettes.jpg",
+        image_alt: "Curry de courgettes",
+      });
+      recipes.push({
+        url: "curry-de-lentilles.html",
+        title: "Curry de lentilles",
+        subtitle: "ou \u00ab\u00a0Lentilles coco\u00a0\u00bb",
+        tags: ['vege', 'mijote', 'plat', 'minimaliste', 'facile', 'photo', 'rapide'],
+        image: "LentillesCoco.jpg",
+        image_alt: "Lentilles coco avec du riz",
+      });
+      recipes.push({
+        url: "dinde-au-citron.html",
+        title: "Escalopes de dinde au citron",
+        tags: ['poele', 'volaille', 'plat', 'minimaliste', 'facile', 'rapide'],
+      });
+      recipes.push({
+        url: "dinde-de-thanksgiving.html",
+        title: "Dinde de Thanksgiving",
+        tags: ['volaille', 'photo', 'roti', 'materiel'],
+        image: "DindeDeThanksgiving.jpg",
+        image_alt: "Dinde de Thanksgiving",
+      });
+      recipes.push({
+        url: "diots-a-la-biere.html",
+        title: "Diots \u00e0 la bi\u00e8re",
+        tags: ['mijote', 'plat', 'minimaliste', 'porc', 'facile', 'rapide'],
+      });
+      recipes.push({
+        url: "diots-au-vin-blanc.html",
+        title: "Diots au vin blanc",
+        tags: ['porc', 'mijote', 'plat', 'minimaliste'],
+      });
+      recipes.push({
+        url: "espadon-au-combava.html",
+        title: "Espadon au combava",
+        tags: ['poisson', 'poele', 'plat', 'minimaliste'],
+      });
+      recipes.push({
+        url: "farofa-a-l-orange.html",
+        title: "Farofa \u00e0 l\u0027orange",
+        tags: ['accompagnement', 'minimaliste'],
+      });
+      recipes.push({
+        url: "feijoada-vegetarienne.html",
+        title: "Feijoada v\u00e9g\u00e9tarienne",
+        tags: ['vege', 'ete', 'mijote', 'plat', 'minimaliste', 'photo'],
+        image: "FeijoadaVegetarienne.jpg",
+        image_alt: "Feijoada v\u00e9g\u00e9tarienne",
+      });
+      recipes.push({
+        url: "fenouils-rotis.html",
+        title: "Fenouils r\u00f4tis",
+        tags: ['ete', 'accompagnement', 'minimaliste', 'facile', 'photo', 'rapide'],
+        image: "FenouilsRotis.jpg",
+        image_alt: "Fenouils r\u00f4tis",
+      });
+      recipes.push({
+        url: "filet-d-agneau-en-croute-d-epices.html",
+        title: "Filets d\u0027agneau en cro\u00fbte d\u0027\u00e9pices",
+        tags: ['photo', 'agneau', 'roti', 'minimaliste'],
+        image: "FiletDAgneauEnCrouteDEpices.jpg",
+        image_alt: "Filet d\u0027agneau en cro\u00fbte d\u0027\u00e9pices",
+      });
+      recipes.push({
+        url: "filet-mignon-aux-oignons.html",
+        title: "Filet mignon aux oignons",
+        tags: ['roti', 'facile', 'minimaliste'],
+      });
+      recipes.push({
+        url: "filets-de-daurade-au-four.html",
+        title: "Filets de daurade au four",
+        tags: ['poisson', 'roti', 'minimaliste'],
+      });
+      recipes.push({
+        url: "filets-de-sandre-au-vin-blanc.html",
+        title: "Filets de sandre au vin blanc",
+        tags: ['poisson', 'roti', 'minimaliste'],
+      });
+      recipes.push({
+        url: "flan-de-thon-provencal.html",
+        title: "Flan de thon proven\u00e7al",
+        tags: ['tarte', 'plat', 'minimaliste', 'entree', 'facile', 'poisson', 'photo'],
+        image: "FlanDeThonProvencal.jpg",
+        image_alt: "Flan de thon proven\u00e7al",
+      });
+      recipes.push({
+        url: "fondue-de-poireaux.html",
+        title: "Fondue de poireaux",
+        tags: ['hiver', 'accompagnement', 'plat', 'minimaliste', 'puree', 'photo'],
+        image: "FondueDePoireaux.jpg",
+        image_alt: "Fondue de poireaux en gratin",
+      });
+      recipes.push({
+        url: "fraises-parfaites.html",
+        title: "Fraises parfaites",
+        tags: ['dessert', 'minimaliste', 'facile', 'autre', 'photo', 'rapide'],
+        image: "TresseAuBeurrePerdue.jpg",
+        image_alt: "Pain perdu avec de la tresse au beurre, fraises parfaites",
+      });
+      recipes.push({
+        url: "frites-au-four.html",
+        title: "Frites au four",
+        tags: ['rapide', 'facile', 'accompagnement', 'minimaliste'],
+      });
+      recipes.push({
+        url: "fruits-du-demon.html",
+        title: "Fruits du D\u00e9mon",
+        tags: ['dessert', 'minimaliste', 'autre'],
+      });
+      recipes.push({
+        url: "galette-a-la-noisette.html",
+        title: "Galette des rois aux noisettes",
+        tags: ['minimaliste', 'dessert', 'facile', 'gateau'],
+      });
+      recipes.push({
+        url: "galettes-courgettes-et-pommes-de-terre.html",
+        title: "Galettes courgettes \u0026 pommes de terre",
+        tags: ['vege', 'poele', 'ete', 'plat', 'minimaliste', 'photo'],
+        image: "GalettesCourgettesPommesDeTerre.jpg",
+        image_alt: "Galettes courgettes \u0026 pommes de terre",
+      });
+      recipes.push({
+        url: "gateau-a-la-banane.html",
+        title: "G\u00e2teau \u00e0 la banane",
+        tags: ['dessert', 'minimaliste', 'gateau'],
+      });
+      recipes.push({
+        url: "gateau-aux-amandes.html",
+        title: "G\u00e2teau aux amandes",
+        tags: ['rapide', 'minimaliste', 'facile', 'gateau', 'photo', 'dessert'],
+        image: "GateauAuxAmandes.jpg",
+        image_alt: "G\u00e2teau aux amandes, avec un gla\u00e7age au chocolat et amandes effil\u00e9es",
+      });
+      recipes.push({
+        url: "gateau-aux-oranges.html",
+        title: "G\u00e2teau aux oranges",
+        tags: ['photo', 'dessert', 'minimaliste', 'gateau'],
+        image: "GateauAuxOranges.jpg",
+        image_alt: "G\u00e2teau aux oranges",
+      });
+      recipes.push({
+        url: "gateau-aux-peches.html",
+        title: "G\u00e2teau aux p\u00eaches",
+        tags: ['dessert', 'minimaliste', 'gateau'],
+      });
+      recipes.push({
+        url: "gateau-noisettes-miel.html",
+        title: "G\u00e2teau noisettes-miel",
+        tags: ['dessert', 'minimaliste', 'gateau'],
+      });
+      recipes.push({
+        url: "genmaicha-glace.html",
+        title: "Genmaicha glac\u00e9",
+        tags: ['boisson', 'rapide', 'facile', 'minimaliste'],
+      });
+      recipes.push({
+        url: "glacage-au-matcha.html",
+        title: "Gla\u00e7age au matcha",
+        tags: ['vege', 'minimaliste', 'facile', 'photo', 'rapide', 'tech'],
+        image: "GateauChocolatSesameNoirs.jpg",
+        image_alt: "G\u00e2teau au chocolat et s\u00e9same noirs avec un gla\u00e7age au matcha",
+      });
+      recipes.push({
+        url: "glace-a-la-banane-antillaise.html",
+        title: "Glace \u00e0 la banane antillaise",
+        tags: ['photo', 'materiel', 'dessert', 'glace'],
+        image: "GlaceALaBananeAntillaise.jpg",
+        image_alt: "Glace \u00e0 la banane antillaise, groseilles et visitandine",
+      });
+      recipes.push({
+        url: "glace-coco.html",
+        title: "Glace \u00e0 la noix de coco",
+        tags: ['jaune', 'materiel', 'dessert', 'glace'],
+      });
+      recipes.push({
+        url: "glace-coco-matcha.html",
+        title: "Glace coco-matcha v\u00e9g\u00e9talienne",
+        tags: ['materiel', 'dessert', 'glace'],
+      });
+      recipes.push({
+        url: "glace-miel-lavande.html",
+        title: "Glace au miel et \u00e0 la lavande",
+        tags: ['glace', 'jaune', 'materiel', 'photo', 'dessert'],
+        image: "TarteAuxAbricotsGlaceMielLavande.jpg",
+        image_alt: "Tarte aux abricots et glace miel-lavande",
+      });
+      recipes.push({
+        url: "glace-passion.html",
+        title: "Glace aux fruits de la passion",
+        tags: ['jaune', 'materiel', 'dessert', 'glace'],
+      });
+      recipes.push({
+        url: "glace-rhum-raisins.html",
+        title: "Glace rhum-raisins",
+        tags: ['jaune', 'materiel', 'dessert', 'glace'],
+      });
+      recipes.push({
+        url: "glace-vanille.html",
+        title: "Glace \u00e0 la vanille",
+        tags: ['glace', 'jaune', 'materiel', 'photo', 'dessert'],
+        image: "GlaceVanille.jpg",
+        image_alt: "Glace \u00e0 la vanille et framboises",
+      });
+      recipes.push({
+        url: "goulasch-de-porc-a-la-tomate.html",
+        title: "Goulasch de porc \u00e0 la tomate",
+        tags: ['mijote', 'plat', 'minimaliste', 'porc', 'facile', 'photo'],
+        image: "GoulaschDePorcALaTomate.jpg",
+        image_alt: "Goulasch de porc \u00e0 la tomate",
+      });
+      recipes.push({
+        url: "goulasch-traditionnel.html",
+        title: "Goulasch traditionnel",
+        tags: ['ete', 'mijote', 'plat', 'minimaliste', 'boeuf'],
+      });
+      recipes.push({
+        url: "gratin-d-automne.html",
+        title: "Gratin d\u0027automne",
+        tags: ['vege', 'ete', 'accompagnement', 'plat', 'minimaliste', 'puree'],
+      });
+      recipes.push({
+        url: "gratin-dauphinois.html",
+        title: "Gratin dauphinois",
+        tags: ['accompagnement', 'plat', 'minimaliste', 'puree', 'photo'],
+        image: "CoqAuVinRoseGratinDauphinois.jpg",
+        image_alt: "Coq au vin ros\u00e9 et gratin dauphinois",
+      });
+      recipes.push({
+        url: "gratin-de-cucurbitacee.html",
+        title: "Gratin \u00e0 la gloire de la divinit\u00e9 des Cucurbitac\u00e9es",
+        tags: ['hiver', 'accompagnement', 'plat', 'minimaliste', 'puree', 'photo'],
+        image: "GratinDeDoubeurre.jpg",
+        image_alt: "Gratin de doubeurre",
+      });
+      recipes.push({
+        url: "gratin-de-raviolis-aux-champignons.html",
+        title: "Gratin de raviolis aux champignons",
+        tags: ['plat', 'accompagnement', 'minimaliste', 'facile', 'puree', 'photo'],
+        image: "GratinDeRaviolisAuxChampignons.jpg",
+        image_alt: "Gratin de raviolis aux champignons",
+      });
+      recipes.push({
+        url: "guacamole.html",
+        title: "Guacamole",
+        tags: ['vege', 'dip', 'minimaliste', 'entree', 'facile', 'photo', 'rapide'],
+        image: "Guacamole.jpg",
+        image_alt: "Guacamole",
+      });
+      recipes.push({
+        url: "infusion-aux-epices.html",
+        title: "Infusion aux \u00e9pices",
+        subtitle: "contre le rhume",
+        tags: ['boisson', 'facile', 'minimaliste'],
+      });
+      recipes.push({
+        url: "joue-de-porc-a-la-citronnelle.html",
+        title: "Joue de porc \u00e0 la citronnelle",
+        tags: ['mijote', 'plat', 'minimaliste', 'porc', 'facile', 'photo'],
+        image: "JoueDePorcALaCitronnelle.jpg",
+        image_alt: "Joue de porc \u00e0 la citronnelle",
+      });
+      recipes.push({
+        url: "kvas.html",
+        title: "Kvas",
+        subtitle: "ou plut\u00f4t, \u041a\u0432\u0430\u0441",
+        tags: ['boisson', 'photo', 'materiel'],
+        image: "Kvas.jpg",
+        image_alt: "Kvas",
+      });
+      recipes.push({
+        url: "lait-concentre-vegan.html",
+        title: "Lait concentr\u00e9 vegan",
+        tags: ['vege', 'minimaliste', 'tech'],
+      });
+      recipes.push({
+        url: "legumes-rotis-au-pesto.html",
+        title: "L\u00e9gumes r\u00f4tis au pesto",
+        tags: ['vege', 'hiver', 'ete', 'roti', 'minimaliste', 'facile', 'photo', 'rapide'],
+        image: "LegumesRotisAuPesto.jpg",
+        image_alt: "L\u00e9gumes r\u00f4tis au pesto",
+      });
+      recipes.push({
+        url: "lentilles-saucisses.html",
+        title: "Lentilles-saucisses",
+        tags: ['mijote', 'plat', 'minimaliste', 'porc', 'facile', 'photo', 'rapide'],
+        image: "LentillesSaucisses.jpg",
+        image_alt: "Lentilles-saucisses",
+      });
+      recipes.push({
+        url: "macarons.html",
+        title: "Macarons",
+        tags: ['dessert', 'blanc', 'materiel', 'biscuit'],
+      });
+      recipes.push({
+        url: "magrets-de-canard-au-miel.html",
+        title: "Magrets de canard au miel",
+        tags: ['poele', 'volaille', 'plat', 'minimaliste', 'facile', 'photo', 'rapide'],
+        image: "MagretsDeCanardsAuMiel.jpg",
+        image_alt: "Magrets de canards au miel, choux de Bruxelles r\u00f4tis, pur\u00e9e de panais",
+      });
+      recipes.push({
+        url: "magrets-de-canard-farcis.html",
+        title: "Magrets de canards farcis",
+        tags: ['poele', 'volaille', 'ete', 'plat', 'minimaliste', 'photo'],
+        image: "MagretsDeCanardsFarcis.jpg",
+        image_alt: "Magrets de canards farcis, petites patates r\u00f4ties, po\u00eal\u00e9e de champignons",
+      });
+      recipes.push({
+        url: "mais-grille.html",
+        title: "Ma\u00efs grill\u00e9",
+        tags: ['vege', 'grill', 'plat', 'materiel', 'facile', 'photo', 'rapide'],
+        image: "MaisGrille.jpg",
+        image_alt: "Ma\u00efs grill\u00e9",
+      });
+      recipes.push({
+        url: "marinade-de-saumon.html",
+        title: "Marinade de saumon",
+        tags: ['minimaliste', 'apero', 'entree', 'facile', 'poisson', 'photo'],
+        image: "MarinadeSaumonSaladePatates.jpg",
+        image_alt: "Marinade de saumon et salade de patates",
+      });
+      recipes.push({
+        url: "masala-chai.html",
+        title: "Masala Chai",
+        tags: ['boisson', 'facile', 'minimaliste'],
+      });
+      recipes.push({
+        url: "matcha-glace.html",
+        title: "Matcha glac\u00e9",
+        tags: ['boisson', 'rapide', 'facile', 'minimaliste'],
+      });
+      recipes.push({
+        url: "megascone.html",
+        title: "M\u00e9ga-scone enthousiasmant",
+        tags: ['minimaliste', 'jaune', 'gateau', 'photo', 'dessert'],
+        image: "Megascone.jpg",
+        image_alt: "M\u00e9ga-scone enthousiasmant",
+      });
+      recipes.push({
+        url: "mijote-de-porc-aux-endives.html",
+        title: "Mijot\u00e9 de porc aux endives",
+        tags: ['hiver', 'porc', 'plat', 'mijote', 'minimaliste', 'facile'],
+      });
+      recipes.push({
+        url: "mijote-de-porc-aux-patates-douces.html",
+        title: "Mijot\u00e9 de porc aux patates douces",
+        tags: ['hiver', 'mijote', 'plat', 'porc', 'materiel', 'facile', 'photo'],
+        image: "MijoteDePorcAuxPatatesDouces.jpg",
+        image_alt: "Mijot\u00e9 de porc aux patates douces",
+      });
+      recipes.push({
+        url: "mijote-de-porc-de-dijon.html",
+        title: "Mijot\u00e9 de porc de Dijon",
+        tags: ['porc', 'mijote', 'plat', 'minimaliste', 'photo'],
+        image: "RotiDePorcDeDijon.jpg",
+        image_alt: "R\u00f4ti de porc de Dijon et pur\u00e9e de carottes",
+      });
+      recipes.push({
+        url: "minestrone.html",
+        title: "Minestrone",
+        tags: ['vege', 'soupe', 'hiver', 'ete', 'plat', 'minimaliste', 'entree', 'facile', 'photo'],
+        image: "Minestrone.jpg",
+        image_alt: "Minestrone",
+      });
+      recipes.push({
+        url: "moules-a-la-diable.html",
+        title: "Moules \u00e0 la diable",
+        tags: ['ete', 'mijote', 'plat', 'minimaliste', 'facile', 'mer'],
+      });
+      recipes.push({
+        url: "moules-mariniere.html",
+        title: "Moules marini\u00e8res",
+        tags: ['mijote', 'plat', 'minimaliste', 'facile', 'mer', 'rapide'],
+      });
+      recipes.push({
+        url: "muffins-aux-bleuets.html",
+        title: "Muffins aux bleuets",
+        tags: ['minimaliste', 'dessert', 'facile', 'biscuit'],
+      });
+      recipes.push({
+        url: "muffins-de-carottes.html",
+        title: "Muffins de carottes",
+        tags: ['dessert', 'rapide', 'minimaliste', 'biscuit'],
+      });
+      recipes.push({
+        url: "muffins-vegan-au-cacao.html",
+        title: "Muffins vegan au cacao",
+        tags: ['minimaliste', 'dessert', 'facile', 'biscuit'],
+      });
+      recipes.push({
+        url: "nappage-chocolat.html",
+        title: "Nappage au chocolat",
+        tags: ['vege', 'minimaliste', 'facile', 'photo', 'rapide', 'tech'],
+        image: "GateauAuxAmandes.jpg",
+        image_alt: "G\u00e2teau aux amandes, avec un gla\u00e7age au chocolat et amandes effil\u00e9es",
+      });
+      recipes.push({
+        url: "oeufs-poches-ensoleilles.html",
+        title: "\u0152ufs poch\u00e9s ensoleill\u00e9s",
+        tags: ['photo', 'vege', 'brunch', 'minimaliste'],
+        image: "OeufsPochesEnsoleilles.jpg",
+        image_alt: "\u0152ufs poch\u00e9s ensoleill\u00e9s",
+      });
+      recipes.push({
+        url: "oi-muchim.html",
+        title: "Oi muchim",
+        subtitle: "salade de concombres cor\u00e9enne",
+        tags: ['vege', 'salade', 'accompagnement', 'minimaliste', 'entree', 'facile', 'photo', 'rapide'],
+        image: "OiMuchim.jpg",
+        image_alt: "Oi muchim",
+      });
+      recipes.push({
+        url: "okrochka.html",
+        title: "Okrochka",
+        subtitle: "ou plut\u00f4t, \u00ab\u00a0\u041e\u043a\u0440\u043e\u0448\u043a\u0430\u00a0\u00bb",
+        tags: ['soupe', 'plat', 'minimaliste', 'entree', 'facile', 'photo'],
+        image: "Okrochka.jpg",
+        image_alt: "Okrochka",
+      });
+      recipes.push({
+        url: "orange-givree-cremeuse.html",
+        title: "Oranges givr\u00e9es cr\u00e9meuses",
+        tags: ['materiel', 'dessert', 'glace'],
+      });
+      recipes.push({
+        url: "osso-bucco.html",
+        title: "Osso bucco",
+        tags: ['veau', 'mijote', 'plat', 'minimaliste', 'photo'],
+        image: "OssoBucco.jpg",
+        image_alt: "Osso Bucco",
+      });
+      recipes.push({
+        url: "paella-royale.html",
+        title: "Pa\u00eblla royale",
+        tags: ['ete', 'plat', 'minimaliste', 'risotto', 'poulet', 'mer'],
+      });
+      recipes.push({
+        url: "pate-a-pizza.html",
+        title: "P\u00e2te \u00e0 pizza",
+        tags: ['vege', 'minimaliste', 'tech'],
+      });
+      recipes.push({
+        url: "pates-au-saumon.html",
+        title: "P\u00e2tes au saumon",
+        tags: ['plat', 'minimaliste', 'facile', 'poisson', 'photo', 'pate'],
+        image: "PatesAuSaumon.jpg",
+        image_alt: "P\u00e2tes au saumon",
+      });
+      recipes.push({
+        url: "pates-aux-champignons.html",
+        title: "P\u00e2tes aux champignons",
+        tags: ['vege', 'plat', 'minimaliste', 'facile', 'photo', 'rapide', 'pate'],
+        image: "PatesAuxChampignons.jpg",
+        image_alt: "P\u00e2tes aux champignons",
+      });
+      recipes.push({
+        url: "pates-aux-tomates-cerises.html",
+        title: "P\u00e2tes aux tomates cerises",
+        tags: ['vege', 'plat', 'minimaliste', 'facile', 'photo', 'pate'],
+        image: "PatesAuxTomatesCerises.jpg",
+        image_alt: "P\u00e2tes aux tomates cerises",
+      });
+      recipes.push({
+        url: "pates-aux-tomates-epicees.html",
+        title: "P\u00e2tes aux tomates \u00e9pic\u00e9es",
+        tags: ['vege', 'plat', 'minimaliste', 'facile', 'photo', 'rapide', 'pate'],
+        image: "PatesAuxTomatesEpicees.jpg",
+        image_alt: "P\u00e2tes aux tomates \u00e9pic\u00e9es",
+      });
+      recipes.push({
+        url: "pates-aux-tomates-roties.html",
+        title: "P\u00e2tes aux tomates r\u00f4ties",
+        tags: ['vege', 'plat', 'minimaliste', 'facile', 'photo', 'pate'],
+        image: "PatesAuxTomatesRoties.jpg",
+        image_alt: "P\u00e2tes aux tomates r\u00f4ties",
+      });
+      recipes.push({
+        url: "petits-pois-frais.html",
+        title: "Petits pois frais",
+        tags: ['facile', 'accompagnement', 'minimaliste'],
+      });
+      recipes.push({
+        url: "pintade-farcie.html",
+        title: "Pintade farcie",
+        tags: ['volaille', 'porc', 'roti', 'minimaliste'],
+      });
+      recipes.push({
+        url: "piperade.html",
+        title: "Piperade",
+        tags: ['ete', 'facile', 'accompagnement', 'minimaliste'],
+      });
+      recipes.push({
+        url: "pizza.html",
+        title: "Pizza",
+        tags: ['vege', 'tarte', 'plat', 'minimaliste', 'entree', 'facile', 'photo', 'rapide'],
+        image: "Pizza.jpg",
+        image_alt: "Pizza",
+      });
+      recipes.push({
+        url: "poireaux-vinaigrette.html",
+        title: "Poireaux vinaigrette",
+        tags: ['vege', 'hiver', 'minimaliste', 'apero', 'entree'],
+      });
+      recipes.push({
+        url: "poires-au-sirop.html",
+        title: "Poires au sirop",
+        tags: ['minimaliste', 'dessert', 'facile', 'autre'],
+      });
+      recipes.push({
+        url: "poisson-sauce-basilic.html",
+        title: "Poisson sauce basilic",
+        tags: ['poele', 'plat', 'minimaliste', 'facile', 'poisson'],
+      });
+      recipes.push({
+        url: "poivrons-marines.html",
+        title: "Poivrons marin\u00e9s",
+        tags: ['vege', 'ete', 'minimaliste', 'apero', 'entree', 'photo'],
+        image: "PoivronsMarines.jpg",
+        image_alt: "Toast de poivron marin\u00e9s",
+      });
+      recipes.push({
+        url: "pommes-de-terre-roties.html",
+        title: "Pommes de terre r\u00f4ties",
+        tags: ['rapide', 'facile', 'accompagnement', 'minimaliste'],
+      });
+      recipes.push({
+        url: "porc-effiloche.html",
+        title: "Porc effiloch\u00e9",
+        subtitle: "\u00ab\u00a0Pulled pork\u00a0\u00bb",
+        tags: ['mijote', 'plat', 'porc', 'materiel', 'facile', 'photo'],
+        image: "PulledPorkColeslaw.jpg",
+        image_alt: "Burger de porc effiloch\u00e9 et salade de chou",
+      });
+      recipes.push({
+        url: "pot-au-feu.html",
+        title: "Pot-au-feu v\u00e9ritable, v\u00e9n\u00e9rable et insurpassable",
+        tags: ['hiver', 'mijote', 'plat', 'minimaliste', 'boeuf'],
+      });
+      recipes.push({
+        url: "poulet-a-l-indonesienne.html",
+        title: "Poulet \u00e0 l\u0027indon\u00e9sienne",
+        tags: ['poele', 'ete', 'plat', 'minimaliste', 'poulet', 'photo'],
+        image: "PouletALIndonesienne.jpg",
+        image_alt: "Poulet \u00e0 l\u0027indon\u00e9sienne",
+      });
+      recipes.push({
+        url: "poulet-a-l-irlandaise.html",
+        title: "Poulet \u00e0 l\u0027irlandaise",
+        tags: ['volaille', 'roti', 'minimaliste', 'facile', 'poulet', 'photo'],
+        image: "PouletALIrlandaise.jpg",
+        image_alt: "Poulet \u00e0 l\u0027irlandaise",
+      });
+      recipes.push({
+        url: "poulet-basquaise.html",
+        title: "Poulet basquaise",
+        tags: ['ete', 'mijote', 'plat', 'minimaliste', 'facile', 'poulet', 'photo'],
+        image: "PouletBasquaise.jpg",
+        image_alt: "Poulet basquaise",
+      });
+      recipes.push({
+        url: "poulet-citron-paprika.html",
+        title: "Poulet citron-paprika",
+        tags: ['poele', 'plat', 'minimaliste', 'facile', 'poulet', 'rapide'],
+      });
+      recipes.push({
+        url: "poulet-doubeurre.html",
+        title: "Poulet butternut",
+        tags: ['hiver', 'roti', 'minimaliste', 'facile', 'poulet', 'photo'],
+        image: "PouletDoubeurre.jpg",
+        image_alt: "Poulet doubeurre",
+      });
+      recipes.push({
+        url: "poulet-marine-a-l-antillaise.html",
+        title: "Poulet marin\u00e9 \u00e0 l\u0027antillaise",
+        subtitle: "\u00e0 griller",
+        tags: ['grill', 'plat', 'materiel', 'facile', 'poulet', 'photo'],
+        image: "PouletMarineALAntillaise.jpg",
+        image_alt: "Poulet marin\u00e9 \u00e0 l\u0027antillaise",
+      });
+      recipes.push({
+        url: "poulet-orange-sumac.html",
+        title: "Cuisses de poulet \u00e0 l\u0027orange et au sumac",
+        tags: ['roti', 'minimaliste', 'facile', 'poulet', 'photo', 'rapide'],
+        image: "PouletOrangeSumac.jpg",
+        image_alt: "Cuisse de poulet \u00e0 l\u0027orange et au sumac",
+      });
+      recipes.push({
+        url: "poulet-poivrons-paprika.html",
+        title: "Poulet poivrons-paprika",
+        tags: ['ete', 'mijote', 'plat', 'minimaliste', 'facile', 'poulet', 'photo'],
+        image: "PouletPoivronsPaprika.jpg",
+        image_alt: "Poulet poivrons-paprika, avec du riz",
+      });
+      recipes.push({
+        url: "poulet-sauce-combava.html",
+        title: "Poulet sauce combava",
+        tags: ['poele', 'plat', 'minimaliste', 'facile', 'poulet'],
+      });
+      recipes.push({
+        url: "profiteroles.html",
+        title: "Profiteroles",
+        tags: ['photo', 'dessert', 'materiel', 'autre'],
+        image: "Profiteroles.jpg",
+        image_alt: "Profiteroles napp\u00e9es de chocolat",
+      });
+      recipes.push({
+        url: "puree-de-navets.html",
+        title: "Pur\u00e9e de navets",
+        tags: ['hiver', 'plat', 'accompagnement', 'minimaliste', 'facile', 'puree'],
+      });
+      recipes.push({
+        url: "puree-de-patates-douces-gratinee.html",
+        title: "Pur\u00e9e gratin\u00e9e de patates douces",
+        tags: ['plat', 'accompagnement', 'minimaliste', 'facile', 'puree', 'photo'],
+        image: "GratinDePatatesDouces.jpg",
+        image_alt: "Pur\u00e9e gratin\u00e9e de patates douces",
+      });
+      recipes.push({
+        url: "puree-de-pommes-de-terre-de-grand-chef.html",
+        title: "Pur\u00e9e de pommes de terre de grand chef",
+        tags: ['puree', 'plat', 'accompagnement', 'materiel'],
+      });
+      recipes.push({
+        url: "quiche-aux-oignons.html",
+        title: "Quiche aux oignons",
+        tags: ['vege', 'tarte', 'plat', 'minimaliste', 'entree', 'facile', 'photo'],
+        image: "QuicheAuxOignons.jpg",
+        image_alt: "Quiche aux oignons",
+      });
+      recipes.push({
+        url: "quiche-oignons-champignons.html",
+        title: "Quiche oignons-champignons",
+        tags: ['vege', 'tarte', 'plat', 'minimaliste', 'entree', 'photo'],
+        image: "QuicheOignonsChampignons.jpg",
+        image_alt: "Quiche oignons-champignons",
+      });
+      recipes.push({
+        url: "ragout-cremeux-de-lentilles-noires.html",
+        title: "Rago\u00fbt cr\u00e9meux de lentilles noires",
+        tags: ['vege', 'mijote', 'plat', 'minimaliste', 'facile', 'photo'],
+        image: "RagoutCremeuxDeLentillesNoires.jpg",
+        image_alt: "Rago\u00fbt cr\u00e9meux de lentilles noires",
+      });
+      recipes.push({
+        url: "ragout-d-agneau-oranges-et-marrons.html",
+        title: "Rago\u00fbt d\u0027agneau, oranges et marrons",
+        tags: ['agneau', 'mijote', 'plat', 'minimaliste', 'photo'],
+        image: "RagoutDAgneauOrangesEtMarrons.jpg",
+        image_alt: "Rago\u00fbt d\u0027agneau aux oranges et aux marrons",
+      });
+      recipes.push({
+        url: "ragout-de-legumes-de-noel.html",
+        title: "Rago\u00fbt de l\u00e9gumes de No\u00ebl",
+        tags: ['vege', 'hiver', 'mijote', 'plat', 'minimaliste', 'photo'],
+      });
+      recipes.push({
+        url: "ragout-de-poisson-blanc.html",
+        title: "Rago\u00fbt de poisson blanc",
+        tags: ['ete', 'mijote', 'plat', 'minimaliste', 'facile', 'poisson', 'photo'],
+        image: "RagoutDePoissonBlanc.jpg",
+        image_alt: "Rago\u00fbt de poisson blanc",
+      });
+      recipes.push({
+        url: "ragout-de-poulet-a-la-moutarde.html",
+        title: "Rago\u00fbt de poulet \u00e0 la moutarde",
+        tags: ['mijote', 'plat', 'minimaliste', 'poulet', 'photo'],
+        image: "RagoutDePouletALaMoutarde.jpg",
+        image_alt: "Rago\u00fbt de poulet \u00e0 la moutarde, avec des l\u00e9gumes r\u00f4tis",
+      });
+      recipes.push({
+        url: "ras-el-hanout.html",
+        title: "Ras el-hanout",
+        tags: ['vege', 'rapide', 'minimaliste', 'tech'],
+      });
+      recipes.push({
+        url: "ratatouille.html",
+        title: "Ratatouille",
+        tags: ['vege', 'ete', 'mijote', 'plat', 'minimaliste', 'facile', 'photo'],
+        image: "Ratatouille.jpg",
+        image_alt: "Ratatouille",
+      });
+      recipes.push({
+        url: "raviolis-russes.html",
+        title: "Raviolis russes",
+        subtitle: "\u00ab\u00a0\u041f\u0435\u043b\u044c\u043c\u0435\u043d\u0438\u00a0\u00bb",
+        tags: ['porc', 'plat', 'minimaliste', 'boeuf', 'pate'],
+      });
+      recipes.push({
+        url: "rhums-arranges.html",
+        title: "Rhums arrang\u00e9s",
+        tags: ['boisson', 'rapide', 'facile', 'minimaliste'],
+      });
+      recipes.push({
+        url: "rillettes-de-lapin.html",
+        title: "Rillettes de lapin",
+        tags: ['apero', 'entree', 'minimaliste'],
+      });
+      recipes.push({
+        url: "risotto-aux-champignons.html",
+        title: "Risotto aux champignons",
+        tags: ['vege', 'plat', 'minimaliste', 'risotto', 'photo'],
+        image: "RisottoAuxChampignons.jpg",
+        image_alt: "Risotto aux champignons",
+      });
+      recipes.push({
+        url: "risotto-aux-poires-et-aux-noix.html",
+        title: "Risotto aux poires et aux noix",
+        tags: ['vege', 'plat', 'minimaliste', 'risotto', 'photo'],
+        image: "RisottoAuxPoiresEtAuxNoix.jpg",
+        image_alt: "Risotto aux poires et aux noix",
+      });
+      recipes.push({
+        url: "riz-au-safran.html",
+        title: "Riz au safran",
+        tags: ['vege', 'plat', 'minimaliste', 'risotto', 'facile', 'rapide'],
+      });
+      recipes.push({
+        url: "rochers-coco.html",
+        title: "Rochers coco",
+        tags: ['rapide', 'minimaliste', 'facile', 'photo', 'dessert', 'biscuit'],
+        image: "RochersCoco.jpg",
+        image_alt: "Rochers coco",
+      });
+      recipes.push({
+        url: "rosbif-mignonette.html",
+        title: "Rosbif en mignonnette",
+        tags: ['roti', 'minimaliste'],
+      });
+      recipes.push({
+        url: "roses-de-pommes.html",
+        title: "Roses de pommes",
+        tags: ['photo', 'dessert', 'minimaliste', 'autre'],
+        image: "RosesDePommes.jpg",
+        image_alt: "Roses de pommes",
+      });
+      recipes.push({
+        url: "roses-des-sables.html",
+        title: "Roses des sables",
+        tags: ['rapide', 'minimaliste', 'facile', 'dessert', 'biscuit'],
+      });
+      recipes.push({
+        url: "roti-de-boeuf-poivre-romarin.html",
+        title: "R\u00f4ti de b\u0153uf poivre-romarin",
+        tags: ['boeuf', 'roti', 'minimaliste'],
+      });
+      recipes.push({
+        url: "roti-de-porc-ambre.html",
+        title: "R\u00f4ti de porc ambr\u00e9",
+        tags: ['porc', 'roti', 'minimaliste', 'facile', 'photo'],
+        image: "RotiDePorcAmbre.jpg",
+        image_alt: "R\u00f4ti de porc ambr\u00e9",
+      });
+      recipes.push({
+        url: "roti-de-porc-aux-pommes.html",
+        title: "R\u00f4ti de porc aux pommes",
+        tags: ['porc', 'roti', 'facile', 'minimaliste'],
+      });
+      recipes.push({
+        url: "rougail.html",
+        title: "Rougail",
+        subtitle: "sauce piquante aux tomates",
+        tags: ['vege', 'minimaliste', 'tech'],
+      });
+      recipes.push({
+        url: "salade-d-endives.html",
+        title: "Salade d\u0027endives",
+        tags: ['vege', 'salade', 'hiver', 'accompagnement', 'minimaliste', 'entree', 'facile', 'photo', 'rapide'],
+        image: "SaladeDEndives.jpg",
+        image_alt: "Salade d\u0027endives",
+      });
+      recipes.push({
+        url: "salade-de-champignons.html",
+        title: "Salade de champignons",
+        tags: ['vege', 'salade', 'accompagnement', 'minimaliste', 'entree', 'facile', 'photo'],
+        image: "SaladeDeChampignons.jpg",
+        image_alt: "Salade de champignons",
+      });
+      recipes.push({
+        url: "salade-de-chayotes.html",
+        title: "Salade de chayotes",
+        tags: ['vege', 'salade', 'ete', 'accompagnement', 'minimaliste', 'entree'],
+      });
+      recipes.push({
+        url: "salade-de-concombres.html",
+        title: "Salade de concombres",
+        tags: ['vege', 'salade', 'accompagnement', 'minimaliste', 'entree', 'facile', 'photo'],
+        image: "SaladeDeConcombres.jpg",
+        image_alt: "Salade de concombres",
+      });
+      recipes.push({
+        url: "salade-de-patates.html",
+        title: "Salade de patates",
+        tags: ['vege', 'salade', 'accompagnement', 'minimaliste', 'entree', 'photo'],
+        image: "MarinadeSaumonSaladePatates.jpg",
+        image_alt: "Marinade de saumon et salade de patates",
+      });
+      recipes.push({
+        url: "salade-de-pates.html",
+        title: "Salade de p\u00e2tes",
+        tags: ['vege', 'salade', 'accompagnement', 'minimaliste', 'entree', 'facile', 'photo'],
+        image: "SaladeDePates.jpg",
+        image_alt: "Salade de p\u00e2tes",
+      });
+      recipes.push({
+        url: "salade-de-tomates.html",
+        title: "Salade de tomates",
+        tags: ['vege', 'salade', 'accompagnement', 'minimaliste', 'entree', 'facile', 'photo', 'rapide'],
+        image: "SaladeDeTomates.jpg",
+        image_alt: "Salade de tomates",
+      });
+      recipes.push({
+        url: "salade-tiede-de-poivrons-au-cumin.html",
+        title: "Salade ti\u00e8de de poivrons au cumin",
+        tags: ['vege', 'salade', 'ete', 'accompagnement', 'minimaliste', 'entree', 'facile', 'photo'],
+        image: "SaladeTiedeDePoivronsAuCumin.jpg",
+        image_alt: "Salade ti\u00e8de de poivrons au cumin",
+      });
+      recipes.push({
+        url: "sanglier-sauce-au-miel.html",
+        title: "Sanglier et sa sauce au miel",
+        tags: ['gibier', 'mijote', 'plat', 'minimaliste'],
+      });
+      recipes.push({
+        url: "sangria.html",
+        title: "Sangria",
+        tags: ['boisson', 'photo', 'facile', 'minimaliste'],
+        image: "Sangria.jpg",
+        image_alt: "Sangria",
+      });
+      recipes.push({
+        url: "sauce-beurre-noisette-sauge-champignons.html",
+        title: "Sauce \u00e0 la sauge et aux champignons",
+        tags: ['vege', 'plat', 'minimaliste', 'facile', 'photo', 'pate'],
+        image: "GnocchisChampignonsFenouils.jpg",
+        image_alt: "Gnocchis aux champignons et fenouils r\u00f4tis",
+      });
+      recipes.push({
+        url: "sauce-bolognaise.html",
+        title: "Sauce bolognaise",
+        tags: ['porc', 'plat', 'minimaliste', 'boeuf', 'pate'],
+      });
+      recipes.push({
+        url: "sauce-chocolat-simplissime.html",
+        title: "Sauce au chocolat simplissime",
+        tags: ['vege', 'minimaliste', 'facile', 'rapide', 'tech'],
+      });
+      recipes.push({
+        url: "sauce-de-salade.html",
+        title: "Sauce de salade",
+        tags: ['vege', 'minimaliste', 'facile', 'rapide', 'tech'],
+      });
+      recipes.push({
+        url: "sauce-tartare.html",
+        title: "Sauce tartare",
+        tags: ['vege', 'dip', 'jaune', 'minimaliste', 'entree', 'facile', 'photo', 'rapide'],
+        image: "SauceTartare.jpg",
+        image_alt: "Sauce tartare",
+      });
+      recipes.push({
+        url: "saucisse-de-morteau-au-four.html",
+        title: "Saucisse de Morteau au four",
+        tags: ['porc', 'roti', 'minimaliste', 'facile', 'rapide'],
+      });
+      recipes.push({
+        url: "saumon-safrane.html",
+        title: "Saumon safran\u00e9",
+        tags: ['poele', 'hiver', 'plat', 'minimaliste', 'facile', 'poisson', 'rapide'],
+      });
+      recipes.push({
+        url: "saute-de-veau-carottes-oranges.html",
+        title: "Saut\u00e9 de veau aux carottes et oranges",
+        tags: ['veau', 'hiver', 'mijote', 'plat', 'minimaliste', 'photo'],
+        image: "SauteDeVeauCarottesOranges.jpg",
+        image_alt: "Saut\u00e9 de veau carottes-oranges",
+      });
+      recipes.push({
+        url: "soupe-automnale.html",
+        title: "Soupe automnale",
+        tags: ['vege', 'soupe', 'hiver', 'plat', 'minimaliste', 'entree'],
+      });
+      recipes.push({
+        url: "soupe-aux-champignons.html",
+        title: "Soupe aux champignons",
+        tags: ['vege', 'soupe', 'plat', 'minimaliste', 'entree', 'facile', 'photo'],
+        image: "SoupeAuxChampignons.jpg",
+        image_alt: "Soupe aux champignons",
+      });
+      recipes.push({
+        url: "soupe-carottes-oranges.html",
+        title: "Soupe carottes-oranges",
+        tags: ['vege', 'soupe', 'plat', 'minimaliste', 'entree', 'facile', 'photo', 'rapide'],
+        image: "SoupeCarottesOranges.jpg",
+        image_alt: "Soupe carottes-oranges",
+      });
+      recipes.push({
+        url: "soupe-d-asperges.html",
+        title: "Soupe d\u0027asperges",
+        tags: ['vege', 'soupe', 'plat', 'minimaliste', 'entree', 'photo'],
+        image: "SoupeDAsperges.jpg",
+        image_alt: "Soupe d\u0027asperges",
+      });
+      recipes.push({
+        url: "soupe-d-epinards.html",
+        title: "Soupe d\u0027\u00e9pinards",
+        tags: ['vege', 'soupe', 'plat', 'minimaliste', 'entree', 'photo'],
+        image: "SoupeDEpinards.jpg",
+        image_alt: "Soupe d\u0027\u00e9pinards",
+      });
+      recipes.push({
+        url: "soupe-de-courgettes.html",
+        title: "Soupe velout\u00e9e de courgettes",
+        tags: ['vege', 'soupe', 'ete', 'plat', 'minimaliste', 'entree', 'facile', 'photo', 'rapide'],
+        image: "SoupeDeCourgettes.jpg",
+        image_alt: "Soupe de courgettes",
+      });
+      recipes.push({
+        url: "soupe-de-poivrons-rotis.html",
+        title: "Soupe de poivrons r\u00f4tis",
+        tags: ['vege', 'soupe', 'ete', 'plat', 'minimaliste', 'entree', 'photo'],
+        image: "SoupeDePoivronsRotis.jpg",
+        image_alt: "Soupe de poivrons r\u00f4tis",
+      });
+      recipes.push({
+        url: "soupe-russe-a-la-betterave.html",
+        title: "Soupe russe \u00e0 la betterave",
+        subtitle: "\u0421\u0432\u0435\u043a\u043e\u043b\u044c\u043d\u0438\u043a",
+        tags: ['soupe', 'hiver', 'plat', 'minimaliste', 'entree', 'photo'],
+        image: "SoupeRusseALaBetterave.jpg",
+        image_alt: "Soupe russe \u00e0 la betterave",
+      });
+      recipes.push({
+        url: "souris-d-agneau-aux-herbes.html",
+        title: "Souris d\u0027agneau aux herbes",
+        tags: ['agneau', 'roti', 'minimaliste', 'facile', 'rapide'],
+      });
+      recipes.push({
+        url: "steaks-d-autruche-aux-pommes.html",
+        title: "Steaks d\u0027autruche aux pommes",
+        tags: ['gibier', 'poele', 'volaille', 'plat', 'minimaliste'],
+      });
+      recipes.push({
+        url: "tagliatelles-de-courgettes.html",
+        title: "Tagliatelles de courgette",
+        tags: ['vege', 'salade', 'ete', 'accompagnement', 'minimaliste', 'entree', 'photo'],
+        image: "TagliatellesDeCourgettes.jpg",
+        image_alt: "TagliatellesDeCourgettes",
+      });
+      recipes.push({
+        url: "tajine-d-agneau-aux-abricots.html",
+        title: "Tajine d\u0027agneau aux abricots",
+        tags: ['agneau', 'mijote', 'plat', 'minimaliste', 'facile', 'photo'],
+        image: "TajineDAgneauAuxAbricots.jpg",
+        image_alt: "Tajine d\u0027agneau aux abricots avec du couscous",
+      });
+      recipes.push({
+        url: "tajine-de-poulet-au-citron.html",
+        title: "Tajine de poulet au citron",
+        tags: ['mijote', 'plat', 'materiel', 'poulet', 'photo'],
+        image: "TajineDePouletAuCitron.jpg",
+        image_alt: "Tajine de poulet au citron",
+      });
+      recipes.push({
+        url: "tarte-au-chocolat.html",
+        title: "Tarte au chocolat",
+        tags: ['dessert', 'minimaliste', 'gateau'],
+      });
+      recipes.push({
+        url: "tarte-aux-abricots.html",
+        title: "Tarte aux abricots",
+        tags: ['rapide', 'minimaliste', 'facile', 'gateau', 'photo', 'dessert'],
+        image: "TarteAuxAbricotsGlaceMielLavande.jpg",
+        image_alt: "Tarte aux abricots et glace miel-lavande",
+      });
+      recipes.push({
+        url: "tarte-aux-prunes.html",
+        title: "Tarte aux prunes",
+        tags: ['minimaliste', 'facile', 'gateau', 'photo', 'dessert'],
+        image: "TarteAuxPrunes.jpg",
+        image_alt: "TarteAuxPrunes",
+      });
+      recipes.push({
+        url: "tarte-poire-chocolat.html",
+        title: "Tarte poire-chocolat",
+        tags: ['photo', 'dessert', 'minimaliste', 'gateau'],
+        image: "TartePoireChocolat.jpg",
+        image_alt: "Tarte poire-chocolat",
+      });
+      recipes.push({
+        url: "tarte-soleil.html",
+        title: "Tarte-soleil",
+        tags: ['vege', 'minimaliste', 'apero', 'entree', 'photo'],
+        image: "TarteSoleil.jpg",
+        image_alt: "Tarte-soleil",
+      });
+      recipes.push({
+        url: "tarte-tatin-aux-oignons.html",
+        title: "Tarte Tatin pommes-oignons",
+        tags: ['vege', 'tarte', 'plat', 'minimaliste', 'entree', 'facile', 'photo'],
+        image: "TarteTatinPommesOignons.jpg",
+        image_alt: "Tarte tatin pommes-oignons avec foie gras",
+      });
+      recipes.push({
+        url: "tian-provencal.html",
+        title: "Tian proven\u00e7al",
+        tags: ['vege', 'ete', 'roti', 'minimaliste', 'photo'],
+        image: "TianProvencal.jpg",
+        image_alt: "Tian proven\u00e7al",
+      });
+      recipes.push({
+        url: "toasts-aux-poivrons-rotis.html",
+        title: "Toasts aux poivrons r\u00f4tis",
+        tags: ['ete', 'minimaliste', 'apero', 'entree', 'facile', 'photo'],
+        image: "ToastsAuxPoivronsRotis.jpg",
+        image_alt: "Toasts aux poivrons r\u00f4tis",
+      });
+      recipes.push({
+        url: "tofu-au-miel-et-soja.html",
+        title: "Tofu r\u00f4ti au miel et soja",
+        tags: ['vege', 'roti', 'facile', 'minimaliste'],
+      });
+      recipes.push({
+        url: "tomates-cerises-farcies.html",
+        title: "Tomates cerises farcies",
+        tags: ['vege', 'minimaliste', 'apero', 'entree', 'photo'],
+        image: "TomatesCerisesFarcies.jpg",
+        image_alt: "Tomates cerises et champignons farcis",
+      });
+      recipes.push({
+        url: "tomates-provencales.html",
+        title: "Tomates proven\u00e7ales",
+        tags: ['photo', 'facile', 'accompagnement', 'minimaliste'],
+        image: "TomatesProvencales.jpg",
+        image_alt: "Tomates proven\u00e7ales",
+      });
+      recipes.push({
+        url: "tourte-panais-noix-de-pecan.html",
+        title: "Tourte panais et noix de p\u00e9can",
+        tags: ['vege', 'tarte', 'plat', 'minimaliste', 'entree', 'photo'],
+        image: "TourtePanaisPecan.jpg",
+        image_alt: "Tourte panais et noix de p\u00e9can",
+      });
+      recipes.push({
+        url: "tourtes-de-poche.html",
+        title: "Tourtes de poche",
+        tags: ['dessert', 'minimaliste', 'autre'],
+      });
+      recipes.push({
+        url: "truffes-noix-chocolat.html",
+        title: "Truffes noix-chocolat",
+        tags: ['minimaliste', 'jaune', 'photo', 'dessert', 'biscuit'],
+        image: "TruffesNoixChocolat.jpg",
+        image_alt: "Truffes noix-chocolat",
+      });
+      
+
+      // From https://stackoverflow.com/questions/494143/
+      function htmlToNode(html) {
+          const template = document.createElement('template');
+          template.innerHTML = html.trim();
+          const nNodes = template.content.childNodes.length;
+          if (nNodes !== 1) {
+              throw new Error(
+                  `html parameter must represent a single node; got ${nNodes}` +
+                  `from html ${html}.`
+              );
+          }
+          return template.content.firstChild;
+      }
+
+      // Methods generating various HTML elements
+      function getLi(recipe) {
+        var photo = "";
+        if (recipe.image) {
+          photo = `&nbsp;<img class="inline" title="Photo !" alt="(Photo !)" src="images/camera.gif">`;
+        }
+        var subtitle = "";
+        if (recipe.subtitle) {
+          subtitle = `&nbsp;(${recipe.subtitle})`
+        }
+        return htmlToNode(`
+          <li class="recette">
+            <a href="${recipe.url}">${recipe.title}</a>${photo}${subtitle}
+          </li>
+        `);
+      }
+      function getVignette(recipe) {
+        return htmlToNode(`
+          <a href="${recipe.url}">
+            <img alt="${recipe.image_alt}" title="${recipe.image_alt}" src="images/vignettes/${recipe.image}">
+          </a>
+        `);
+      }
+
+      // Populates the list of recipes
+      parentDiv = document.getElementById("recettes");
+      parentDiv.innerHTML = "";
+      function getDivs() {
+        const vignetteDiv = htmlToNode(`<div class="vignette"></div>`)
+        parentDiv.appendChild(vignetteDiv);
+        const listeDiv = htmlToNode(`<div class="liste"><ul></ul></div>`)
+        parentDiv.appendChild(listeDiv);
+        return {liste: listeDiv.querySelector("ul"), vignette: vignetteDiv};
+      }
+      var i = 0;
+      var hasVignette = false;
+      var divs = {};
+      for (const recipe of recipes) {
+        if (i % 15 == 0) {
+          divs = getDivs();
+          hasVignette = false;
+        }
+        divs.liste.appendChild(getLi(recipe));
+        if (!hasVignette && recipe.image) {
+          divs.vignette.appendChild(getVignette(recipe));
+          hasVignette = true;
+        }
+        i += 1;
+      }
+
+    </script>
+  </body>
+</html>
+
