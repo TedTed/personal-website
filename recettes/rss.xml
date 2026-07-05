@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Les bonnes recettes de Ted</title><link href="https://desfontain.es/recettes/" rel="alternate"></link><link href="https://desfontain.es/recettes/rss.xml" rel="self"></link><id>https://desfontain.es/recettes/</id><updated>2026-06-30T00:00:00+02:00</updated><entry><title>Tarte au citron (moderne)</title><link href="https://desfontain.es/recettes/tarte-au-citron-moderne.html" rel="alternate"></link><published>2026-06-30T00:00:00+02:00</published><updated>2026-06-30T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-06-30:/recettes/tarte-au-citron-moderne.html</id><summary type="html">&lt;p&gt;Pour 16 petits carrés, ou 9 gros :&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Les bonnes recettes de Ted</title><link href="https://desfontain.es/recettes/" rel="alternate"></link><link href="https://desfontain.es/recettes/rss.xml" rel="self"></link><id>https://desfontain.es/recettes/</id><updated>2026-07-05T00:00:00+02:00</updated><entry><title>Poulet à la citronnelle</title><link href="https://desfontain.es/recettes/poulet-a-la-citronnelle.html" rel="alternate"></link><published>2026-07-05T00:00:00+02:00</published><updated>2026-07-05T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-07-05:/recettes/poulet-a-la-citronnelle.html</id><summary type="html">&lt;p&gt;Pour 3-4 personnes :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;600g de poulet sans os, par example un mélange de blancs et de cuisses
+  désossées&lt;/li&gt;
+&lt;li&gt;Trois tiges de citronnelle fraîche&lt;/li&gt;
+&lt;li&gt;Deux échalotes&lt;/li&gt;
+&lt;li&gt;Deux cuillères à soupe de sucre brun&lt;/li&gt;
+&lt;li&gt;Deux cuillères à soupe d'huile neutre&lt;/li&gt;
+&lt;li&gt;Deux cuillères à soupe de sauce de poisson (nước mắm)&lt;/li&gt;
+&lt;li&gt;Quatre gousses …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;Pour 3-4 personnes :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;600g de poulet sans os, par example un mélange de blancs et de cuisses
+  désossées&lt;/li&gt;
+&lt;li&gt;Trois tiges de citronnelle fraîche&lt;/li&gt;
+&lt;li&gt;Deux échalotes&lt;/li&gt;
+&lt;li&gt;Deux cuillères à soupe de sucre brun&lt;/li&gt;
+&lt;li&gt;Deux cuillères à soupe d'huile neutre&lt;/li&gt;
+&lt;li&gt;Deux cuillères à soupe de sauce de poisson (nước mắm)&lt;/li&gt;
+&lt;li&gt;Quatre gousses d'ail&lt;/li&gt;
+&lt;li&gt;Quatre cuillères à café de sauce soja&lt;/li&gt;
+&lt;li&gt;Une pincée de piment en poudre&lt;/li&gt;
+&lt;li&gt;Une cuillère à soupe de vinaigre de riz (environ)&lt;/li&gt;
+&lt;li&gt;Huile d'olive (pour la cuisson)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;Couper le poulet en morceaux de 2-3cm. Enlever 2-3 couches extérieures des
+   tiges de citronnelle (les plus dures) et les émincer finement, éplucher et
+   émincer finement l'ail et le gingembre. Tout mélanger sauf le vinaigre de
+   riz, et laisser reposer une demi-heure à température ambiante.&lt;/li&gt;
+&lt;li&gt;Faire revenir le poulet avec sa marinade dans une poêle bien chaude (ou un
+   wok) avec de l'huile d'olive, en 3-4 fois, jusqu'à ce que tout soit bien
+   brun. Faire déglacer la marinade avec le vinaigre de riz, mélanger tout
+   ensemble, servir chaud ou tiède.&lt;/li&gt;
+&lt;/ol&gt;</content><category term="misc"></category><category term="plat"></category><category term="poele"></category><category term="poulet"></category><category term="facile"></category><category term="rapide"></category></entry><entry><title>Tarte au citron (moderne)</title><link href="https://desfontain.es/recettes/tarte-au-citron-moderne.html" rel="alternate"></link><published>2026-06-30T00:00:00+02:00</published><updated>2026-06-30T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-06-30:/recettes/tarte-au-citron-moderne.html</id><summary type="html">&lt;p&gt;Pour 16 petits carrés, ou 9 gros :&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;155g (125g + 30g) de farine à pâtisserie&lt;/li&gt;
 &lt;li&gt;320g (80g + 230g) de sucre&lt;/li&gt;
@@ -2920,31 +2953,4 @@ poêle à feu moyen, avec un peu d'huile d'olive.&lt;/li&gt;
 &lt;li&gt;Faire fondre du beurre dans une poêle et y faire dorer chaque tranche de pain de chaque côté, jusqu'à ce que que ça brunisse de partout.&lt;/li&gt;
 &lt;li&gt;Déguster tiède, soit simplement avec un peu plus de sucre roux et un peu de cannelle, soit de façon décadente avec de la confiture.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;Remarque : on peut aussi faire ça avec du pain de mie en grosses tranches, ou encore mieux, avec de la brioche ou de la tresse au beurre.&lt;/p&gt;</content><category term="misc"></category><category term="vege"></category><category term="dessert"></category><category term="minimaliste"></category><category term="brunch"></category><category term="facile"></category><category term="autre"></category><category term="photo"></category><category term="rapide"></category></entry><entry><title>Pancakes</title><link href="https://desfontain.es/recettes/pancakes.html" rel="alternate"></link><published>2025-10-05T00:00:00+02:00</published><updated>2025-10-05T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2025-10-05:/recettes/pancakes.html</id><summary type="html">&lt;p&gt;Pour trois personnes :&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;250g de farine (ou 200g de farine et 50g de muesli ou d'avoine)&lt;/li&gt;
-&lt;li&gt;2 œufs&lt;/li&gt;
-&lt;li&gt;60g de sucre&lt;/li&gt;
-&lt;li&gt;40g de beurre&lt;/li&gt;
-&lt;li&gt;Un sachet de levure chimique&lt;/li&gt;
-&lt;li&gt;Une pincée de sel&lt;/li&gt;
-&lt;li&gt;Une cuillère à café de bicarbonate de soude&lt;/li&gt;
-&lt;li&gt;20cl de lait&lt;/li&gt;
-&lt;/ul&gt;
-&lt;ol&gt;
-&lt;li&gt;Faire fondre le beurre, puis tout …&lt;/li&gt;&lt;/ol&gt;</summary><content type="html">&lt;p&gt;Pour trois personnes :&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;250g de farine (ou 200g de farine et 50g de muesli ou d'avoine)&lt;/li&gt;
-&lt;li&gt;2 œufs&lt;/li&gt;
-&lt;li&gt;60g de sucre&lt;/li&gt;
-&lt;li&gt;40g de beurre&lt;/li&gt;
-&lt;li&gt;Un sachet de levure chimique&lt;/li&gt;
-&lt;li&gt;Une pincée de sel&lt;/li&gt;
-&lt;li&gt;Une cuillère à café de bicarbonate de soude&lt;/li&gt;
-&lt;li&gt;20cl de lait&lt;/li&gt;
-&lt;/ul&gt;
-&lt;ol&gt;
-&lt;li&gt;Faire fondre le beurre, puis tout mélanger au batteur (ou même au mixeur).&lt;/li&gt;
-&lt;li&gt;Faire dorer la pâte à pancakes en petits tas dans une poêle beurrée, à feu &lt;em&gt;doux&lt;/em&gt;. Il faut qu'ils soient dorés, pas noircis.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Remarque : on peut remplacer le sucre par juste une petite cuillère à soupe, si on veut les manger avec du bacon (et du sirop d'érable).&lt;/p&gt;</content><category term="misc"></category><category term="vege"></category><category term="brunch"></category><category term="materiel"></category><category term="facile"></category><category term="photo"></category></entry></feed>
+&lt;p&gt;Remarque : on peut aussi faire ça avec du pain de mie en grosses tranches, ou encore mieux, avec de la brioche ou de la tresse au beurre.&lt;/p&gt;</content><category term="misc"></category><category term="vege"></category><category term="dessert"></category><category term="minimaliste"></category><category term="brunch"></category><category term="facile"></category><category term="autre"></category><category term="photo"></category><category term="rapide"></category></entry></feed>
