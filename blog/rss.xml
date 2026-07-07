@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-06-11T00:00:00+02:00</updated><entry><title>Banning noise will be a disaster for statistical data products</title><link href="https://desfontain.es/blog/banning-noise.html" rel="alternate"></link><published>2026-06-11T00:00:00+02:00</published><updated>2026-06-11T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-06-11:/blog/banning-noise.html</id><summary type="html">&lt;p&gt;Sadly, taking away valuable disclosure avoidance tools doesn't make fundamental trade-offs go away.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;Last week&lt;/strong&gt;, the United States Department of Commerce issued an &lt;a href="https://www.commerce.gov/opog/disclosure-avoidance-statistical-products"&gt;order&lt;/a&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-07-07T00:00:00+02:00</updated><entry><title>Banning noise will be a disaster for statistical data products</title><link href="https://desfontain.es/blog/banning-noise.html" rel="alternate"></link><published>2026-06-11T00:00:00+02:00</published><updated>2026-07-07T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-06-11:/blog/banning-noise.html</id><summary type="html">&lt;p&gt;Sadly, taking away valuable disclosure avoidance tools doesn't make fundamental trade-offs go away.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;Last week&lt;/strong&gt;, the United States Department of Commerce issued an &lt;a href="https://www.commerce.gov/opog/disclosure-avoidance-statistical-products"&gt;order&lt;/a&gt;
 declaring that "noise infusion" will be banned from all statistical products
 published by the Census Bureau and the Bureau of Economic Analysis.&lt;/p&gt;
 &lt;p&gt;&lt;center&gt;
@@ -70,15 +70,21 @@ did not mean "preserved as much utility as the 2010 Census": the numbers got
 less accurate, and the inaccuracies got a lot more transparent, and therefore
 impossible to ignore. This made a number of people very angry.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Demographers and social scientists could no longer ignore that the data they
-  were working with was noisy data. This required a &lt;a href="https://hdsr.mitpress.mit.edu/pub/3vj5j6i0/release/3"&gt;major
-  shift&lt;/a&gt; in how they
-  conceptualized and worked with this data.&lt;/li&gt;
+&lt;li&gt;Demographers and social scientists had to work with worse data, and could no
+  longer ignore that the statistics they were working with were noisy. This
+  required a &lt;a href="https://hdsr.mitpress.mit.edu/pub/3vj5j6i0/release/3"&gt;major shift&lt;/a&gt;
+  in how they conceptualized and worked with this data. Many folks also were
+  very unhappy about how the Census Bureau &lt;a href="https://www.frontiersin.org/journals/big-data/articles/10.3389/fdata.2024.1420344/full#s5"&gt;communicated&lt;/a&gt;, justified, and
+  implemented these changes.&lt;/li&gt;
 &lt;li&gt;People who were using Census data to actually reconstruct records could no
-  longer do so. Demographers &lt;a href="five-stages.html#demographer-quote"&gt;admitted that this was common
-  practice&lt;/a&gt;. It's also an open secret that
-  this was done by political operatives as part of
-  &lt;a href="https://en.wikipedia.org/wiki/Gerrymandering"&gt;gerrymandering&lt;/a&gt; efforts.&lt;/li&gt;
+  longer do so. It's an open secret that this was done by political operatives
+  as part of
+  &lt;a href="https://en.wikipedia.org/wiki/Gerrymandering"&gt;gerrymandering&lt;/a&gt; efforts; this
+  is likely why there is so much political influence over a relatively niche
+  technical debate. Some demographers also
+  &lt;a href="five-stages.html#demographer-quote"&gt;admitted that reconstruction was common practice&lt;/a&gt;;
+  I don't know how much losing the ability to accurately reconstruct the data
+  impacted their work.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Phew, that was a lot of context.&lt;/p&gt;
 &lt;h1 id="what-does-the-order-say"&gt;What does the order say?&lt;/h1&gt;
@@ -140,8 +146,9 @@ privacy makes this trade-off explicit, and thus impossible to ignore. Maybe
 banning it is a way of pretending that the problem doesn't exist, in the hope
 that it will go away?&lt;/p&gt;
 &lt;hr&gt;
-&lt;p&gt;&lt;small&gt;Thanks to Adam Sealfon, Aloni Cohen, Ben Jacobsen, and Gautam Kamath for
-helpful comments on earlier drafts of this post.&lt;/small&gt;&lt;/p&gt;
+&lt;p&gt;&lt;small&gt;Thanks to Adam Sealfon, Aloni Cohen, Ben Jacobsen, Gautam Kamath, Jan
+Vink, and Jordan Rose for helpful comments on earlier versions of this
+post.&lt;/small&gt;&lt;/p&gt;
 &lt;div class="footnote"&gt;
 &lt;hr&gt;
 &lt;ol&gt;
