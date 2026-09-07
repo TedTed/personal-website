@@ -1,5 +1,228 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-07-08T00:00:00+02:00</updated><entry><title>One year of Hiding Nemo</title><link href="https://desfontain.es/blog/one-year-hiding-nemo.html" rel="alternate"></link><published>2026-07-08T00:00:00+02:00</published><updated>2026-07-08T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-07-08:/blog/one-year-hiding-nemo.html</id><summary type="html">&lt;p&gt;Taking stock after one year doing independent consulting on privacy-enhancing technology.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;Time&lt;/strong&gt; flies! One year ago, I decided to go independent, and &lt;a href="hiding-nemo.html"&gt;announced&lt;/a&gt; the
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-09-07T00:00:00+02:00</updated><entry><title>Observations on LLMs on privacy work</title><link href="https://desfontain.es/blog/llms-for-privacy.html" rel="alternate"></link><published>2026-09-07T00:00:00+02:00</published><updated>2026-09-07T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-09-07:/blog/llms-for-privacy.html</id><summary type="html">&lt;p&gt;Some miscellaneous thoughts on what LLMs are changing in my field.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;There&lt;/strong&gt; are plenty of blog posts discussing the impact of LLMs on various
+fields (or on the world at large) out there. This is my contribution to the
+genre, focusing on my area of expertise — privacy-enhancing technology in
+general, anonymization and re-identification risk analysis in particular.&lt;/p&gt;
+&lt;p&gt;This is all based on anecdotal evidence and personal opinions, not hard data. I
+might be wrong in important ways. But then again, who has reliable data about
+anything AI-related these days?&lt;/p&gt;
+&lt;h1 id="llms-supercharge-privacy-attacks"&gt;LLMs supercharge privacy attacks&lt;/h1&gt;
+&lt;p&gt;Running real-world re-identification attacks often involves some amount of
+leg work. Here are a few examples.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;From a pile of unstructured data about someone, extract particularly
+  identifiable information: their demographics, their work, their education,
+  their family situation, etc.&lt;/li&gt;
+&lt;li&gt;Given some information about a specific person, finding online profiles that
+  match that information.&lt;/li&gt;
+&lt;li&gt;Joining multiple structured sources of data in a way that makes sense
+  semantically, even though the schemas are subtly different.&lt;/li&gt;
+&lt;li&gt;Combining multiple fuzzy data points about someone's identity, in a way that
+  takes the uncertainty into account.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Private detectives, OSINT experts, and internet sleuths have been doing this
+sort of work for a long time. Some of them are scaringly good at it.&lt;/p&gt;
+&lt;p&gt;But a few years ago, this required fairly specialized expertise, and even
+experts would need a lot of time and effort to perform such attacks. LLMs have
+drastically lowered the bar. They can do a solid job at data wrangling, fuzzy
+matching, and information extraction, so the basic skills necessary to run
+privacy attacks have become much more accessible.&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="A screenshot of a Claude conversation where the user uploads a JSON file and
+asks: &amp;quot;Can you go through my Reddit archive and help me figure out what
+information could potentially reveal something about myself that other people
+could know about? Things like demographics, job, education, location, income,
+etc.&amp;quot; The answer follows and is a very detailed list of personal information
+(where all concrete details are redacted from the
+screenshot)" src="images/ai-sleuthing.svg"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;In a way, it's not changing anything fundamental: if an LLM can combine the
+right sources to figure out sensitive information about someone, it means that
+that information was already out there, and a human could have found it too. But
+it's drastically reducing the cost and effort to do this, which make
+ill-intentioned actors a lot more powerful, and attacks a lot more scalable.
+This has already been explored in the &lt;a href="https://arxiv.org/abs/2602.16800"&gt;scientific literature&lt;/a&gt;, and I've
+seen this first-hand while running adversarial privacy evaluations for
+&lt;a href="https://hiding-nemo.com"&gt;clients&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;We've known for a while that people make &lt;a href="https://research.google/pubs/public-vs-publicized-content-use-trends-and-privacy-expectations/"&gt;fuzzy assumptions&lt;/a&gt; about their
+own privacy. They post on social networks under a pseudonym, avoid sharing
+"obviously" identifiable information, and assume that nobody will find it
+worthwhile to do the investigative work necessary to find out their real
+identity. This sort of implicit threat modeling might have been accurate enough
+a few years ago, for most people, in most situations. This may no longer be the
+case.&lt;/p&gt;
+&lt;h1 id="llms-lower-the-bar-to-deploy-good-anonymization"&gt;LLMs lower the bar to deploy good anonymization&lt;/h1&gt;
+&lt;p&gt;Deploying provably robust anonymization is too damn hard. This is has been my
+primary career focus for years. My &lt;a href="../thesis"&gt;PhD thesis&lt;/a&gt; was about how to try
+and make this easier. I thought a &lt;em&gt;lot&lt;/em&gt; about this problem; I gave
+&lt;a href="bottom-up-differential-privacy.html"&gt;keynotes&lt;/a&gt; about it. My master plan involved building more usable
+software with excellent documentation, doing outreach work, focusing on specific
+practical research questions, and a bunch of other stuff.&lt;/p&gt;
+&lt;p&gt;I did not expect that a few years later, non-experts would ask an LLM "hey so I
+need to share some sensitive data but make sure it's really safe, what should I
+do?", and the LLM would cheerfully reply "&lt;a href="friendly-intro-to-differential-privacy.html"&gt;differential privacy&lt;/a&gt; is the
+principled option for this use case, want me to start incorporating it in your
+software?".&lt;/p&gt;
+&lt;p&gt;When this started happening, I assumed that this would lead to terribly designed
+features that could not possibly work. Since then, I've worked on
+&lt;a href="https://hiding-nemo.com"&gt;contracts&lt;/a&gt; where my job is precisely to review such software and help fix
+any issues. And I've been… pleasantly surprised, mostly?&lt;/p&gt;
+&lt;p&gt;My initial expectations were very low, but still: LLMs seem to provide advice
+about differential privacy that is directionally correct, and design features
+that roughly make sense. I didn't have to tell anyone "your chatbot gave you
+completely inaccurate information, you should throw all of this away and start
+over from scratch" (yet). There were always gaps or subtleties that were missed
+by the LLM, and that the user had no chance to detect on their own. Some of
+those mistakes could have had a severe practical impact if left unnoticed. But
+they were always fixable and never threw the entire project in disarray.&lt;/p&gt;
+&lt;p&gt;This is good news, because it allows non-experts to try out DP and get an idea
+about whether it might solve their problem. They can play out with parameter
+tuning, visualize results, check what it would look like as part of their
+existing product, and so on. This process fosters optimism, helps convincing any
+stakeholders, and eventually unlocks budget to hire someone like me to do an
+audit and help them fix any issues before deployment&lt;sup id="fnref:hope"&gt;&lt;a class="footnote-ref" href="#fn:hope"&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;Compare this with the situation from a few years ago. Developing a DP feature
+would require hiring someone like me for a few weeks or months instead, before
+having any idea if this could even work. There was no easy way to try things
+out. Even super basic questions like "does it even make sense for my use case"
+required access to someone with specialized expertise. No wonder people gave up!&lt;/p&gt;
+&lt;h1 id="llms-are-bad-at-rigor-and-this-is-a-problem"&gt;LLMs are bad at rigor, and this is a problem&lt;/h1&gt;
+&lt;p&gt;LLMs appear to be pretty bad at tasks that require rigor and precision. They
+don't think about edge cases, they don't follow good engineering principles,
+they need to be constantly steered in the right direction to stop piling up
+unmaintainable spaghetti code.&lt;/p&gt;
+&lt;p&gt;This has predictable implications when they write privacy-critical software
+without careful supervision: the level of quality is quite poor. The code is
+always flawed, often in unpredictable ways: I've seen both very basic mistakes
+and subtle, hard-to-detect bugs. I've seen completely wrong statements recorded
+as confident-sounding code comments, and taken as gospel by the next coding
+agent looking at the code. I've seen an LLM write correct code on the first try,
+then when I asked a naive question about it, suddenly convince itself that its
+code was wrong, replace it with something &lt;em&gt;actually&lt;/em&gt; incorrect, while profusely
+apologizing to me and praising me for detecting its "mistake".&lt;/p&gt;
+&lt;p&gt;Also, this sort of thing.&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="A screenshot of a Claude Code Session, where the user asks: &amp;quot;I notice that
+you're putting a lot of justification comments throughout all the source code,
+and some of them have utility numbers that are directly derived from the raw
+data. Can you please not?" src="images/utility-numbers-in-comments.png"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;This is somewhat counterintuitive: design is supposed to be the hard part, and
+implementation should be easier! I have a few potential hypotheses to explain
+this. I don't feel super confident about any of them.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;LLMs don't actually &lt;em&gt;understand&lt;/em&gt; anything, and real understanding is a
+  prerequisite to rigor — writing code in a general-purpose language by doing
+  next-token prediction can only get you so far&lt;sup id="fnref:rigor"&gt;&lt;a class="footnote-ref" href="#fn:rigor"&gt;2&lt;/a&gt;&lt;/sup&gt;.&lt;/li&gt;
+&lt;li&gt;Coding agents seem to have a high propensity to test their changes
+  empirically. You ask "change X to Y" and they go "OK, and also I re-ran the
+  entire script on 10 different configurations to make sure that the output is
+  bit-by-bit identical every time". This is super helpful to catch many kinds of
+  bugs, and might be good enough in most cases&lt;sup id="fnref:enough"&gt;&lt;a class="footnote-ref" href="#fn:enough"&gt;3&lt;/a&gt;&lt;/sup&gt;. Sadly, this is almost
+  entirely useless to detect privacy issues: these typically can't be detected
+  empirically, and require an adversarial mindset to uncover. &lt;/li&gt;
+&lt;li&gt;When a design has some minor issues, it often doesn't invalidate the whole
+  thing. It can still help a human get a reasonable mental picture of how a
+  feature should work. Noticing and correcting small problems is easy to do
+  early on in the process. By contrast, it's very hard for humans to fully
+  reason about a medium-to-large amount of code. Noticing and fixing problems
+  gets exponentially more difficult as complexity grows.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;To improve the situation, it seems important to me to build robust tooling, and
+encourage LLMs to use that tooling. Here, I'm thinking specifically about
+differential privacy libraries, but I suspect the general principles apply in
+other contexts.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Libraries should be designed to wrap the assumptions and guarantees in
+   easy-to-understand, hard-to-misuse interfaces. This will help LLMs (and
+   humans!) write correct code, and (more importantly) make it easier for humans
+   to audit implementations and verify their correctness.&lt;/li&gt;
+&lt;li&gt;Libraries should also be feature-rich and performant enough to fit users'
+   needs. Otherwise, LLMs will often "work around" software limitations by
+   reimplementing everything from scratch, rather than encouraging their users
+   to contact library maintainers to ask for the best path forward.&lt;br&gt;&lt;br&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id="llms-are-bad-at-rigor-and-sometimes-it-doesnt-matter"&gt;LLMs are bad at rigor, and sometimes it doesn't matter&lt;/h1&gt;
+&lt;p&gt;Often, the privacy-critical part of the code is only a small part of what is
+needed to reach a successful differential privacy deployment. Projects involve
+many other kinds of tasks, for which LLM can be helpful. Here are a few
+examples.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Implementing and visualizing utility metrics to quantify what "success" means
+  for a given problem.&lt;/li&gt;
+&lt;li&gt;Building an experiment harness to keep track of what was run and what we've
+  learned over time.&lt;/li&gt;
+&lt;li&gt;Choosing which mechanism to use for a task and tuning its hyperparameters, by
+  exploring the space of possible options to understand what works best.&lt;/li&gt;
+&lt;li&gt;Optimizing the performance of the mechanism, for example by making it use an
+  available GPU to its full capacity.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;LLMs seem to be pretty good at this, possibly because they have a lot more
+examples to draw on in their training data than for privacy-critical code. But
+there are other major differences: such tasks are much easier to review, and
+perfection is not needed.&lt;/p&gt;
+&lt;p&gt;Take utility evaluation. You can easily review the few lines of code that the
+LLM writes to implement the metrics. You can ask it to explain them if needed,
+check them on small-scale examples, look at results visually. This gives you
+many chances to detect any issues, and most typical issues would be
+"immediately" obvious — both to you and to the LLM itself, which immediately
+starts questioning itself once something appears illogical.&lt;/p&gt;
+&lt;p&gt;Performance optimization is also a good target for LLM assistance, for a
+different reason. In a &lt;a href="https://behaviors.transluce.org/mental-health?detail=page:app_H_privacy_statement"&gt;recent project&lt;/a&gt; involving synthetic data generation,
+I hit runtime limits on the modeling &amp;amp; training stage. Claude Code
+re-implemented the whole thing using JAX dark magic that I don't understand, and
+could never have figured out on my own. Look at this.&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="A screenshot of Python code doing some machine learning stuff with JAX and
+JIT. It looks scary. I don't understand any of it." src="images/jax-dark-magic.png"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;Incomprehensible to me, but crucially, &lt;em&gt;I didn't have to understand it&lt;/em&gt;. This
+logic was outside of the privacy-critical zone&lt;sup id="fnref:zone"&gt;&lt;a class="footnote-ref" href="#fn:zone"&gt;4&lt;/a&gt;&lt;/sup&gt;, and success could be
+measured empirically: if runtime improves and utility metrics don't move, I'm
+happy. I could give the LLM free reign; if something was subtly wrong, either I
+would notice or it wouldn't matter.&lt;/p&gt;
+&lt;p&gt;Note that this reasoning breaks down in situations that demand rigor. If I were
+building an empirical evaluation library that can work many different complex
+use cases, or implementing performance optimizations as part of a compiler to
+work on a wide variety of GPUs, this would be a very different story! I don't
+know if LLMs would be so good at it; at the very least, they would need to be
+used a lot more thoughtfully. It would also be not be as simple if the code
+needed to be maintainable in the long run, or if multiple people were
+collaborating on it.&lt;/p&gt;
+&lt;h1 id="conclusion"&gt;Conclusion&lt;/h1&gt;
+&lt;p&gt;What I'm seeing so far seems to be aligned with what other people have already
+pointed out. LLMs do many things reasonably well in practice, but not to a high
+level of exactitude; the distinction is often invisible to non-experts. This
+makes them useful tools for tasks that are hard to do but easy to double-check.
+This also makes them dangerous in contexts where details matter, especially if
+the user doesn't realize that rigor is important for their use case.&lt;/p&gt;
+&lt;p&gt;Concretely, if you have a project that requires shipping privacy-enhancing
+technology, you should probably talk to an expert before deploying what your LLM
+implemented for you. &lt;a href="https://hiding-nemo.com"&gt;You know where to find me!&lt;/a&gt;&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id="fn:hope"&gt;
+&lt;p&gt;Obviously there's a huge selection bias here; the ones I hear about are
+the ones who did reach out.&amp;#160;&lt;a class="footnote-backref" href="#fnref:hope" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:rigor"&gt;
+&lt;p&gt;Explaining what I mean by "real understanding" is hard without going
+on a long philosophical tangent. But if you're deeply knowledgeable about a
+topic, and have discussed with an LLM about your topic of expertise, you
+will likely know what I mean.&amp;#160;&lt;a class="footnote-backref" href="#fnref:rigor" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:enough"&gt;
+&lt;p&gt;Often, it's also more empirical testing than even an above-average
+programmer would do, especially for innocuous-looking changes.&amp;#160;&lt;a class="footnote-backref" href="#fnref:enough" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:zone"&gt;
+&lt;p&gt;Which I audited line-by-line, after going through many rounds of
+interaction to downsize this section to its absolute minimum. LLMs do not do
+this spontaneously. This is bad.&amp;#160;&lt;a class="footnote-backref" href="#fnref:zone" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content><category term="misc"></category></entry><entry><title>One year of Hiding Nemo</title><link href="https://desfontain.es/blog/one-year-hiding-nemo.html" rel="alternate"></link><published>2026-07-08T00:00:00+02:00</published><updated>2026-07-08T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-07-08:/blog/one-year-hiding-nemo.html</id><summary type="html">&lt;p&gt;Taking stock after one year doing independent consulting on privacy-enhancing technology.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;Time&lt;/strong&gt; flies! One year ago, I decided to go independent, and &lt;a href="hiding-nemo.html"&gt;announced&lt;/a&gt; the
 creation of &lt;a href="https://hiding-nemo.com"&gt;Hiding Nemo&lt;/a&gt;, a consultancy focusing on privacy-enhancing
 technology.&lt;/p&gt;
 &lt;p&gt;&lt;center&gt;
@@ -5632,7 +5855,7 @@ const noeps_rho = 'Could not find a value of ε satisfying the conversion formul
 const ERR_EPSTOOLARGE = -5;
 const epstoolarge = 'Could not compute the conversion formula for these parameters. Try decreasing ε.';
 const ERR_NOEPS_MU = -6;
-const noeps_mu = 'Could not find a value of ε satisfying the conversion formula. Try decreasing δ or increasing ρ.';
+const noeps_mu = 'Could not find a value of ε satisfying the conversion formula. Try decreasing δ or increasing µ.';
 
 const closeEnough = function(x, goal, tol=1e-7) {
     if (Math.abs(goal-x)/goal &lt; tol) {
@@ -5648,7 +5871,7 @@ const format = function(x) {
 }
 &lt;/script&gt;
 
-&lt;h4 id="pure-dp-to-zero-concentrated-dp"&gt;Pure DP to zero-concentrated DP&lt;/h4&gt;
+&lt;h1 id="pure-dp-to-zero-concentrated-dp"&gt;Pure DP to zero-concentrated DP&lt;/h1&gt;
 &lt;p&gt;If a mechanism satisfies &lt;span class="math"&gt;\(\varepsilon\)&lt;/span&gt;-DP with
 &lt;span class="math"&gt;\(\varepsilon=\)&lt;/span&gt; &lt;input type="number" step="any" id="pzc-eps"&gt;, then it also
 satisfies &lt;span class="math"&gt;\(\rho\)&lt;/span&gt;-zero-concentrated DP with
@@ -5662,7 +5885,7 @@ satisfies &lt;span class="math"&gt;\(\rho\)&lt;/span&gt;-zero-concentrated DP wi
 &lt;span id="infotext-pzc" style="display: none"&gt;
 This uses the optimal conversion formula, proven in &lt;a href="https://differentialprivacy.org/pdp-to-zcdp/"&gt;this blog post&lt;/a&gt;:
 &lt;span class="math"&gt;\(\rho=\varepsilon\frac{e^\varepsilon-1}{e^\varepsilon+1}\)&lt;/span&gt;. 
-&lt;/span&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;br&gt;&amp;nbsp;&lt;/p&gt;
 &lt;script type="text/javascript"&gt;
 
 const epsilonToRho = function (epsilon) {
@@ -5679,7 +5902,7 @@ const rhoToEpsilon = function (rho) {
     while (true) {
         var mid = low/2 + high/2;
         var r = epsilonToRho(mid);
-        console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", r = ", r);
+        //console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", r = ", r);
         if (closeEnough(r, rho)) {
             return mid;
         }
@@ -5743,7 +5966,7 @@ infoPZC.addEventListener('click', function (event) {
 });
 &lt;/script&gt;
 
-&lt;h4 id="zero-concentrated-dp-to-approximate-dp"&gt;Zero-concentrated DP to approximate DP&lt;/h4&gt;
+&lt;h1 id="zero-concentrated-dp-to-approximate-dp"&gt;Zero-concentrated DP to approximate DP&lt;/h1&gt;
 &lt;p&gt;If a mechanism satisfies &lt;span class="math"&gt;\(\rho\)&lt;/span&gt;-zero-concentrated DP with
 &lt;span class="math"&gt;\(\rho=\)&lt;/span&gt; &lt;input type="number" step="any" id="zca-rho"&gt;, then it also
 satisfies &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt;-DP with
@@ -5765,12 +5988,12 @@ could be used to perform the conversion in an optimal way. I use the simpler
 result to avoid having to do nested binary searches to perform the conversion in
 reverse directions, and because it's easier to check the correctness of a single
 formula.
-&lt;/span&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;br&gt;&amp;nbsp;&lt;/p&gt;
 &lt;script type="text/javascript"&gt;
 const rhoEpsilonToDelta = function (rho, epsilon) {
     //console.log("rhoEpsilonToDelta, rho = ", rho, ", epsilon = ", epsilon);
-    term = (epsilon-rho)/(2*rho);
-    delta = 2*Math.exp(-term*term*rho) / (1 + term + Math.sqrt((1+term)*(1+term)+4/(Math.PI*rho)));
+    var term = (epsilon-rho)/(2*rho);
+    var delta = 2*Math.exp(-term*term*rho) / (1 + term + Math.sqrt((1+term)*(1+term)+4/(Math.PI*rho)));
     if (delta === 0) {
         console.log("rhoEpsilonToDelta returns 0, rho = ", rho, ", epsilon = ", epsilon);
         return ERR_TOOSMALL;
@@ -5824,7 +6047,7 @@ const epsilonDeltaToRho = function (epsilon, delta) {
     while (true) {
         var mid = low/2 + high/2;
         var del = rhoEpsilonToDelta(mid, epsilon);
-        console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
+        //console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
         if (closeEnough(del, delta)) {
             return mid;
         }
@@ -5871,11 +6094,11 @@ calculateZCA.addEventListener('click', function (event) {
         return
     }
     if (rho !== '' &amp;&amp; eps !== '' &amp;&amp; del === '') {
-        if (eps &lt;= rho) {
+        if (Number(eps) &lt;= Number(rho)) {
             errorZCA.innerHTML = epslargerthanrho;
             return;
         }
-        d = rhoEpsilonToDelta(Number(rho), Number(eps));
+        var d = rhoEpsilonToDelta(Number(rho), Number(eps));
         if (d == ERR_TOOSMALL) {
             errorZCA.innerHTML = toosmall;
             return;
@@ -5887,7 +6110,7 @@ calculateZCA.addEventListener('click', function (event) {
     }
     if (rho !== '' &amp;&amp; eps === '' &amp;&amp; del !== '') {
         errorZCA.innerHTML = '';
-        e = rhoDeltaToEpsilon(Number(rho), Number(del));
+        var e = rhoDeltaToEpsilon(Number(rho), Number(del));
         if (e == ERR_NOEPS_RHO) {
             errorZCA.innerHTML = noeps_rho;
             return;
@@ -5902,7 +6125,7 @@ calculateZCA.addEventListener('click', function (event) {
     }
     if (rho === '' &amp;&amp; eps !== '' &amp;&amp; del !== '') {
         errorZCA.innerHTML = '';
-        r = epsilonDeltaToRho(Number(eps), Number(del))
+        var r = epsilonDeltaToRho(Number(eps), Number(del))
         if (r == ERR_NORHO) {
             errorZCA.innerHTML = norho;
             return;
@@ -5924,7 +6147,7 @@ infoZCA.addEventListener('click', function (event) {
 });
 &lt;/script&gt;
 
-&lt;h4 id="gaussian-dp-to-approximate-dp"&gt;Gaussian DP to approximate DP&lt;/h4&gt;
+&lt;h1 id="gaussian-dp-to-approximate-dp"&gt;Gaussian DP to approximate DP&lt;/h1&gt;
 &lt;p&gt;If a mechanism satisfies &lt;span class="math"&gt;\(\mu\)&lt;/span&gt;-Gaussian DP with
 &lt;span class="math"&gt;\(\mu=\)&lt;/span&gt; &lt;input type="number" step="any" id="ga-mu"&gt;, then it also
 satisfies &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt;-DP with
@@ -5946,14 +6169,14 @@ mean &lt;span class="math"&gt;\(0\)&lt;/span&gt; and scale &lt;span class="math"
 &lt;p&gt;You can also use this to compute the &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt;-DP guarantees of a
 Gaussian mechanism of standard deviation &lt;span class="math"&gt;\(\sigma\)&lt;/span&gt; applied to a mechanism of
 global &lt;span class="math"&gt;\(L^2\)&lt;/span&gt; sensitivity &lt;span class="math"&gt;\(\Delta_2\)&lt;/span&gt;, by replacing &lt;span class="math"&gt;\(\mu\)&lt;/span&gt; above by
-&lt;span class="math"&gt;\(\Delta_2/\sigma\)&lt;/span&gt;.&lt;/p&gt;
+&lt;span class="math"&gt;\(\Delta_2/\sigma\)&lt;/span&gt;.&lt;br&gt;&amp;nbsp;&lt;/p&gt;
 &lt;script type="text/javascript"&gt;
 // From https://dx.doi.org/10.2139/ssrn.4487559
 // Modified from exp(a)*b to exp(a+log(b)) following the advice of the author.
 // This can return 0, but never NaN.
 const erfc = function(x) {
     if (x &gt;= 0) {
-        factor = ((0.56418958354775629) / (x + 2.06955023132914151))
+        var factor = ((0.56418958354775629) / (x + 2.06955023132914151))
             * ((x*x + 2.71078540045147805*x + 5.80755613130301624) / (x*x + 3.47954057099518960*x + 12.06166887286239555))
             * ((x*x + 3.47469513777439592*x + 12.07402036406381411) / (x*x + 3.72068443960225092*x + 8.44319781003968454))
             * ((x*x + 4.00561509202259545*x + 9.30596659485887898) / (x*x + 3.90225704029924078*x + 6.36161630953880464))
@@ -5974,14 +6197,14 @@ const muEpsilonToDelta = function (mu, epsilon) {
         console.log("exp(epsilon) is infinity.");
         return ERR_EPSTOOLARGE;
     }
-    a = phi(-epsilon/mu+mu/2);
-    b = Math.exp(epsilon)*phi(-epsilon/mu-mu/2);
-    delta = a-b;
+    var a = phi(-epsilon/mu+mu/2);
+    var b = Math.exp(epsilon)*phi(-epsilon/mu-mu/2);
+    var delta = a-b;
     // The formula above is a difference between two terms. If these two terms
     // are very close, that's bad news: that means that the difference is
     // probably not very accurate. We check for that and fail if it happens.
-    tol = 1e-10;
-    ratio = Math.abs(delta) / Math.max(Math.abs(a),Math.abs(b));
+    var ratio = Math.abs(delta) / Math.max(Math.abs(a),Math.abs(b));
+    var tol = 1e-10;
     if (ratio &lt; tol) {
         console.log("muEpsilonToDelta: mu = ", mu, ", epsilon = ", epsilon);
         console.log("Approximation error: difference between the two terms is too low. a = ", a, ", b = ", b, ", delta = ", delta, ", ratio = ", ratio);
@@ -5998,9 +6221,14 @@ const muEpsilonToDelta = function (mu, epsilon) {
 }
 const muDeltaToEpsilon = function (mu, delta) {
     // First, we check that we have a chance to achieve our target δ.
-    if (muEpsilonToDelta(mu, 0) &lt; delta) {
+    var ceiling = muEpsilonToDelta(mu, 0);
+    if (ceiling == ERR_APPROX) { 
         console.log("muDeltaToEpsilon: mu = ", mu, ", delta (target) = ", delta);
-        console.log("Impossible to find an appropriate value for epsilon. Minimal delta is ", muEpsilonToDelta(mu, 0));
+        console.log("Approximation error in muEpsilonToDelta.);
+        return ERR_APPROX;
+    } else if (ceiling &lt; delta) {
+        console.log("muDeltaToEpsilon: mu = ", mu, ", delta (target) = ", delta);
+        console.log("Impossible to find an appropriate value for epsilon. Minimal delta is ", ceiling);
         return ERR_NOEPS_MU;
     }
     var low = 0;
@@ -6008,7 +6236,7 @@ const muDeltaToEpsilon = function (mu, delta) {
     // Same doubling trick as above to find a good binary search interval.
     while (true) {
         var del = muEpsilonToDelta(mu, high);
-        console.log("    → (doubling trick) low = ", low, ", high = ", high, ", del = ", del);
+        //console.log("    → (doubling trick) low = ", low, ", high = ", high, ", del = ", del);
         if (del &lt; delta) {
             break;
         }
@@ -6018,7 +6246,7 @@ const muDeltaToEpsilon = function (mu, delta) {
     while (true) {
         var mid = low/2 + high/2;
         var del = muEpsilonToDelta(mu, mid);
-        console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
+        //console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
         if (closeEnough(del, delta)) {
             return mid;
         }
@@ -6039,8 +6267,8 @@ const epsilonDeltaToMu = function (epsilon, delta) {
     var high = 1;
     // There is no easy upper bound here, so we just find one empirically.
     while (true) {
-        console.log(low, high, muEpsilonToDelta(high, epsilon));
-        del = muEpsilonToDelta(high, epsilon);
+        //console.log(low, high, muEpsilonToDelta(high, epsilon));
+        var del = muEpsilonToDelta(high, epsilon);
         if (del == ERR_EPSTOOLARGE) {
             console.log("epsilonDeltaToMu: epsilon = ", epsilon, ", delta (target) = ", delta);
             console.log("Doubling trick failed. low = ", low, ", high = ", high, ", del = ", del);
@@ -6052,11 +6280,10 @@ const epsilonDeltaToMu = function (epsilon, delta) {
         low = high;
         high = high*2;
     }
-    tol = 1e-6
     while (true) {
         var mid = low/2 + high/2;
         var del = muEpsilonToDelta(mid, epsilon);
-        console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
+        //console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
         if (closeEnough(del, delta)) {
             return mid;
         }
@@ -6104,7 +6331,7 @@ calculateGA.addEventListener('click', function (event) {
     }
     if (mu !== '' &amp;&amp; eps !== '' &amp;&amp; del === '') {
         errorGA.innerHTML = '';
-        d = muEpsilonToDelta(Number(mu), Number(eps));
+        var d = muEpsilonToDelta(Number(mu), Number(eps));
         if (d == ERR_EPSTOOLARGE) {
             errorGA.innerHTML = epstoolarge;
             return;
@@ -6123,7 +6350,7 @@ calculateGA.addEventListener('click', function (event) {
     }
     if (mu !== '' &amp;&amp; eps === '' &amp;&amp; del !== '') {
         errorGA.innerHTML = '';
-        e = muDeltaToEpsilon(Number(mu), Number(del));
+        var e = muDeltaToEpsilon(Number(mu), Number(del));
         if (e == ERR_NOEPS_MU) {
             errorGA.innerHTML = noeps_mu;
             return;
@@ -6138,7 +6365,7 @@ calculateGA.addEventListener('click', function (event) {
     }
     if (mu === '' &amp;&amp; eps !== '' &amp;&amp; del !== '') {
         errorGA.innerHTML = '';
-        m = epsilonDeltaToMu(Number(eps), Number(del));
+        var m = epsilonDeltaToMu(Number(eps), Number(del));
         if (m == ERR_EPSTOOLARGE) {
             errorGA.innerHTML = epstoolarge;
             return;
@@ -6160,7 +6387,7 @@ infoGA.addEventListener('click', function (event) {
 });
 &lt;/script&gt;
 
-&lt;h4 id="gaussian-dp-to-zero-concentrated-dp"&gt;Gaussian DP to zero-concentrated DP&lt;/h4&gt;
+&lt;h1 id="gaussian-dp-to-zero-concentrated-dp"&gt;Gaussian DP to zero-concentrated DP&lt;/h1&gt;
 &lt;p&gt;If a mechanism satisfies &lt;span class="math"&gt;\(\mu\)&lt;/span&gt;-Gaussian DP with
 &lt;span class="math"&gt;\(\mu=\)&lt;/span&gt; &lt;input type="number" step="any" id="gzc-mu"&gt;, then it also
 satisfies &lt;span class="math"&gt;\(\rho\)&lt;/span&gt;-zero-concentrated DP with
@@ -6174,12 +6401,12 @@ satisfies &lt;span class="math"&gt;\(\rho\)&lt;/span&gt;-zero-concentrated DP wi
 &lt;span id="infotext-gzc" style="display: none"&gt;
 The conversion formula, &lt;span class="math"&gt;\(\rho=\mu^2/2\)&lt;/span&gt;, is an immediate consequence from
 Corollary B.6 in &lt;a href="https://arxiv.org/abs/1905.02383"&gt;this paper&lt;/a&gt;.
-&lt;/span&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;br&gt;&amp;nbsp;&lt;/p&gt;
 &lt;script type="text/javascript"&gt;
 const muToRho = function (mu) {
     return mu*mu/2;
 }
-const rhoTomu = function (rho) {
+const rhoToMu = function (rho) {
     return Math.sqrt(2*rho);
 }
 var gzcMu = document.getElementById('gzc-mu');
@@ -6211,7 +6438,7 @@ calculateGZC.addEventListener('click', function (event) {
         return;
     }
     if (mu === '' &amp;&amp; rho !== '') {
-        gzcMu.value = format(rhoTomu(Number(rho)));
+        gzcMu.value = format(rhoToMu(Number(rho)));
         errorGZC.innerHTML = '';
         lastGZC = gzcMu;
         return;
@@ -6225,7 +6452,7 @@ infoGZC.addEventListener('click', function (event) {
 });
 &lt;/script&gt;
 
-&lt;h4 id="frequently-asked-questions"&gt;Frequently asked questions&lt;/h4&gt;
+&lt;h1 id="frequently-asked-questions"&gt;Frequently asked questions&lt;/h1&gt;
 &lt;p style="text-indent: 0em"&gt;&lt;strong&gt;What are all these weird
 definitions?&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
@@ -6252,8 +6479,8 @@ reverse direction?&lt;/strong&gt;&lt;/p&gt;
 &lt;li&gt;Converting from zero-concentrated DP to Gaussian DP seems like it should be
   possible, but I don't know of any existing result in the literature.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p style="text-indent: 0em"&gt;&lt;strong&gt;How do you deal with floating-point
-issues?&lt;/strong&gt;&lt;/p&gt;
+&lt;p style="text-indent: 0em"&gt;&lt;a name="floats"&gt;&lt;/a&gt;&lt;strong&gt;How do you deal
+with floating-point issues?&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The short answer is "not in a very robust way, don't do this in production".&lt;/p&gt;
 &lt;p&gt;The long answer is that I did somewhat of an effort to detect and avoid
 numerical stability issues, but all the math is still done in floating-point
@@ -6313,12 +6540,14 @@ run this page while completely offline if you'd like to be sure.&lt;/p&gt;
 &lt;p&gt;(But please &lt;a href="real-world-differential-privacy.html"&gt;publish your privacy
 parameters&lt;/a&gt;!)&lt;/p&gt;
 &lt;hr&gt;
+&lt;p&gt;&lt;small&gt;&lt;/p&gt;
 &lt;p&gt;I'm grateful to Clément Canonne, Moshe Shenfeld, and Yu-Xiang Wang for helping
 me figure out the right conversion results, very grateful to Yaya D. Dia for
 helping me understand how to compute the formula necessary for Gaussian DP to
 approximate DP conversion in floating-point space, and extra super grateful to
 Thomas Steinke for properly writing up the proof of the tight conversion between
 pure DP and zero-concentrated DP.&lt;/p&gt;
+&lt;p&gt;&lt;/small&gt;&lt;/p&gt;
 &lt;div class="footnote"&gt;
 &lt;hr&gt;
 &lt;ol&gt;
