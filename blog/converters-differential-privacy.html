@@ -135,7 +135,7 @@ const noeps_rho = 'Could not find a value of ε satisfying the conversion formul
 const ERR_EPSTOOLARGE = -5;
 const epstoolarge = 'Could not compute the conversion formula for these parameters. Try decreasing ε.';
 const ERR_NOEPS_MU = -6;
-const noeps_mu = 'Could not find a value of ε satisfying the conversion formula. Try decreasing δ or increasing ρ.';
+const noeps_mu = 'Could not find a value of ε satisfying the conversion formula. Try decreasing δ or increasing µ.';
 
 const closeEnough = function(x, goal, tol=1e-7) {
     if (Math.abs(goal-x)/goal < tol) {
@@ -151,7 +151,7 @@ const format = function(x) {
 }
 </script>
 
-<h4 id="pure-dp-to-zero-concentrated-dp">Pure DP to zero-concentrated DP</h4>
+<h1 id="pure-dp-to-zero-concentrated-dp">Pure DP to zero-concentrated DP</h1>
 <p>If a mechanism satisfies <span class="math">\(\varepsilon\)</span>-DP with
 <span class="math">\(\varepsilon=\)</span> <input type="number" step="any" id="pzc-eps">, then it also
 satisfies <span class="math">\(\rho\)</span>-zero-concentrated DP with
@@ -165,7 +165,7 @@ satisfies <span class="math">\(\rho\)</span>-zero-concentrated DP with
 <span id="infotext-pzc" style="display: none">
 This uses the optimal conversion formula, proven in <a href="https://differentialprivacy.org/pdp-to-zcdp/">this blog post</a>:
 <span class="math">\(\rho=\varepsilon\frac{e^\varepsilon-1}{e^\varepsilon+1}\)</span>. 
-</span></p>
+</span><br>&nbsp;</p>
 <script type="text/javascript">
 
 const epsilonToRho = function (epsilon) {
@@ -182,7 +182,7 @@ const rhoToEpsilon = function (rho) {
     while (true) {
         var mid = low/2 + high/2;
         var r = epsilonToRho(mid);
-        console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", r = ", r);
+        //console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", r = ", r);
         if (closeEnough(r, rho)) {
             return mid;
         }
@@ -246,7 +246,7 @@ infoPZC.addEventListener('click', function (event) {
 });
 </script>
 
-<h4 id="zero-concentrated-dp-to-approximate-dp">Zero-concentrated DP to approximate DP</h4>
+<h1 id="zero-concentrated-dp-to-approximate-dp">Zero-concentrated DP to approximate DP</h1>
 <p>If a mechanism satisfies <span class="math">\(\rho\)</span>-zero-concentrated DP with
 <span class="math">\(\rho=\)</span> <input type="number" step="any" id="zca-rho">, then it also
 satisfies <span class="math">\((\varepsilon,\delta)\)</span>-DP with
@@ -268,12 +268,12 @@ could be used to perform the conversion in an optimal way. I use the simpler
 result to avoid having to do nested binary searches to perform the conversion in
 reverse directions, and because it's easier to check the correctness of a single
 formula.
-</span></p>
+</span><br>&nbsp;</p>
 <script type="text/javascript">
 const rhoEpsilonToDelta = function (rho, epsilon) {
     //console.log("rhoEpsilonToDelta, rho = ", rho, ", epsilon = ", epsilon);
-    term = (epsilon-rho)/(2*rho);
-    delta = 2*Math.exp(-term*term*rho) / (1 + term + Math.sqrt((1+term)*(1+term)+4/(Math.PI*rho)));
+    var term = (epsilon-rho)/(2*rho);
+    var delta = 2*Math.exp(-term*term*rho) / (1 + term + Math.sqrt((1+term)*(1+term)+4/(Math.PI*rho)));
     if (delta === 0) {
         console.log("rhoEpsilonToDelta returns 0, rho = ", rho, ", epsilon = ", epsilon);
         return ERR_TOOSMALL;
@@ -327,7 +327,7 @@ const epsilonDeltaToRho = function (epsilon, delta) {
     while (true) {
         var mid = low/2 + high/2;
         var del = rhoEpsilonToDelta(mid, epsilon);
-        console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
+        //console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
         if (closeEnough(del, delta)) {
             return mid;
         }
@@ -374,11 +374,11 @@ calculateZCA.addEventListener('click', function (event) {
         return
     }
     if (rho !== '' && eps !== '' && del === '') {
-        if (eps <= rho) {
+        if (Number(eps) <= Number(rho)) {
             errorZCA.innerHTML = epslargerthanrho;
             return;
         }
-        d = rhoEpsilonToDelta(Number(rho), Number(eps));
+        var d = rhoEpsilonToDelta(Number(rho), Number(eps));
         if (d == ERR_TOOSMALL) {
             errorZCA.innerHTML = toosmall;
             return;
@@ -390,7 +390,7 @@ calculateZCA.addEventListener('click', function (event) {
     }
     if (rho !== '' && eps === '' && del !== '') {
         errorZCA.innerHTML = '';
-        e = rhoDeltaToEpsilon(Number(rho), Number(del));
+        var e = rhoDeltaToEpsilon(Number(rho), Number(del));
         if (e == ERR_NOEPS_RHO) {
             errorZCA.innerHTML = noeps_rho;
             return;
@@ -405,7 +405,7 @@ calculateZCA.addEventListener('click', function (event) {
     }
     if (rho === '' && eps !== '' && del !== '') {
         errorZCA.innerHTML = '';
-        r = epsilonDeltaToRho(Number(eps), Number(del))
+        var r = epsilonDeltaToRho(Number(eps), Number(del))
         if (r == ERR_NORHO) {
             errorZCA.innerHTML = norho;
             return;
@@ -427,7 +427,7 @@ infoZCA.addEventListener('click', function (event) {
 });
 </script>
 
-<h4 id="gaussian-dp-to-approximate-dp">Gaussian DP to approximate DP</h4>
+<h1 id="gaussian-dp-to-approximate-dp">Gaussian DP to approximate DP</h1>
 <p>If a mechanism satisfies <span class="math">\(\mu\)</span>-Gaussian DP with
 <span class="math">\(\mu=\)</span> <input type="number" step="any" id="ga-mu">, then it also
 satisfies <span class="math">\((\varepsilon,\delta)\)</span>-DP with
@@ -449,14 +449,14 @@ mean <span class="math">\(0\)</span> and scale <span class="math">\(1\)</span>.
 <p>You can also use this to compute the <span class="math">\((\varepsilon,\delta)\)</span>-DP guarantees of a
 Gaussian mechanism of standard deviation <span class="math">\(\sigma\)</span> applied to a mechanism of
 global <span class="math">\(L^2\)</span> sensitivity <span class="math">\(\Delta_2\)</span>, by replacing <span class="math">\(\mu\)</span> above by
-<span class="math">\(\Delta_2/\sigma\)</span>.</p>
+<span class="math">\(\Delta_2/\sigma\)</span>.<br>&nbsp;</p>
 <script type="text/javascript">
 // From https://dx.doi.org/10.2139/ssrn.4487559
 // Modified from exp(a)*b to exp(a+log(b)) following the advice of the author.
 // This can return 0, but never NaN.
 const erfc = function(x) {
     if (x >= 0) {
-        factor = ((0.56418958354775629) / (x + 2.06955023132914151))
+        var factor = ((0.56418958354775629) / (x + 2.06955023132914151))
             * ((x*x + 2.71078540045147805*x + 5.80755613130301624) / (x*x + 3.47954057099518960*x + 12.06166887286239555))
             * ((x*x + 3.47469513777439592*x + 12.07402036406381411) / (x*x + 3.72068443960225092*x + 8.44319781003968454))
             * ((x*x + 4.00561509202259545*x + 9.30596659485887898) / (x*x + 3.90225704029924078*x + 6.36161630953880464))
@@ -477,14 +477,14 @@ const muEpsilonToDelta = function (mu, epsilon) {
         console.log("exp(epsilon) is infinity.");
         return ERR_EPSTOOLARGE;
     }
-    a = phi(-epsilon/mu+mu/2);
-    b = Math.exp(epsilon)*phi(-epsilon/mu-mu/2);
-    delta = a-b;
+    var a = phi(-epsilon/mu+mu/2);
+    var b = Math.exp(epsilon)*phi(-epsilon/mu-mu/2);
+    var delta = a-b;
     // The formula above is a difference between two terms. If these two terms
     // are very close, that's bad news: that means that the difference is
     // probably not very accurate. We check for that and fail if it happens.
-    tol = 1e-10;
-    ratio = Math.abs(delta) / Math.max(Math.abs(a),Math.abs(b));
+    var ratio = Math.abs(delta) / Math.max(Math.abs(a),Math.abs(b));
+    var tol = 1e-10;
     if (ratio < tol) {
         console.log("muEpsilonToDelta: mu = ", mu, ", epsilon = ", epsilon);
         console.log("Approximation error: difference between the two terms is too low. a = ", a, ", b = ", b, ", delta = ", delta, ", ratio = ", ratio);
@@ -501,9 +501,14 @@ const muEpsilonToDelta = function (mu, epsilon) {
 }
 const muDeltaToEpsilon = function (mu, delta) {
     // First, we check that we have a chance to achieve our target δ.
-    if (muEpsilonToDelta(mu, 0) < delta) {
+    var ceiling = muEpsilonToDelta(mu, 0);
+    if (ceiling == ERR_APPROX) { 
         console.log("muDeltaToEpsilon: mu = ", mu, ", delta (target) = ", delta);
-        console.log("Impossible to find an appropriate value for epsilon. Minimal delta is ", muEpsilonToDelta(mu, 0));
+        console.log("Approximation error in muEpsilonToDelta.);
+        return ERR_APPROX;
+    } else if (ceiling < delta) {
+        console.log("muDeltaToEpsilon: mu = ", mu, ", delta (target) = ", delta);
+        console.log("Impossible to find an appropriate value for epsilon. Minimal delta is ", ceiling);
         return ERR_NOEPS_MU;
     }
     var low = 0;
@@ -511,7 +516,7 @@ const muDeltaToEpsilon = function (mu, delta) {
     // Same doubling trick as above to find a good binary search interval.
     while (true) {
         var del = muEpsilonToDelta(mu, high);
-        console.log("    → (doubling trick) low = ", low, ", high = ", high, ", del = ", del);
+        //console.log("    → (doubling trick) low = ", low, ", high = ", high, ", del = ", del);
         if (del < delta) {
             break;
         }
@@ -521,7 +526,7 @@ const muDeltaToEpsilon = function (mu, delta) {
     while (true) {
         var mid = low/2 + high/2;
         var del = muEpsilonToDelta(mu, mid);
-        console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
+        //console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
         if (closeEnough(del, delta)) {
             return mid;
         }
@@ -542,8 +547,8 @@ const epsilonDeltaToMu = function (epsilon, delta) {
     var high = 1;
     // There is no easy upper bound here, so we just find one empirically.
     while (true) {
-        console.log(low, high, muEpsilonToDelta(high, epsilon));
-        del = muEpsilonToDelta(high, epsilon);
+        //console.log(low, high, muEpsilonToDelta(high, epsilon));
+        var del = muEpsilonToDelta(high, epsilon);
         if (del == ERR_EPSTOOLARGE) {
             console.log("epsilonDeltaToMu: epsilon = ", epsilon, ", delta (target) = ", delta);
             console.log("Doubling trick failed. low = ", low, ", high = ", high, ", del = ", del);
@@ -555,11 +560,10 @@ const epsilonDeltaToMu = function (epsilon, delta) {
         low = high;
         high = high*2;
     }
-    tol = 1e-6
     while (true) {
         var mid = low/2 + high/2;
         var del = muEpsilonToDelta(mid, epsilon);
-        console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
+        //console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
         if (closeEnough(del, delta)) {
             return mid;
         }
@@ -607,7 +611,7 @@ calculateGA.addEventListener('click', function (event) {
     }
     if (mu !== '' && eps !== '' && del === '') {
         errorGA.innerHTML = '';
-        d = muEpsilonToDelta(Number(mu), Number(eps));
+        var d = muEpsilonToDelta(Number(mu), Number(eps));
         if (d == ERR_EPSTOOLARGE) {
             errorGA.innerHTML = epstoolarge;
             return;
@@ -626,7 +630,7 @@ calculateGA.addEventListener('click', function (event) {
     }
     if (mu !== '' && eps === '' && del !== '') {
         errorGA.innerHTML = '';
-        e = muDeltaToEpsilon(Number(mu), Number(del));
+        var e = muDeltaToEpsilon(Number(mu), Number(del));
         if (e == ERR_NOEPS_MU) {
             errorGA.innerHTML = noeps_mu;
             return;
@@ -641,7 +645,7 @@ calculateGA.addEventListener('click', function (event) {
     }
     if (mu === '' && eps !== '' && del !== '') {
         errorGA.innerHTML = '';
-        m = epsilonDeltaToMu(Number(eps), Number(del));
+        var m = epsilonDeltaToMu(Number(eps), Number(del));
         if (m == ERR_EPSTOOLARGE) {
             errorGA.innerHTML = epstoolarge;
             return;
@@ -663,7 +667,7 @@ infoGA.addEventListener('click', function (event) {
 });
 </script>
 
-<h4 id="gaussian-dp-to-zero-concentrated-dp">Gaussian DP to zero-concentrated DP</h4>
+<h1 id="gaussian-dp-to-zero-concentrated-dp">Gaussian DP to zero-concentrated DP</h1>
 <p>If a mechanism satisfies <span class="math">\(\mu\)</span>-Gaussian DP with
 <span class="math">\(\mu=\)</span> <input type="number" step="any" id="gzc-mu">, then it also
 satisfies <span class="math">\(\rho\)</span>-zero-concentrated DP with
@@ -677,12 +681,12 @@ satisfies <span class="math">\(\rho\)</span>-zero-concentrated DP with
 <span id="infotext-gzc" style="display: none">
 The conversion formula, <span class="math">\(\rho=\mu^2/2\)</span>, is an immediate consequence from
 Corollary B.6 in <a href="https://arxiv.org/abs/1905.02383">this paper</a>.
-</span></p>
+</span><br>&nbsp;</p>
 <script type="text/javascript">
 const muToRho = function (mu) {
     return mu*mu/2;
 }
-const rhoTomu = function (rho) {
+const rhoToMu = function (rho) {
     return Math.sqrt(2*rho);
 }
 var gzcMu = document.getElementById('gzc-mu');
@@ -714,7 +718,7 @@ calculateGZC.addEventListener('click', function (event) {
         return;
     }
     if (mu === '' && rho !== '') {
-        gzcMu.value = format(rhoTomu(Number(rho)));
+        gzcMu.value = format(rhoToMu(Number(rho)));
         errorGZC.innerHTML = '';
         lastGZC = gzcMu;
         return;
@@ -728,7 +732,7 @@ infoGZC.addEventListener('click', function (event) {
 });
 </script>
 
-<h4 id="frequently-asked-questions">Frequently asked questions</h4>
+<h1 id="frequently-asked-questions">Frequently asked questions</h1>
 <p style="text-indent: 0em"><strong>What are all these weird
 definitions?</strong></p>
 <ul>
@@ -755,8 +759,8 @@ reverse direction?</strong></p>
 <li>Converting from zero-concentrated DP to Gaussian DP seems like it should be
   possible, but I don't know of any existing result in the literature.</li>
 </ul>
-<p style="text-indent: 0em"><strong>How do you deal with floating-point
-issues?</strong></p>
+<p style="text-indent: 0em"><a name="floats"></a><strong>How do you deal
+with floating-point issues?</strong></p>
 <p>The short answer is "not in a very robust way, don't do this in production".</p>
 <p>The long answer is that I did somewhat of an effort to detect and avoid
 numerical stability issues, but all the math is still done in floating-point
@@ -816,12 +820,14 @@ run this page while completely offline if you'd like to be sure.</p>
 <p>(But please <a href="real-world-differential-privacy.html">publish your privacy
 parameters</a>!)</p>
 <hr>
+<p><small></p>
 <p>I'm grateful to Clément Canonne, Moshe Shenfeld, and Yu-Xiang Wang for helping
 me figure out the right conversion results, very grateful to Yaya D. Dia for
 helping me understand how to compute the formula necessary for Gaussian DP to
 approximate DP conversion in floating-point space, and extra super grateful to
 Thomas Steinke for properly writing up the proof of the tight conversion between
 pure DP and zero-concentrated DP.</p>
+<p></small></p>
 <div class="footnote">
 <hr>
 <ol>
