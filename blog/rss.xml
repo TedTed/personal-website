@@ -1,5 +1,374 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-09-10T00:00:00+02:00</updated><entry><title>How and why Google will share anonymized search data with their competitors</title><link href="https://desfontain.es/blog/google-search-dma-data-sharing.html" rel="alternate"></link><published>2026-09-10T00:00:00+02:00</published><updated>2026-09-10T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-09-10:/blog/google-search-dma-data-sharing.html</id><summary type="html">&lt;p&gt;A summary and some personal thoughts about the recent specification proceedings by the European Commission to ensure Google's compliance with Article 6(11) of the Digital Markets Act.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;In&lt;/strong&gt; Europe, the online search engine market is very concentrated: Google
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-09-15T00:00:00+02:00</updated><entry><title>A noise calculator for differentially private queries</title><link href="https://desfontain.es/blog/noise-calculator.html" rel="alternate"></link><published>2026-09-15T00:00:00+02:00</published><updated>2026-09-15T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-09-15:/blog/noise-calculator.html</id><summary type="html">&lt;p&gt;A little tool to calculate noise parameters for simple differentially private queries.&lt;/p&gt;</summary><content type="html">&lt;p&gt;This is a tool to calculate noise scales and error metrics for simple
+differentially private queries. &lt;/p&gt;
+&lt;p&gt;Currently, only counting queries are supported. More precisely, we assume that
+each row of an input table is associated with a user identifier and a group, and
+we want to release the number of records associated with each group, under
+&lt;a href="differential-privacy-glossary.html#user"&gt;user-level DP&lt;/a&gt;. All groups are known in advance.&lt;/p&gt;
+&lt;p&gt;For example, the dataset could be a log of user requests, where each request is
+associated with a user ID and a device type. We would then want to calculate the
+number of requests that come from each device type, and make sure that adding or
+removing all records from a given record is protected with
+&lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt;-DP.&lt;/p&gt;
+&lt;h1 id="input"&gt;Input&lt;/h1&gt;
+&lt;h4 id="sensitivity"&gt;Sensitivity&lt;/h4&gt;
+&lt;p&gt;These parameters determine how much a single user can impact the results. If you
+want to use record-level privacy (with the &lt;a href="differential-privacy-glossary.html#add"&gt;add-or-remove-one&lt;/a&gt; notion)
+instead of user-level privacy, simply use one-stage sensitivity with a
+sensitivity of 1.&lt;/p&gt;
+&lt;details name="sensitivity" id="one-stage" open&gt; 
+    &lt;summary&gt;One-stage sensitivity&lt;/summary&gt;
+    &lt;p&gt;Maximum number of rows associated with each user identifier: &lt;center&gt;&lt;input type="number" min="1" step="1" value="1" id="l1"&gt;&lt;/center&gt;&lt;/p&gt;
+&lt;/details&gt;
+
+&lt;details name="sensitivity" id="two-stage"&gt;
+    &lt;summary&gt;Two-stage sensitivity&lt;/summary&gt;
+    &lt;p&gt;Maximum number of distinct groups associated with each user identifier: &lt;br&gt;&lt;center&gt;&lt;input type="number" min="1" step="1" value="1" id="l0"&gt;&lt;/center&gt;&lt;/p&gt;
+    &lt;p&gt;Maximum number of rows associated with each identifier in each group: &lt;br&gt;&lt;center&gt;&lt;input type="number" min="1" step="1" value="1" id="linf"&gt;&lt;/center&gt;&lt;/p&gt;
+&lt;/details&gt;
+
+&lt;h4 id="noise-type"&gt;Noise type&lt;/h4&gt;
+&lt;p&gt;&lt;label for="noise-kind"&gt;The counts should be perturbed with:&lt;/label&gt;
+&lt;select id="noise-kind"&gt;
+    &lt;option value="laplace" selected&gt;Laplace noise&lt;/option&gt;
+    &lt;option value="gaussian"&gt;Gaussian noise&lt;/option&gt;
+&lt;/select&gt;&lt;/p&gt;
+&lt;h4 id="privacy-budget"&gt;Privacy budget&lt;/h4&gt;
+&lt;p&gt;The query should be &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt;-DP, with:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(\varepsilon=\)&lt;/span&gt; &lt;input type="number" step="any" id="epsilon" value="1"&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(\delta=\)&lt;/span&gt; &lt;input type="number" step="any" id="delta" value="1e-5"&gt;&lt;br&gt;&lt;br&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="output"&gt;Output&lt;/h1&gt;
+&lt;p&gt;&lt;span class="error-msg" id="error-message"&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;div id="result"&gt;
+
+&lt;p&gt;You need to add noise of &lt;span id="noise-param"&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;The standard deviation will be &lt;span id="stddev"&gt;&lt;/span&gt;. &lt;/p&gt;
+
+&lt;p&gt;The median absolute error will be &lt;span id="median"&gt;&lt;/span&gt;.&lt;/p&gt;
+
+&lt;p&gt;The 95% confidence interval will be &lt;span id="confidence"&gt;&lt;/span&gt; around the true value.&lt;br&gt;&amp;nbsp;&lt;/p&gt;
+
+&lt;/div&gt;
+
+&lt;style&gt;
+.error-msg {
+  background-color: #ffbbbb;
+}
+input[type=number] {
+    -moz-appearance:textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+&lt;/style&gt;
+
+&lt;script type="text/javascript"&gt;
+var oneStageElt = document.getElementById("one-stage");
+var twoStageElt = document.getElementById("two-stage");
+var l1Elt = document.getElementById("l1");
+var l0Elt = document.getElementById("l0");
+var linfElt = document.getElementById("linf");
+var noiseTypeElt = document.getElementById("noise-kind");
+var epsilonElt = document.getElementById("epsilon");
+var deltaElt = document.getElementById("delta");
+
+var errorElt = document.getElementById("error-message");
+var resultElt = document.getElementById("result");
+
+var noiseParamElt = document.getElementById("noise-param");
+var stddevElt = document.getElementById("stddev");
+var medianElt = document.getElementById("median");
+var confidenceElt = document.getElementById("confidence");
+
+var oneStage, l0, l1, linf, noiseType, epsilon, delta;
+
+const update = function () {
+    oneStage = oneStageElt.open;
+    l0 = parseFloat(l0Elt.value);
+    l1 = parseFloat(l1Elt.value);
+    linf = parseFloat(linfElt.value);
+    noiseType = noiseTypeElt.value;
+    epsilon = parseFloat(epsilonElt.value);
+    delta = parseFloat(deltaElt.value);
+}
+
+const displayError = function (error) {
+    errorElt.style.display = "inline";
+    errorElt.innerHTML = error + "&lt;br&gt;&lt;br&gt;";
+    resultElt.style.display = "none";
+}
+
+const check = function () {
+    var error = "";
+    if (oneStageElt.open) {
+        if (l1 &lt;= 0) {
+            error = "Maximum number of records per user identifier must be positive!";
+        }
+    } else {
+        if (l0 &lt;= 0) {
+            error = "Maximum number of groups per user identifier must be positive!";
+        }
+        if (linf &lt;= 0) {
+            error = "Maximum number of records per user identifier per group must be positive!";
+        }
+    }
+    if (epsilon &lt;= 0) {
+        error = "ε must be positive!";
+    }
+    if (delta &lt; 0) {
+        error = "δ must be nonnegative!";
+    }
+    if (delta &gt;= 1) {
+        error = "δ must be lower than 1!"
+    }
+    if (noiseType === "gaussian" &amp;&amp; delta == 0) {
+        error = "When using Gaussian noise, δ must be positive!";
+    }
+    if (error !== "") {
+        displayError(error);
+        return false;
+    } else {
+        resultElt.style.display = "inline";
+        errorElt.style.display = "none";
+        return true;
+    }
+}
+
+const round = function (x, up = false) {
+  if (!up) {
+    return x.toPrecision(6);
+  }
+  var precision = 6 - Math.floor(x).toString().length;
+  var order = Math.pow(10, precision);
+  x *= order;
+  return (Math['ceil'].call(null, x) / order);
+}
+
+// Copy/paste from https://desfontain.es/blog/converters-differential-privacy.html
+const ERR_EPSTOOLARGE = 'Could not compute the noise formula for these parameters. Try decreasing ε.';
+const ERR_APPROX = 'Couldn\'t get an accurate answer for these parameters due to floating-point imprecision. Consider using symbolic or arbitrary-precision arithmetic software.';
+const closeEnough = function(x, goal) {
+    if (Math.abs(goal-x)/goal &lt; 1e-7) {
+        return true;
+    }
+    return false;
+}
+const erfc = function(x) {
+    if (x &gt;= 0) {
+        var factor = ((0.56418958354775629) / (x + 2.06955023132914151))
+            * ((x*x + 2.71078540045147805*x + 5.80755613130301624) / (x*x + 3.47954057099518960*x + 12.06166887286239555))
+            * ((x*x + 3.47469513777439592*x + 12.07402036406381411) / (x*x + 3.72068443960225092*x + 8.44319781003968454))
+            * ((x*x + 4.00561509202259545*x + 9.30596659485887898) / (x*x + 3.90225704029924078*x + 6.36161630953880464))
+            * ((x*x + 5.16722705817812584*x + 9.12661617673673262) / (x*x + 4.03296893109262491*x + 5.13578530585681539))
+            * ((x*x + 5.95908795446633271*x + 9.19435612886969243) / (x*x + 4.11240942957450885*x + 4.48640329523408675));
+        return Math.exp(-x*x + Math.log(factor));
+    }
+    return 2-erfc(-x);
+}
+const phi = function (x) {
+    return erfc(-x/Math.sqrt(2))/2;
+}
+const muEpsilonToDelta = function (mu, epsilon) {
+    // First failure mode: exp(epsilon) below can be too large to fit in
+    // floating-point space. We check for that and fail if it's the case.
+    if (Math.exp(epsilon) == Infinity) {
+        console.log("muEpsilonToDelta: mu = ", mu, ", epsilon = ", epsilon);
+        console.log("exp(epsilon) is infinity.");
+        return ERR_EPSTOOLARGE;
+    }
+    var a = phi(-epsilon/mu+mu/2);
+    var b = Math.exp(epsilon)*phi(-epsilon/mu-mu/2);
+    var delta = a-b;
+    // The formula above is a difference between two terms. If these two terms
+    // are very close, that's bad news: that means that the difference is
+    // probably not very accurate. We check for that and fail if it happens.
+    var tol = 1e-10;
+    var ratio = Math.abs(delta) / Math.max(Math.abs(a),Math.abs(b));
+    if (ratio &lt; tol) {
+        console.log("muEpsilonToDelta: mu = ", mu, ", epsilon = ", epsilon);
+        console.log("Approximation error: difference between the two terms is too low. a = ", a, ", b = ", b, ", delta = ", delta, ", ratio = ", ratio);
+        return ERR_APPROX;
+    }
+    // The formula above should always return something positive; if that's not
+    // the case, some approximation error happened and we also fail.
+    if (delta &lt;= 0) {
+        console.log("muEpsilonToDelta: mu = ", mu, ", epsilon = ", epsilon);
+        console.log("Negative or zero delta. a = ", a, ", b = ", b, "delta = ", delta);
+        return ERR_APPROX;
+    }
+    return delta;
+}
+const epsilonDeltaToMu = function (epsilon, delta) {
+    var low = 0;
+    var high = 1;
+    // There is no easy upper bound here, so we just find one empirically.
+    while (true) {
+        //console.log(low, high, muEpsilonToDelta(high, epsilon));
+        var del = muEpsilonToDelta(high, epsilon);
+        if (del == ERR_EPSTOOLARGE) {
+            console.log("epsilonDeltaToMu: epsilon = ", epsilon, ", delta (target) = ", delta);
+            console.log("Doubling trick failed. low = ", low, ", high = ", high, ", del = ", del);
+            displayError(ERR_EPSTOOLARGE);
+            return -1;
+        }
+        if (del &gt; delta) {
+            break;
+        }
+        low = high;
+        high = high*2;
+    }
+    while (true) {
+        var mid = low/2 + high/2;
+        var del = muEpsilonToDelta(mid, epsilon);
+        //console.log("    → low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
+        if (closeEnough(del, delta)) {
+            return mid;
+        }
+        if (mid == low || mid == high) {
+            console.log("epsilonDeltaToMu: epsilon = ", epsilon, ", delta (target) = ", delta);
+            console.log("Binary search failed. low = ", low, ", high = ", high, ", mid = ", mid, ", del = ", del);
+            displayError(ERR_EPSTOOLARGE);
+            return -1;
+        }
+        if (del &gt; delta) {
+            high = mid;
+        } else {
+            low = mid;
+        }
+    }
+}
+
+const recompute = function () {
+    update();
+    if (!check()) {
+        return;
+    }
+    var param = "";
+    var stddev = "";
+    var median = "";
+    var ci = "";
+    if (noiseType === "laplace") {
+      if (twoStageElt.open) {
+        l1 = l0 * linf;
+      }
+      var b = round(l1 / epsilon, true);
+      param = `scale &lt;i&gt;b&lt;/i&gt; = ${b}.`;
+      if (delta &gt; 0) {
+        param += " (Note: the value of δ was ignored.)";
+      }
+      stddev = Math.sqrt(2)*b;
+      median = Math.log(2)*b;
+      ci = -Math.log(0.05)*b;
+    } else if (noiseType === "gaussian") {
+      var l2 = l1;
+      if (twoStageElt.open) {
+        l2 = Math.sqrt(l0) * linf;
+      }
+      var mu = epsilonDeltaToMu(epsilon, delta);
+      if (mu == -1) {
+        return;
+      }
+      var s = round(Math.pow(l2 / mu, 2), true);
+      param = `variance σ² = ${s}.`
+      stddev = Math.sqrt(s);
+      median = stddev*0.6744897501960817432; // sqrt(2)*erf^{-1}(1/2), according to WolframAlpha
+      ci = stddev*1.9599639845400542355; // sqrt(2)*erf^{-1}(0.95), according to WolframAlpha
+    } else {
+      displayError("Not implemented yet! (If you're seeing this, it's probably a bug, please let me know about it.)");
+    }
+    noiseParamElt.innerHTML = param;
+    stddevElt.innerHTML = round(stddev);
+    medianElt.innerHTML = round(median);
+    confidenceElt.innerHTML = `[${round(-ci)}, ${round(ci)}]`
+}
+
+for (const elt of [l1Elt, l0Elt, linfElt, noiseTypeElt, epsilonElt, deltaElt]) {
+    elt.addEventListener("change", (event) =&gt; { recompute(); });
+};
+for (const elt of [oneStageElt, twoStageElt]) {
+    elt.addEventListener("toggle", (event) =&gt; { recompute(); });
+}
+
+recompute();
+
+&lt;/script&gt;
+
+&lt;h1 id="implementation-details"&gt;Implementation details&lt;/h1&gt;
+&lt;p&gt;This uses the same logic as the &lt;a href="converters-differential-privacy.html"&gt;converters&lt;/a&gt; between different definitions. The
+noise is rounded up before being shown, the error metrics are based on the
+rounded value (and rounded to nearest). The usual caveats regarding
+&lt;a href="converters-differential-privacy.html#floats"&gt;floating-point issues&lt;/a&gt; apply.&lt;/p&gt;
+&lt;p&gt;This page only runs in your browser and doesn't log anything. &lt;/p&gt;
+&lt;p&gt;If you need additional features added to this page, let me know! And if you'd
+like me to help you design, audit, and/or deploy differential privacy for your
+use case, &lt;a href="https://hiding-nemo.com"&gt;let me know&lt;/a&gt;! I'd be happy to help.&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="misc"></category></entry><entry><title>How and why Google will share anonymized search data with their competitors</title><link href="https://desfontain.es/blog/google-search-dma-data-sharing.html" rel="alternate"></link><published>2026-09-10T00:00:00+02:00</published><updated>2026-09-10T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-09-10:/blog/google-search-dma-data-sharing.html</id><summary type="html">&lt;p&gt;A summary and some personal thoughts about the recent specification proceedings by the European Commission to ensure Google's compliance with Article 6(11) of the Digital Markets Act.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;In&lt;/strong&gt; Europe, the online search engine market is very concentrated: Google
 Search has had around &lt;a href="https://gs.statcounter.com/search-engine-market-share/all/europe"&gt;90% of the market share&lt;/a&gt; for over a decade. This
 gives Google access to a massive amount of data about what people search for,
 what they click on, what modules they interact with on the page, and so on.&lt;/p&gt;
