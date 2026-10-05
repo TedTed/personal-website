@@ -1,5 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-09-15T00:00:00+02:00</updated><entry><title>A noise calculator for differentially private queries</title><link href="https://desfontain.es/blog/noise-calculator.html" rel="alternate"></link><published>2026-09-15T00:00:00+02:00</published><updated>2026-09-15T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-09-15:/blog/noise-calculator.html</id><summary type="html">&lt;p&gt;A little tool to calculate noise parameters for simple differentially private queries.&lt;/p&gt;</summary><content type="html">&lt;p&gt;This is a tool to calculate noise scales and error metrics for simple
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-10-05T00:00:00+02:00</updated><entry><title>Conference highlight: EuroTDP 2026</title><link href="https://desfontain.es/blog/eurotdp-2026.html" rel="alternate"></link><published>2026-10-05T00:00:00+02:00</published><updated>2026-10-05T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-10-05:/blog/eurotdp-2026.html</id><summary type="html">&lt;p&gt;A selection of recent scientific results I heard about at this new conference, and why I'm excited about them.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;EuroTDP&lt;/strong&gt; is a &lt;a href="https://eurotdp.pages.ist.ac.at/"&gt;new workshop&lt;/a&gt; focused on advances in the theoretical
+aspects of &lt;a href="friendly-intro-to-differential-privacy.html"&gt;differential privacy&lt;/a&gt;. The vast majority of DP-focused events
+happen in the U.S., so the creation of this Europe-based workshop is great news
+for the community here!&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="The banner of the EuroTDP website. Title text reads &amp;quot;1st Edition European
+Workshop on the Theory of Differential Privacy, September 17, 2026&amp;quot;, and is next
+to a stylized and colorful histogram." src="images/eurotdp-2026.png"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;I went there even though I wasn't sure I'd able to follow all the talks: I
+personally focus on DP practice and not so much theory, so my math skills are a
+little rusty! But my fears were mostly unfounded. It was lovely to see familiar
+faces, meet new people, and learn about new developments in DP. In this post,
+I'll highlight recent results that I learned about at the workshop and I found
+particularly interesting or useful for real-world deployments. This is (of
+course) purely based on personal opinion, not on any objective criteria.&lt;/p&gt;
+&lt;h1 id="better-guarantees-against-real-world-attacks"&gt;Better guarantees against real-world attacks&lt;/h1&gt;
+&lt;p&gt;Differential privacy offers strong guarantees against &lt;em&gt;worst-case&lt;/em&gt; adversaries:
+someone who knows everyone in the data except one person, and is trying to learn
+a single bit of information about this target. This is not very realistic in
+practice! To make things worse, the privacy parameters used in &lt;a href="real-world-differential-privacy.html"&gt;practice&lt;/a&gt;
+are often &lt;a href="large-epsilons.html"&gt;too large&lt;/a&gt; to provide meaningful theoretical guarantees
+against such worst-case attacks. Both issues have been a recurring source of
+criticism from people outside the DP community.&lt;/p&gt;
+&lt;p&gt;We have ample empirical evidence that such large &lt;span class="math"&gt;\(\varepsilon\)&lt;/span&gt; values provides
+much stronger guarantees against practical attacks than what the &lt;span class="math"&gt;\(\varepsilon\)&lt;/span&gt;
+value would suggest. A recent (and flourishing) line of work has been trying to
+better quantify that phenomenon, and convert DP guarantees into bounds on the
+success of &lt;em&gt;realistic&lt;/em&gt; adversaries. Such results were found for specific kinds
+of attacks, like membership inference or reconstruction.&lt;/p&gt;
+&lt;p&gt;At EuroTDP, Marika Swanberg presented very exciting
+&lt;a href="https://arxiv.org/abs/2507.08158"&gt;recent work&lt;/a&gt; which unifies and sharpens a
+number of existing results in the area. Marika and her coauthors (Meenatchi
+Sundaram Muthu Selva Annamalai, Jamie Hayes, Borja Balle, and Adam Smith) came
+up with a conceptual framework to model attacks and measure their success, and
+proved bounds for &lt;a href="differential-privacy-glossary.html#pure"&gt;pure DP&lt;/a&gt; along with a few variants. The results are
+both simple and very powerful; I could imagine using them in practice when
+trying to communicate real-world privacy guarantees to &lt;a href="https://hiding-nemo.com"&gt;clients&lt;/a&gt;. Because
+the framework is so generic, it could likely be mapped to specific use cases
+with minimal difficulty.&lt;/p&gt;
+&lt;h1 id="sad-news-on-fully-adaptive-composition"&gt;Sad news on fully adaptive composition&lt;/h1&gt;
+&lt;p&gt;There are multiple ways that DP mechanisms can be composed. Each mechanism can
+be run independently on the data, or you can use the output of one as the input
+of the next one, or you can even choose privacy parameters based on past
+answers. There is an ample body of work on which DP &lt;a href="differential-privacy-glossary.html#variant"&gt;variants&lt;/a&gt; can be composed
+in which setting. A few years ago, I posted a blog post to encourage the DP
+community to work on &lt;a href="https://differentialprivacy.org/open-problems-how-generic-can-composition-be/"&gt;open problems&lt;/a&gt; in this area.&lt;/p&gt;
+&lt;p&gt;These questions have an impact on what kind of interface you can build for DP
+software. When we built &lt;a href="https://docs.tmlt.dev/analytics/latest/"&gt;Tumult Analytics&lt;/a&gt;, we tried to make this interface
+as intuitive as we can: first, you put your data in a privacy-safe box (the
+"Session", initialized with a fixed privacy budget), then you interactively
+submit DP queries to it and directly get results. This is easy to use, but also
+implicitly uses &lt;a href="differential-privacy-glossary.html#fully"&gt;fully adaptive&lt;/a&gt; composition: the user could submit a
+query, and use its results to decide which query to run and with which budget.&lt;/p&gt;
+&lt;p&gt;But fully adaptive composition was proven for some variants only, and not for
+the best-possible way of measuring composed privacy loss, namely &lt;a href="differential-privacy-glossary.html#fdp"&gt;&lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP&lt;/a&gt;. I
+was hoping that someone would extend existing results to &lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP: this way, we
+could use these results to optimize the privacy/utility trade-off further.&lt;/p&gt;
+&lt;p&gt;Long Tran, along with his coauthors Antti Koskela, Ossi Räisä, and Antti
+Honkela, shattered my hopes and &lt;a href="https://arxiv.org/abs/2602.06756"&gt;proved the opposite result&lt;/a&gt;: the nice
+&lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP composition formula is invalid in the fully adaptive setting. The result
+still holds with relatively simple mechanisms (subsampled Gaussians, a key
+ingredient for &lt;a href="differential-privacy-glossary.html#dpsgd"&gt;DP-SGD&lt;/a&gt;), and you only need a small number of them to find a
+counterexample.&lt;/p&gt;
+&lt;p&gt;This has very practical implications: to support batch release use cases that
+maximize the privacy/utility trade-off, DP libraries should likely focus on
+building interfaces that aren't interactive but still easy to use. It'll be a
+challenge! So I'm sad, but also glad that the question is resolved.&lt;/p&gt;
+&lt;h1 id="neat-optimality-result-for-marginal-release"&gt;Neat optimality result for marginal release&lt;/h1&gt;
+&lt;p&gt;Publishing a large amount of counting queries (or &lt;em&gt;marginals&lt;/em&gt;) about a sensitive
+dataset is a fundamental problem in differential privacy. Besides being useful
+on its own (e.g. for statistical data publications), it's also a key building
+block for more complex tasks, like synthetic data generation, or releasing
+hierarchical data.&lt;/p&gt;
+&lt;p&gt;A central framework used for this problem is the &lt;a href="https://dl.acm.org/doi/10.1145/1807085.1807104"&gt;matrix mechanism&lt;/a&gt;,
+invented in 2010. The idea is to represent the query workload as a matrix, and
+use matrix factorization tricks to answer a &lt;em&gt;different&lt;/em&gt; set of queries, and use
+those answers to reconstruct answers to the original queries. The question
+becomes: how to factorize the matrix to minimize the error for a fixed privacy
+budget?&lt;/p&gt;
+&lt;p&gt;Christian Lebeda and Haohua Tang presented &lt;a href="https://arxiv.org/abs/2512.21499"&gt;recent work&lt;/a&gt; with
+Aleksandar Nikolov, in which they found the &lt;em&gt;optimal&lt;/em&gt; way of solving this
+optimization problem. Their approach relies on a clever application of Fourier
+transforms, and is efficient enough to be used in practice. Very nice!&lt;/p&gt;
+&lt;h1 id="optimal-post-processing-for-hierarchical-queries"&gt;Optimal post-processing for hierarchical queries&lt;/h1&gt;
+&lt;p&gt;Many data publication problems are &lt;em&gt;hierarchical&lt;/em&gt;: for example, the U.S. Census
+Bureau releases statistics at different geographic levels, and it makes sense
+that e.g. all counts from each county of a single state should sum up to the
+state-level count. To minimize noise and enforce this kind of consistency
+constraint, scientists came up with the &lt;a href="https://hdsr.mitpress.mit.edu/pub/7evz361i/release/2"&gt;TopDown&lt;/a&gt; algorithm, used in the 2020
+Decennial Census.&lt;/p&gt;
+&lt;p&gt;At EuroTDP, Ravi Kumar presented an improvement on this method called
+&lt;a href="https://arxiv.org/abs/2603.10099"&gt;BlueDown&lt;/a&gt;, developed with his coauthors Badih Ghazi, Pritish Kamath, Pasin
+Manurangsi, and Adam Sealfon. The core idea is simple and elegant. Instead of
+enforcing constraints by going down the tree, BlueDown does two passes on the
+hierarchy: one that goes down the tree like TopDown, and the other that starts
+at the leaves and goes up the tree. The two passes are then reconciled.&lt;/p&gt;
+&lt;p&gt;As you can imagine, this is a &lt;em&gt;vast&lt;/em&gt; oversimplification, and it requires many
+optimization tricks to make this problem tractable at the scale of U.S. Census
+data. But the algorithm can be run in practice, and leads to significant
+improvements both for error and bias. It may be a promising approach to future
+statistical data publication problems (providing &lt;a href="banning-noise.html"&gt;politics&lt;/a&gt; don't get in the
+way)!&lt;/p&gt;
+&lt;p&gt;Ravi also mentioned that they started studying this hierarchical optimization
+question because it came up as part of the &lt;a href="https://en.wikipedia.org/wiki/Privacy_Sandbox"&gt;Privacy Sandbox&lt;/a&gt;, a now-defunct
+attempt to build online advertising infrastructure in a privacy-preserving way.
+It's nice that some exciting scientific progress came out of it, at least!&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="misc"></category></entry><entry><title>A noise calculator for differentially private queries</title><link href="https://desfontain.es/blog/noise-calculator.html" rel="alternate"></link><published>2026-09-15T00:00:00+02:00</published><updated>2026-09-15T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-09-15:/blog/noise-calculator.html</id><summary type="html">&lt;p&gt;A little tool to calculate noise parameters for simple differentially private queries.&lt;/p&gt;</summary><content type="html">&lt;p&gt;This is a tool to calculate noise scales and error metrics for simple
 differentially private queries. &lt;/p&gt;
 &lt;p&gt;Currently, only counting queries are supported. More precisely, we assume that
 each row of an input table is associated with a user identifier and a group, and
@@ -4572,7 +4740,7 @@ information an attacker can learn by looking at the output of a DP mechanism.
 &lt;p&gt;See &lt;a href="#pure"&gt;pure differential privacy&lt;/a&gt;.&lt;/p&gt;
 &lt;h4 id="varepsilondelta-differential-privacy"&gt;&lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt;-differential privacy&lt;/h4&gt;
 &lt;p&gt;See &lt;a href="#approx"&gt;approximate differential privacy&lt;/a&gt;.&lt;/p&gt;
-&lt;h4 id="event-level"&gt;Event-level &lt;a href="event"&gt;&lt;/a&gt;&lt;/h4&gt;
+&lt;h4 id="event-level"&gt;Event-level &lt;a name="event"&gt;&lt;/a&gt;&lt;/h4&gt;
 &lt;p&gt;A &lt;a href="#neighbor"&gt;neighboring relation&lt;/a&gt; where the databases contain a list of
 individual events (e.g. someone visiting a webpage, or using a specific app
 feature), and neighboring databases differ by a single event. Often used in
@@ -4583,7 +4751,7 @@ a DP way, when each record in the dataset can have an influence on some or all
 of the scores — the &lt;a href="#selection"&gt;private selection&lt;/a&gt; problem. This is an important
 building block in a large number of complex DP mechanisms.
 &lt;a href="choosing-things-privately.html"&gt;This blog post&lt;/a&gt; is a gentle introduction to this technique.&lt;/p&gt;
-&lt;h4 id="f-dp"&gt;&lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP &lt;a href="event"&gt;&lt;/a&gt;&lt;/h4&gt;
+&lt;h4 id="f-dp"&gt;&lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP &lt;a name="fdp"&gt;&lt;/a&gt;&lt;/h4&gt;
 &lt;p&gt;A &lt;a href="#variant"&gt;variant&lt;/a&gt; of differential privacy that expresses the privacy guarantees by
 bounding the success of an attacker using the formalism of
 &lt;a href="https://en.wikipedia.org/wiki/Statistical_hypothesis_test"&gt;hypothesis testing&lt;/a&gt;. It was introduced in &lt;a href="https://arxiv.org/abs/1905.02383"&gt;this paper&lt;/a&gt;.&lt;/p&gt;
@@ -4624,7 +4792,7 @@ ways, see &lt;a href="#l1"&gt;&lt;span class="math"&gt;\(L_1\)&lt;/span&gt;-sens
 linked with the definition of &lt;a href="#approx"&gt;approximate DP&lt;/a&gt;. &lt;a href="https://research.google/blog/differential-privacy-accounting-by-connecting-the-dots/"&gt;This blog post&lt;/a&gt;
 illustrates this notion and explains how it can be used in the context of
 &lt;a href="#accounting"&gt;privacy accounting&lt;/a&gt;.&lt;/p&gt;
-&lt;h4 id="item-level-differential-privacy"&gt;Item-level differential privacy &lt;a href="item"&gt;&lt;/a&gt;&lt;/h4&gt;
+&lt;h4 id="item-level-differential-privacy"&gt;Item-level differential privacy &lt;a name="item"&gt;&lt;/a&gt;&lt;/h4&gt;
 &lt;p&gt;A &lt;a href="#neighbor"&gt;neighboring relation&lt;/a&gt; where each user can contribute multiple items
 (often data points used to train machine learning models), and neighboring
 databases differ by a single item, in contrast to &lt;a href="#user"&gt;user-level&lt;/a&gt; DP.&lt;/p&gt;

@@ -319,7 +319,7 @@ information an attacker can learn by looking at the output of a DP mechanism.
 <p>See <a href="#pure">pure differential privacy</a>.</p>
 <h4 id="varepsilondelta-differential-privacy"><span class="math">\((\varepsilon,\delta)\)</span>-differential privacy</h4>
 <p>See <a href="#approx">approximate differential privacy</a>.</p>
-<h4 id="event-level">Event-level <a href="event"></a></h4>
+<h4 id="event-level">Event-level <a name="event"></a></h4>
 <p>A <a href="#neighbor">neighboring relation</a> where the databases contain a list of
 individual events (e.g. someone visiting a webpage, or using a specific app
 feature), and neighboring databases differ by a single event. Often used in
@@ -330,7 +330,7 @@ a DP way, when each record in the dataset can have an influence on some or all
 of the scores — the <a href="#selection">private selection</a> problem. This is an important
 building block in a large number of complex DP mechanisms.
 <a href="choosing-things-privately.html">This blog post</a> is a gentle introduction to this technique.</p>
-<h4 id="f-dp"><span class="math">\(f\)</span>-DP <a href="event"></a></h4>
+<h4 id="f-dp"><span class="math">\(f\)</span>-DP <a name="fdp"></a></h4>
 <p>A <a href="#variant">variant</a> of differential privacy that expresses the privacy guarantees by
 bounding the success of an attacker using the formalism of
 <a href="https://en.wikipedia.org/wiki/Statistical_hypothesis_test">hypothesis testing</a>. It was introduced in <a href="https://arxiv.org/abs/1905.02383">this paper</a>.</p>
@@ -371,7 +371,7 @@ ways, see <a href="#l1"><span class="math">\(L_1\)</span>-sensitivity</a> and <a
 linked with the definition of <a href="#approx">approximate DP</a>. <a href="https://research.google/blog/differential-privacy-accounting-by-connecting-the-dots/">This blog post</a>
 illustrates this notion and explains how it can be used in the context of
 <a href="#accounting">privacy accounting</a>.</p>
-<h4 id="item-level-differential-privacy">Item-level differential privacy <a href="item"></a></h4>
+<h4 id="item-level-differential-privacy">Item-level differential privacy <a name="item"></a></h4>
 <p>A <a href="#neighbor">neighboring relation</a> where each user can contribute multiple items
 (often data points used to train machine learning models), and neighboring
 databases differ by a single item, in contrast to <a href="#user">user-level</a> DP.</p>
