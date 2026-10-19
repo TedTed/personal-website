@@ -1,5 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-10-05T00:00:00+02:00</updated><entry><title>Conference highlight: EuroTDP 2026</title><link href="https://desfontain.es/blog/eurotdp-2026.html" rel="alternate"></link><published>2026-10-05T00:00:00+02:00</published><updated>2026-10-05T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-10-05:/blog/eurotdp-2026.html</id><summary type="html">&lt;p&gt;A selection of recent scientific results I heard about at this new conference, and why I'm excited about them.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;EuroTDP&lt;/strong&gt; is a &lt;a href="https://eurotdp.pages.ist.ac.at/"&gt;new workshop&lt;/a&gt; focused on advances in the theoretical
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-10-19T00:00:00+02:00</updated><entry><title>Fun privacy bugs: Numeric conversion goes wrong</title><link href="https://desfontain.es/blog/go-numeric-conversion.html" rel="alternate"></link><published>2026-10-19T00:00:00+02:00</published><updated>2026-10-19T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-10-19:/blog/go-numeric-conversion.html</id><summary type="html">&lt;p&gt;What happens when converting a positive floating-point infinity into an integer in Go? The answer is more cursed than you think.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;Lately&lt;/strong&gt;, I've been experimenting with using LLMs to find privacy-impacting
+bugs in &lt;a href="friendly-intro-to-differential-privacy.html"&gt;differential privacy&lt;/a&gt; libraries. Some issues I've found in the process
+are particularly fun (for some definition of fun), so I thought I'd write up my
+favorite ones. Here's a first one.&lt;/p&gt;
+&lt;p&gt;Some DP tasks use &lt;a href="almost-differential-privacy.html"&gt;thresholding&lt;/a&gt;: you only publish some statistics if
+sufficiently many people contributed to it (modulo some randomness). How many
+people are enough — the threshold value — depends on various parameters. One of
+these parameters is called &lt;span class="math"&gt;\(\delta\)&lt;/span&gt;, which is very roughly "how likely are you
+to publish data associated with a single person". We like &lt;span class="math"&gt;\(\delta\)&lt;/span&gt; to be tiny,
+to avoid leaking information about single individuals. The smallest &lt;span class="math"&gt;\(\delta\)&lt;/span&gt; is,
+the higher the threshold becomes.&lt;/p&gt;
+&lt;p&gt;Now, Google's DP library in Go computes the threshold using floating-point math.
+For some parameter values — in particular, when &lt;span class="math"&gt;\(\delta\)&lt;/span&gt; is tiny — the threshold
+can get so large that it's represented as a positive infinity value. This should
+mean that nothing gets published. That would be sad, but safe.&lt;/p&gt;
+&lt;p&gt;The user count, and its noisy version, is an integer value. So to compare it to
+the floating-point threshold, the latter is first &lt;a href="https://github.com/google/differential-privacy/blob/061df8a0fb156ae4d6eec105e4c2c9cc2ae1ac55/go/dpagg/count.go#L205"&gt;converted to an
+integer&lt;/a&gt;. This raises an interesting question: what happens when
+converting an infinity value to an integer value?&lt;/p&gt;
+&lt;p&gt;The first answer is bad. The Go spec answers simply says that the conversion
+must always succeed, but that the output of out-of-range values can be
+&lt;a href="https://go.dev/ref/spec#Conversions"&gt;implementation-dependent&lt;/a&gt;. So the compiler is free to do whatever it
+wants, including different things on different CPU architectures.&lt;/p&gt;
+&lt;p&gt;The second answer is worse. On &lt;a href="https://en.wikipedia.org/wiki/X86-64"&gt;amd64&lt;/a&gt;, by far the most common architecture, the
+infinity value is converted to… -9223372036854775808, the &lt;em&gt;smallest&lt;/em&gt; possible
+64-bit integer. So the user count always ends up above this "threshold",
+everything gets published, and users get no privacy guarantee whatsoever.
+&lt;a href="https://github.com/google/differential-privacy/issues/485"&gt;Oops.&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This seems like absolutely bonkers behavior, and there is in fact a &lt;a href="https://github.com/golang/go/issues/76264"&gt;proposal&lt;/a&gt;
+to adopt a more reasonable approach in the Go specification. Hopefully it'll get
+adopted, and prevent future cursed bugs of the same kind!&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="misc"></category></entry><entry><title>Conference highlight: EuroTDP 2026</title><link href="https://desfontain.es/blog/eurotdp-2026.html" rel="alternate"></link><published>2026-10-05T00:00:00+02:00</published><updated>2026-10-05T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-10-05:/blog/eurotdp-2026.html</id><summary type="html">&lt;p&gt;A selection of recent scientific results I heard about at this new conference, and why I'm excited about them.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;EuroTDP&lt;/strong&gt; is a &lt;a href="https://eurotdp.pages.ist.ac.at/"&gt;new workshop&lt;/a&gt; focused on advances in the theoretical
 aspects of &lt;a href="friendly-intro-to-differential-privacy.html"&gt;differential privacy&lt;/a&gt;. The vast majority of DP-focused events
 happen in the U.S., so the creation of this Europe-based workshop is great news
 for the community here!&lt;/p&gt;

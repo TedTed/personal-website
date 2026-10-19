@@ -29,7 +29,7 @@
   <meta property="twitter:image" content="https://desfontain.es/blog/images/simple-dp-diagram.png" />
   <meta property="twitter:image:alt" content="A simple diagram representing the intuition behind differential privacy." />
   <link rel="canonical" href="https://desfontain.es/blog/" />
-  <link rel="prev" href="noise-calculator.html" />
+  <link rel="prev" href="eurotdp-2026.html" />
 </head>
 
 <body id="index" class="home">
@@ -64,7 +64,7 @@
             <a href="posts.html">archives</a>
           </span>
           <span class="droite">
-    <a href="noise-calculator.html">← previous</a>
+    <a href="eurotdp-2026.html">← previous</a>
           </span>
         </td>
       </tr>
@@ -82,122 +82,46 @@
 <article>
   <header>
   <h1>
-    <a href="./eurotdp-2026.html">Conference highlight: EuroTDP 2026</a>
+    <a href="./go-numeric-conversion.html">Fun privacy bugs: Numeric conversion goes wrong</a>
   </h1>
   </header>
   <footer>
-    <time datetime="2026-10-05T00:00:00+02:00">
-      2026-10-05
+    <time datetime="2026-10-19T00:00:00+02:00">
+      2026-10-19
     </time>
   </footer>
   <div>
-    <p><strong>EuroTDP</strong> is a <a href="https://eurotdp.pages.ist.ac.at/">new workshop</a> focused on advances in the theoretical
-aspects of <a href="friendly-intro-to-differential-privacy.html">differential privacy</a>. The vast majority of DP-focused events
-happen in the U.S., so the creation of this Europe-based workshop is great news
-for the community here!</p>
-<p><center>
-<img alt="The banner of the EuroTDP website. Title text reads &quot;1st Edition European
-Workshop on the Theory of Differential Privacy, September 17, 2026&quot;, and is next
-to a stylized and colorful histogram." src="images/eurotdp-2026.png">
-</center></p>
-<p>I went there even though I wasn't sure I'd able to follow all the talks: I
-personally focus on DP practice and not so much theory, so my math skills are a
-little rusty! But my fears were mostly unfounded. It was lovely to see familiar
-faces, meet new people, and learn about new developments in DP. In this post,
-I'll highlight recent results that I learned about at the workshop and I found
-particularly interesting or useful for real-world deployments. This is (of
-course) purely based on personal opinion, not on any objective criteria.</p>
-<h1 id="better-guarantees-against-real-world-attacks">Better guarantees against real-world attacks</h1>
-<p>Differential privacy offers strong guarantees against <em>worst-case</em> adversaries:
-someone who knows everyone in the data except one person, and is trying to learn
-a single bit of information about this target. This is not very realistic in
-practice! To make things worse, the privacy parameters used in <a href="real-world-differential-privacy.html">practice</a>
-are often <a href="large-epsilons.html">too large</a> to provide meaningful theoretical guarantees
-against such worst-case attacks. Both issues have been a recurring source of
-criticism from people outside the DP community.</p>
-<p>We have ample empirical evidence that such large <span class="math">\(\varepsilon\)</span> values provides
-much stronger guarantees against practical attacks than what the <span class="math">\(\varepsilon\)</span>
-value would suggest. A recent (and flourishing) line of work has been trying to
-better quantify that phenomenon, and convert DP guarantees into bounds on the
-success of <em>realistic</em> adversaries. Such results were found for specific kinds
-of attacks, like membership inference or reconstruction.</p>
-<p>At EuroTDP, Marika Swanberg presented very exciting
-<a href="https://arxiv.org/abs/2507.08158">recent work</a> which unifies and sharpens a
-number of existing results in the area. Marika and her coauthors (Meenatchi
-Sundaram Muthu Selva Annamalai, Jamie Hayes, Borja Balle, and Adam Smith) came
-up with a conceptual framework to model attacks and measure their success, and
-proved bounds for <a href="differential-privacy-glossary.html#pure">pure DP</a> along with a few variants. The results are
-both simple and very powerful; I could imagine using them in practice when
-trying to communicate real-world privacy guarantees to <a href="https://hiding-nemo.com">clients</a>. Because
-the framework is so generic, it could likely be mapped to specific use cases
-with minimal difficulty.</p>
-<h1 id="sad-news-on-fully-adaptive-composition">Sad news on fully adaptive composition</h1>
-<p>There are multiple ways that DP mechanisms can be composed. Each mechanism can
-be run independently on the data, or you can use the output of one as the input
-of the next one, or you can even choose privacy parameters based on past
-answers. There is an ample body of work on which DP <a href="differential-privacy-glossary.html#variant">variants</a> can be composed
-in which setting. A few years ago, I posted a blog post to encourage the DP
-community to work on <a href="https://differentialprivacy.org/open-problems-how-generic-can-composition-be/">open problems</a> in this area.</p>
-<p>These questions have an impact on what kind of interface you can build for DP
-software. When we built <a href="https://docs.tmlt.dev/analytics/latest/">Tumult Analytics</a>, we tried to make this interface
-as intuitive as we can: first, you put your data in a privacy-safe box (the
-"Session", initialized with a fixed privacy budget), then you interactively
-submit DP queries to it and directly get results. This is easy to use, but also
-implicitly uses <a href="differential-privacy-glossary.html#fully">fully adaptive</a> composition: the user could submit a
-query, and use its results to decide which query to run and with which budget.</p>
-<p>But fully adaptive composition was proven for some variants only, and not for
-the best-possible way of measuring composed privacy loss, namely <a href="differential-privacy-glossary.html#fdp"><span class="math">\(f\)</span>-DP</a>. I
-was hoping that someone would extend existing results to <span class="math">\(f\)</span>-DP: this way, we
-could use these results to optimize the privacy/utility trade-off further.</p>
-<p>Long Tran, along with his coauthors Antti Koskela, Ossi Räisä, and Antti
-Honkela, shattered my hopes and <a href="https://arxiv.org/abs/2602.06756">proved the opposite result</a>: the nice
-<span class="math">\(f\)</span>-DP composition formula is invalid in the fully adaptive setting. The result
-still holds with relatively simple mechanisms (subsampled Gaussians, a key
-ingredient for <a href="differential-privacy-glossary.html#dpsgd">DP-SGD</a>), and you only need a small number of them to find a
-counterexample.</p>
-<p>This has very practical implications: to support batch release use cases that
-maximize the privacy/utility trade-off, DP libraries should likely focus on
-building interfaces that aren't interactive but still easy to use. It'll be a
-challenge! So I'm sad, but also glad that the question is resolved.</p>
-<h1 id="neat-optimality-result-for-marginal-release">Neat optimality result for marginal release</h1>
-<p>Publishing a large amount of counting queries (or <em>marginals</em>) about a sensitive
-dataset is a fundamental problem in differential privacy. Besides being useful
-on its own (e.g. for statistical data publications), it's also a key building
-block for more complex tasks, like synthetic data generation, or releasing
-hierarchical data.</p>
-<p>A central framework used for this problem is the <a href="https://dl.acm.org/doi/10.1145/1807085.1807104">matrix mechanism</a>,
-invented in 2010. The idea is to represent the query workload as a matrix, and
-use matrix factorization tricks to answer a <em>different</em> set of queries, and use
-those answers to reconstruct answers to the original queries. The question
-becomes: how to factorize the matrix to minimize the error for a fixed privacy
-budget?</p>
-<p>Christian Lebeda and Haohua Tang presented <a href="https://arxiv.org/abs/2512.21499">recent work</a> with
-Aleksandar Nikolov, in which they found the <em>optimal</em> way of solving this
-optimization problem. Their approach relies on a clever application of Fourier
-transforms, and is efficient enough to be used in practice. Very nice!</p>
-<h1 id="optimal-post-processing-for-hierarchical-queries">Optimal post-processing for hierarchical queries</h1>
-<p>Many data publication problems are <em>hierarchical</em>: for example, the U.S. Census
-Bureau releases statistics at different geographic levels, and it makes sense
-that e.g. all counts from each county of a single state should sum up to the
-state-level count. To minimize noise and enforce this kind of consistency
-constraint, scientists came up with the <a href="https://hdsr.mitpress.mit.edu/pub/7evz361i/release/2">TopDown</a> algorithm, used in the 2020
-Decennial Census.</p>
-<p>At EuroTDP, Ravi Kumar presented an improvement on this method called
-<a href="https://arxiv.org/abs/2603.10099">BlueDown</a>, developed with his coauthors Badih Ghazi, Pritish Kamath, Pasin
-Manurangsi, and Adam Sealfon. The core idea is simple and elegant. Instead of
-enforcing constraints by going down the tree, BlueDown does two passes on the
-hierarchy: one that goes down the tree like TopDown, and the other that starts
-at the leaves and goes up the tree. The two passes are then reconciled.</p>
-<p>As you can imagine, this is a <em>vast</em> oversimplification, and it requires many
-optimization tricks to make this problem tractable at the scale of U.S. Census
-data. But the algorithm can be run in practice, and leads to significant
-improvements both for error and bias. It may be a promising approach to future
-statistical data publication problems (providing <a href="banning-noise.html">politics</a> don't get in the
-way)!</p>
-<p>Ravi also mentioned that they started studying this hierarchical optimization
-question because it came up as part of the <a href="https://en.wikipedia.org/wiki/Privacy_Sandbox">Privacy Sandbox</a>, a now-defunct
-attempt to build online advertising infrastructure in a privacy-preserving way.
-It's nice that some exciting scientific progress came out of it, at least!</p>
+    <p><strong>Lately</strong>, I've been experimenting with using LLMs to find privacy-impacting
+bugs in <a href="friendly-intro-to-differential-privacy.html">differential privacy</a> libraries. Some issues I've found in the process
+are particularly fun (for some definition of fun), so I thought I'd write up my
+favorite ones. Here's a first one.</p>
+<p>Some DP tasks use <a href="almost-differential-privacy.html">thresholding</a>: you only publish some statistics if
+sufficiently many people contributed to it (modulo some randomness). How many
+people are enough — the threshold value — depends on various parameters. One of
+these parameters is called <span class="math">\(\delta\)</span>, which is very roughly "how likely are you
+to publish data associated with a single person". We like <span class="math">\(\delta\)</span> to be tiny,
+to avoid leaking information about single individuals. The smallest <span class="math">\(\delta\)</span> is,
+the higher the threshold becomes.</p>
+<p>Now, Google's DP library in Go computes the threshold using floating-point math.
+For some parameter values — in particular, when <span class="math">\(\delta\)</span> is tiny — the threshold
+can get so large that it's represented as a positive infinity value. This should
+mean that nothing gets published. That would be sad, but safe.</p>
+<p>The user count, and its noisy version, is an integer value. So to compare it to
+the floating-point threshold, the latter is first <a href="https://github.com/google/differential-privacy/blob/061df8a0fb156ae4d6eec105e4c2c9cc2ae1ac55/go/dpagg/count.go#L205">converted to an
+integer</a>. This raises an interesting question: what happens when
+converting an infinity value to an integer value?</p>
+<p>The first answer is bad. The Go spec answers simply says that the conversion
+must always succeed, but that the output of out-of-range values can be
+<a href="https://go.dev/ref/spec#Conversions">implementation-dependent</a>. So the compiler is free to do whatever it
+wants, including different things on different CPU architectures.</p>
+<p>The second answer is worse. On <a href="https://en.wikipedia.org/wiki/X86-64">amd64</a>, by far the most common architecture, the
+infinity value is converted to… -9223372036854775808, the <em>smallest</em> possible
+64-bit integer. So the user count always ends up above this "threshold",
+everything gets published, and users get no privacy guarantee whatsoever.
+<a href="https://github.com/google/differential-privacy/issues/485">Oops.</a></p>
+<p>This seems like absolutely bonkers behavior, and there is in fact a <a href="https://github.com/golang/go/issues/76264">proposal</a>
+to adopt a more reasonable approach in the Go specification. Hopefully it'll get
+adopted, and prevent future cursed bugs of the same kind!</p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -270,10 +194,10 @@ It's nice that some exciting scientific progress came out of it, at least!</p>
 </div>
 
 <script type="text/javascript">
-var bibtexdetails = `@misc{desfontainesblog20261005,
-  title = &#123;Conference highlight: EuroTDP 2026},
+var bibtexdetails = `@misc{desfontainesblog20261019,
+  title = &#123;Fun privacy bugs: Numeric conversion goes wrong},
   author = &#123;Damien Desfontaines},
-  howpublished = {\\url{https://desfontain.es/blog/eurotdp-2026.html}},
+  howpublished = {\\url{https://desfontain.es/blog/go-numeric-conversion.html}},
   note = &#123;Ted is writing things (personal blog)},
   year = &#123;2026},
   month = &#123;10}
@@ -301,7 +225,7 @@ button.addEventListener('click', function (event) {
 <nav>
   <ul class="nav">
     <li>
-      <a href="noise-calculator.html">← previous</a>
+      <a href="eurotdp-2026.html">← previous</a>
     </li>
   </ul>
   <ul>
