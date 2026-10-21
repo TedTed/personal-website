@@ -246,6 +246,7 @@ article > div code:not(.verb) {
   background-color: #f2f2f2;
   border: 1px solid #e3e3e3;
   padding: 0 0.25em;
+  font-size: 0.9em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
@@ -264,6 +265,7 @@ article > div .highlight code {
   border: none;
   padding: 0;
   white-space: pre;
+  font-size: inherit;
 }
 article > div code.verb {
   font-size: 85%;
