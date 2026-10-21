@@ -237,13 +237,33 @@ article > div blockquote {
   border-left: 0.1em solid #ccc;
 }
 article > div blockquote p { margin: 0.5em 0; }
+article > div code,
+article > div pre {
+  font-family: "Computer Modern Typewriter", monospace;
+}
 article > div code:not(.verb) {
-  color: #eee;
-  background-color: #272822;
-  padding: 0 0.2em;
+  color: #333;
+  background-color: #f2f2f2;
+  border: 1px solid #e3e3e3;
+  padding: 0 0.25em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+article > div .highlight {
+  background: #f7f7f7;
+  margin: 1em 0;
+  border: 1px solid #ccc;
+  overflow-x: auto;
+}
+article > div .highlight pre {
+  padding: 0.6em 1em;
+  line-height: 1.35;
 }
 article > div .highlight code {
-  background-color: #272822;
+  background: none;
+  border: none;
+  padding: 0;
+  white-space: pre;
 }
 article > div code.verb {
   font-size: 85%;
