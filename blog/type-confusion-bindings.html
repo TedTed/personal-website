@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html dir="ltr" xml:lang="en" lang="en">
+<head>
+    <title>Fun privacy bugs: Type confusion in bindings - Ted is writing things</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Damien Desfontaines" />
+  <meta name="twitter:creator" content="@TedOnPrivacy" />
+  <meta name="fediverse:creator" content="@tedted@hachyderm.io">
+  <!-- suggested by rebecca on streambed to fix a zoomed-out display issue on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style/menu.css" type="text/css" />
+  <link rel="stylesheet" href="/style/blog.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/style/blog-mobile.css" type="text/css" media="(max-width: 580px)" />
+  <link rel="stylesheet" href="/style/blog-print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="/style/pygments.css" type="text/css" />
+  <link rel="contents" href="posts.html" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://desfontain.es/blog/" type="application/rss+xml" rel="alternate" title="Ted is writing things - RSS Feed" />
+
+  <meta name="title" property="og:title" content="Fun privacy bugs: Type confusion in bindings - Ted is writing things" />
+  <meta property="twitter:title" content="Fun privacy bugs: Type confusion in bindings - Ted is writing things" />
+  <meta name="description" property="og:description" content="How small subtleties in cross-language bindings can lead to surprising privacy failures." />
+  <meta property="twitter:description" content="How small subtleties in cross-language bindings can lead to surprising privacy failures." />
+  <meta property="summary" content="How small subtleties in cross-language bindings can lead to surprising privacy failures." />
+  <meta name="twitter:card" content="summary"/>
+  <link rel="canonical" href="https://desfontain.es/blog/type-confusion-bindings.html" />
+  <link rel="prev" href="go-numeric-conversion.html" />
+</head>
+
+<body id="index" class="home">
+  <!-- also suggested by rebecca, to allow screen readers to skip the menu -->
+  <a aria-label="Skip to content" href="#contenu"></a>
+  <div id="menuGlobal">
+    <table>
+      <tr>
+        <td>
+          <a href="../index.html">
+            ..<span id='joueur'>@</span>..<span class='blue'>♦</span>.<span class='red'>D</span>.
+            <img src="../flag-uk.png" alt=""/>
+          </a>
+        </td>
+        <td>
+          <a href="../serious.html">About <img src="../flag-uk.png" alt=""/></a>
+          <a href="../serious-fr.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td id="menuCourant">
+          Blog <img src="../flag-uk.png" alt=""/>
+          <a href="../blogue/index.html"><img src="../flag-france.gif" alt=""/></a>
+        </td>
+        <td>
+          <a href="../recettes/index.html">Recipes <img src="../flag-france.gif" alt=""/></a>
+        </td>
+      </tr>
+      <tr id="sousMenu">
+        <td colspan="4">
+          <span class="gauche">
+            <a href="index.html">latest</a> —
+            <a href="rss.xml">rss</a> —
+            <a href="posts.html">archives</a>
+          </span>
+          <span class="droite">
+    <a href="go-numeric-conversion.html">← previous</a>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="container">
+    <header>
+      <h1><a href="./">
+        <span property="dct:title">Ted is writing things</span>
+      </a></h1>
+      On privacy, research, and privacy research.
+    </header>
+
+<article id="contenu">
+  <header>
+  <h1>
+    <a href="./type-confusion-bindings.html">Fun privacy bugs: Type confusion in bindings</a>
+  </h1>
+  </header>
+  <footer>
+    <time datetime="2026-10-26T00:00:00+01:00">
+      2026-10-26
+    </time>
+  </footer>
+  <div>
+    <p><strong>When</strong> building a library of <a href="friendly-intro-to-differential-privacy.html">differential privacy</a> primitives, you have
+two options. You can either re-implement all the basic logic, in which case you
+have to avoid all known pitfalls. Or you can simply write <a href="https://en.wikipedia.org/wiki/Language_binding">bindings</a> to reuse an
+existing implementation from another language.</p>
+<p><a href="https://github.com/OpenMined/PyDP/">PyDP</a>, a Python DP library maintained by <a href="https://openmined.org/">OpenMined</a>, chose the second path:
+the library is a thin wrapper around Google's <a href="https://github.com/google/differential-privacy/">C++ DP library</a>. In
+theory, this limits the number of new things that can go wrong. But in practice,
+you might encounter different kinds of unexpected issues!</p>
+<p>C++ has <em>static</em> types, and each function only works on arguments of a
+predefined type. Therefore, the C++ library defines two distinct <code>AddNoise</code>
+<a href="https://github.com/google/differential-privacy/blob/d8b2d0cb61624cf7f3c59b926a5071cd98687f09/cc/algorithms/numerical-mechanisms.h#L56">methods</a>, with different input types: one to add integer noise, the other to
+add floating-point noise. </p>
+<p>By contrast, Python's type system is <em>dynamic</em>: you can't predict the type of a
+variable just by reading the source code. Instead, you have to actually run the
+program and see what that variable contains. PyDP defines a single <code>add_noise</code>
+<a href="https://pydp.readthedocs.io/en/latest/pydp.html#pydp.algorithms.numerical_mechanisms.NumericalMechanism.add_noise">method</a> which calls either C++ method depending on input type. This logic is
+<a href="https://github.com/OpenMined/PyDP/blob/688236100cb12b6e30a6513a5e8ff483650c19a5/src/bindings/PyDP/mechanisms/mechanism.cpp#L52">implemented</a> as follows.</p>
+<div class="highlight"><pre><span></span><code><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="n">py</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">dp</span><span class="o">::</span><span class="n">NumericalMechanism</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">DefPyAddNoise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">py</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">dp</span><span class="o">::</span><span class="n">NumericalMechanism</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">pyclass</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">FunctorType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="p">(</span><span class="n">dp</span><span class="o">::</span><span class="n">NumericalMechanism</span><span class="o">::*</span><span class="p">)(</span><span class="n">T</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">pyclass</span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;add_noise&quot;</span><span class="p">,</span>
+<span class="w">                     </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">FunctorType</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dp</span><span class="o">::</span><span class="n">NumericalMechanism</span><span class="o">::</span><span class="n">AddNoise</span><span class="p">),</span>
+<span class="w">                     </span><span class="n">py</span><span class="o">::</span><span class="n">arg</span><span class="p">(</span><span class="s">&quot;result&quot;</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="c1">// ...</span>
+
+<span class="n">DefPyAddNoise</span><span class="o">&lt;</span><span class="kt">int64_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">numerical_mech</span><span class="p">);</span>
+<span class="n">DefPyAddNoise</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">numerical_mech</span><span class="p">);</span>
+</code></pre></div>
+
+<p>This code may look a bit obscure, but it does two simple things:</p>
+<ul>
+<li>It declares a Python <code>add_noise</code> method on all <code>NumericalMechanism</code> classes.</li>
+<li>It defines which C++ method to use when this method is called. Integers are
+  converted to <code>int64</code> then use the integer C++ method; floating-point numbers
+  are converted to <code>double</code> then use the floating-point C++ method.</li>
+</ul>
+<p>Except… Data analysis code doesn't always use Python's native types (<code>int</code> or
+<code>float</code>): often, using <a href="https://numpy.org/">NumPy</a> and its <a href="https://numpy.org/doc/stable/user/basics.types.html">numeric types</a> can be a lot
+more performant. Those allow users to specify the <em>size</em> of each numeric type,
+e.g. by using <code>np.int16</code> or <code>np.float32</code>. How do the bindings handle such types?</p>
+<p>The default logic of the <a href="https://github.com/pybind/pybind11">underlying library</a> checks two conditions, in
+order.</p>
+<ol>
+<li>First, it look at whether the value type <em>matches</em> the declared type. For
+   integers, it checks whether it implements <a href="https://docs.python.org/3/reference/datamodel.html#object.__index__"><code>__index__</code></a>. For floats,
+   it checks whether it's a subclass of Python's built-in <code>float</code>.</li>
+<li>If the first pass fails, it look at whether the value can be <em>converted</em> to
+   the declared type, using conversions methods like <code>int(v)</code> or <code>float(v)</code>. In
+   that case, the first declared binding with an available conversion is used.</li>
+</ol>
+<p>The first condition is met for Python's <code>int</code> type and all NumPy integer types,
+which implement <code>__index__</code>. It also catches Python's <code>float</code> type and NumPy's
+<code>np.float64</code>: the latter is a subclass of <code>float</code> type, so the bindings
+correctly assign it to a C++ <code>double</code>.</p>
+<p>However, what happens if a value <code>v</code> has type <code>np.float32</code>? This type is <em>not</em> a
+subclass of <code>float</code>, so the first condition doesn't apply! So the logic moves on
+to the second condition, and goes through the bindings <em>in order</em>. The first is
+the integer binding, so it checks whether it's possible to call <code>int(v)</code>. This
+conversion exists, and simply uses truncation: for example,
+<code>int(np.float32(1.7))==1</code>. So our <code>np.float32</code> value gets truncated, and is then
+perturbed using integer noise.</p>
+<p>But this messes up all our DP calculations! If we're calculating a DP sum of
+small numbers, with <a href="differential-privacy-glossary.html#clamping">clamping bounds</a> of [0, 0.1], the sensitivity is
+0.1. But adding a single record can move the total sum from 41.95 to 42.05; once
+truncated, the result goes from 41 to 42: the sensitivity gets multiplied by a
+factor of 10. <a href="https://github.com/OpenMined/PyDP/issues/499">Oops!</a></p>
+<p>The cleanest solution is likely to use an option to prevent the binding library
+from automatically converting inputs. Alternatively, declaring the <code>double</code>
+binding first would also solve the issue: all the integer types would still hit
+the first pass, while <code>np.float32</code> would be converted to <code>double</code> (a lossless
+conversion) in the second pass.</p>
+<p><small>If you liked this article, you may enjoy the <a href="go-numeric-conversion.html">previous one</a> on the
+same theme!</small></p>
+  </div>
+</article>
+
+<p><center><button id="showBibtex">Cite this blog post!</button></center></p>
+<div id="bibtex" style="display: none">
+<p id=bibtextext>The BibTeX entry was copied to your clipboard.</p>
+<textarea id="bibtexcode" readonly></textarea> 
+</div>
+
+<script type="text/javascript">
+var bibtexdetails = `@misc{desfontainesblog20261026,
+  title = &#123;Fun privacy bugs: Type confusion in bindings},
+  author = &#123;Damien Desfontaines},
+  howpublished = {\\url{https://desfontain.es/blog/type-confusion-bindings.html}},
+  note = &#123;Ted is writing things (personal blog)},
+  year = &#123;2026},
+  month = &#123;10}
+}`
+// We need to use textarea for the tag containing code so we can select it to
+// copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
+// the content, so we compute its size manually. Isn't web development great?
+var lines = bibtexdetails.split("\n");
+var heigth = lines.length;
+var width = Math.max(...(lines.map(line => line.length)));
+var button = document.getElementById('showBibtex');
+button.addEventListener('click', function (event) {
+  bibtex = document.getElementById('bibtex');
+  bibtex.style.display = 'block';
+  var bibtexcode = document.getElementById('bibtexcode');
+  bibtexcode.innerHTML = bibtexdetails;
+  bibtexcode.rows = heigth;
+  bibtexcode.cols = width;
+  bibtexcode.select();
+  document.execCommand('copy');
+  document.getSelection().removeAllRanges();
+});
+</script>
+
+<nav>
+  <ul class="nav">
+    <li>
+      <a href="go-numeric-conversion.html">← previous</a>
+    </li>
+  </ul>
+  <ul>
+    <li><a href="#menuGlobal">back to top</a></li>
+    <li><a href="index.html">home</a></li>
+    <li><a href="posts.html">archives</a></li>
+  </ul>
+</nav>
+ 
+      <div class="feedback">
+        Feedback on these posts is welcome! Reach out via e-mail
+        (<span class="baddirection">se.niatnofsed@neimad</span>) for comments and
+        suggestions.
+        <br>
+        Interested in using privacy-enhancing technology to do more with your
+        data, with respect and compliance built-in? I can help! Check out the
+        website of my independent consultancy,
+        <a href="https://hiding-nemo.com">Hiding Nemo</a>, to learn more.
+      </div>
+      <footer>
+        <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+          <br />
+          by 
+          <a rel="dct:publisher" href="http://desfontain.es">
+            <span property="dct:title">Damien Desfontaines</span>
+          </a> 
+          &mdash;
+          <a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
+            <img src="../cc0.png" style="border-style: none;" alt="CC0" title="I don't think intellectual property makes any sense. The contents of this blog are under public domain."/>
+          </a>
+          &mdash;
+          propulsed by <a href="https://getpelican.com">Pelican</a>
+        </p>
+      </footer>
+  </div>
+</body>
+</html>

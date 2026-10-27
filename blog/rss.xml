@@ -1,5 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-10-19T00:00:00+02:00</updated><entry><title>Fun privacy bugs: Numeric conversion goes wrong</title><link href="https://desfontain.es/blog/go-numeric-conversion.html" rel="alternate"></link><published>2026-10-19T00:00:00+02:00</published><updated>2026-10-19T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-10-19:/blog/go-numeric-conversion.html</id><summary type="html">&lt;p&gt;What happens when converting a positive floating-point infinity into an integer in Go? The answer is more cursed than you think.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;Lately&lt;/strong&gt;, I've been experimenting with using LLMs to find privacy-impacting
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-10-26T00:00:00+01:00</updated><entry><title>Fun privacy bugs: Type confusion in bindings</title><link href="https://desfontain.es/blog/type-confusion-bindings.html" rel="alternate"></link><published>2026-10-26T00:00:00+01:00</published><updated>2026-10-26T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-10-26:/blog/type-confusion-bindings.html</id><summary type="html">&lt;p&gt;How small subtleties in cross-language bindings can lead to surprising privacy failures.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;When&lt;/strong&gt; building a library of &lt;a href="friendly-intro-to-differential-privacy.html"&gt;differential privacy&lt;/a&gt; primitives, you have
+two options. You can either re-implement all the basic logic, in which case you
+have to avoid all known pitfalls. Or you can simply write &lt;a href="https://en.wikipedia.org/wiki/Language_binding"&gt;bindings&lt;/a&gt; to reuse an
+existing implementation from another language.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/OpenMined/PyDP/"&gt;PyDP&lt;/a&gt;, a Python DP library maintained by &lt;a href="https://openmined.org/"&gt;OpenMined&lt;/a&gt;, chose the second path:
+the library is a thin wrapper around Google's &lt;a href="https://github.com/google/differential-privacy/"&gt;C++ DP library&lt;/a&gt;. In
+theory, this limits the number of new things that can go wrong. But in practice,
+you might encounter different kinds of unexpected issues!&lt;/p&gt;
+&lt;p&gt;C++ has &lt;em&gt;static&lt;/em&gt; types, and each function only works on arguments of a
+predefined type. Therefore, the C++ library defines two distinct &lt;code&gt;AddNoise&lt;/code&gt;
+&lt;a href="https://github.com/google/differential-privacy/blob/d8b2d0cb61624cf7f3c59b926a5071cd98687f09/cc/algorithms/numerical-mechanisms.h#L56"&gt;methods&lt;/a&gt;, with different input types: one to add integer noise, the other to
+add floating-point noise. &lt;/p&gt;
+&lt;p&gt;By contrast, Python's type system is &lt;em&gt;dynamic&lt;/em&gt;: you can't predict the type of a
+variable just by reading the source code. Instead, you have to actually run the
+program and see what that variable contains. PyDP defines a single &lt;code&gt;add_noise&lt;/code&gt;
+&lt;a href="https://pydp.readthedocs.io/en/latest/pydp.html#pydp.algorithms.numerical_mechanisms.NumericalMechanism.add_noise"&gt;method&lt;/a&gt; which calls either C++ method depending on input type. This logic is
+&lt;a href="https://github.com/OpenMined/PyDP/blob/688236100cb12b6e30a6513a5e8ff483650c19a5/src/bindings/PyDP/mechanisms/mechanism.cpp#L52"&gt;implemented&lt;/a&gt; as follows.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;template&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="k"&gt;typename&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;T&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="n"&gt;py&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;class_&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;dp&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;NumericalMechanism&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;DefPyAddNoise&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;class_&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;dp&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;NumericalMechanism&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pyclass&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="k"&gt;using&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;FunctorType&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;dp&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;NumericalMechanism&lt;/span&gt;&lt;span class="o"&gt;::*&lt;/span&gt;&lt;span class="p"&gt;)(&lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pyclass&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;def&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;add_noise&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="w"&gt;                     &lt;/span&gt;&lt;span class="k"&gt;static_cast&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;FunctorType&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;dp&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;NumericalMechanism&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;AddNoise&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+&lt;span class="w"&gt;                     &lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;result&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="c1"&gt;// ...&lt;/span&gt;
+
+&lt;span class="n"&gt;DefPyAddNoise&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int64_t&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;numerical_mech&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;DefPyAddNoise&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;double&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;numerical_mech&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This code may look a bit obscure, but it does two simple things:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;It declares a Python &lt;code&gt;add_noise&lt;/code&gt; method on all &lt;code&gt;NumericalMechanism&lt;/code&gt; classes.&lt;/li&gt;
+&lt;li&gt;It defines which C++ method to use when this method is called. Integers are
+  converted to &lt;code&gt;int64&lt;/code&gt; then use the integer C++ method; floating-point numbers
+  are converted to &lt;code&gt;double&lt;/code&gt; then use the floating-point C++ method.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Except… Data analysis code doesn't always use Python's native types (&lt;code&gt;int&lt;/code&gt; or
+&lt;code&gt;float&lt;/code&gt;): often, using &lt;a href="https://numpy.org/"&gt;NumPy&lt;/a&gt; and its &lt;a href="https://numpy.org/doc/stable/user/basics.types.html"&gt;numeric types&lt;/a&gt; can be a lot
+more performant. Those allow users to specify the &lt;em&gt;size&lt;/em&gt; of each numeric type,
+e.g. by using &lt;code&gt;np.int16&lt;/code&gt; or &lt;code&gt;np.float32&lt;/code&gt;. How do the bindings handle such types?&lt;/p&gt;
+&lt;p&gt;The default logic of the &lt;a href="https://github.com/pybind/pybind11"&gt;underlying library&lt;/a&gt; checks two conditions, in
+order.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;First, it look at whether the value type &lt;em&gt;matches&lt;/em&gt; the declared type. For
+   integers, it checks whether it implements &lt;a href="https://docs.python.org/3/reference/datamodel.html#object.__index__"&gt;&lt;code&gt;__index__&lt;/code&gt;&lt;/a&gt;. For floats,
+   it checks whether it's a subclass of Python's built-in &lt;code&gt;float&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;If the first pass fails, it look at whether the value can be &lt;em&gt;converted&lt;/em&gt; to
+   the declared type, using conversions methods like &lt;code&gt;int(v)&lt;/code&gt; or &lt;code&gt;float(v)&lt;/code&gt;. In
+   that case, the first declared binding with an available conversion is used.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The first condition is met for Python's &lt;code&gt;int&lt;/code&gt; type and all NumPy integer types,
+which implement &lt;code&gt;__index__&lt;/code&gt;. It also catches Python's &lt;code&gt;float&lt;/code&gt; type and NumPy's
+&lt;code&gt;np.float64&lt;/code&gt;: the latter is a subclass of &lt;code&gt;float&lt;/code&gt; type, so the bindings
+correctly assign it to a C++ &lt;code&gt;double&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;However, what happens if a value &lt;code&gt;v&lt;/code&gt; has type &lt;code&gt;np.float32&lt;/code&gt;? This type is &lt;em&gt;not&lt;/em&gt; a
+subclass of &lt;code&gt;float&lt;/code&gt;, so the first condition doesn't apply! So the logic moves on
+to the second condition, and goes through the bindings &lt;em&gt;in order&lt;/em&gt;. The first is
+the integer binding, so it checks whether it's possible to call &lt;code&gt;int(v)&lt;/code&gt;. This
+conversion exists, and simply uses truncation: for example,
+&lt;code&gt;int(np.float32(1.7))==1&lt;/code&gt;. So our &lt;code&gt;np.float32&lt;/code&gt; value gets truncated, and is then
+perturbed using integer noise.&lt;/p&gt;
+&lt;p&gt;But this messes up all our DP calculations! If we're calculating a DP sum of
+small numbers, with &lt;a href="differential-privacy-glossary.html#clamping"&gt;clamping bounds&lt;/a&gt; of [0, 0.1], the sensitivity is
+0.1. But adding a single record can move the total sum from 41.95 to 42.05; once
+truncated, the result goes from 41 to 42: the sensitivity gets multiplied by a
+factor of 10. &lt;a href="https://github.com/OpenMined/PyDP/issues/499"&gt;Oops!&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The cleanest solution is likely to use an option to prevent the binding library
+from automatically converting inputs. Alternatively, declaring the &lt;code&gt;double&lt;/code&gt;
+binding first would also solve the issue: all the integer types would still hit
+the first pass, while &lt;code&gt;np.float32&lt;/code&gt; would be converted to &lt;code&gt;double&lt;/code&gt; (a lossless
+conversion) in the second pass.&lt;/p&gt;
+&lt;p&gt;&lt;small&gt;If you liked this article, you may enjoy the &lt;a href="go-numeric-conversion.html"&gt;previous one&lt;/a&gt; on the
+same theme!&lt;/small&gt;&lt;/p&gt;</content><category term="misc"></category></entry><entry><title>Fun privacy bugs: Numeric conversion goes wrong</title><link href="https://desfontain.es/blog/go-numeric-conversion.html" rel="alternate"></link><published>2026-10-19T00:00:00+02:00</published><updated>2026-10-19T00:00:00+02:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-10-19:/blog/go-numeric-conversion.html</id><summary type="html">&lt;p&gt;What happens when converting a positive floating-point infinity into an integer in Go? The answer is more cursed than you think.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;Lately&lt;/strong&gt;, I've been experimenting with using LLMs to find privacy-impacting
 bugs in &lt;a href="friendly-intro-to-differential-privacy.html"&gt;differential privacy&lt;/a&gt; libraries. Some issues I've found in the process
 are particularly fun (for some definition of fun), so I thought I'd write up my
 favorite ones. Here's a first one.&lt;/p&gt;
@@ -16,8 +91,13 @@ can get so large that it's represented as a positive infinity value. This should
 mean that nothing gets published. That would be sad, but safe.&lt;/p&gt;
 &lt;p&gt;The user count, and its noisy version, is an integer value. So to compare it to
 the floating-point threshold, the latter is first &lt;a href="https://github.com/google/differential-privacy/blob/061df8a0fb156ae4d6eec105e4c2c9cc2ae1ac55/go/dpagg/count.go#L205"&gt;converted to an
-integer&lt;/a&gt;. This raises an interesting question: what happens when
-converting an infinity value to an integer value?&lt;/p&gt;
+integer&lt;/a&gt;. The code looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;result&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;int64&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;math&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;Ceil&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;threshold&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kc"&gt;nil&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kc"&gt;nil&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This raises an interesting question. What happens when &lt;code&gt;threshold&lt;/code&gt; is infinite?&lt;/p&gt;
 &lt;p&gt;The first answer is bad. The Go spec answers simply says that the conversion
 must always succeed, but that the output of out-of-range values can be
 &lt;a href="https://go.dev/ref/spec#Conversions"&gt;implementation-dependent&lt;/a&gt;. So the compiler is free to do whatever it
@@ -30,6 +110,8 @@ everything gets published, and users get no privacy guarantee whatsoever.
 &lt;p&gt;This seems like absolutely bonkers behavior, and there is in fact a &lt;a href="https://github.com/golang/go/issues/76264"&gt;proposal&lt;/a&gt;
 to adopt a more reasonable approach in the Go specification. Hopefully it'll get
 adopted, and prevent future cursed bugs of the same kind!&lt;/p&gt;
+&lt;p&gt;&lt;small&gt;If you liked this article, you may enjoy the &lt;a href="type-confusion-bindings.html"&gt;next one&lt;/a&gt; on the
+same theme!&lt;/small&gt;&lt;/p&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",

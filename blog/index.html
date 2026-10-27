@@ -29,7 +29,7 @@
   <meta property="twitter:image" content="https://desfontain.es/blog/images/simple-dp-diagram.png" />
   <meta property="twitter:image:alt" content="A simple diagram representing the intuition behind differential privacy." />
   <link rel="canonical" href="https://desfontain.es/blog/" />
-  <link rel="prev" href="eurotdp-2026.html" />
+  <link rel="prev" href="go-numeric-conversion.html" />
 </head>
 
 <body id="index" class="home">
@@ -64,7 +64,7 @@
             <a href="posts.html">archives</a>
           </span>
           <span class="droite">
-    <a href="eurotdp-2026.html">← previous</a>
+    <a href="go-numeric-conversion.html">← previous</a>
           </span>
         </td>
       </tr>
@@ -82,108 +82,91 @@
 <article>
   <header>
   <h1>
-    <a href="./go-numeric-conversion.html">Fun privacy bugs: Numeric conversion goes wrong</a>
+    <a href="./type-confusion-bindings.html">Fun privacy bugs: Type confusion in bindings</a>
   </h1>
   </header>
   <footer>
-    <time datetime="2026-10-19T00:00:00+02:00">
-      2026-10-19
+    <time datetime="2026-10-26T00:00:00+01:00">
+      2026-10-26
     </time>
   </footer>
   <div>
-    <p><strong>Lately</strong>, I've been experimenting with using LLMs to find privacy-impacting
-bugs in <a href="friendly-intro-to-differential-privacy.html">differential privacy</a> libraries. Some issues I've found in the process
-are particularly fun (for some definition of fun), so I thought I'd write up my
-favorite ones. Here's a first one.</p>
-<p>Some DP tasks use <a href="almost-differential-privacy.html">thresholding</a>: you only publish some statistics if
-sufficiently many people contributed to it (modulo some randomness). How many
-people are enough — the threshold value — depends on various parameters. One of
-these parameters is called <span class="math">\(\delta\)</span>, which is very roughly "how likely are you
-to publish data associated with a single person". We like <span class="math">\(\delta\)</span> to be tiny,
-to avoid leaking information about single individuals. The smallest <span class="math">\(\delta\)</span> is,
-the higher the threshold becomes.</p>
-<p>Now, Google's DP library in Go computes the threshold using floating-point math.
-For some parameter values — in particular, when <span class="math">\(\delta\)</span> is tiny — the threshold
-can get so large that it's represented as a positive infinity value. This should
-mean that nothing gets published. That would be sad, but safe.</p>
-<p>The user count, and its noisy version, is an integer value. So to compare it to
-the floating-point threshold, the latter is first <a href="https://github.com/google/differential-privacy/blob/061df8a0fb156ae4d6eec105e4c2c9cc2ae1ac55/go/dpagg/count.go#L205">converted to an
-integer</a>. This raises an interesting question: what happens when
-converting an infinity value to an integer value?</p>
-<p>The first answer is bad. The Go spec answers simply says that the conversion
-must always succeed, but that the output of out-of-range values can be
-<a href="https://go.dev/ref/spec#Conversions">implementation-dependent</a>. So the compiler is free to do whatever it
-wants, including different things on different CPU architectures.</p>
-<p>The second answer is worse. On <a href="https://en.wikipedia.org/wiki/X86-64">amd64</a>, by far the most common architecture, the
-infinity value is converted to… -9223372036854775808, the <em>smallest</em> possible
-64-bit integer. So the user count always ends up above this "threshold",
-everything gets published, and users get no privacy guarantee whatsoever.
-<a href="https://github.com/google/differential-privacy/issues/485">Oops.</a></p>
-<p>This seems like absolutely bonkers behavior, and there is in fact a <a href="https://github.com/golang/go/issues/76264">proposal</a>
-to adopt a more reasonable approach in the Go specification. Hopefully it'll get
-adopted, and prevent future cursed bugs of the same kind!</p>
-<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
+    <p><strong>When</strong> building a library of <a href="friendly-intro-to-differential-privacy.html">differential privacy</a> primitives, you have
+two options. You can either re-implement all the basic logic, in which case you
+have to avoid all known pitfalls. Or you can simply write <a href="https://en.wikipedia.org/wiki/Language_binding">bindings</a> to reuse an
+existing implementation from another language.</p>
+<p><a href="https://github.com/OpenMined/PyDP/">PyDP</a>, a Python DP library maintained by <a href="https://openmined.org/">OpenMined</a>, chose the second path:
+the library is a thin wrapper around Google's <a href="https://github.com/google/differential-privacy/">C++ DP library</a>. In
+theory, this limits the number of new things that can go wrong. But in practice,
+you might encounter different kinds of unexpected issues!</p>
+<p>C++ has <em>static</em> types, and each function only works on arguments of a
+predefined type. Therefore, the C++ library defines two distinct <code>AddNoise</code>
+<a href="https://github.com/google/differential-privacy/blob/d8b2d0cb61624cf7f3c59b926a5071cd98687f09/cc/algorithms/numerical-mechanisms.h#L56">methods</a>, with different input types: one to add integer noise, the other to
+add floating-point noise. </p>
+<p>By contrast, Python's type system is <em>dynamic</em>: you can't predict the type of a
+variable just by reading the source code. Instead, you have to actually run the
+program and see what that variable contains. PyDP defines a single <code>add_noise</code>
+<a href="https://pydp.readthedocs.io/en/latest/pydp.html#pydp.algorithms.numerical_mechanisms.NumericalMechanism.add_noise">method</a> which calls either C++ method depending on input type. This logic is
+<a href="https://github.com/OpenMined/PyDP/blob/688236100cb12b6e30a6513a5e8ff483650c19a5/src/bindings/PyDP/mechanisms/mechanism.cpp#L52">implemented</a> as follows.</p>
+<div class="highlight"><pre><span></span><code><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="n">py</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">dp</span><span class="o">::</span><span class="n">NumericalMechanism</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">DefPyAddNoise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">py</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">dp</span><span class="o">::</span><span class="n">NumericalMechanism</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">pyclass</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">FunctorType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="p">(</span><span class="n">dp</span><span class="o">::</span><span class="n">NumericalMechanism</span><span class="o">::*</span><span class="p">)(</span><span class="n">T</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">pyclass</span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;add_noise&quot;</span><span class="p">,</span>
+<span class="w">                     </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">FunctorType</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dp</span><span class="o">::</span><span class="n">NumericalMechanism</span><span class="o">::</span><span class="n">AddNoise</span><span class="p">),</span>
+<span class="w">                     </span><span class="n">py</span><span class="o">::</span><span class="n">arg</span><span class="p">(</span><span class="s">&quot;result&quot;</span><span class="p">));</span>
+<span class="p">}</span>
 
-    if (false) {
-        align = (screen.width < 768) ? "left" : align;
-        indent = (screen.width < 768) ? "0em" : indent;
-        linebreak = (screen.width < 768) ? 'true' : linebreak;
-    }
+<span class="c1">// ...</span>
 
-    var mathjaxscript = document.createElement('script');
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+<span class="n">DefPyAddNoise</span><span class="o">&lt;</span><span class="kt">int64_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">numerical_mech</span><span class="p">);</span>
+<span class="n">DefPyAddNoise</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">numerical_mech</span><span class="p">);</span>
+</code></pre></div>
 
-    var configscript = document.createElement('script');
-    configscript.type = 'text/x-mathjax-config';
-    configscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'TeX'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        availableFonts: ['STIX', 'TeX']," +
-        "        preferredFont: 'STIX'," +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
-</script>
+<p>This code may look a bit obscure, but it does two simple things:</p>
+<ul>
+<li>It declares a Python <code>add_noise</code> method on all <code>NumericalMechanism</code> classes.</li>
+<li>It defines which C++ method to use when this method is called. Integers are
+  converted to <code>int64</code> then use the integer C++ method; floating-point numbers
+  are converted to <code>double</code> then use the floating-point C++ method.</li>
+</ul>
+<p>Except… Data analysis code doesn't always use Python's native types (<code>int</code> or
+<code>float</code>): often, using <a href="https://numpy.org/">NumPy</a> and its <a href="https://numpy.org/doc/stable/user/basics.types.html">numeric types</a> can be a lot
+more performant. Those allow users to specify the <em>size</em> of each numeric type,
+e.g. by using <code>np.int16</code> or <code>np.float32</code>. How do the bindings handle such types?</p>
+<p>The default logic of the <a href="https://github.com/pybind/pybind11">underlying library</a> checks two conditions, in
+order.</p>
+<ol>
+<li>First, it look at whether the value type <em>matches</em> the declared type. For
+   integers, it checks whether it implements <a href="https://docs.python.org/3/reference/datamodel.html#object.__index__"><code>__index__</code></a>. For floats,
+   it checks whether it's a subclass of Python's built-in <code>float</code>.</li>
+<li>If the first pass fails, it look at whether the value can be <em>converted</em> to
+   the declared type, using conversions methods like <code>int(v)</code> or <code>float(v)</code>. In
+   that case, the first declared binding with an available conversion is used.</li>
+</ol>
+<p>The first condition is met for Python's <code>int</code> type and all NumPy integer types,
+which implement <code>__index__</code>. It also catches Python's <code>float</code> type and NumPy's
+<code>np.float64</code>: the latter is a subclass of <code>float</code> type, so the bindings
+correctly assign it to a C++ <code>double</code>.</p>
+<p>However, what happens if a value <code>v</code> has type <code>np.float32</code>? This type is <em>not</em> a
+subclass of <code>float</code>, so the first condition doesn't apply! So the logic moves on
+to the second condition, and goes through the bindings <em>in order</em>. The first is
+the integer binding, so it checks whether it's possible to call <code>int(v)</code>. This
+conversion exists, and simply uses truncation: for example,
+<code>int(np.float32(1.7))==1</code>. So our <code>np.float32</code> value gets truncated, and is then
+perturbed using integer noise.</p>
+<p>But this messes up all our DP calculations! If we're calculating a DP sum of
+small numbers, with <a href="differential-privacy-glossary.html#clamping">clamping bounds</a> of [0, 0.1], the sensitivity is
+0.1. But adding a single record can move the total sum from 41.95 to 42.05; once
+truncated, the result goes from 41 to 42: the sensitivity gets multiplied by a
+factor of 10. <a href="https://github.com/OpenMined/PyDP/issues/499">Oops!</a></p>
+<p>The cleanest solution is likely to use an option to prevent the binding library
+from automatically converting inputs. Alternatively, declaring the <code>double</code>
+binding first would also solve the issue: all the integer types would still hit
+the first pass, while <code>np.float32</code> would be converted to <code>double</code> (a lossless
+conversion) in the second pass.</p>
+<p><small>If you liked this article, you may enjoy the <a href="go-numeric-conversion.html">previous one</a> on the
+same theme!</small></p>
   </div>
 </article>
 
@@ -194,10 +177,10 @@ adopted, and prevent future cursed bugs of the same kind!</p>
 </div>
 
 <script type="text/javascript">
-var bibtexdetails = `@misc{desfontainesblog20261019,
-  title = &#123;Fun privacy bugs: Numeric conversion goes wrong},
+var bibtexdetails = `@misc{desfontainesblog20261026,
+  title = &#123;Fun privacy bugs: Type confusion in bindings},
   author = &#123;Damien Desfontaines},
-  howpublished = {\\url{https://desfontain.es/blog/go-numeric-conversion.html}},
+  howpublished = {\\url{https://desfontain.es/blog/type-confusion-bindings.html}},
   note = &#123;Ted is writing things (personal blog)},
   year = &#123;2026},
   month = &#123;10}
@@ -225,7 +208,7 @@ button.addEventListener('click', function (event) {
 <nav>
   <ul class="nav">
     <li>
-      <a href="eurotdp-2026.html">← previous</a>
+      <a href="go-numeric-conversion.html">← previous</a>
     </li>
   </ul>
   <ul>

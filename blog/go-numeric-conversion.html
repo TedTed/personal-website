@@ -29,6 +29,7 @@
   <meta name="twitter:card" content="summary"/>
   <link rel="canonical" href="https://desfontain.es/blog/go-numeric-conversion.html" />
   <link rel="prev" href="eurotdp-2026.html" />
+  <link rel="next" href="type-confusion-bindings.html" />
 </head>
 
 <body id="index" class="home">
@@ -64,6 +65,7 @@
           </span>
           <span class="droite">
     <a href="eurotdp-2026.html">← previous</a>
+ —     <a href="type-confusion-bindings.html">next →</a>
           </span>
         </td>
       </tr>
@@ -107,8 +109,13 @@ can get so large that it's represented as a positive infinity value. This should
 mean that nothing gets published. That would be sad, but safe.</p>
 <p>The user count, and its noisy version, is an integer value. So to compare it to
 the floating-point threshold, the latter is first <a href="https://github.com/google/differential-privacy/blob/061df8a0fb156ae4d6eec105e4c2c9cc2ae1ac55/go/dpagg/count.go#L205">converted to an
-integer</a>. This raises an interesting question: what happens when
-converting an infinity value to an integer value?</p>
+integer</a>. The code looks like this:</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nb">int64</span><span class="p">(</span><span class="nx">math</span><span class="p">.</span><span class="nx">Ceil</span><span class="p">(</span><span class="nx">threshold</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>This raises an interesting question. What happens when <code>threshold</code> is infinite?</p>
 <p>The first answer is bad. The Go spec answers simply says that the conversion
 must always succeed, but that the output of out-of-range values can be
 <a href="https://go.dev/ref/spec#Conversions">implementation-dependent</a>. So the compiler is free to do whatever it
@@ -121,6 +128,8 @@ everything gets published, and users get no privacy guarantee whatsoever.
 <p>This seems like absolutely bonkers behavior, and there is in fact a <a href="https://github.com/golang/go/issues/76264">proposal</a>
 to adopt a more reasonable approach in the Go specification. Hopefully it'll get
 adopted, and prevent future cursed bugs of the same kind!</p>
+<p><small>If you liked this article, you may enjoy the <a href="type-confusion-bindings.html">next one</a> on the
+same theme!</small></p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -225,6 +234,9 @@ button.addEventListener('click', function (event) {
   <ul class="nav">
     <li>
       <a href="eurotdp-2026.html">← previous</a>
+    </li>
+    <li>
+      <a href="type-confusion-bindings.html">next →</a>
     </li>
   </ul>
   <ul>
