@@ -29,7 +29,7 @@
   <meta property="twitter:image" content="https://desfontain.es/blog/images/simple-dp-diagram.png" />
   <meta property="twitter:image:alt" content="A simple diagram representing the intuition behind differential privacy." />
   <link rel="canonical" href="https://desfontain.es/blog/" />
-  <link rel="prev" href="go-numeric-conversion.html" />
+  <link rel="prev" href="type-confusion-bindings.html" />
 </head>
 
 <body id="index" class="home">
@@ -64,7 +64,7 @@
             <a href="posts.html">archives</a>
           </span>
           <span class="droite">
-    <a href="go-numeric-conversion.html">← previous</a>
+    <a href="type-confusion-bindings.html">← previous</a>
           </span>
         </td>
       </tr>
@@ -82,91 +82,377 @@
 <article>
   <header>
   <h1>
-    <a href="./type-confusion-bindings.html">Fun privacy bugs: Type confusion in bindings</a>
+    <a href="./f-dp.html">From (ε,δ) to attack risk: Hypothesis testing and f-DP</a>
   </h1>
   </header>
   <footer>
-    <time datetime="2026-10-26T00:00:00+01:00">
-      2026-10-26
+    <time datetime="2026-11-02T00:00:00+01:00">
+      2026-11-02
     </time>
   </footer>
   <div>
-    <p><strong>When</strong> building a library of <a href="friendly-intro-to-differential-privacy.html">differential privacy</a> primitives, you have
-two options. You can either re-implement all the basic logic, in which case you
-have to avoid all known pitfalls. Or you can simply write <a href="https://en.wikipedia.org/wiki/Language_binding">bindings</a> to reuse an
-existing implementation from another language.</p>
-<p><a href="https://github.com/OpenMined/PyDP/">PyDP</a>, a Python DP library maintained by <a href="https://openmined.org/">OpenMined</a>, chose the second path:
-the library is a thin wrapper around Google's <a href="https://github.com/google/differential-privacy/">C++ DP library</a>. In
-theory, this limits the number of new things that can go wrong. But in practice,
-you might encounter different kinds of unexpected issues!</p>
-<p>C++ has <em>static</em> types, and each function only works on arguments of a
-predefined type. Therefore, the C++ library defines two distinct <code>AddNoise</code>
-<a href="https://github.com/google/differential-privacy/blob/d8b2d0cb61624cf7f3c59b926a5071cd98687f09/cc/algorithms/numerical-mechanisms.h#L56">methods</a>, with different input types: one to add integer noise, the other to
-add floating-point noise. </p>
-<p>By contrast, Python's type system is <em>dynamic</em>: you can't predict the type of a
-variable just by reading the source code. Instead, you have to actually run the
-program and see what that variable contains. PyDP defines a single <code>add_noise</code>
-<a href="https://pydp.readthedocs.io/en/latest/pydp.html#pydp.algorithms.numerical_mechanisms.NumericalMechanism.add_noise">method</a> which calls either C++ method depending on input type. This logic is
-<a href="https://github.com/OpenMined/PyDP/blob/688236100cb12b6e30a6513a5e8ff483650c19a5/src/bindings/PyDP/mechanisms/mechanism.cpp#L52">implemented</a> as follows.</p>
-<div class="highlight"><pre><span></span><code><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
-<span class="n">py</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">dp</span><span class="o">::</span><span class="n">NumericalMechanism</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">DefPyAddNoise</span><span class="p">(</span>
-<span class="w">    </span><span class="n">py</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">dp</span><span class="o">::</span><span class="n">NumericalMechanism</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">pyclass</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">FunctorType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="p">(</span><span class="n">dp</span><span class="o">::</span><span class="n">NumericalMechanism</span><span class="o">::*</span><span class="p">)(</span><span class="n">T</span><span class="p">);</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">pyclass</span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;add_noise&quot;</span><span class="p">,</span>
-<span class="w">                     </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">FunctorType</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dp</span><span class="o">::</span><span class="n">NumericalMechanism</span><span class="o">::</span><span class="n">AddNoise</span><span class="p">),</span>
-<span class="w">                     </span><span class="n">py</span><span class="o">::</span><span class="n">arg</span><span class="p">(</span><span class="s">&quot;result&quot;</span><span class="p">));</span>
-<span class="p">}</span>
-
-<span class="c1">// ...</span>
-
-<span class="n">DefPyAddNoise</span><span class="o">&lt;</span><span class="kt">int64_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">numerical_mech</span><span class="p">);</span>
-<span class="n">DefPyAddNoise</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">numerical_mech</span><span class="p">);</span>
-</code></pre></div>
-
-<p>This code may look a bit obscure, but it does two simple things:</p>
+    <p><small>
+<span class='notlettrine'>T</span>his blog post was co-authored by
+<a href="https://kulyny.ch">Bogdan Kulynych</a> and I. It's part of a foundational <a href="friendly-intro-to-differential-privacy.html">series
+on differential privacy</a>. Check out the <a href="friendly-intro-to-differential-privacy.html">table of contents</a> to
+see the other articles!
+</small></p>
+<hr>
+<p><span class="lettrine"><strong>I</strong></span><strong>magine</strong> that you need to release a model
+trained on your organization’s sensitive data. You want to use differential
+privacy, because you know this is the most reliable and future-proof way to
+protect the data. Except that your data protection officer requires that
+re-identification risk due to the model release is at most “0.09” — whatever
+that means — because it’s what the <a href="iso-standards-privacy-attacks.html">guideline they’re using</a>
+suggests… How do you reason about such <em>operational</em> risks in differential
+privacy, if all you know is that you have <span class="math">\((\varepsilon,\delta)\)</span>-DP with
+<span class="math">\(\varepsilon=2\)</span> and <span class="math">\(\delta =1{0}^{-5}\)</span>? </p>
+<p>This series of blog posts gives you practical tools to answer that question. We
+introduce a notion of privacy known as <span class="math">\(f\)</span>-DP, explain how it translates into
+the success rates of concrete attacks, and show how to use it to set the DP
+parameters.</p>
+<h1 id="modeling-risk">Modeling risk</h1>
+<p>To properly reason about any kind of attack risk, we have to clearly specify an
+<em>attacker model</em>. A common approach is to clarify the attacker’s <em>goals</em>, their
+<em>knowledge</em>, and their <em>capabilities</em>. There are many potential attacks. It is
+convenient to start with <em>membership inference attacks</em> for theoretical reasons,
+so that’s what we’ll focus on in this blog post. In the next one, we’ll expand
+to other kinds of attack risks.</p>
+<p>In membership inference, the adversary’s goal is to tell whether a given
+individual’s record was part of the training dataset or not, after observing the
+output of our mechanism. This looks like this:</p>
+<p><center>
+<img alt="Diagram of the membership inference threat model. A partial dataset, possibly
+with a target record added, is input into a randomized mechanism that produces
+an output. The adversary sees the partial dataset, the mechanism, and the
+output, but not whether the target record was added. Their goal is to guess that
+from the output." src="images/membership-inference.svg" width="80%">
+</center></p>
+<p>This attacker is commonly referred to as the <em>strong adversary</em>: as shown in the
+diagram above, they know and are capable of many things:</p>
 <ul>
-<li>It declares a Python <code>add_noise</code> method on all <code>NumericalMechanism</code> classes.</li>
-<li>It defines which C++ method to use when this method is called. Integers are
-  converted to <code>int64</code> then use the integer C++ method; floating-point numbers
-  are converted to <code>double</code> then use the floating-point C++ method.</li>
+<li>They know our randomized mechanism <span class="math">\(M\)</span>, and can run it on any input.  </li>
+<li>They know the <em>target record</em> <span class="math">\(x\)</span>.  </li>
+<li>They know the entire dataset we use, and can even choose it ("poison" it, in
+  security jargon). The only thing they don’t know is whether the target record
+  was added to the dataset. We denote this partial dataset without the target
+  record as <span class="math">\({D}_{out}\)</span>.  </li>
+<li>They can observe the output <span class="math">\(O\)</span> of our mechanism (e.g., released query
+  outputs, a trained machine learning model, synthetic data, etc.).</li>
 </ul>
-<p>Except… Data analysis code doesn't always use Python's native types (<code>int</code> or
-<code>float</code>): often, using <a href="https://numpy.org/">NumPy</a> and its <a href="https://numpy.org/doc/stable/user/basics.types.html">numeric types</a> can be a lot
-more performant. Those allow users to specify the <em>size</em> of each numeric type,
-e.g. by using <code>np.int16</code> or <code>np.float32</code>. How do the bindings handle such types?</p>
-<p>The default logic of the <a href="https://github.com/pybind/pybind11">underlying library</a> checks two conditions, in
-order.</p>
+<p>From the adversary’s point of view, the output <span class="math">\(O\)</span> was produced in one of two
+ways: either the mechanism ran on the partial dataset <span class="math">\({D}_{out}\)</span> alone, or it
+ran on the partial dataset together with the target, <span class="math">\({D}_{in}={D}_{out}\cup
+\{x\}\)</span><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. Their goal is to guess which of the two happened by observing <span class="math">\(O\)</span>.
+The only thing that stands in the adversary's way is the randomness of the
+mechanism, which injects some inherent uncertainty.</p>
+<p>This adversary may seem overly strong but this is intentional: this captures
+exactly the adversary that is implicit in the definition of differential
+privacy. A mechanism that is safe against this adversary — which is exactly what
+differential privacy gives us — is also safe against any weaker, more realistic
+attacker.</p>
+<h1 id="membership-inference-as-hypothesis-testing">Membership inference as hypothesis testing</h1>
+<p>Within this model, the best the attacker can do is to act as if they were a
+scientist. They have an observation (the output <span class="math">\(O\)</span>), and there are two possible
+alternatives that could explain that observation. What would a scientist do?
+They would run something called a <a href="https://en.wikipedia.org/wiki/Statistical_hypothesis_test"><em>hypothesis test</em></a>, and compare the
+likelihood of two hypotheses.</p>
+<ul>
+<li>
+<p><strong>Null hypothesis</strong> (H0): The target record was <em>not</em> part of the dataset. Formally:
+  <div class="math">$$O \sim M(D_{out}).$$</div>
+</p>
+</li>
+<li>
+<p><strong>Alternative hypothesis</strong> (H1): The target record was part of the dataset. Formally:
+  <div class="math">$$O \sim M(D_{in}).$$</div>
+</p>
+</li>
+</ul>
+<p>An attacker's test looks at the observed output <span class="math">\(O\)</span> and says either “the target
+was in the dataset” or “it was not”. We can model a test as a function <span class="math">\(\phi
+(O)\)</span> that outputs 1 in the first case and 0 in the second.</p>
+<p>When the attacker makes a guess, there are four possible outcomes:</p>
+<table style="border: none;">
+  <tr>
+    <td style="border-top: none; border-left: none;"></td>
+    <th>Attacker guesses “out” (H0)</th>
+    <th>Attacker guesses “in” (H1)</th>
+  </tr>
+  <tr>
+    <th>Record is out (H0)</th>
+    <td style="text-align: center;">True negative (TN)</td>
+    <td style="text-align: center;">False positive (FP)</td>
+  </tr>
+  <tr>
+    <th>Record is in (H1)</th>
+    <td style="text-align: center;">False negative (FN)</td>
+    <td style="text-align: center;">True positive (TP)</td>
+  </tr>
+</table>
+
+<p>As our mechanism is randomized, over the randomness of the coin flips in the
+mechanism, these four events translate into four standard quantities that
+correspond to either success or error rates:</p>
+<ul>
+<li>
+<p><strong>True positive rate (TPR)</strong>, also called the test's <em>power:</em> how often the test says "in" when the target record actually was in the dataset. Formally:
+  <div class="math">$$ \textrm{TPR} = \mathbb{E}_{O \sim M(D_\textrm{in})}[\phi(O)]. $$</div>
+</p>
+</li>
+<li>
+<p><strong>False positive rate (FPR)</strong>, also called the test's <em>size</em>: how often the test says "in" when the target record was not in the dataset, i.e., how often it raises a false alarm. Formally:
+  <div class="math">$$ \textrm{FPR} = \mathbb{E}_{O \sim M(D_\textrm{out})}[\phi(O)]. $$</div>
+</p>
+</li>
+<li>
+<p><strong>True negative rate (TNR)</strong>: how often the test says "out" when the target record actually was not in the dataset. Formally:
+  <div class="math">$$ \textrm{TNR} = \mathbb{E}_{O \sim M(D_\textrm{out})}[1 - \phi(O)]. $$</div>
+</p>
+</li>
+<li>
+<p><strong>False negative rate (FNR):</strong> how often the test says "out" when the target record actually was in the dataset, i.e., how often the attack misses. Formally:
+  <div class="math">$$ \textrm{FNR} = \mathbb{E}_{O \sim M(D_\textrm{in})}[1 - \phi(O)]. $$</div>
+</p>
+</li>
+</ul>
+<p>What do we mean by “how often” here? To evaluate such attacks in practice, we
+measure rates over many different target records. But in this theoretical
+analysis, the dataset and the target are both fixed. The rates are only over the
+randomness of the mechanism alone, i.e., over hypothetical re-runs of the
+mechanism with different random seeds.</p>
+<p>To have the full picture of the performance of the attack, i.e., all four
+quantities, it is sufficient to know only two of them, as
+<span class="math">\(\textrm{TNR}=1–\textrm{FPR}\)</span>, and <span class="math">\(\textrm{FNR}=1–\textrm{TPR}\)</span>. A common
+approach is to only look at TPR and FPR, so let us focus on these two
+measurements for the moment. </p>
+<p>In terms of TPR and FPR, the adversary wants to detect membership as often as
+possible (high TPR) while raising as few false alarms as possible (low FPR).
+These two goals are in tension: a test that always says "in" has a perfect TPR,
+but also an FPR of 100%. So the right question is: for a given rate of false
+alarms (FPR), what is the highest power (TPR) any test can achieve? Plotting the
+answer for every FPR gives a curve called the <em>receiver operating
+characteristic</em> (ROC) curve, a visual summary of how good a binary test is.</p>
+<p>The higher the ROC curve, the more successful the best attack is, and the higher is the privacy risk:</p>
+<p><center>
+<img alt="The figure shows ROC curves, with false positive rate on the x axis and true
+positive rate on the y axis. The first curve is of an ideal attack, so no
+privacy, with a curve that jumps straight to the top. The second curve is of a
+strong attack, thus weak privacy, that goes high above the diagonal. The third
+and the last curve is of a weak attack, thus good privacy, that stays close to
+the diagonal. A dashed diagonal marks attacks with no success, corresponding to
+perfect privacy." src="images/roc-curves.svg">
+</center></p>
+<h1 id="from-dp-to-attack-success">From DP to attack success</h1>
+<p>At this point, we know how to model one standard threat (membership inference
+attack) and how to measure its risk (the ROC curve). How do we derive such a
+curve from <span class="math">\((\varepsilon,\delta)\)</span>-DP?</p>
+<p><a href="https://arxiv.org/abs/1311.0776">Seminal work</a> from 2015 showed that if a
+mechanism is <span class="math">\((\varepsilon,\delta)\)</span>-DP, then the TPR and FPR of any such attack
+must satisfy the two following bounds:</p>
+<div class="math">$$
+\begin{aligned}
+\textrm{FPR} + e^\varepsilon (1 - \textrm{TPR}) \geq 1 - \delta \\[5pt]
+e^\varepsilon \text{FPR} + (1 - \textrm{TPR}) \geq 1 - \delta
+\end{aligned}
+$$</div>
+<p>This gives us a <em>worst-case</em> ROC curve for an (ε,δ)-DP mechanism, composed of
+two line segments corresponding to these two equations. Here’s an example with
+<span class="math">\(\varepsilon =2\)</span> at <span class="math">\(\delta =10^{-5}\)</span>.</p>
+<p><center>
+<img alt="The figure shows the worst-case ROC curve implied by a single differential
+privacy guarantee with epsilon two and delta ten to the minus five, with true
+positive rate on the y axis and false positive rate on the x axis. The curve
+rises steeply from the origin to a true positive rate near ninety percent at a
+false positive rate of about ten percent, then climbs in a straight line to the
+top-right corner. The shaded region beneath it marks the possible error rates of
+attacks. A dashed line corresponds to trivial attacks, and the top-left corner
+corresponds to an ideal attack." src="images/tradeoff-intro.svg">
+</center></p>
+<p>The plot suggests a guarantee that seems quite weak: the adversary can achieve a
+TPR close to 90% at FPR of about 10%, which seems like a fairly strong attack.
+But for some mechanisms that satisfy the same guarantee, the bound is loose: no
+attack — not even by the strong adversary — actually achieves such a high TPR at
+this FPR! Why is that the case?</p>
+<p>This typically comes down to having <em>more information</em> about our mechanism. For
+example, let’s suppose that the mechanism above, satisfying
+<span class="math">\((\varepsilon,\delta)\)</span>-DP with <span class="math">\(\varepsilon=2\)</span> and <span class="math">\(\delta=10^{-5}\)</span>, is a
+<a href="https://desfontain.es/blog/gaussian-noise.html">Gaussian mechanism</a>. This
+mechanism doesn’t satisfy just a single <span class="math">\((\varepsilon,\delta)\)</span> pair: decreasing
+<span class="math">\(\varepsilon\)</span> yields a larger <span class="math">\(\delta\)</span>, and vice-versa. For example, our
+mechanism also satisfies <span class="math">\((\varepsilon',\delta')\)</span>-DP with <span class="math">\(\varepsilon'=1.7\)</span> at
+<span class="math">\(\delta'=10^{-4}\)</span> or <span class="math">\((\varepsilon'',\delta'')\)</span>-DP with <span class="math">\(\varepsilon''=0.59\)</span> at
+<span class="math">\(\delta''=0.04\)</span>. These two give us different bounds on the ROC curve, and both
+bounds are valid at the same time! </p>
+<p>By doing this for many values of <span class="math">\(\varepsilon\)</span> and <span class="math">\(\delta\)</span>, we can combine all
+these bounds to get a much better overall bound:</p>
+<p><center>
+<img alt="The figure shows the ROC plot, with false positive rate on the x axis and true
+positive rate on the y axis. Several faint grey angular lines show the
+worst-case bounds from individual epsilon-delta pairs of the Gaussian mechanism,
+each labelled with its pair, from epsilon near two with delta of ten to the
+minus five down to epsilon just above half with delta of four percent. A smooth
+blue curve traces their lower envelope (the true ROC curve of the mechanism),
+which sits below any single bound." src="images/tradeoff-tight.svg">
+</center></p>
+<p>Implicitly, we’ve used the mechanism’s <em>privacy profile</em>: a function that gives
+the smallest possible <span class="math">\(\delta\)</span> for every <span class="math">\(\varepsilon\)</span>, or vice versa. We then
+converted it into the blue line above: the “real” ROC curve of membership
+inference attacks against our Gaussian mechanism. As we can see, this mechanism
+turns out to be much more private than what we initially thought when we only
+knew of a single (ε,δ) guarantee!</p>
+<p>This is exactly the idea behind <span class="math">\(f\)</span>-DP, defined in a <a href="https://arxiv.org/abs/1905.02383">2019
+paper</a>. Instead of describing the privacy of a
+mechanism with just ε and δ, this DP variant describes it with the entire blue
+curve, and the <span class="math">\(f\)</span> “parameter” is a function that defines this curve.</p>
+<p>There is one convention to keep in mind. The function <span class="math">\(f\)</span> is not the ROC curve
+itself, but its mirror image: <span class="math">\(f(\alpha)\)</span> is the lowest false negative rate
+(FNR, which is 1-TPR) that an attack with FPR of <span class="math">\(\alpha\)</span> can achieve:</p>
+<p><center>
+<img alt="The plot shows a trade-off function, with false positive rate on the x axis
+and false negative rate on the y axis. Thus, the y axis is different from the
+previous plots. The curve falls from the top-left corner to the bottom-right
+corner, curving below the dashed diagonal that corresponds to trivial attacks.
+It is the same curve as the blue curve in the previous plot, but vertically
+flipped." src="images/fdp.svg">
+</center></p>
+<p>A mechanism satisfies <span class="math">\(f\)</span>-DP if no membership inference attack by the strong
+adversary can have a TPR higher than the one given by <span class="math">\(1-f\)</span> or, equivalently, an
+FNR lower than the one given by <span class="math">\(f\)</span>. Formally, either of the two following
+properties must be satisfied.</p>
+<div class="math">$$
+\begin{aligned}
+\textrm{TPR} &amp; \leq 1 - f(\textrm{FPR}) \\[5pt]
+\textrm{FNR} &amp; \geq f(\textrm{FPR})
+\end{aligned}
+$$</div>
+<p>By design, <span class="math">\(f\)</span>-DP can capture the ROC curve more precisely than a single
+(ε,δ)-DP guarantee can, as it is more expressive.  For some mechanisms, such as
+the Gaussian mechanism and its compositions, we can even compute the optimal
+<span class="math">\(f\)</span>-DP curve exactly: the strong adversary has an attack with the error rates
+exactly <em>on</em> the curve.</p>
+<p><button id="toggleProof"></button></p>
+<div id="proof" style="display: none; border-left: double; padding-left: 10px">
+<p><strong>Geometry of trade-off curves.</strong> In principle, an <span class="math">\(f\)</span>-DP curve does not have
+to be tight. The tight, optimal, trade-off curve has certain properties: It is
+convex, non-increasing, and it is bounded from above as <span class="math">\(f(x)\ \leq 1-x\)</span>. Thus,
+we normally consider only those <span class="math">\(f\)</span> functions that satisfy these conditions as
+<em>valid</em> in the definition. Any trade-off curve that satisfies these conditions
+is actually guaranteed to be an optimal trade-off curve for some mechanism.</p>
+<p><strong>Definition that does not require hypothesis testing.</strong> Curiously, we can also
+define <span class="math">\(f\)</span>-DP[^2] in a way that directly parallels the standard DP definition,
+and actually does not require introducing the hypothesis testing terminology.</p>
+<p>A mechanism <span class="math">\(M(\cdot )\)</span> satisfies <span class="math">\(f\)</span>-DP if for any pair of neighbouring
+datasets <span class="math">\({D}_{1}\)</span> and <span class="math">\({D}_{2}\)</span> , and for any set of outputs <span class="math">\(S\)</span>, we have
+<span class="math">\(\Pr[M({D}_{1})\in S]\leq 1-f(\Pr [M(D{'}_{2})\in S])\)</span>, where <span class="math">\(f(x)\)</span> is a given
+trade-off function: convex, non-increasing, and bounded by <span class="math">\(1-x\)</span> from above.</p>
+<p>The standard (ε,δ)-DP can be reformulated as <span class="math">\(f\)</span>-DP with a well-chosen function
+<span class="math">\(f\)</span>, namely
+<span class="math">\(f(x)=\max\limits_{}\{0,1-{e}^{\varepsilon}x-\delta,{e}^{-\varepsilon}(1-x-\delta)\}\)</span>,
+as the formula from Kairouz et al. (2015) we used above shows.</p>
+<p>This definition first appeared without a proof in a
+<a href="https://www2.census.gov/library/working-papers/2022/adrm/20220908_0917_kifer_et_al_dp_semantics.pdf">2022 report</a>;
+we provided a proof in a <a href="https://arxiv.org/abs/2507.06969">2025 paper</a>.</p>
+</div>
+<p>The fact that <span class="math">\(f\)</span>-DP captures the guarantees of a mechanism more precisely than
+<span class="math">\((\varepsilon,\delta)\)</span>-DP is not a unique feature. An <span class="math">\(f\)</span>-DP curve contains the
+same information as the set of <em>all</em> <span class="math">\((\varepsilon,\delta)\)</span>-DP guarantees of a
+mechanism, i.e., the privacy profile, and the distribution of the <a href="privacy-loss-random-variable.html">privacy loss
+random variable</a>. We can convert between these representations in a
+lossless way, e.g., from privacy profile to <span class="math">\(f\)</span>-DP using the formulas above.</p>
+<p>Why define a new notion then? As we’ve seen in this post, <span class="math">\(f\)</span>-DP more directly
+translates to attack risk than e.g. the privacy profile. No need for additional
+calculations: we can just look at the curve to see the TPR and FPR of attacks.
+At the same time, the privacy profile is often easier to compute, so we
+typically start from it and then convert it to the <span class="math">\(f\)</span>-DP curve to quantify
+attack risks.  </p>
+<h1 id="conclusion">Conclusion</h1>
+<p>In this post, we defined the standard threat model for membership inference, and
+saw that <span class="math">\(f\)</span>-DP describes the risk of this attack exactly, and far more
+precisely than a single (ε,δ) pair. In the next post, we will extend this to
+other standard threats.</p>
+<script type="text/javascript">
+var button = document.getElementById('toggleProof');
+var defaultButton = 'Give me more theory facts';
+button.innerHTML = defaultButton
+button.addEventListener('click', function (event) {
+    button.innerHTML = button.innerHTML == defaultButton ? 'Hide the additional theory facts' : defaultButton;
+    proof = document.getElementById('proof');
+    proof.style.display = proof.style.display == 'none' ? 'block' : 'none';
+});
+</script>
+
+<div class="footnote">
+<hr>
 <ol>
-<li>First, it look at whether the value type <em>matches</em> the declared type. For
-   integers, it checks whether it implements <a href="https://docs.python.org/3/reference/datamodel.html#object.__index__"><code>__index__</code></a>. For floats,
-   it checks whether it's a subclass of Python's built-in <code>float</code>.</li>
-<li>If the first pass fails, it look at whether the value can be <em>converted</em> to
-   the declared type, using conversions methods like <code>int(v)</code> or <code>float(v)</code>. In
-   that case, the first declared binding with an available conversion is used.</li>
+<li id="fn:1">
+<p>This model corresponds to <a href="differential-privacy-glossary.html#add">add-or-remove-one</a> neighbourhood relation.
+The attacker model is slightly different for other relations.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
 </ol>
-<p>The first condition is met for Python's <code>int</code> type and all NumPy integer types,
-which implement <code>__index__</code>. It also catches Python's <code>float</code> type and NumPy's
-<code>np.float64</code>: the latter is a subclass of <code>float</code> type, so the bindings
-correctly assign it to a C++ <code>double</code>.</p>
-<p>However, what happens if a value <code>v</code> has type <code>np.float32</code>? This type is <em>not</em> a
-subclass of <code>float</code>, so the first condition doesn't apply! So the logic moves on
-to the second condition, and goes through the bindings <em>in order</em>. The first is
-the integer binding, so it checks whether it's possible to call <code>int(v)</code>. This
-conversion exists, and simply uses truncation: for example,
-<code>int(np.float32(1.7))==1</code>. So our <code>np.float32</code> value gets truncated, and is then
-perturbed using integer noise.</p>
-<p>But this messes up all our DP calculations! If we're calculating a DP sum of
-small numbers, with <a href="differential-privacy-glossary.html#clamping">clamping bounds</a> of [0, 0.1], the sensitivity is
-0.1. But adding a single record can move the total sum from 41.95 to 42.05; once
-truncated, the result goes from 41 to 42: the sensitivity gets multiplied by a
-factor of 10. <a href="https://github.com/OpenMined/PyDP/issues/499">Oops!</a></p>
-<p>The cleanest solution is likely to use an option to prevent the binding library
-from automatically converting inputs. Alternatively, declaring the <code>double</code>
-binding first would also solve the issue: all the integer types would still hit
-the first pass, while <code>np.float32</code> would be converted to <code>double</code> (a lossless
-conversion) in the second pass.</p>
-<p><small>If you liked this article, you may enjoy the <a href="go-numeric-conversion.html">previous one</a> on the
-same theme!</small></p>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
   </div>
 </article>
 
@@ -177,13 +463,13 @@ same theme!</small></p>
 </div>
 
 <script type="text/javascript">
-var bibtexdetails = `@misc{desfontainesblog20261026,
-  title = &#123;Fun privacy bugs: Type confusion in bindings},
+var bibtexdetails = `@misc{desfontainesblog20261102,
+  title = &#123;From (ε,δ) to attack risk: Hypothesis testing and f-DP},
   author = &#123;Damien Desfontaines},
-  howpublished = {\\url{https://desfontain.es/blog/type-confusion-bindings.html}},
+  howpublished = {\\url{https://desfontain.es/blog/f-dp.html}},
   note = &#123;Ted is writing things (personal blog)},
   year = &#123;2026},
-  month = &#123;10}
+  month = &#123;11}
 }`
 // We need to use textarea for the tag containing code so we can select it to
 // copy it (<pre> wouldn't work), but inputs can't be dynamically resized to fit
@@ -208,7 +494,7 @@ button.addEventListener('click', function (event) {
 <nav>
   <ul class="nav">
     <li>
-      <a href="go-numeric-conversion.html">← previous</a>
+      <a href="type-confusion-bindings.html">← previous</a>
     </li>
   </ul>
   <ul>

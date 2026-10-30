@@ -1,5 +1,366 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-10-26T00:00:00+01:00</updated><entry><title>Fun privacy bugs: Type confusion in bindings</title><link href="https://desfontain.es/blog/type-confusion-bindings.html" rel="alternate"></link><published>2026-10-26T00:00:00+01:00</published><updated>2026-10-26T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-10-26:/blog/type-confusion-bindings.html</id><summary type="html">&lt;p&gt;How small subtleties in cross-language bindings can lead to surprising privacy failures.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;When&lt;/strong&gt; building a library of &lt;a href="friendly-intro-to-differential-privacy.html"&gt;differential privacy&lt;/a&gt; primitives, you have
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ted is writing things</title><link href="https://desfontain.es/blog/" rel="alternate"></link><link href="https://desfontain.es/blog/rss.xml" rel="self"></link><id>https://desfontain.es/blog/</id><updated>2026-11-02T00:00:00+01:00</updated><entry><title>From (ε,δ) to attack risk: Hypothesis testing and f-DP</title><link href="https://desfontain.es/blog/f-dp.html" rel="alternate"></link><published>2026-11-02T00:00:00+01:00</published><updated>2026-11-02T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-11-02:/blog/f-dp.html</id><summary type="html">&lt;p&gt;Understanding differential privacy guarantees as a hypothesis testing property, and introducing a DP variant that's particularly well-suited to this kind of analysis.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;small&gt;
+&lt;span class='notlettrine'&gt;T&lt;/span&gt;his blog post was co-authored by
+&lt;a href="https://kulyny.ch"&gt;Bogdan Kulynych&lt;/a&gt; and I. It's part of a foundational &lt;a href="friendly-intro-to-differential-privacy.html"&gt;series
+on differential privacy&lt;/a&gt;. Check out the &lt;a href="friendly-intro-to-differential-privacy.html"&gt;table of contents&lt;/a&gt; to
+see the other articles!
+&lt;/small&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;span class="lettrine"&gt;&lt;strong&gt;I&lt;/strong&gt;&lt;/span&gt;&lt;strong&gt;magine&lt;/strong&gt; that you need to release a model
+trained on your organization’s sensitive data. You want to use differential
+privacy, because you know this is the most reliable and future-proof way to
+protect the data. Except that your data protection officer requires that
+re-identification risk due to the model release is at most “0.09” — whatever
+that means — because it’s what the &lt;a href="iso-standards-privacy-attacks.html"&gt;guideline they’re using&lt;/a&gt;
+suggests… How do you reason about such &lt;em&gt;operational&lt;/em&gt; risks in differential
+privacy, if all you know is that you have &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt;-DP with
+&lt;span class="math"&gt;\(\varepsilon=2\)&lt;/span&gt; and &lt;span class="math"&gt;\(\delta =1{0}^{-5}\)&lt;/span&gt;? &lt;/p&gt;
+&lt;p&gt;This series of blog posts gives you practical tools to answer that question. We
+introduce a notion of privacy known as &lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP, explain how it translates into
+the success rates of concrete attacks, and show how to use it to set the DP
+parameters.&lt;/p&gt;
+&lt;h1 id="modeling-risk"&gt;Modeling risk&lt;/h1&gt;
+&lt;p&gt;To properly reason about any kind of attack risk, we have to clearly specify an
+&lt;em&gt;attacker model&lt;/em&gt;. A common approach is to clarify the attacker’s &lt;em&gt;goals&lt;/em&gt;, their
+&lt;em&gt;knowledge&lt;/em&gt;, and their &lt;em&gt;capabilities&lt;/em&gt;. There are many potential attacks. It is
+convenient to start with &lt;em&gt;membership inference attacks&lt;/em&gt; for theoretical reasons,
+so that’s what we’ll focus on in this blog post. In the next one, we’ll expand
+to other kinds of attack risks.&lt;/p&gt;
+&lt;p&gt;In membership inference, the adversary’s goal is to tell whether a given
+individual’s record was part of the training dataset or not, after observing the
+output of our mechanism. This looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="Diagram of the membership inference threat model. A partial dataset, possibly
+with a target record added, is input into a randomized mechanism that produces
+an output. The adversary sees the partial dataset, the mechanism, and the
+output, but not whether the target record was added. Their goal is to guess that
+from the output." src="images/membership-inference.svg" width="80%"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;This attacker is commonly referred to as the &lt;em&gt;strong adversary&lt;/em&gt;: as shown in the
+diagram above, they know and are capable of many things:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;They know our randomized mechanism &lt;span class="math"&gt;\(M\)&lt;/span&gt;, and can run it on any input.  &lt;/li&gt;
+&lt;li&gt;They know the &lt;em&gt;target record&lt;/em&gt; &lt;span class="math"&gt;\(x\)&lt;/span&gt;.  &lt;/li&gt;
+&lt;li&gt;They know the entire dataset we use, and can even choose it ("poison" it, in
+  security jargon). The only thing they don’t know is whether the target record
+  was added to the dataset. We denote this partial dataset without the target
+  record as &lt;span class="math"&gt;\({D}_{out}\)&lt;/span&gt;.  &lt;/li&gt;
+&lt;li&gt;They can observe the output &lt;span class="math"&gt;\(O\)&lt;/span&gt; of our mechanism (e.g., released query
+  outputs, a trained machine learning model, synthetic data, etc.).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;From the adversary’s point of view, the output &lt;span class="math"&gt;\(O\)&lt;/span&gt; was produced in one of two
+ways: either the mechanism ran on the partial dataset &lt;span class="math"&gt;\({D}_{out}\)&lt;/span&gt; alone, or it
+ran on the partial dataset together with the target, &lt;span class="math"&gt;\({D}_{in}={D}_{out}\cup
+\{x\}\)&lt;/span&gt;&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;. Their goal is to guess which of the two happened by observing &lt;span class="math"&gt;\(O\)&lt;/span&gt;.
+The only thing that stands in the adversary's way is the randomness of the
+mechanism, which injects some inherent uncertainty.&lt;/p&gt;
+&lt;p&gt;This adversary may seem overly strong but this is intentional: this captures
+exactly the adversary that is implicit in the definition of differential
+privacy. A mechanism that is safe against this adversary — which is exactly what
+differential privacy gives us — is also safe against any weaker, more realistic
+attacker.&lt;/p&gt;
+&lt;h1 id="membership-inference-as-hypothesis-testing"&gt;Membership inference as hypothesis testing&lt;/h1&gt;
+&lt;p&gt;Within this model, the best the attacker can do is to act as if they were a
+scientist. They have an observation (the output &lt;span class="math"&gt;\(O\)&lt;/span&gt;), and there are two possible
+alternatives that could explain that observation. What would a scientist do?
+They would run something called a &lt;a href="https://en.wikipedia.org/wiki/Statistical_hypothesis_test"&gt;&lt;em&gt;hypothesis test&lt;/em&gt;&lt;/a&gt;, and compare the
+likelihood of two hypotheses.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Null hypothesis&lt;/strong&gt; (H0): The target record was &lt;em&gt;not&lt;/em&gt; part of the dataset. Formally:
+  &lt;div class="math"&gt;$$O \sim M(D_{out}).$$&lt;/div&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Alternative hypothesis&lt;/strong&gt; (H1): The target record was part of the dataset. Formally:
+  &lt;div class="math"&gt;$$O \sim M(D_{in}).$$&lt;/div&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;An attacker's test looks at the observed output &lt;span class="math"&gt;\(O\)&lt;/span&gt; and says either “the target
+was in the dataset” or “it was not”. We can model a test as a function &lt;span class="math"&gt;\(\phi
+(O)\)&lt;/span&gt; that outputs 1 in the first case and 0 in the second.&lt;/p&gt;
+&lt;p&gt;When the attacker makes a guess, there are four possible outcomes:&lt;/p&gt;
+&lt;table style="border: none;"&gt;
+  &lt;tr&gt;
+    &lt;td style="border-top: none; border-left: none;"&gt;&lt;/td&gt;
+    &lt;th&gt;Attacker guesses “out” (H0)&lt;/th&gt;
+    &lt;th&gt;Attacker guesses “in” (H1)&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Record is out (H0)&lt;/th&gt;
+    &lt;td style="text-align: center;"&gt;True negative (TN)&lt;/td&gt;
+    &lt;td style="text-align: center;"&gt;False positive (FP)&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Record is in (H1)&lt;/th&gt;
+    &lt;td style="text-align: center;"&gt;False negative (FN)&lt;/td&gt;
+    &lt;td style="text-align: center;"&gt;True positive (TP)&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;As our mechanism is randomized, over the randomness of the coin flips in the
+mechanism, these four events translate into four standard quantities that
+correspond to either success or error rates:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;True positive rate (TPR)&lt;/strong&gt;, also called the test's &lt;em&gt;power:&lt;/em&gt; how often the test says "in" when the target record actually was in the dataset. Formally:
+  &lt;div class="math"&gt;$$ \textrm{TPR} = \mathbb{E}_{O \sim M(D_\textrm{in})}[\phi(O)]. $$&lt;/div&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;False positive rate (FPR)&lt;/strong&gt;, also called the test's &lt;em&gt;size&lt;/em&gt;: how often the test says "in" when the target record was not in the dataset, i.e., how often it raises a false alarm. Formally:
+  &lt;div class="math"&gt;$$ \textrm{FPR} = \mathbb{E}_{O \sim M(D_\textrm{out})}[\phi(O)]. $$&lt;/div&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;True negative rate (TNR)&lt;/strong&gt;: how often the test says "out" when the target record actually was not in the dataset. Formally:
+  &lt;div class="math"&gt;$$ \textrm{TNR} = \mathbb{E}_{O \sim M(D_\textrm{out})}[1 - \phi(O)]. $$&lt;/div&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;False negative rate (FNR):&lt;/strong&gt; how often the test says "out" when the target record actually was in the dataset, i.e., how often the attack misses. Formally:
+  &lt;div class="math"&gt;$$ \textrm{FNR} = \mathbb{E}_{O \sim M(D_\textrm{in})}[1 - \phi(O)]. $$&lt;/div&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;What do we mean by “how often” here? To evaluate such attacks in practice, we
+measure rates over many different target records. But in this theoretical
+analysis, the dataset and the target are both fixed. The rates are only over the
+randomness of the mechanism alone, i.e., over hypothetical re-runs of the
+mechanism with different random seeds.&lt;/p&gt;
+&lt;p&gt;To have the full picture of the performance of the attack, i.e., all four
+quantities, it is sufficient to know only two of them, as
+&lt;span class="math"&gt;\(\textrm{TNR}=1–\textrm{FPR}\)&lt;/span&gt;, and &lt;span class="math"&gt;\(\textrm{FNR}=1–\textrm{TPR}\)&lt;/span&gt;. A common
+approach is to only look at TPR and FPR, so let us focus on these two
+measurements for the moment. &lt;/p&gt;
+&lt;p&gt;In terms of TPR and FPR, the adversary wants to detect membership as often as
+possible (high TPR) while raising as few false alarms as possible (low FPR).
+These two goals are in tension: a test that always says "in" has a perfect TPR,
+but also an FPR of 100%. So the right question is: for a given rate of false
+alarms (FPR), what is the highest power (TPR) any test can achieve? Plotting the
+answer for every FPR gives a curve called the &lt;em&gt;receiver operating
+characteristic&lt;/em&gt; (ROC) curve, a visual summary of how good a binary test is.&lt;/p&gt;
+&lt;p&gt;The higher the ROC curve, the more successful the best attack is, and the higher is the privacy risk:&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="The figure shows ROC curves, with false positive rate on the x axis and true
+positive rate on the y axis. The first curve is of an ideal attack, so no
+privacy, with a curve that jumps straight to the top. The second curve is of a
+strong attack, thus weak privacy, that goes high above the diagonal. The third
+and the last curve is of a weak attack, thus good privacy, that stays close to
+the diagonal. A dashed diagonal marks attacks with no success, corresponding to
+perfect privacy." src="images/roc-curves.svg"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;h1 id="from-dp-to-attack-success"&gt;From DP to attack success&lt;/h1&gt;
+&lt;p&gt;At this point, we know how to model one standard threat (membership inference
+attack) and how to measure its risk (the ROC curve). How do we derive such a
+curve from &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt;-DP?&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://arxiv.org/abs/1311.0776"&gt;Seminal work&lt;/a&gt; from 2015 showed that if a
+mechanism is &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt;-DP, then the TPR and FPR of any such attack
+must satisfy the two following bounds:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{aligned}
+\textrm{FPR} + e^\varepsilon (1 - \textrm{TPR}) \geq 1 - \delta \\[5pt]
+e^\varepsilon \text{FPR} + (1 - \textrm{TPR}) \geq 1 - \delta
+\end{aligned}
+$$&lt;/div&gt;
+&lt;p&gt;This gives us a &lt;em&gt;worst-case&lt;/em&gt; ROC curve for an (ε,δ)-DP mechanism, composed of
+two line segments corresponding to these two equations. Here’s an example with
+&lt;span class="math"&gt;\(\varepsilon =2\)&lt;/span&gt; at &lt;span class="math"&gt;\(\delta =10^{-5}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="The figure shows the worst-case ROC curve implied by a single differential
+privacy guarantee with epsilon two and delta ten to the minus five, with true
+positive rate on the y axis and false positive rate on the x axis. The curve
+rises steeply from the origin to a true positive rate near ninety percent at a
+false positive rate of about ten percent, then climbs in a straight line to the
+top-right corner. The shaded region beneath it marks the possible error rates of
+attacks. A dashed line corresponds to trivial attacks, and the top-left corner
+corresponds to an ideal attack." src="images/tradeoff-intro.svg"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;The plot suggests a guarantee that seems quite weak: the adversary can achieve a
+TPR close to 90% at FPR of about 10%, which seems like a fairly strong attack.
+But for some mechanisms that satisfy the same guarantee, the bound is loose: no
+attack — not even by the strong adversary — actually achieves such a high TPR at
+this FPR! Why is that the case?&lt;/p&gt;
+&lt;p&gt;This typically comes down to having &lt;em&gt;more information&lt;/em&gt; about our mechanism. For
+example, let’s suppose that the mechanism above, satisfying
+&lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt;-DP with &lt;span class="math"&gt;\(\varepsilon=2\)&lt;/span&gt; and &lt;span class="math"&gt;\(\delta=10^{-5}\)&lt;/span&gt;, is a
+&lt;a href="https://desfontain.es/blog/gaussian-noise.html"&gt;Gaussian mechanism&lt;/a&gt;. This
+mechanism doesn’t satisfy just a single &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt; pair: decreasing
+&lt;span class="math"&gt;\(\varepsilon\)&lt;/span&gt; yields a larger &lt;span class="math"&gt;\(\delta\)&lt;/span&gt;, and vice-versa. For example, our
+mechanism also satisfies &lt;span class="math"&gt;\((\varepsilon',\delta')\)&lt;/span&gt;-DP with &lt;span class="math"&gt;\(\varepsilon'=1.7\)&lt;/span&gt; at
+&lt;span class="math"&gt;\(\delta'=10^{-4}\)&lt;/span&gt; or &lt;span class="math"&gt;\((\varepsilon'',\delta'')\)&lt;/span&gt;-DP with &lt;span class="math"&gt;\(\varepsilon''=0.59\)&lt;/span&gt; at
+&lt;span class="math"&gt;\(\delta''=0.04\)&lt;/span&gt;. These two give us different bounds on the ROC curve, and both
+bounds are valid at the same time! &lt;/p&gt;
+&lt;p&gt;By doing this for many values of &lt;span class="math"&gt;\(\varepsilon\)&lt;/span&gt; and &lt;span class="math"&gt;\(\delta\)&lt;/span&gt;, we can combine all
+these bounds to get a much better overall bound:&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="The figure shows the ROC plot, with false positive rate on the x axis and true
+positive rate on the y axis. Several faint grey angular lines show the
+worst-case bounds from individual epsilon-delta pairs of the Gaussian mechanism,
+each labelled with its pair, from epsilon near two with delta of ten to the
+minus five down to epsilon just above half with delta of four percent. A smooth
+blue curve traces their lower envelope (the true ROC curve of the mechanism),
+which sits below any single bound." src="images/tradeoff-tight.svg"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;Implicitly, we’ve used the mechanism’s &lt;em&gt;privacy profile&lt;/em&gt;: a function that gives
+the smallest possible &lt;span class="math"&gt;\(\delta\)&lt;/span&gt; for every &lt;span class="math"&gt;\(\varepsilon\)&lt;/span&gt;, or vice versa. We then
+converted it into the blue line above: the “real” ROC curve of membership
+inference attacks against our Gaussian mechanism. As we can see, this mechanism
+turns out to be much more private than what we initially thought when we only
+knew of a single (ε,δ) guarantee!&lt;/p&gt;
+&lt;p&gt;This is exactly the idea behind &lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP, defined in a &lt;a href="https://arxiv.org/abs/1905.02383"&gt;2019
+paper&lt;/a&gt;. Instead of describing the privacy of a
+mechanism with just ε and δ, this DP variant describes it with the entire blue
+curve, and the &lt;span class="math"&gt;\(f\)&lt;/span&gt; “parameter” is a function that defines this curve.&lt;/p&gt;
+&lt;p&gt;There is one convention to keep in mind. The function &lt;span class="math"&gt;\(f\)&lt;/span&gt; is not the ROC curve
+itself, but its mirror image: &lt;span class="math"&gt;\(f(\alpha)\)&lt;/span&gt; is the lowest false negative rate
+(FNR, which is 1-TPR) that an attack with FPR of &lt;span class="math"&gt;\(\alpha\)&lt;/span&gt; can achieve:&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img alt="The plot shows a trade-off function, with false positive rate on the x axis
+and false negative rate on the y axis. Thus, the y axis is different from the
+previous plots. The curve falls from the top-left corner to the bottom-right
+corner, curving below the dashed diagonal that corresponds to trivial attacks.
+It is the same curve as the blue curve in the previous plot, but vertically
+flipped." src="images/fdp.svg"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;A mechanism satisfies &lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP if no membership inference attack by the strong
+adversary can have a TPR higher than the one given by &lt;span class="math"&gt;\(1-f\)&lt;/span&gt; or, equivalently, an
+FNR lower than the one given by &lt;span class="math"&gt;\(f\)&lt;/span&gt;. Formally, either of the two following
+properties must be satisfied.&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{aligned}
+\textrm{TPR} &amp;amp; \leq 1 - f(\textrm{FPR}) \\[5pt]
+\textrm{FNR} &amp;amp; \geq f(\textrm{FPR})
+\end{aligned}
+$$&lt;/div&gt;
+&lt;p&gt;By design, &lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP can capture the ROC curve more precisely than a single
+(ε,δ)-DP guarantee can, as it is more expressive.  For some mechanisms, such as
+the Gaussian mechanism and its compositions, we can even compute the optimal
+&lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP curve exactly: the strong adversary has an attack with the error rates
+exactly &lt;em&gt;on&lt;/em&gt; the curve.&lt;/p&gt;
+&lt;p&gt;&lt;button id="toggleProof"&gt;&lt;/button&gt;&lt;/p&gt;
+&lt;div id="proof" style="display: none; border-left: double; padding-left: 10px"&gt;
+&lt;p&gt;&lt;strong&gt;Geometry of trade-off curves.&lt;/strong&gt; In principle, an &lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP curve does not have
+to be tight. The tight, optimal, trade-off curve has certain properties: It is
+convex, non-increasing, and it is bounded from above as &lt;span class="math"&gt;\(f(x)\ \leq 1-x\)&lt;/span&gt;. Thus,
+we normally consider only those &lt;span class="math"&gt;\(f\)&lt;/span&gt; functions that satisfy these conditions as
+&lt;em&gt;valid&lt;/em&gt; in the definition. Any trade-off curve that satisfies these conditions
+is actually guaranteed to be an optimal trade-off curve for some mechanism.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Definition that does not require hypothesis testing.&lt;/strong&gt; Curiously, we can also
+define &lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP[^2] in a way that directly parallels the standard DP definition,
+and actually does not require introducing the hypothesis testing terminology.&lt;/p&gt;
+&lt;p&gt;A mechanism &lt;span class="math"&gt;\(M(\cdot )\)&lt;/span&gt; satisfies &lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP if for any pair of neighbouring
+datasets &lt;span class="math"&gt;\({D}_{1}\)&lt;/span&gt; and &lt;span class="math"&gt;\({D}_{2}\)&lt;/span&gt; , and for any set of outputs &lt;span class="math"&gt;\(S\)&lt;/span&gt;, we have
+&lt;span class="math"&gt;\(\Pr[M({D}_{1})\in S]\leq 1-f(\Pr [M(D{'}_{2})\in S])\)&lt;/span&gt;, where &lt;span class="math"&gt;\(f(x)\)&lt;/span&gt; is a given
+trade-off function: convex, non-increasing, and bounded by &lt;span class="math"&gt;\(1-x\)&lt;/span&gt; from above.&lt;/p&gt;
+&lt;p&gt;The standard (ε,δ)-DP can be reformulated as &lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP with a well-chosen function
+&lt;span class="math"&gt;\(f\)&lt;/span&gt;, namely
+&lt;span class="math"&gt;\(f(x)=\max\limits_{}\{0,1-{e}^{\varepsilon}x-\delta,{e}^{-\varepsilon}(1-x-\delta)\}\)&lt;/span&gt;,
+as the formula from Kairouz et al. (2015) we used above shows.&lt;/p&gt;
+&lt;p&gt;This definition first appeared without a proof in a
+&lt;a href="https://www2.census.gov/library/working-papers/2022/adrm/20220908_0917_kifer_et_al_dp_semantics.pdf"&gt;2022 report&lt;/a&gt;;
+we provided a proof in a &lt;a href="https://arxiv.org/abs/2507.06969"&gt;2025 paper&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;The fact that &lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP captures the guarantees of a mechanism more precisely than
+&lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt;-DP is not a unique feature. An &lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP curve contains the
+same information as the set of &lt;em&gt;all&lt;/em&gt; &lt;span class="math"&gt;\((\varepsilon,\delta)\)&lt;/span&gt;-DP guarantees of a
+mechanism, i.e., the privacy profile, and the distribution of the &lt;a href="privacy-loss-random-variable.html"&gt;privacy loss
+random variable&lt;/a&gt;. We can convert between these representations in a
+lossless way, e.g., from privacy profile to &lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP using the formulas above.&lt;/p&gt;
+&lt;p&gt;Why define a new notion then? As we’ve seen in this post, &lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP more directly
+translates to attack risk than e.g. the privacy profile. No need for additional
+calculations: we can just look at the curve to see the TPR and FPR of attacks.
+At the same time, the privacy profile is often easier to compute, so we
+typically start from it and then convert it to the &lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP curve to quantify
+attack risks.  &lt;/p&gt;
+&lt;h1 id="conclusion"&gt;Conclusion&lt;/h1&gt;
+&lt;p&gt;In this post, we defined the standard threat model for membership inference, and
+saw that &lt;span class="math"&gt;\(f\)&lt;/span&gt;-DP describes the risk of this attack exactly, and far more
+precisely than a single (ε,δ) pair. In the next post, we will extend this to
+other standard threats.&lt;/p&gt;
+&lt;script type="text/javascript"&gt;
+var button = document.getElementById('toggleProof');
+var defaultButton = 'Give me more theory facts';
+button.innerHTML = defaultButton
+button.addEventListener('click', function (event) {
+    button.innerHTML = button.innerHTML == defaultButton ? 'Hide the additional theory facts' : defaultButton;
+    proof = document.getElementById('proof');
+    proof.style.display = proof.style.display == 'none' ? 'block' : 'none';
+});
+&lt;/script&gt;
+
+&lt;div class="footnote"&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;This model corresponds to &lt;a href="differential-privacy-glossary.html#add"&gt;add-or-remove-one&lt;/a&gt; neighbourhood relation.
+The attacker model is slightly different for other relations.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="misc"></category></entry><entry><title>Fun privacy bugs: Type confusion in bindings</title><link href="https://desfontain.es/blog/type-confusion-bindings.html" rel="alternate"></link><published>2026-10-27T00:00:00+01:00</published><updated>2026-10-27T00:00:00+01:00</updated><author><name>Damien Desfontaines</name></author><id>tag:desfontain.es,2026-10-27:/blog/type-confusion-bindings.html</id><summary type="html">&lt;p&gt;How small subtleties in cross-language bindings can lead to surprising privacy failures.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;When&lt;/strong&gt; building a library of &lt;a href="friendly-intro-to-differential-privacy.html"&gt;differential privacy&lt;/a&gt; primitives, you have
 two options. You can either re-implement all the basic logic, in which case you
 have to avoid all known pitfalls. Or you can simply write &lt;a href="https://en.wikipedia.org/wiki/Language_binding"&gt;bindings&lt;/a&gt; to reuse an
 existing implementation from another language.&lt;/p&gt;
